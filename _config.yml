@@ -13,26 +13,15 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: Your title
+title: 
 email: your-email@example.com
-name: Your name
+name: Kamil Rybacki 
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here.
-keywords: [Your keywords]
+keywords: IT, developer, computer science
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-domain: "example.com" # the domain name for your site, e.g. example.com
+url: "https://kamilrybacki.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 language: en
-# Supported languages list:
-# en: English
-# de: Deutsche (German)
-# es: Español (Spanish)
-# fr: Français (French)
-# ja: 日本語 (Japanese)
-# pt: Português (Portuguese)
-# zh-cn: 简体中文 (Simplified Chinese)
-# zh-tw: 繁體中文 (Traditional Chinese)
-# ko : 한국어(Korean)
 
 analytics:   # the Google Analytics property ID, e.g. UA-XXXXX-Y
 
@@ -69,15 +58,3 @@ plugins:
   - jekyll-sitemap
   - jekyll-archives
   - jekyll-seo-tag
-
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
