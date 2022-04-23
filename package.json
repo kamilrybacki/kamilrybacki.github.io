@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
+  }
+}
+
+{
+  "scripts": {
+    "deploy": "gatsby build && gh-pages -d public -b main"
+  }
+}
