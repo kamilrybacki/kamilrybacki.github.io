@@ -1,17 +1,15 @@
-import React, { FunctionComponent } from 'react'; // importing FunctionComponent
+import React from 'react';
 
-import { StaticImage } from "gatsby-plugin-image"
-
-import profpic from "../../../images/prof_pic.png"
+import ProfilePicture from '@components/ProfilePicture'
 
 type PageHeaderProps = {
 
 }
 
-const PageHeader: FunctionComponent<PageHeaderProps> = () => {
+const PageHeader: React.FunctionComponent<PageHeaderProps> = () => {
 	return(
 		<header>
-			<StaticImage src={profpic} alt="My face"/>
+			<ProfilePicture/>
 		</header>
 	)
 }

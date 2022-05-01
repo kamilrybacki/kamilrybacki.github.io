@@ -1,33 +1,35 @@
-import React from 'react'; // importing FunctionComponent
-import styled from 'styled-components'
+import React from 'react';
+
 import tw from 'tailwind-styled-components'
 
 import PageHeader from './PageHeader'
 import PageFooter from './PageFooter'
+import PageContent from './PageContent'
 
 type PageWrapperProps = {
+    header: string,
     children: JSX.Element | JSX.Element[]
 }
 
-const RawPageWrapperLayout = styled.main`
-`
-
-const PageWrapperLayout = tw(RawPageWrapperLayout)`
-    w-screen
+const PageWrapperLayout = tw.main`
     flex
-    items-center
+    flex-col
     justify-center
+    align-middle
+    h-auto
+    w-screen
+    m-0
 `
 
-const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ children }) => {
+const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header, children }) => {
     return (
-        <>
-            <PageHeader/>
-                <PageWrapperLayout>
-                    {children}
-                </PageWrapperLayout>
+        <PageWrapperLayout>
+            {header ? <PageHeader/> : ''}
+            <PageContent>
+                {children}
+            </PageContent>
             <PageFooter/>
-        </>
+        </PageWrapperLayout>
     )
 };
 

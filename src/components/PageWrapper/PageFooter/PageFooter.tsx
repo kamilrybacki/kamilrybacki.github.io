@@ -1,13 +1,33 @@
-import React, { FunctionComponent } from 'react'; // importing FunctionComponent
+import React from 'react';
+import tw from 'tailwind-styled-components'
+
+import SocialMediaBar from './SocialMediaBar';
 
 type PageFooterProps = {
 
 }
 
-const PageFooter: FunctionComponent<PageFooterProps> = () => {
+const PageFooterWrapper = tw.footer`
+	fixed
+	inherit-w
+	bottom-4
+	flex
+	align-middle
+	justify-between
+	py-1
+	px-10
+`
+
+const PageFooterCopyright = tw.h3`
+	font-sans
+`
+
+const PageFooter: React.FunctionComponent<PageFooterProps> = () => {
 	return(
-		<footer>
-		</footer>
+		<PageFooterWrapper>
+			<PageFooterCopyright>© Kamil Rybacki {new Date().getFullYear()}</PageFooterCopyright>
+			<SocialMediaBar/>
+		</PageFooterWrapper>
 	)
 }
 
