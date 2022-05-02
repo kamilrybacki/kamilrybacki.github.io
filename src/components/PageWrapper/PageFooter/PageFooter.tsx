@@ -8,13 +8,14 @@ type PageFooterProps = {
 }
 
 const PageFooterWrapper = tw.footer`
+	bg-secondary-500
 	fixed
 	inherit-w
-	bottom-4
+	bottom-0
 	flex
 	align-middle
 	justify-between
-	py-1
+	py-4
 	px-10
 `
 

@@ -5,7 +5,7 @@ type PageContentProps = {
 	children: JSX.Element | JSX.Element[]
 }
 
-const PageContentWrapper = tw.footer`
+const PageContentWrapper = tw.section`
 	relative
 	flex
 	flex-col
@@ -13,7 +13,8 @@ const PageContentWrapper = tw.footer`
 	h-full
 	justify-center
 	align-middle
-	p-20
+	px-20
+	py-5
 `
 
 const PageContent: React.FunctionComponent<PageContentProps> = ({children}) => {

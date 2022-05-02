@@ -8,6 +8,7 @@ type NavbarMenuProps = {
 }
 
 const NavbarMenuWrapper = tw.nav`
+	relative
 	inline-flex
 	justify-center
 	gap-0

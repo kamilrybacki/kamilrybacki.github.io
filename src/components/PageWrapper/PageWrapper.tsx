@@ -7,7 +7,7 @@ import PageFooter from './PageFooter'
 import PageContent from './PageContent'
 
 type PageWrapperProps = {
-    header: string,
+    header: boolean,
     children: JSX.Element | JSX.Element[]
 }
 
@@ -32,5 +32,9 @@ const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header, childr
         </PageWrapperLayout>
     )
 };
+
+PageWrapper.defaultProps = {
+    header: true
+}
 
 export default PageWrapper

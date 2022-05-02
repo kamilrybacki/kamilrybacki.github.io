@@ -5,6 +5,7 @@ const LinkBase = tw(Link)`
 	flex 
 	items-center 
 	justify-center
+	w-max
 	my-4
 	mx-6
 	h-12
