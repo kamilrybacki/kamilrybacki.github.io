@@ -40,6 +40,7 @@ const SocialMediaBar = () => {
                         height: '1.5rem',
                         marginLeft: '0.75rem',
                     }}
+                    key={link.split('/')[2]}
                     /> : null
                 )
             }

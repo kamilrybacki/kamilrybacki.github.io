@@ -10,6 +10,7 @@ type IndexSplash = {
 
 const IndexSplashWrapper = tw.main`
 	relative
+	top-48
 	flex
 	justify-center
 	align-middle
