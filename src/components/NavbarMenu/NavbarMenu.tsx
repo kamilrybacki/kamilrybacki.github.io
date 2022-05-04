@@ -1,26 +1,22 @@
 import React from 'react';
 import tw from 'tailwind-styled-components'
 
-import { ProjectsLink, PostsLink, OtherLink } from './Links'
-
-type NavbarMenuProps = {
-
-}
+import MenuLink from '@components/MenuLink'
 
 const NavbarMenuWrapper = tw.nav`
 	relative
 	inline-flex
 	justify-center
-	gap-0
+	mt-3
+	gap-2
 `
 
-const NavbarMenu: React.FunctionComponent<NavbarMenuProps> = () => {
+const NavbarMenu = () => {
 	return(
 		<NavbarMenuWrapper>
-			<ProjectsLink to="/projects">Projects</ProjectsLink>
-			<PostsLink to="/posts">Posts</PostsLink>
-			<OtherLink to="/about">About me</OtherLink>
-			<OtherLink to="/contact">Contact</OtherLink>
+			<MenuLink to="/projects" size="5xl" pop={true}>Projects</MenuLink>
+			<MenuLink to="/contact" size="3xl">Contact me</MenuLink>
+			<MenuLink to="/posts" size="2xl" bold={false}>Blog</MenuLink>
 		</NavbarMenuWrapper>
 	)
 }

@@ -4,19 +4,16 @@ import tw from 'tailwind-styled-components'
 import NavbarMenu from '@components/NavbarMenu';
 import ProfPic from '@images/prof_pic.svg'
 
-type IndexSplash = {
-
-}
-
 const IndexSplashWrapper = tw.main`
 	relative
-	top-48
+	top-56
 	flex
 	justify-center
 	align-middle
 	mb-36
 	p-0
 	w-auto
+	scale-125
 `
 
 const TitleWithNavbar = tw.header`
@@ -68,7 +65,7 @@ const IndexProfilePicture = tw.img`
 	bg-secondary-500
 `
 
-const IndexSplash: React.FunctionComponent<IndexSplash> = () => {
+const IndexSplash = () => {
 	return(
 		<IndexSplashWrapper>
 			<IndexProfilePicture src={ProfPic} alt="My face"/>

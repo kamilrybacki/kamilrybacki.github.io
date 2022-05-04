@@ -8,6 +8,7 @@ import PageContent from './PageContent'
 
 type PageWrapperProps = {
     header: boolean,
+    footer: boolean,
     children: JSX.Element | JSX.Element[]
 }
 
@@ -21,14 +22,14 @@ const PageWrapperLayout = tw.main`
     m-0
 `
 
-const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header, children }) => {
+const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, children }) => {
     return (
         <PageWrapperLayout>
             {header ? <PageHeader/> : ''}
             <PageContent>
                 {children}
             </PageContent>
-            <PageFooter/>
+            {footer ? <PageFooter/> : ''}
         </PageWrapperLayout>
     )
 };

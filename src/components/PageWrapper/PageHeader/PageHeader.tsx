@@ -1,8 +1,8 @@
 import React from 'react';
 import tw from 'tailwind-styled-components';
+import {Link} from "gatsby"
 
 import NavbarMenu from '@components/NavbarMenu'
-import ProfPic from '@images/prof_pic.svg'
 
 type PageHeaderProps = {
 
@@ -22,14 +22,25 @@ const MenuWrapper = tw.div`
     scale-[0.65]
 `
 
-const TopMenuProfilePicture = tw.img`
-    w-1/5
-    p-0
+const TopMenuLogo = tw(Link)`
+    flex
+    justify-center
+    align-middle
+    text-[4.5rem]
+    text-primary-500
+    font-display
+    font-bold
+    w-[7rem]
+    h-[7rem]
     m-0
     rounded-full
-    ring-4
+    ring-8
     ring-primary-500
     bg-secondary-500
+    hover:bg-accent-100
+    hover:text-primary-600
+    hover:ring-4
+    duration-500
 `
 
 const NavbarWithSeparator = tw.div`
@@ -52,7 +63,7 @@ const PageHeader: React.FunctionComponent<PageHeaderProps> = () => {
     return(
         <PageHeaderWrapper>
             <MenuWrapper>
-                <TopMenuProfilePicture src={ProfPic} alt="My face"/>
+                <TopMenuLogo to='/'>KR</TopMenuLogo>
                 <NavbarWithSeparator>
                     <Separator/>
                     <NavbarMenu/>
