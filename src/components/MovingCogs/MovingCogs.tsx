@@ -1,21 +1,16 @@
 import React from 'react';
+
 import styled from 'styled-components';
+import tw from 'tailwind-styled-components';
+
+import { css, keyframes } from 'styled-components';
 import { useEffect, useState } from 'react';
 import { graphql, useStaticQuery } from "gatsby";
 
 import { Dictionary } from 'types'
 
-type MovingCogsProps = {
-    children: JSX.Element | JSX.Element[]
-}
-
 type CogProps = {
-    src: URL
-    src_height: number,
-    src_width: number,
-    x: number,
-    y: number,
-    spin_duration: number,
+    src: string
 }
 
 const all_images_query = graphql`
@@ -30,93 +25,81 @@ const all_images_query = graphql`
         }
     }`
 
-const CogsVignette = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    box-shadow: inset 0 0 10vw gray;
-    z-index: -99;
+const CogsWrapper = tw.div`
+    -z-50
+    overflow-hidden
 `
 
-const Cog = styled.div`
-    animation: cogspin ${(props: CogProps) => `${props.spin_duration}s`} linear infinite;
-    @keyframes cogspin {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-    &:before {
-        content: '';
-        width: ${(props: CogProps) => `${props.src_width}px`};
-        height: ${(props: CogProps) => `${props.src_height}px`};
-        display: block;
-        position: fixed;
-        left: ${(props: CogProps) => `${props.x}px`};
-        top: ${(props: CogProps) => `${props.y}px`};
-        background-image: ${(props: CogProps) => `url(${props.src})`};
-        z-index: -99;
-        opacity: 0.1;
-    }
-`
-
-const spawnCogs = (cogs: Array<Dictionary<string>>, number_of_cogs: number) => {
-    const chosen_cogs = Array.from(Array(number_of_cogs).keys()).map(() => Math.floor(Math.random() * cogs.length))
-    return chosen_cogs.every((entry) => !entry) ? [] : chosen_cogs.map((cog_id, cog_index) => {
-        const cog_data = cogs[cog_id]
-
-        const generated_x = Math.floor(Math.random() * window.screen.width)
-        const generated_y = Math.floor(Math.random() * window.screen.height)
-        const generated_duration = 10 + Math.floor(Math.random() * 30)
-
-        return(
-            <Cog 
-                src={cog_data.url}
-                src_height={cog_data.height}
-                src_width={cog_data.width}
-                x={generated_x}
-                y={generated_y}
-                spin_duration={generated_duration}
-                key={`cog_${cog_index}`}
-            />
-        )
-    })
-}
-
-const MovingCogs: React.FunctionComponent<MovingCogsProps> = ({children}) => {
-    const [cogs, loadCogs] = useState([])
-    const all_images_query_result = useStaticQuery(all_images_query)
+const Cog: React.FunctionComponent<CogProps> = ({src}) => {
+    const [cog_element, loadCogElement] = useState(<></>)
 
     useEffect(() => {
-        const images_list = all_images_query_result.allFile.edges
-        const cogs_list = images_list.reduce((current_list: Array<string>, image: Dictionary) => {
-            const image_url = image.node.publicURL
-            const img = new Image();
-            img.src = image_url;
+        const img = new Image();
+        img.src = src;
 
-            if ( image_url.search(/cog(\d*).svg/i) > 0 ) {
-                const cog_data = {
-                    url: image_url,
-                    width: img.width,
-                    height: img.height
-                }
-                return [...current_list, cog_data]
-            }
-            return current_list
-        }, [])
-        loadCogs(cogs_list)
+        const generated_x = Math.floor(Math.random() * 100)
+        const generated_y = Math.floor(Math.random() * 100)
+        const generated_duration = 10 + Math.floor(Math.random() * 100)
+        const generated_opacity = 0.025 + (Math.random() * 0.1)
+
+        const cogspin_frames = keyframes`
+            from {transform: rotate(0deg);}
+            to {transform: rotate(360deg);}
+        `
+        const cogspin = css`
+            ${cogspin_frames} ${generated_duration}s linear infinite
+        `
+
+        const StyledCog = styled.img`
+            animation: ${cogspin}
+        `
+
+        loadCogElement(
+            <StyledCog src={src} style={{
+                position: 'fixed',
+                left: `${generated_x}%`,
+                top: `${generated_y}%`,
+                width: `${img.width}px`,
+                height: `${img.height}px`,
+                zIndex: -99,
+                opacity: `${generated_opacity}`
+            }}/>
+        )
     }, [])
 
     return(
         <>
-            { cogs ? spawnCogs(cogs, 100) : '' } 
-            {children}
-            <CogsVignette/>
+         {cog_element}
         </>
+    )
+}
+
+const MovingCogs = () => {
+    const [cogs, loadCogs] = useState([])
+
+    const all_images_query_result = useStaticQuery(all_images_query)
+    const number_of_cogs = 250
+
+    useEffect(() => {
+        if (!cogs.length) {
+            const images_list = all_images_query_result.allFile.edges
+            const cogs_list = images_list.reduce((current_list: Array<string>, image: Dictionary) => {
+                const image_url = image.node.publicURL
+                if ( image_url.search(/cog(\d*).svg/i) > 0 ) {
+                    return [...current_list, image_url]
+                }
+                return current_list
+            }, [])
+            const chosen_cogs = Array.from(Array(number_of_cogs).keys()).map(() => Math.floor(Math.random() * cogs_list.length))
+            const spawned_cogs = chosen_cogs.map((cog_id, cog_index) => <Cog src={cogs_list[cog_id]} key={`cog_${cog_index}`}/>)
+            loadCogs(spawned_cogs)
+        }
+    }, [])
+
+    return(
+        <CogsWrapper>
+            {cogs} 
+        </CogsWrapper>
     )
 }
 

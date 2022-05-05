@@ -6,11 +6,16 @@ import PageWrapper from "@components/PageWrapper"
 
 const IndexPage = () => {
   return (
-    <MovingCogs>
-      <PageWrapper header={false} footer={false}>
+    <>
+      <MovingCogs/>
+      <PageWrapper 
+        header={false} 
+        footer={false} 
+        extraClass='h-max w-max'
+      >
         <IndexSplash/>
       </PageWrapper>
-    </MovingCogs>
+    </>
   )
 }
 

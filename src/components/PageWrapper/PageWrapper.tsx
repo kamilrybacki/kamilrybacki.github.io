@@ -9,6 +9,7 @@ import PageContent from './PageContent'
 type PageWrapperProps = {
     header: boolean,
     footer: boolean,
+    extraClass: string,
     children: JSX.Element | JSX.Element[]
 }
 
@@ -17,14 +18,14 @@ const PageWrapperLayout = tw.main`
     flex-col
     justify-center
     align-middle
-    h-auto
     w-screen
+    h-auto
     m-0
 `
 
-const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, children }) => {
+const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = '', children }) => {
     return (
-        <PageWrapperLayout>
+        <PageWrapperLayout className={extraClass}>
             {header ? <PageHeader/> : ''}
             <PageContent>
                 {children}
