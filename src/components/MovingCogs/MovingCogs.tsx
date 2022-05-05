@@ -78,7 +78,7 @@ const MovingCogs = () => {
     const [cogs, loadCogs] = useState([])
 
     const all_images_query_result = useStaticQuery(all_images_query)
-    const number_of_cogs = 250
+    const number_of_cogs = 50
 
     useEffect(() => {
         if (!cogs.length) {
