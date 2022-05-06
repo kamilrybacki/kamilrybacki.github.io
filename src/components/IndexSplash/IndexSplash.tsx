@@ -67,7 +67,7 @@ const IndexProfilePicture = tw.img`
 
 const IndexSplash = () => {
 	return(
-		<IndexSplashWrapper>
+		<IndexSplashWrapper id='splash-wrapper'>
 			<IndexProfilePicture src={ProfPic} alt="My face"/>
 			<TitleWithNavbar>
 				<MainTitle>
