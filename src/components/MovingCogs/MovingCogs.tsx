@@ -11,7 +11,6 @@ import { Dictionary } from 'types'
 
 type CogProps = {
     src: string
-    area: Array<Array<number>>
 }
 
 const all_images_query = graphql`
@@ -31,25 +30,15 @@ const CogsWrapper = tw.div`
     overflow-hidden
 `
 
-const Cog: React.FunctionComponent<CogProps> = ({src, area}) => {
+const Cog: React.FunctionComponent<CogProps> = ({src}) => {
     const [cog_element, loadCogElement] = useState(<></>)
 
     useEffect(() => {
-        const img = new Image();
-        img.src = src;
-
-        const min_x = area[0] + 0.25*img.width
-        const max_x = area[2] - 0.75*img.width
-
-        const min_y = area[1] + 0.25*img.height
-        const max_y = area[3] - 0.75*img.height
-
-        const generated_x = min_x + Math.random() * (max_x - min_x)
-        const generated_y = min_y + Math.random() * (max_y - min_y)
+        const generated_x = 0.1*window.innerWidth + Math.random() * (0.7*window.innerWidth)
+        const generated_y = 0.1*window.innerHeight + Math.random() * (0.7*window.innerHeight)
 
         const generated_duration = 25 + Math.floor(Math.random() * 100)
-        const generated_opacity = 0.075 + (Math.random() * 0.1)
-        const generated_scale = 1.0 + (Math.random() * 1.25)
+        const generated_opacity = 0.05 + (Math.random() * 0.075)
 
         const cogspin_frames = keyframes`
             from {transform: rotate(0deg);}
@@ -70,8 +59,6 @@ const Cog: React.FunctionComponent<CogProps> = ({src, area}) => {
                     position: 'fixed',
                     left: `${generated_x}px`,
                     bottom: `${generated_y}px`,
-                    width: `${img.width * generated_scale}px`,
-                    height: `${img.height * generated_scale}px`,
                     zIndex: -99,
                     opacity: `${generated_opacity}`,
                 }}
@@ -87,10 +74,10 @@ const Cog: React.FunctionComponent<CogProps> = ({src, area}) => {
 }
 
 const MovingCogs = () => {
-    const [cogs, loadCogs] = useState([])
+    const [cogs, loadCogs] = useState()
 
     const all_images_query_result = useStaticQuery(all_images_query)
-    const cogs_per_area = 1 
+    const number_of_cogs = 10
 
     useEffect(() => {
         const images_list = all_images_query_result.allFile.edges
@@ -102,44 +89,15 @@ const MovingCogs = () => {
             return current_list
         }, [])
 
-        const rendered_index_splash = document.getElementById('splash-wrapper')
-        const filled_area = rendered_index_splash?.getBoundingClientRect()
-        const available_areas = [
-            [0, 0, filled_area?.x, 0.25*window.innerHeight],
-            [0, 0.25*window.innerHeight, filled_area?.x, 0.5*window.innerHeight],
-            [0, 0.5*window.innerHeight, filled_area?.x, 0.75*window.innerHeight],
-            [0, 0.75*window.innerHeight, filled_area?.x, window.innerHeight],
-
-            [filled_area?.x, filled_area?.y + filled_area?.height, (filled_area?.x + 0.25*filled_area?.width), window.innerHeight],
-            [(filled_area?.x + 0.25*filled_area?.width), filled_area?.y + filled_area?.height, (filled_area?.x + 0.5*filled_area?.width), window.innerHeight],
-            [(filled_area?.x + 0.5*filled_area?.width), filled_area?.y + filled_area?.height, (filled_area?.x + 0.75*filled_area?.width), window.innerHeight],
-            [(filled_area?.x + 0.75*filled_area?.width), filled_area?.y + filled_area?.height, filled_area?.x + filled_area?.width, window.innerHeight],
-
-            [filled_area?.x , 0, (filled_area?.x + 0.25*filled_area?.width), filled_area?.y],
-            [(filled_area?.x + 0.25*filled_area?.width), 0, (filled_area?.x + 0.5*filled_area?.width), filled_area?.y],
-            [(filled_area?.x + 0.5*filled_area?.width), 0, (filled_area?.x + 0.75*filled_area?.width), filled_area?.y],
-            [(filled_area?.x + 0.75*filled_area?.width), 0, filled_area?.x + filled_area?.width, filled_area?.y],
-
-            [filled_area?.x + filled_area?.width, 0, window.innerWidth, 0.25*window.innerHeight],
-            [filled_area?.x + filled_area?.width, 0.25*window.innerHeight, window.innerWidth , 0.5*window.innerHeight],
-            [filled_area?.x + filled_area?.width, 0.5*window.innerHeight, window.innerWidth , 0.75*window.innerHeight],
-            [filled_area?.x + filled_area?.width, 0.75*window.innerHeight, window.innerWidth , window.innerHeight],
-        ]
-
-        let spawned_cogs: Array<JSX.Element> = [] 
-
-        available_areas.forEach((area) => {
-            const chosen_cogs = Array.from(Array(cogs_per_area).keys()).map(() => Math.floor(Math.random() * cogs_list.length))
-            spawned_cogs = spawned_cogs.concat(chosen_cogs.map((cog_id, cog_index) => <Cog src={cogs_list[cog_id]} area={area} key={`cog_${cog_index}`}/>))
-            console.log(area)
-        })
+        const chosen_cog_ids = Array.from(Array(number_of_cogs).keys()).map(() => Math.floor(Math.random() * cogs_list.length))
+        const spawned_cogs = chosen_cog_ids.map((cog_id, index) => <Cog src={cogs_list[cog_id]} key={`cog_${index}`}/>)
         loadCogs(spawned_cogs)
     }, [])
 
     return(
-        <CogsWrapper>
-            {cogs} 
-        </CogsWrapper>
+        <>
+            {cogs ? <CogsWrapper>{cogs}</CogsWrapper> : ''}
+        </>
     )
 }
 

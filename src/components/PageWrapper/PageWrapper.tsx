@@ -5,6 +5,7 @@ import tw from 'tailwind-styled-components'
 import PageHeader from './PageHeader'
 import PageFooter from './PageFooter'
 import PageContent from './PageContent'
+import MovingCogs from '@components/MovingCogs'
 
 type PageWrapperProps = {
     header: boolean,
@@ -14,18 +15,19 @@ type PageWrapperProps = {
 }
 
 const PageWrapperLayout = tw.main`
+    relative
     flex
     flex-col
     justify-center
     align-middle
     w-screen
-    h-auto
     m-0
 `
 
 const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = '', children }) => {
     return (
         <PageWrapperLayout className={extraClass}>
+            <MovingCogs/>
             {header ? <PageHeader/> : ''}
             <PageContent>
                 {children}

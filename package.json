@@ -34,7 +34,8 @@
     "react-loading-skeleton": "^3.1.0",
     "react-lorem-ipsum": "^1.4.10",
     "react-social-icons": "^5.13.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "three": "^0.140.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",

@@ -1,38 +1,73 @@
 import React from "react";
 import tw from 'tailwind-styled-components';
+import styled from 'styled-components'
 import { MDXRenderer } from "gatsby-plugin-mdx"
-import { Link } from "gatsby";
+import { graphql, Link, StaticQuery } from "gatsby";
 
+import Dictionary from 'types'
 import PageWrapper from "@components/PageWrapper"
 
 type BlogPostLayoutProps = {
-
+	pageContext: Dictionary<string> | Dictionary
 }
 
 const BlogPostLayoutWrapper = tw.article`
 `
 
-const FrontmatterWrapper = tw.div`
+const ThumbnailWrapper = styled.div`
+	position: relative;
+	display: flex;
+	padding: 2rem;
+	justify-content: space-between;
+	height: 15rem;
+	&::before {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		content: "";
+		width: 100%;
+		height: 100%;  
+		z-index: -1;
+		background-image: url(${props => props.thumbnail});
+	}
+`
+
+const InformationWrapper = tw.div`
 	flex
+	align-middle
 	justify-between
+	w-full
 `
 
 const PostTitle = tw.h1`
+	relative
 	font-display
 	font-bold
-	text-accent-600
+	text-secondary-100
 	text-5xl
 	mb-4
+	bg-primary-900
+	p-3
+	h-fit
+	top-8
 `
 
 const PostDate = tw.time`
+	mt-5
+	mr-5
+	w-max
+	h-max
 	font-sans
 	text-sm
 `
 
 const TagsWrapper = tw.menu`
 	flex
-	mb-10
+	mt-5
+	ml-5
+	mb-8
 	h-2
 `
 
@@ -59,31 +94,71 @@ const TagLink = tw(Link)`
 	hover:-translate-y-0.5
 `
 
+const FrontmatterSeparator = tw.hr`
+	relative
+	h-[0.1rem]
+	left-[1%]
+	w-[98%]
+	border-0
+	bg-primary-300
+	mb-4
+`
+
 const ContentWrapper = tw.main`
 	flex
 	flex-col
 	align-middle
 	justify-center
 	px-5
+	pt-3
+	pb-10
+	bg-secondary-500
 `
 
 const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageContext: context}) => {
+	const thumbnail_query = graphql`
+		query PostsThumbnailQuery {
+			allFile(filter: {relativePath: {regex: "/thumbnails/posts/"}}) {
+				edges {
+					node {
+						publicURL
+					}
+				}
+			}
+		}
+	`
 	return(
-		<PageWrapper>
-			<BlogPostLayoutWrapper>
-				<FrontmatterWrapper>
-					<PostTitle>{context.frontmatter.title}</PostTitle>
-					<PostDate>Date published: {context.frontmatter.date}</PostDate>
-				</FrontmatterWrapper>
-				<TagsWrapper>
-					<TagsLabel>Tags:</TagsLabel>
-					{context.frontmatter.tags.map((tag) => <TagLink to={`/posts/_by-tag/${tag}`} key={tag}>{tag}</TagLink>)}
-				</TagsWrapper>
-				<ContentWrapper>
-					<MDXRenderer>{context.content}</MDXRenderer>
-				</ContentWrapper>
-			</BlogPostLayoutWrapper>
-		</PageWrapper>
+		<StaticQuery
+			query={thumbnail_query}
+			render={(query_result: Dictionary<string>) => {
+				const thumbnail_match = query_result.allFile.edges.map(
+					(edge: Dictionary<string>) => {
+						if (edge.node.publicURL.includes(context.frontmatter.thumbnail)){
+							return edge.node.publicURL
+						} 
+					} 
+				)[0]
+				return(
+					<PageWrapper>
+						<BlogPostLayoutWrapper>
+							<ThumbnailWrapper thumbnail={thumbnail_match}>
+								<PostTitle>{context.frontmatter.title}</PostTitle>
+							</ThumbnailWrapper>
+							<InformationWrapper>
+								<TagsWrapper>
+									<TagsLabel>Tags:</TagsLabel>
+									{context.frontmatter.tags.map((tag) => <TagLink to={`/posts/_by-tag/${tag}`} key={tag}>{tag}</TagLink>)}
+								</TagsWrapper>
+								<PostDate>Date published: {context.frontmatter.date}</PostDate>
+							</InformationWrapper>
+							<FrontmatterSeparator/>
+							<ContentWrapper>
+								<MDXRenderer>{context.content}</MDXRenderer>
+							</ContentWrapper>
+						</BlogPostLayoutWrapper>
+					</PageWrapper>
+				)
+		}}/>
 	)
 }
 

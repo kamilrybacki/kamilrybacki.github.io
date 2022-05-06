@@ -7,9 +7,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  .profpic-shrink {
-    clip-path: circle(45%);
-  }
   .inherit-w {
     width: inherit;
   }
