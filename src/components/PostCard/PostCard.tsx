@@ -75,21 +75,22 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
         <StaticQuery
           query={miniature_query}
 		  render = {(query_result) => {
-			const miniature_match = query_result.allFile.edges.map(
+			const miniature_matches = query_result.allFile.edges.map(
 				(edge: Dictionary<string>) => {
 					if (edge.node.publicURL.includes(data.frontmatter.thumbnail)
 						&& edge.node.absolutePath.includes(type)){
-						return edge.node.publicURL
+							console.log(edge.node.publicURL)
+							return edge.node.publicURL
 					} 
 				} 
-			)[0]
+			).filter( Boolean )
 			return(
 				<CardWrapper to={`/posts/${data.slug}`}>
 					<FrontmatterWrapper>
 						<PostTitle>{data.frontmatter.title}</PostTitle>
 						<PostDate>{data.frontmatter.date}</PostDate>
 					</FrontmatterWrapper>
-					<ThumbnailMiniature src={miniature_match}/>
+					<ThumbnailMiniature src={miniature_matches[0]}/>
 					<PostExcerpt>{data.excerpt}</PostExcerpt>
 				</CardWrapper>
 			)

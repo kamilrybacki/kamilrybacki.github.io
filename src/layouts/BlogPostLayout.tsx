@@ -86,7 +86,8 @@ const TagLink = tw(Link)`
 	py-0.25
 	rounded-sm
 	bg-primary-100
-	font-display
+	font-mono
+	tracking-tighter
 	text-sm
 	text-primary-600
 
@@ -147,7 +148,7 @@ const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageConte
 							<InformationWrapper>
 								<TagsWrapper>
 									<TagsLabel>Tags:</TagsLabel>
-									{context.frontmatter.tags.map((tag) => <TagLink to={`/posts/_by-tag/${tag}`} key={tag}>{tag}</TagLink>)}
+									{context.frontmatter.tags.map((tag) => <TagLink key={tag}>{tag}</TagLink>)}
 								</TagsWrapper>
 								<PostDate>Date published: {context.frontmatter.date}</PostDate>
 							</InformationWrapper>

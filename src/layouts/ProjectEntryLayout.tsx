@@ -1,8 +1,10 @@
 import React from "react";
+import {useEffect, useState} from "react";
+
 import tw from 'tailwind-styled-components';
-import styled from 'styled-components'
 import { MDXRenderer } from "gatsby-plugin-mdx"
-import { graphql, Link, StaticQuery } from "gatsby";
+import { graphql, StaticQuery } from "gatsby";
+import Skeleton from 'react-loading-skeleton'
 
 import Dictionary from 'types'
 import PageWrapper from "@components/PageWrapper"
@@ -20,7 +22,7 @@ type StackPresentationProps = {
 }
 
 const ProjectEntryLayoutWrapper = tw.article`
-	w-fit
+	w-full
 `
 
 const ProjectPresentationHero = tw.div`
@@ -29,14 +31,19 @@ const ProjectPresentationHero = tw.div`
 	align-middle
 	w-full
 	gap-4
+	h-fit
 `
 
 const BigPicture = tw.img`
+	relative
+	top-10
 	bg-secondary-500
 	border-8
 	border-primary-500
-	max-h-[30rem]
-	max-w-[30rem]
+	max-w-lg
+	h-fit
+	hover:-translate-x-1
+	hover:-translate-y-1
 `
 
 const ContentWrapper = tw.main`
@@ -53,29 +60,33 @@ const ContentWrapper = tw.main`
 `
 
 const SmallerGalleryWrapper = tw.div`
+	flex
+	flex-col
+	gap-4
 	w-fit
+	h-fit
 `
 
 const SmallPicture = tw.img`
-	h-fit
-	w-fit
 	border-4
 	border-primary-500
-	max-h-[20rem]
-	max-w-[20rem]
+	max-w-md
+	h-fit
+	hover:-translate-x-1
+	hover:-translate-y-1
 `
 
 const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}) => {
 	return(
 		<SmallerGalleryWrapper>
-			{pictures.map((picture: string) => <SmallPicture src={picture}/>)}
+			{pictures.map((picture: string, index: number) => <SmallPicture src={picture} key={`smpic_${index}`}/>)}
 		</SmallerGalleryWrapper>
 	)
 }
 
-const ProjectMetadata = tw.p`
+const ProjectMetadata = tw.div`
 	relative
-	top-40
+	top-20
 	flex
 	flex-col
 	w-1/4
@@ -89,21 +100,70 @@ const PostTitle = tw.h1`
 	text-5xl
 	mb-4
 	bg-primary-900
-	p-3
+	px-4
+	py-2
 	h-fit
 	w-fit
 	top-8
 `
 
 const StackPresentationWrapper = tw.div`
+	flex
 	mr-10
+	mt-3
+	bg-secondary-500
+	p-4
+	border-2
+	rounded-lg
+	border-primary-500
+	h-48
+	overflow-x-hidden
+	overflow-y-scroll
+	overscroll-contain
+	scrollbar-thin
+
+`
+
+const StackIcon = tw.img`
+	w-8
+	h-8
+	mr-5
 `
 
 const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({techs}) => {
+	const [icons, setIcons] = useState([])
+
+	useEffect(()=>{
+		fetch('https://api.github.com/repos/get-icon/geticon/branches/master').then((response) => response.json())
+		.then((master_data: Dictionary) => master_data.commit.sha).then((latest_sha: string) => {
+			return fetch(`https://api.github.com/repos/get-icon/geticon/git/trees/${latest_sha}`).then(response => response.json())
+			.then((contents: Dictionary) => {
+				const master_tree = contents.tree
+				const icons_tree_url = master_tree.filter((tree_node: Dictionary) => tree_node.path == 'icons')[0].url
+				return fetch(icons_tree_url).then(response => response.json()).then((contents: Dictionary) => contents.tree)
+				.then((icons_tree_data: Array<Dictionary>) => {
+					let found_icons: Array<string> = []
+					icons_tree_data.forEach((icon_entry: Dictionary) => {
+						const icon_name = icon_entry.path.replace('.svg','').replace('-icon','')
+						if (techs.includes(icon_name)) {
+							if (found_icons.includes(`https://raw.githubusercontent.com/get-icon/geticon/master/icons/${icon_name}.svg`)) {
+								const index = found_icons.indexOf(`https://raw.githubusercontent.com/get-icon/geticon/master/icons/${icon_name}.svg`)
+								found_icons[index] =`https://raw.githubusercontent.com/get-icon/geticon/master/icons/${icon_name}-icon.svg` 
+							}
+							else {
+								found_icons.push(`https://raw.githubusercontent.com/get-icon/geticon/master/icons/${icon_name}.svg`)
+							}
+						}
+					})
+					setIcons(found_icons)
+				})
+			})
+		})
+	}, [])
+
 	return(
 		<StackPresentationWrapper>
-			<hr className="border-0 h-1 mb-4 bg-primary-500"/>
-			{techs.map((tech) => <h1>{tech.toUpperCase()}</h1>)}
+			{icons.map((icon_url, index) => <StackIcon key={`stack_${index}`} src={icon_url}/>) || <Skeleton/>}
 		</StackPresentationWrapper>
 	)
 }
@@ -133,11 +193,12 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 					} 
 				)
 				return(
-					<PageWrapper extraClass='w-fit'>
+					<PageWrapper extraClass='w-full'>
 						<ProjectEntryLayoutWrapper>
 							<ProjectPresentationHero>
 								<ProjectMetadata>
 									<PostTitle>{context.frontmatter.title}</PostTitle>
+									<p className="mt-1 underline text-lg font-mono tracking-tighter font-bold">Tech Stack:</p>
 									<StackPresentation techs={context.frontmatter.techs}/>
 								</ProjectMetadata>
 								<BigPicture src={thumbnail_matches[0]}/>
