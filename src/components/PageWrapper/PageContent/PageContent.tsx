@@ -9,8 +9,8 @@ const PageContentWrapper = tw.section`
 	relative
 	flex
 	flex-col
-	w-full
-	h-full
+	w-fit
+	h-fit
 	justify-center
 	align-middle
 	px-20

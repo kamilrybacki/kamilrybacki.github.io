@@ -7,13 +7,13 @@ import ProfPic from '@images/prof_pic.svg'
 const IndexSplashWrapper = tw.main`
 	relative
 	top-56
+	left-[25%]
 	flex
 	justify-center
 	align-middle
 	mb-36
 	p-0
-	w-auto
-	scale-125
+	w-[50%]
 `
 
 const TitleWithNavbar = tw.header`

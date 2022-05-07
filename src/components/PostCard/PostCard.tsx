@@ -77,7 +77,6 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
 		  render = {(query_result) => {
 			const miniature_match = query_result.allFile.edges.map(
 				(edge: Dictionary<string>) => {
-					console.log(edge)
 					if (edge.node.publicURL.includes(data.frontmatter.thumbnail)
 						&& edge.node.absolutePath.includes(type)){
 						return edge.node.publicURL

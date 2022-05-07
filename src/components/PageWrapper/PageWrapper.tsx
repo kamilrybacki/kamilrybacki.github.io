@@ -20,8 +20,8 @@ const PageWrapperLayout = tw.main`
     flex-col
     justify-center
     align-middle
-    w-screen
-    m-0
+    w-full
+    m-auto
 `
 
 const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = '', children }) => {
