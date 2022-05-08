@@ -42,7 +42,8 @@ const GalleryWrapper = tw.section`
 	flex
 	flex-row
 	gap-5
-	overflow-y-scroll
+	overflow-x-scroll
+	md:overflow-hidden
 `
 
 const BigPicture = tw.img`
