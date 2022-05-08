@@ -35,10 +35,10 @@ const ProjectPresentationHero = tw.div`
 
 const GalleryWrapper = tw.section`
 	flex
-	flex-row
+	flex-nowrap
 	gap-5
 	overflow-x-scroll
-	scrollbar-thin
+	overflow-y-hidden
 
 	md:overflow-hidden
 `
@@ -48,7 +48,7 @@ const BigPicture = tw.img`
 	mb-4
 	border-8
 	border-primary-500
-	max-w-2
+	max-w-sm
 	h-fit
 
 	md:mb-0
@@ -71,15 +71,16 @@ const ContentWrapper = tw.main`
 `
 
 const SmallerGalleryWrapper = tw.div`
+	relative
 	flex
 	flex-row
+	flex-nowrap
+	flex-shrink-0
 	align-middle
 	justify-center
 	m-auto
 	gap-4
-	w-fit
-	h-fit
-	overflow-x-scroll
+	h-full
 	scrollbar-thin
 
 	md:overflow-x-hidden
@@ -90,9 +91,7 @@ const SmallerGalleryWrapper = tw.div`
 const SmallPicture = tw.img`
 	border-4
 	border-primary-500
-	max-w-2
-	h-fit
-	m-auto
+	max-w-sm
 
 	md:max-w-md
 `
@@ -126,6 +125,7 @@ const PostTitle = tw.h1`
 	py-2
 	h-fit
 	w-fit
+	max-w-full
 	md:top-8
 `
 

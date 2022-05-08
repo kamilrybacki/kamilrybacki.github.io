@@ -16,7 +16,7 @@ const StackPresentationWrapper = tw.div`
 	flex-auto
 	justify-between
 	bg-secondary-500
-	px-3
+	p-3
 	my-5
 	border-2
 	rounded-lg
