@@ -46,12 +46,17 @@ const PostTitle = tw.h1`
 	font-display
 	font-bold
 	text-secondary-100
-	text-5xl
+	text-3xl
 	mb-4
 	bg-primary-900
 	p-3
 	h-fit
-	top-8
+	-top-12
+	-left-12
+
+	md:left-0
+	md:top-0
+	md:text-5xl
 `
 
 const PostDate = tw.time`

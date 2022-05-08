@@ -11,21 +11,26 @@ type PostCardProps = {
 
 const CardWrapper = tw(Link)`
 	p-5
-	w-[25rem]
-	h-[25rem]
 	border-2
 	duration-500
 	shadow-[0.5rem_0.5rem_0_rgb(0,0,0)]
+	bg-secondary-500
+
 	hover:translate-x-[0.25rem]
 	hover:translate-y-[0.25rem]
 	hover:shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
-	bg-secondary-500
+	hover:child:shadow-none
+	hover:child:border-0
+	hover:child:duration-100
+
+	md:w-1/3
 `
 
 const FrontmatterWrapper = tw.div`
 	flex
 	justify-between
 	align-middle
+	mb-4
 `
 
 const PostTitle = tw.h1`
@@ -45,7 +50,9 @@ const PostDate = tw.span`
 const ThumbnailMiniature = tw.img`
 	mt-1
 	mb-3
-	border-3
+	border-b-[0.25rem]
+	border-r-[0.25rem]
+	shadow-[-0.1rem_-0.1rem_0_rgb(0,0,0)]
 `
 
 const PostExcerpt = tw.p`

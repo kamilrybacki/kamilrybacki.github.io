@@ -12,8 +12,9 @@ const SocialMediaBarWrapper = tw.footer`
     align-middle
     invisible
     w-0
-    md:w-fit
-    md:visible
+
+    sm:w-fit
+    sm:visible
 `
 
 const SocialMediaBar = () => {

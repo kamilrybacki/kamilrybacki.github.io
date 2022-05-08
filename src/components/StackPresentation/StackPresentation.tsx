@@ -28,18 +28,20 @@ const StackPresentationWrapper = tw.div`
 	w-[90%]
 	mx-auto
 
-	md:mt-3
-	md:mr-10
-	md:py-6
+	lg:mt-3
+	lg:mr-10
+	lg:py-6
 `
 
 const StackIcon = tw.img`
 	my-1
 	w-8
 	h-8
-	md:w-10
-	md:h-10
-	mx-3
+
+	md:mx-1
+	lg:w-10
+	lg:h-10
+	lg:mx-3
 `
 
 const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({techs}) => {

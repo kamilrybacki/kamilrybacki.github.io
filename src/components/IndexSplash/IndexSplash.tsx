@@ -8,12 +8,12 @@ const IndexSplashWrapper = tw.main`
 	w-fit
 	mx-auto
 	
-	md:flex
-	md:flex-row
-	md:justify-center
-	md:align-middle
-	md:p-0
-	md:top-56
+	lg:flex
+	lg:flex-row
+	lg:justify-center
+	lg:align-middle
+	lg:p-0
+	lg:top-56
 `
 
 const TitleWithNavbar = tw.header`
@@ -24,7 +24,7 @@ const TitleWithNavbar = tw.header`
 	w-full
 	m-auto
 
-	md:mx-10
+	lg:mx-10
 `
 
 const Separator = tw.hr`
@@ -33,8 +33,8 @@ const Separator = tw.hr`
 	border-0
 	bg-primary-500
 
-	md:h-2
-	md:-ml-1
+	lg:h-2
+	lg:-ml-1
 `
 
 const MainTitle = tw.title`
@@ -44,22 +44,26 @@ const MainTitle = tw.title`
 	gap-3
 	mt-5
 
-	md:px-5
+	lg:px-5
 `
 
 const MainTitleWord = tw.h1`
 	text-4xl
-	md:text-8xl
 	text-primary-500
 	font-bold
 
 	first-letter:text-accent-400
 	first-letter:text-5xl
-	md:first-letter:text-9xl
+
+	md:text-6xl
+	md:first-letter:text-8xl
+
+	lg:text-8xl
+	lg:first-letter:text-9xl
 `
 
 const SubTitle = tw.h3`
-	text-md
+	text-lg
 	text-center
 	py-4
 	mx-auto
@@ -77,8 +81,8 @@ const IndexProfilePicture = tw.img`
 	w-2/3
 	m-auto
 
-	md:w-1/3
-
+	md:w-1/2
+	lg:w-1/3
 `
 
 const IndexSplash = () => {

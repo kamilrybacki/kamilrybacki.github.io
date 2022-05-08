@@ -48,10 +48,14 @@ const ProjectPresentationHero = tw.div`
 	gap-4
 	h-fit
 
+	md:h-1/3
 	md:flex-row
 	md:justify-center
 	md:align-middle
-	md:gap-20
+	md:gap-10
+	
+	lg:h-fit
+	lg:gap-20
 `
 
 const GalleryWrapper = tw.section`
@@ -61,7 +65,16 @@ const GalleryWrapper = tw.section`
 	overflow-x-scroll
 	overflow-y-hidden
 
-	md:overflow-hidden
+	md:flex-col
+	md:gap-0
+	md:overflow-x-hidden
+	md:overflow-y-scroll
+	md:w-[50vw]
+
+	lg:w-fit
+	lg:flex-row
+	lg:gap-5
+	lg:overflow-hidden
 `
 
 const BigPicture = tw.img`
@@ -69,13 +82,15 @@ const BigPicture = tw.img`
 	mb-4
 	border-8
 	border-primary-500
-	max-w-sm
+	w-screen
 	h-fit
 
+	md:w-full
 	md:mb-0
-	md:max-w-lg
-	md:relative
-	md:top-10
+
+	lg:max-w-lg
+	lg:relative
+	lg:top-10
 `
 
 const ContentWrapper = tw.main`
@@ -104,6 +119,8 @@ const SmallerGalleryWrapper = tw.div`
 	h-full
 	scrollbar-thin
 
+	md:h-fit
+	md:mt-14
 	md:overflow-x-hidden
 	md:overflow-y-scroll
 	md:flex-col
@@ -112,9 +129,8 @@ const SmallerGalleryWrapper = tw.div`
 const SmallPicture = tw.img`
 	border-4
 	border-primary-500
-	max-w-sm
-
-	md:max-w-md
+	w-screen
+	lg:w-[25vw]
 `
 
 const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}) => {
@@ -128,7 +144,6 @@ const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}
 const ProjectMetadata = tw.div`
 	flex
 	flex-col
-	h-full
 
 	md:relative
 	md:w-1/4
@@ -136,13 +151,16 @@ const ProjectMetadata = tw.div`
 
 const Abstract = tw.p`
 	font-body
-	text-2xl
+	text-xl
 	w-full
 	mb-5
 
-	mb:overflow-y-scroll
+	
+	md:overflow-y-scroll
 	md:scrollbar-thin
-	md:h-40
+	md:h-20
+	lg-text-2xl
+	lg:h-40
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
@@ -181,7 +199,7 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
 								</GalleryWrapper>
 								<ProjectMetadata>
-									<p className="my-5 mx-auto text-2xl md:text-5xl font-display font-bold">Project info</p>
+									<p className="my-5 mx-auto text-2xl md:my-3 md:text-3xl lg:text-5xl font-display font-bold">Project info</p>
 									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
 									<Abstract>{context.frontmatter.abstract}</Abstract>
 									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>
