@@ -33,7 +33,7 @@ const PostsPage = () => {
 	return(
     <>
       <PageWrapper>
-        <SubpageTitle>Posts</SubpageTitle>
+        <SubpageTitle>My projects</SubpageTitle>
         <CardsWrapper>
           <StaticQuery
             query={posts_query}
