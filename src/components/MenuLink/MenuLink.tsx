@@ -9,14 +9,14 @@ type MenuLinkProps = {
     children: JSX.Element | JSX.Element[]
 }
 
-const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size = 'md', bold = true, pop = false, children}) => {
+const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true, pop = false, children}) => {
     const tailwind_styling = `
-                flex items-center justify-center w-max my-6 m-auto h-12 align-middle 
+                block w-fit my-2 mx-auto h-fit text-${size}xl
                 ${pop ? 'text-accent-500 underline decoration-primary-300 decoration-2 underline-offset-[0.2rem] decoration-dotted': 'text-primary-500'} 
-                text-${size} ${bold ? 'font-bold' : ''}
+                ${bold ? 'font-bold' : ''}
                 hover:translate-x-1 hover:translate-y-1 hover:rotate-[1deg]
                 transition-all ease-in-out duration-500
-                md:mx-4 md:my-4
+                md:mx-4
     `
     return(
         <Link 

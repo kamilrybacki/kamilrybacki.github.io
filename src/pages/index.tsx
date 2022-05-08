@@ -9,7 +9,7 @@ const IndexPage = () => {
       <PageWrapper 
         header={false} 
         footer={false} 
-        extraClass='h-max w-max'
+        extraClass='h-max w-max flex flex-col justify-center child:p-0'
       >
         <IndexSplash/>
       </PageWrapper>

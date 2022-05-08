@@ -5,16 +5,15 @@ import NavbarMenu from '@components/NavbarMenu';
 import ProfPic from '@images/prof_pic.svg'
 
 const IndexSplashWrapper = tw.main`
-	relative
-	w-full
-	m-auto
-	justify-center
-	align-middle
-	flex
-	flex-col
-	top-56
+	w-fit
+	mx-auto
+	
+	md:flex
 	md:flex-row
+	md:justify-center
+	md:align-middle
 	md:p-0
+	md:top-56
 `
 
 const TitleWithNavbar = tw.header`
@@ -22,42 +21,50 @@ const TitleWithNavbar = tw.header`
 	flex-col
 	gap-0
 	justify-center
-	w-fit
+	w-full
 	m-auto
+
+	md:mx-10
 `
 
 const Separator = tw.hr`
-	-ml-1
 	p-0
-	h-2
+	h-1
 	border-0
 	bg-primary-500
+
+	md:h-2
+	md:-ml-1
 `
 
 const MainTitle = tw.title`
-	font-display
 	flex
+	font-display
 	mx-auto
 	gap-3
 	mt-5
+
+	md:px-5
 `
 
 const MainTitleWord = tw.h1`
-	text-7xl
+	text-4xl
 	md:text-8xl
 	text-primary-500
 	font-bold
 
 	first-letter:text-accent-400
-	first-letter:text-8xl
+	first-letter:text-5xl
 	md:first-letter:text-9xl
 `
 
 const SubTitle = tw.h3`
-	text-2xl
+	text-md
 	text-center
 	py-4
 	mx-auto
+
+	md:text-2xl
 	md:child:hidden
 `
 
@@ -67,8 +74,9 @@ const IndexProfilePicture = tw.img`
 	ring-8
 	ring-primary-500
 	bg-secondary-500
+	w-2/3
 	m-auto
-	w-1/2
+
 	md:w-1/3
 
 `
