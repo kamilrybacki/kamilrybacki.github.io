@@ -22,6 +22,7 @@ const posts_query = graphql`
           thumbnail
           gallery
           techs
+          abstract
         }
         slug
       }

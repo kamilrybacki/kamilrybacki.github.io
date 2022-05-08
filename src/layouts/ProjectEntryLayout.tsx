@@ -21,6 +21,26 @@ const ProjectEntryLayoutWrapper = tw.article`
 	w-full
 `
 
+const PostTitle = tw.h1`
+	font-display
+	font-bold
+	text-primary-500
+	text-3xl
+	mb-8
+	bg-primary-100
+	px-4
+	py-2
+	h-fit
+	text-center
+
+	max-w-full
+	md:text-6xl
+	md:py-5
+	md:top-8
+	md:mb-12
+	md:text-left
+`
+
 const ProjectPresentationHero = tw.div`
 	flex
 	flex-col
@@ -31,6 +51,7 @@ const ProjectPresentationHero = tw.div`
 	md:flex-row
 	md:justify-center
 	md:align-middle
+	md:gap-20
 `
 
 const GalleryWrapper = tw.section`
@@ -110,23 +131,18 @@ const ProjectMetadata = tw.div`
 	h-full
 
 	md:relative
-	md:top-20
 	md:w-1/4
 `
 
-const PostTitle = tw.h1`
-	font-display
-	font-bold
-	text-secondary-100
-	text-4xl
-	mb-4
-	bg-primary-900
-	px-4
-	py-2
-	h-fit
-	w-fit
-	max-w-full
-	md:top-8
+const Abstract = tw.p`
+	font-body
+	text-2xl
+	w-full
+	mb-5
+
+	mb:overflow-y-scroll
+	md:scrollbar-thin
+	md:h-40
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
@@ -158,17 +174,21 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 				return(
 					<PageWrapper extraClass='w-full'>
 						<ProjectEntryLayoutWrapper>
+							<PostTitle>{context.frontmatter.title}</PostTitle>
 							<ProjectPresentationHero>
-								<ProjectMetadata>
-									<PostTitle>{context.frontmatter.title}</PostTitle>
-									<p className="mt-1 underline text-sm md:text-lg font-mono tracking-tighter font-bold">Tech Stack:</p>
-									<StackPresentation techs={context.frontmatter.techs}/>
-								</ProjectMetadata>
 								<GalleryWrapper>
 									<BigPicture src={thumbnail_matches[0]}/>
 									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
 								</GalleryWrapper>
+								<ProjectMetadata>
+									<p className="my-5 mx-auto text-2xl md:text-5xl font-display font-bold">Project info</p>
+									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
+									<Abstract>{context.frontmatter.abstract}</Abstract>
+									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>
+									<StackPresentation techs={context.frontmatter.techs}/>
+								</ProjectMetadata>
 							</ProjectPresentationHero>
+							<p className="mt-7 underline text-2xl md:text-4xl font-display tracking-tighter font-bold">The whole story</p>
 							<ContentWrapper>
 								<MDXRenderer>{context.content}</MDXRenderer>
 							</ContentWrapper>

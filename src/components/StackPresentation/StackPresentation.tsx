@@ -20,12 +20,12 @@ const StackPresentationWrapper = tw.div`
 	my-5
 	border-2
 	rounded-lg
-	border-primary-500
+	border-primary-100
 	overflow-x-hidden
 	overflow-y-scroll
 	overscroll-contain
 	scrollbar-thin
-	w-4/5
+	w-[90%]
 	mx-auto
 
 	md:mt-3

@@ -38,6 +38,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                         thumbnail
                         gallery
                         techs
+                        abstract
                     }
                     slug
                     timeToRead
@@ -84,7 +85,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                     time: node.timeToRead,
                     thumbnail: node.frontmatter.thumbnail,
                     gallery: node.frontmatter.gallery,
-                    techs: node.frontmatter.techs.split(' ') || []
+                    techs: node.frontmatter.techs.split(' ') || [],
+                    abstract: node.frontmatter.abstract
                 },
                 content: node.body,
         }})
