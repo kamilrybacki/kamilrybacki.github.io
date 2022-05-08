@@ -21,8 +21,8 @@ const NavbarMenuWrapper = tw.nav`
 const NavbarMenu = () => {
 	return(
 		<NavbarMenuWrapper>
-			<MenuLink to="/projects" size="5" pop={true}>Projects</MenuLink>
-			<MenuLink to="/contact" size="4">Contact me</MenuLink>
+			<MenuLink to="/projects" size="4" pop={true}>Projects</MenuLink>
+			<MenuLink to="/contact" size="3">Contact me</MenuLink>
 			<MenuLink to="/posts" size="2" bold={false}>Blog</MenuLink>
 			<MenuLink to="/about" size="2" bold={false}>About me</MenuLink>
 		</NavbarMenuWrapper>
