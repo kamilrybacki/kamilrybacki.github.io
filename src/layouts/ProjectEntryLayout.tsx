@@ -82,6 +82,7 @@ const SmallerGalleryWrapper = tw.div`
 	w-fit
 	h-fit
 	md:flex-col
+	overflow-y-hidden
 `
 
 const SmallPicture = tw.img`
