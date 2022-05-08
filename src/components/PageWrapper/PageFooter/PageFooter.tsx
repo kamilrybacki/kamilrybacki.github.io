@@ -15,12 +15,17 @@ const PageFooterWrapper = tw.footer`
 	flex
 	align-middle
 	justify-between
-	py-4
-	px-10
+	px-5
+	py-2
+	md:py-4
+	md:px-10
 `
 
 const PageFooterCopyright = tw.h3`
 	font-sans
+	origin-left
+	scale-75
+	md:scale-100
 `
 
 const PageFooter: React.FunctionComponent<PageFooterProps> = () => {

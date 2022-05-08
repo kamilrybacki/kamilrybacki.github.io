@@ -6,18 +6,14 @@ import tw from 'tailwind-styled-components'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '/tailwind.config.js'
 
-const MonochromeSocialIcon: React.FunctionComponent<SocialIconProps> = (url) => {
-    return(
-        <SocialIcon 
-            url={url}
-        />
-    )
-}
-
 const SocialMediaBarWrapper = tw.footer`
     flex
     justify-between
     align-middle
+    invisible
+    w-0
+    md:w-fit
+    md:visible
 `
 
 const SocialMediaBar = () => {

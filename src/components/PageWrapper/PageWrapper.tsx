@@ -21,6 +21,7 @@ const PageWrapperLayout = tw.main`
     justify-center
     align-middle
     w-full
+    h-full
     m-auto
 `
 

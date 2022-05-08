@@ -6,14 +6,15 @@ import ProfPic from '@images/prof_pic.svg'
 
 const IndexSplashWrapper = tw.main`
 	relative
-	top-56
-	left-[25%]
-	flex
+	w-full
+	m-auto
 	justify-center
 	align-middle
-	mb-36
-	p-0
-	w-[50%]
+	flex
+	flex-col
+	top-56
+	md:flex-row
+	md:p-0
 `
 
 const TitleWithNavbar = tw.header`
@@ -21,48 +22,55 @@ const TitleWithNavbar = tw.header`
 	flex-col
 	gap-0
 	justify-center
+	w-fit
+	m-auto
 `
 
 const Separator = tw.hr`
 	-ml-1
 	p-0
 	h-2
-	w-full
+	border-0
 	bg-primary-500
 `
 
 const MainTitle = tw.title`
 	font-display
 	flex
-	mb-0
-	py-0
-	px-8
-	gap-6
+	mx-auto
+	gap-3
+	mt-5
 `
 
 const MainTitleWord = tw.h1`
-	text-8xl
+	text-7xl
+	md:text-8xl
 	text-primary-500
 	font-bold
 
 	first-letter:text-accent-400
-	first-letter:text-9xl
+	first-letter:text-8xl
+	md:first-letter:text-9xl
 `
 
 const SubTitle = tw.h3`
 	text-2xl
 	text-center
-	my-4
-	px-12
+	py-4
+	mx-auto
+	md:child:hidden
 `
 
 const IndexProfilePicture = tw.img`
 	p-0
-	m-0
 	rounded-full
 	ring-8
 	ring-primary-500
 	bg-secondary-500
+	m-auto
+	w-1/2
+	md:w-1/3
+
 `
 
 const IndexSplash = () => {
@@ -74,7 +82,7 @@ const IndexSplash = () => {
 					<MainTitleWord>Kamil</MainTitleWord> 
 					<MainTitleWord>Rybacki</MainTitleWord>
 				</MainTitle>
-				<SubTitle>Personal portfolio & tech blogging thingamajig</SubTitle>
+				<SubTitle>Personal portfolio &<br/> tech blogging thingamajig</SubTitle>
 				<Separator/>
 				<NavbarMenu/>
 			</TitleWithNavbar>

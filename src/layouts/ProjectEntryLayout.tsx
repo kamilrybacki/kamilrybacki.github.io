@@ -5,6 +5,7 @@ import tw from 'tailwind-styled-components';
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, StaticQuery } from "gatsby";
 import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import Dictionary from 'types'
 import PageWrapper from "@components/PageWrapper"
@@ -27,23 +28,35 @@ const ProjectEntryLayoutWrapper = tw.article`
 
 const ProjectPresentationHero = tw.div`
 	flex
-	justify-center
-	align-middle
+	flex-col
 	w-full
 	gap-4
 	h-fit
+
+	md:flex-row
+	md:justify-center
+	md:align-middle
+`
+
+const GalleryWrapper = tw.section`
+	flex
+	flex-row
+	gap-5
+	overflow-y-scroll
 `
 
 const BigPicture = tw.img`
-	relative
-	top-10
 	bg-secondary-500
+	mb-4
 	border-8
 	border-primary-500
-	max-w-lg
+	max-w-sm
 	h-fit
-	hover:-translate-x-1
-	hover:-translate-y-1
+
+	md:mb-0
+	md:max-w-lg
+	md:relative
+	md:top-10
 `
 
 const ContentWrapper = tw.main`
@@ -61,19 +74,24 @@ const ContentWrapper = tw.main`
 
 const SmallerGalleryWrapper = tw.div`
 	flex
-	flex-col
+	flex-row
+	align-middle
+	justify-center
+	m-auto
 	gap-4
 	w-fit
 	h-fit
+	md:flex-col
 `
 
 const SmallPicture = tw.img`
 	border-4
 	border-primary-500
-	max-w-md
+	max-w-sm
 	h-fit
-	hover:-translate-x-1
-	hover:-translate-y-1
+	m-auto
+
+	md:max-w-md
 `
 
 const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}) => {
@@ -85,49 +103,57 @@ const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}
 }
 
 const ProjectMetadata = tw.div`
-	relative
-	top-20
 	flex
 	flex-col
-	w-1/4
 	h-full
+
+	md:relative
+	md:top-20
+	md:w-1/4
 `
 
 const PostTitle = tw.h1`
 	font-display
 	font-bold
 	text-secondary-100
-	text-5xl
+	text-4xl
 	mb-4
 	bg-primary-900
 	px-4
 	py-2
 	h-fit
 	w-fit
-	top-8
+	md:top-8
 `
 
 const StackPresentationWrapper = tw.div`
 	flex
-	mr-10
-	mt-3
+	flex-wrap
+	flex-auto
+	justify-between
 	bg-secondary-500
-	p-4
+	px-3
+	my-5
 	border-2
 	rounded-lg
 	border-primary-500
-	h-48
 	overflow-x-hidden
 	overflow-y-scroll
 	overscroll-contain
 	scrollbar-thin
 
+	md:mt-3
+	md:mr-10
+	md:py-6
 `
 
 const StackIcon = tw.img`
-	w-8
-	h-8
-	mr-5
+	my-1
+	w-5
+	h-5
+	md:w-10
+	md:h-10
+	mx-3
 `
 
 const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({techs}) => {
@@ -163,12 +189,15 @@ const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({tec
 
 	return(
 		<StackPresentationWrapper>
-			{icons.map((icon_url, index) => <StackIcon key={`stack_${index}`} src={icon_url}/>) || <Skeleton/>}
+			{icons.map((icon_url, index) => {
+				return(<StackIcon key={`stack_${index}`} src={icon_url} alt={icon_url.split('/').at(-1).replace('.svg','')}/>)
+			}) || <Skeleton count={2}/>}
 		</StackPresentationWrapper>
 	)
 }
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
+
 	const project_gallery_query = graphql`
 		query ProjectsThumbnailQuery {
 			allFile(filter: {relativePath: {regex: "/galleries/"}}) {
@@ -198,11 +227,13 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 							<ProjectPresentationHero>
 								<ProjectMetadata>
 									<PostTitle>{context.frontmatter.title}</PostTitle>
-									<p className="mt-1 underline text-lg font-mono tracking-tighter font-bold">Tech Stack:</p>
+									<p className="mt-1 underline text-sm md:text-lg font-mono tracking-tighter font-bold">Tech Stack:</p>
 									<StackPresentation techs={context.frontmatter.techs}/>
 								</ProjectMetadata>
-								<BigPicture src={thumbnail_matches[0]}/>
-								<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
+								<GalleryWrapper>
+									<BigPicture src={thumbnail_matches[0]}/>
+									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
+								</GalleryWrapper>
 							</ProjectPresentationHero>
 							<ContentWrapper>
 								<MDXRenderer>{context.content}</MDXRenderer>

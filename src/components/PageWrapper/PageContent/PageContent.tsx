@@ -13,8 +13,9 @@ const PageContentWrapper = tw.section`
 	h-fit
 	justify-center
 	align-middle
-	px-20
 	py-5
+	px-10
+	mx-auto
 `
 
 const PageContent: React.FunctionComponent<PageContentProps> = ({children}) => {

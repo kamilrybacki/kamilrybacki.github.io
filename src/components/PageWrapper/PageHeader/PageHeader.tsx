@@ -16,39 +16,44 @@ const PageHeaderWrapper = tw.header`
 
 const MenuWrapper = tw.div`
     inline-flex
-    -mx-20
     gap-0
     w-max
     max-w-5xl
-    scale-[0.65]
+    p-5
+    px-5
+    md:px-10
 `
 
 const TopMenuLogo = tw(Link)`
     flex
     justify-center
     align-middle
-    text-[4.5rem]
     text-primary-500
     font-display
     font-bold
-    w-[7rem]
-    h-[7rem]
+    text-4xl
+    md:text-6xl
+    w-fit
+    h-fit
     m-0
     p-2
+    md:py-4
+    md:px-3
     rounded-full
-    ring-8
+    md:ring-[0.25rem]
+    ring-[0.125rem]
     ring-primary-500
     bg-secondary-500
     duration-500
 
     hover:bg-accent-100
     hover:text-primary-600
-    hover:ring-4
+    hover:ring-[0.25rem]
+    md:hover:ring-[0.125rem]
 `
 
 const TopMenuText = tw.div`
     relative
-    -left-[0.1rem]
     flex
     m-0
     p-0
@@ -66,19 +71,26 @@ const TopMenuLogoFirstLetter = tw.span`
     relative
     m-0
     p-0
-    top-[0.1rem]
-    right-[-0.5rem]
     rotate-180
 `
 
 const TopMenuLogoSecondLetter = tw.span`
+    m-0
+    p-0
 `
 
 const NavbarWithSeparator = tw.div`
     relative
-    top-1/4
-    mx-3
+    top-2
     w-fit
+    invisible
+    duration-0
+    mx-4
+    h-0
+
+    md:origin-left
+    md:scale-[0.6]
+    md:visible
 `
 
 const Separator = tw.hr`

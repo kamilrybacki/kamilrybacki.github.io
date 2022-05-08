@@ -79,7 +79,6 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
 				(edge: Dictionary<string>) => {
 					if (edge.node.publicURL.includes(data.frontmatter.thumbnail)
 						&& edge.node.absolutePath.includes(type)){
-							console.log(edge.node.publicURL)
 							return edge.node.publicURL
 					} 
 				} 
