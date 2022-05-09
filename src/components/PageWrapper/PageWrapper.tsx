@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import tw from 'tailwind-styled-components'
+import tw from "tailwind-styled-components"
 
-import PageHeader from './PageHeader'
-import PageFooter from './PageFooter'
-import PageContent from './PageContent'
-import MovingCogs from '@components/MovingCogs'
+import PageHeader from "./PageHeader"
+import PageFooter from "./PageFooter"
+import PageContent from "./PageContent"
+import MovingCogs from "@components/MovingCogs"
 
 type PageWrapperProps = {
     header: boolean,
@@ -24,15 +24,15 @@ const PageWrapperLayout = tw.main`
     mx-auto
 `
 
-const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = '', children }) => {
+const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = "", children }) => {
     return (
         <PageWrapperLayout className={extraClass}>
             <MovingCogs/>
-            {header ? <PageHeader/> : ''}
+            {header ? <PageHeader/> : ""}
             <PageContent>
                 {children}
             </PageContent>
-            {footer ? <PageFooter/> : ''}
+            {footer ? <PageFooter/> : ""}
         </PageWrapperLayout>
     )
 };

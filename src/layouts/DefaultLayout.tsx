@@ -1,5 +1,5 @@
 import React from "react";
-import tw from 'tailwind-styled-components';
+import tw from "tailwind-styled-components";
 
 type DefaultLayoutProps = {
 

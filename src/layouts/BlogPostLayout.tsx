@@ -1,10 +1,10 @@
 import React from "react";
-import tw from 'tailwind-styled-components';
-import styled from 'styled-components'
+import tw from "tailwind-styled-components";
+import styled from "styled-components"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, Link, StaticQuery } from "gatsby";
 
-import Dictionary from 'types'
+import Dictionary from "types"
 import PageWrapper from "@components/PageWrapper"
 
 type BlogPostLayoutProps = {

@@ -1,3 +1,3 @@
-import SubpageTitle from './SubpageTitle'
+import SubpageTitle from "./SubpageTitle"
 
 export default SubpageTitle

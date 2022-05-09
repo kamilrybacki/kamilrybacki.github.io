@@ -1,7 +1,7 @@
-import React from 'react';
-import tw from 'tailwind-styled-components'
+import React from "react";
+import tw from "tailwind-styled-components"
 
-import SocialMediaBar from '../../SocialMediaBar';
+import SocialMediaBar from "../../SocialMediaBar";
 
 type PageFooterProps = {
 

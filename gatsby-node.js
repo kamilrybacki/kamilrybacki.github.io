@@ -57,13 +57,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         const path = `/posts/${node.slug}`
         createPage({
             path,
-            component: require.resolve('./src/layouts/BlogPostLayout.tsx'),
+            component: require.resolve("./src/layouts/BlogPostLayout.tsx"),
             context: {
                 pagePath: path,
                 frontmatter: {
                     title: node.frontmatter.title,
                     date: node.frontmatter.date,
-                    tags: node.frontmatter.tags.split(' ') || [],
+                    tags: node.frontmatter.tags.split(" ") || [],
                     time: node.timeToRead,
                     thumbnail: node.frontmatter.thumbnail,
                 },
@@ -75,17 +75,17 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         const path = `/posts/${node.slug}`
         createPage({
             path,
-            component: require.resolve('./src/layouts/ProjectEntryLayout.tsx'),
+            component: require.resolve("./src/layouts/ProjectEntryLayout.tsx"),
             context: {
                 pagePath: path,
                 frontmatter: {
                     title: node.frontmatter.title,
                     date: node.frontmatter.date,
-                    tags: node.frontmatter.tags.split(' ') || [],
+                    tags: node.frontmatter.tags.split(" ") || [],
                     time: node.timeToRead,
                     thumbnail: node.frontmatter.thumbnail,
                     gallery: node.frontmatter.gallery,
-                    techs: node.frontmatter.techs.split(' ') || [],
+                    techs: node.frontmatter.techs.split(" ") || [],
                     abstract: node.frontmatter.abstract
                 },
                 content: node.body,

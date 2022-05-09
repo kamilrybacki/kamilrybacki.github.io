@@ -1,8 +1,8 @@
-import React from 'react';
-import tw from 'tailwind-styled-components'
+import React from "react";
+import tw from "tailwind-styled-components"
 
-import NavbarMenu from '@components/NavbarMenu';
-import ProfPic from '@images/prof_pic.svg'
+import NavbarMenu from "@components/NavbarMenu";
+import ProfPic from "@images/prof_pic.svg"
 
 const IndexSplashWrapper = tw.main`
 	w-fit
@@ -88,7 +88,7 @@ const IndexProfilePicture = tw.img`
 
 const IndexSplash = () => {
 	return(
-		<IndexSplashWrapper id='splash-wrapper'>
+		<IndexSplashWrapper id="splash-wrapper">
 			<IndexProfilePicture src={ProfPic} alt="My face"/>
 			<TitleWithNavbar>
 				<MainTitle>

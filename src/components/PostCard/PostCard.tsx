@@ -1,6 +1,6 @@
 import React from "react";
 import { graphql, Link, StaticQuery } from "gatsby"
-import tw from 'tailwind-styled-components'
+import tw from "tailwind-styled-components"
 
 import { Dictionary } from "@src/types"
 

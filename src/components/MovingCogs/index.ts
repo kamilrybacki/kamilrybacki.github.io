@@ -1,3 +1,3 @@
-import MovingCogs from './MovingCogs'
+import MovingCogs from "./MovingCogs"
 
 export default MovingCogs

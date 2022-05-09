@@ -1,11 +1,11 @@
 import React from "react";
 
-import tw from 'tailwind-styled-components';
+import tw from "tailwind-styled-components";
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, StaticQuery } from "gatsby";
-import 'react-loading-skeleton/dist/skeleton.css'
+import "react-loading-skeleton/dist/skeleton.css"
 
-import Dictionary from 'types'
+import Dictionary from "types"
 import PageWrapper from "@components/PageWrapper"
 import StackPresentation from "@components/StackPresentation"
 
@@ -190,7 +190,7 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 					} 
 				)
 				return(
-					<PageWrapper extraClass='w-full'>
+					<PageWrapper extraClass="w-full">
 						<ProjectEntryLayoutWrapper>
 							<PostTitle>{context.frontmatter.title}</PostTitle>
 							<ProjectPresentationHero>

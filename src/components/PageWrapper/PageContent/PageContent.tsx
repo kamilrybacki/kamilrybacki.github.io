@@ -1,5 +1,5 @@
-import React from 'react';
-import tw from 'tailwind-styled-components'
+import React from "react";
+import tw from "tailwind-styled-components"
 
 type PageContentProps = {
 	children: JSX.Element | JSX.Element[]

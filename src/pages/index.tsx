@@ -1,6 +1,6 @@
 import React from "react"
 
-import IndexSplash from '@components/IndexSplash'
+import IndexSplash from "@components/IndexSplash"
 import PageWrapper from "@components/PageWrapper" 
 
 const IndexPage = () => {
@@ -9,7 +9,7 @@ const IndexPage = () => {
       <PageWrapper 
         header={false} 
         footer={false} 
-        extraClass='h-max w-max flex flex-col justify-center child:p-0'
+        extraClass="h-max w-max flex flex-col justify-center child:p-0"
       >
         <IndexSplash/>
       </PageWrapper>

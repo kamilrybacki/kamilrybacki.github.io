@@ -1,8 +1,8 @@
-import React from 'react';
-import tw from 'tailwind-styled-components';
+import React from "react";
+import tw from "tailwind-styled-components";
 import {Link} from "gatsby"
 
-import NavbarMenu from '@components/NavbarMenu'
+import NavbarMenu from "@components/NavbarMenu"
 
 type PageHeaderProps = {
 
@@ -106,7 +106,7 @@ const PageHeader: React.FunctionComponent<PageHeaderProps> = () => {
     return(
         <PageHeaderWrapper>
             <MenuWrapper>
-                <TopMenuLogo to='/'>
+                <TopMenuLogo to="/">
                     <TopMenuText>
                         <TopMenuLogoFirstLetter>K</TopMenuLogoFirstLetter>
                         <TopMenuLogoSecondLetter>R</TopMenuLogoSecondLetter>

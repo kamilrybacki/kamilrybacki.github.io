@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import styled from 'styled-components';
-import tw from 'tailwind-styled-components';
+import styled from "styled-components";
+import tw from "tailwind-styled-components";
 
-import { css, keyframes } from 'styled-components';
-import { useEffect, useState } from 'react';
+import { css, keyframes } from "styled-components";
+import { useEffect, useState } from "react";
 import { graphql, useStaticQuery } from "gatsby";
 
-import { Dictionary } from 'types'
+import { Dictionary } from "types"
 
 type CogProps = {
     src: string
@@ -56,7 +56,7 @@ const Cog: React.FunctionComponent<CogProps> = ({src}) => {
             <StyledCog 
                 src={src} 
                 style={{
-                    position: 'fixed',
+                    position: "fixed",
                     left: `${generated_x}px`,
                     bottom: `${generated_y}px`,
                     zIndex: -99,
@@ -96,7 +96,7 @@ const MovingCogs = () => {
 
     return(
         <>
-            {cogs ? <CogsWrapper>{cogs}</CogsWrapper> : ''}
+            {cogs ? <CogsWrapper>{cogs}</CogsWrapper> : ""}
         </>
     )
 }

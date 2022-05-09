@@ -1,3 +1,3 @@
-import IndexSplash from './IndexSplash'
+import IndexSplash from "./IndexSplash"
 
 export default IndexSplash

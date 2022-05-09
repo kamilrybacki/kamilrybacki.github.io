@@ -1,7 +1,7 @@
-import React from 'react';
-import tw from 'tailwind-styled-components'
+import React from "react";
+import tw from "tailwind-styled-components"
 
-import MenuLink from '@components/MenuLink'
+import MenuLink from "@components/MenuLink"
 
 const NavbarMenuWrapper = tw.nav`
 	flex

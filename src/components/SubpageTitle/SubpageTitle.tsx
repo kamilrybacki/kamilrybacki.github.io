@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react"
 
-import tw from 'tailwind-styled-components'
+import tw from "tailwind-styled-components"
 
 const SubpageTitle = tw.h1`
 	text-4xl
