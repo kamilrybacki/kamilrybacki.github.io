@@ -1,12 +1,12 @@
 import React from "react"
 
-import { SocialIcon, SocialIconProps } from "react-social-icons"
+import { SocialIcon } from "react-social-icons"
 import tw from "tailwind-styled-components"
 
 import resolveConfig from "tailwindcss/resolveConfig"
 import tailwindConfig from "/tailwind.config.js"
 
-const SocialMediaBarWrapper = tw.footer`
+const SocialMediaBarWrapper = tw.div`
     flex
     justify-between
     align-middle
