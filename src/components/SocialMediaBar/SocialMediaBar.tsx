@@ -11,7 +11,6 @@ const SocialMediaBarWrapper = tw.div`
     justify-between
     align-middle
     invisible
-    w-0
 
     sm:w-fit
     sm:visible
