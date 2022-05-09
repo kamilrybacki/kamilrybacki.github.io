@@ -8,12 +8,13 @@ const IndexSplashWrapper = tw.main`
 	w-fit
 	mx-auto
 	
+	lg:relative
 	lg:flex
 	lg:flex-row
 	lg:justify-center
 	lg:align-middle
 	lg:p-0
-	lg:top-56
+	lg:-top-10
 `
 
 const TitleWithNavbar = tw.header`
