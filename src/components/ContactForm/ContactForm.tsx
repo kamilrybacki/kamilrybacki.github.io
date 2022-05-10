@@ -8,11 +8,13 @@ type ContactFormProps = {
 }
 
 const ContactFormWrapper = tw.form`
-	relative
 	flex
 	flex-col
+	w-full
 	gap-2
 	my-5
+
+	sm:w-[30vw]
 `
 
 const ContactInputLabel = tw.span`
@@ -56,7 +58,6 @@ const ContactFormSendButton = tw.button`
 	font-display
 	font-semibold
 	tracking-wide
-	text-3xl
 	h-fit
 	w-fit
 	px-4
@@ -66,15 +67,22 @@ const ContactFormSendButton = tw.button`
 	mb-5
 	mt-2
 	ml-auto
+	text-2xl
 
 	hover:bg-accent-300
-	hover:translate-x-5
+	hover:translate-x-3
+
+	sm:hover:translate-x-5
+	sm:text-3xl
 `
 
 const SendIcon = tw.img`
-	h-10
-	w-10
 	invert
+	h-7
+	w-7
+
+	sm:h-10
+	sm:w-10
 `
 
 const ContactForm: React.FunctionComponent<ContactFormProps> = ({endpoint}) => {
