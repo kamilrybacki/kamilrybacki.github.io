@@ -1,4 +1,5 @@
 import React from "react";
+import {useState} from "react"
 
 import tw from "tailwind-styled-components";
 import { MDXRenderer } from "gatsby-plugin-mdx"
@@ -102,8 +103,23 @@ const ContentWrapper = tw.main`
 	px-5
 	pt-3
 	pb-10
-	w-fit
+	w-full
 	bg-secondary-500
+`
+
+const ReadmeButton = tw.button`
+	mx-auto
+	my-5
+	p-2
+	text-sans
+	font-bold
+	border-[1px]	
+	border-primary-500
+	border-dashed
+
+	hover:translate-y-1
+	hover:border-solid
+	hover:bg-accent-100
 `
 
 const SmallerGalleryWrapper = tw.div`
@@ -163,7 +179,25 @@ const Abstract = tw.p`
 	lg:h-40
 `
 
+const ProjectLink = tw.a`
+	relative
+	w-1/3
+	text-center
+	text-2xl
+	font-bold
+	font-display
+	bg-primary-500
+	text-accent-500
+	mx-auto
+	px-3
+	py-2
+
+	hover:bg-primary-900
+	hover:text-accent-200
+`
+
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
+	const [readme_content, setReadmeContent] = useState('')
 
 	const project_gallery_query = graphql`
 		query ProjectsThumbnailQuery {
@@ -177,6 +211,14 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 			}
 		}
 	`
+
+	const handleReadmeLoad = () => {
+		fetch(context.frontmatter.readme)
+		.then((fetch) => fetch.text())
+		.then((readme) => {
+			setReadmeContent(readme)
+		})
+	}
 
 	return(
 		<StaticQuery
@@ -199,16 +241,18 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
 								</GalleryWrapper>
 								<ProjectMetadata>
-									<p className="my-5 mx-auto text-2xl md:my-3 md:text-3xl lg:text-5xl font-display font-bold">Project info</p>
+									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-display font-bold">Project info</p>
 									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
 									<Abstract>{context.frontmatter.abstract}</Abstract>
 									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>
 									<StackPresentation techs={context.frontmatter.techs}/>
+									<ProjectLink href={context.frontmatter.link}>Link</ProjectLink>
 								</ProjectMetadata>
 							</ProjectPresentationHero>
 							<p className="mt-7 underline text-2xl md:text-4xl font-display tracking-tighter font-bold">The whole story</p>
 							<ContentWrapper>
 								<MDXRenderer>{context.content}</MDXRenderer>
+								{readme_content ? <MDXRenderer>{readme_content}</MDXRenderer> : <ReadmeButton onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>}
 							</ContentWrapper>
 						</ProjectEntryLayoutWrapper>
 					</PageWrapper>
