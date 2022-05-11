@@ -7,8 +7,6 @@ import { css, keyframes } from "styled-components";
 import { useEffect, useState } from "react";
 import { graphql, useStaticQuery } from "gatsby";
 
-import { Dictionary } from "types"
-
 type CogProps = {
     src: string
 }
@@ -81,7 +79,7 @@ const MovingCogs = () => {
 
     useEffect(() => {
         const images_list = all_images_query_result.allFile.edges
-        const cogs_list = images_list.reduce((current_list: Array<string>, image: Dictionary) => {
+        const cogs_list = images_list.reduce((current_list: Array<string>, image: object) => {
             const image_url = image.node.publicURL
             if ( image_url.search(/cog(\d*).svg/i) > 0 ) {
                 return [...current_list, image_url]

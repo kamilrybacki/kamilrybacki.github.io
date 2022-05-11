@@ -38,9 +38,9 @@ module.exports = {
       }
   },
   fontFamily: {
-    sans: ["Raleway"],
-    display: ["Source Sans Pro"],
-    body: ["Yantramanav"],
-    mono: ["Source Code Pro"],
+    heading: ["Overpass"],
+    subheading: ["Palanquin"],
+    body: ["Hind"],
+    mono: ["Fira Mono"],
   },
 }

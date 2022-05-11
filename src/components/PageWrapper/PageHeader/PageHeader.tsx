@@ -3,10 +3,8 @@ import tw from "tailwind-styled-components";
 import {Link} from "gatsby"
 
 import NavbarMenu from "@components/NavbarMenu"
-
-type PageHeaderProps = {
-
-}
+import LogoFirstHalfSource from "@images/logo_1.svg"
+import LogoSecondHalfSource from "@images/logo_2.svg"
 
 const PageHeaderWrapper = tw.header`
     flex
@@ -29,63 +27,54 @@ const TopMenuLogo = tw(Link)`
     justify-center
     align-middle
     text-primary-500
-    font-display
+    font-heading
     font-bold
     text-4xl
     md:text-6xl
-    w-fit
-    h-fit
+    w-20
+    h-20
     m-0
     p-2
     md:py-4
     md:px-3
     rounded-full
-    md:ring-[0.25rem]
-    ring-[0.125rem]
-    ring-primary-500
+    border-4
+    border-primary-100
     bg-secondary-500
-    duration-500
+    duration-1000
 
+    hover:border-primary-500
     hover:bg-accent-100
     hover:text-primary-600
-    hover:ring-[0.25rem]
-    md:hover:ring-[0.125rem]
+    hover:-rotate-12
+    child:hover:scale-110
 `
 
-const TopMenuText = tw.div`
+const Logo = tw.div`
     relative
     flex
     m-0
     p-0
     gap-0
-    w-fit
-    h-full
     justify-center
-    duration-500
-
-    hover:scale-90
-    hover:-rotate-12
 `
 
-const TopMenuLogoFirstLetter = tw.span`
+const LogoFirstHalf = tw.img`
     relative
     m-0
     p-0
-    rotate-180
 `
 
-const TopMenuLogoSecondLetter = tw.span`
+const LogoSecondHalf = tw.img`
     m-0
     p-0
 `
 
-const NavbarWithSeparator = tw.div`
-    relative
-    top-2
+const ScaledNavbar = tw.div`
     w-fit
     invisible
     duration-0
-    mx-4
+    mx-3
     h-0
 
     md:origin-left
@@ -93,29 +82,19 @@ const NavbarWithSeparator = tw.div`
     md:visible
 `
 
-const Separator = tw.hr`
-    -my-2
-    p-0
-    h-1
-    bg-primary-100
-    border-0
-    -z-50
-`
-
-const PageHeader: React.FunctionComponent<PageHeaderProps> = () => {
+const PageHeader = () => {
     return(
         <PageHeaderWrapper>
             <MenuWrapper>
                 <TopMenuLogo to="/">
-                    <TopMenuText>
-                        <TopMenuLogoFirstLetter>K</TopMenuLogoFirstLetter>
-                        <TopMenuLogoSecondLetter>R</TopMenuLogoSecondLetter>
-                    </TopMenuText>
+                    <Logo>
+                        <LogoFirstHalf src={LogoFirstHalfSource}/>
+                        <LogoSecondHalf src={LogoSecondHalfSource}/>
+                    </Logo>
                 </TopMenuLogo>
-                <NavbarWithSeparator>
-                    <Separator/>
+                <ScaledNavbar>
                     <NavbarMenu/>
-                </NavbarWithSeparator>
+                </ScaledNavbar>
             </MenuWrapper>
         </PageHeaderWrapper>
     )

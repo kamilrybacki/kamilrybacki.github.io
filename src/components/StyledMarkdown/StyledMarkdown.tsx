@@ -1,75 +1,162 @@
 import React from "react"
 
-import emoji from 'emoji-dictionary'
 import styled from 'styled-components'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
+import { MDXRenderer } from "gatsby-plugin-mdx"
 
-import {Dictionary} from "types"
+import rangeParser from 'parse-numeric-range'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
+import tsx from 'react-syntax-highlighter/dist/cjs/languages/prism/tsx'
+import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript'
+import scss from 'react-syntax-highlighter/dist/cjs/languages/prism/scss'
+import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash'
+import markdown from 'react-syntax-highlighter/dist/cjs/languages/prism/markdown'
+import json from 'react-syntax-highlighter/dist/cjs/languages/prism/json'
+import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python'
+import javascript from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript'
+import jsx from 'react-syntax-highlighter/dist/cjs/languages/prism/jsx'
+import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css'
+
+SyntaxHighlighter.registerLanguage('tsx', tsx)
+SyntaxHighlighter.registerLanguage('typescript', typescript)
+SyntaxHighlighter.registerLanguage('scss', scss)
+SyntaxHighlighter.registerLanguage('bash', bash)
+SyntaxHighlighter.registerLanguage('markdown', markdown)
+SyntaxHighlighter.registerLanguage('json', json)
+SyntaxHighlighter.registerLanguage('python', python)
+SyntaxHighlighter.registerLanguage('javascript', javascript)
+SyntaxHighlighter.registerLanguage('jsx', jsx)
+SyntaxHighlighter.registerLanguage('css', css)
 
 type StyledMarkdownProps = {
-	children: string 
-	rest: Array<Dictionary>
+    mdx: boolean,
+    children: string 
+    rest: Array<object>
 }
 
-const StyledMarkdownRenderer = styled(ReactMarkdown)`
-	padding-left: 2rem;
-	padding-right: 2rem;
-
-	& > h1,h2,h3,h4,h5,h6 {
-		margin-bottom: 0.5rem;
-	}
-	& > h1 {
-		font-weight: bold;
-		font-size: 1.5rem;
-		letter-spacing: 2px;
-	}
-	& > h2 {
-		font-size: 1.25rem;
-		font-weight: bold;
-	}
-	& > h3 {
-		font-size: 1rem;
-		font-weight: normal;
-	}
-	& > ol {
-		list-style-type: number;
-		& > li {
-			margin-left: 1.5rem;
-			margin-bottom: 1rem;
-			& > *:is(:first-child) {
-				margin-left: 0.5rem;
-				margin-bottom: 0.5rem;
-			}
-			& > *:not(:first-child) {
-				margin-left: 1rem;
-			}
-		}
-	}
-	& > code {
-	}
+const StyledMarkdownWrapper = styled.div`
+    padding-left: 2rem;
+    padding-right: 2rem;
+    
+    & > h1,h2,h3,h4,h5,h6 {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    & > h1, div > h1 {
+        font-weight: bold;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        text-decoration: underline;
+        margin-bottom: 1rem;
+    }
+    & > h2, div > h2 {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    & > h3, div > h3 {
+        font-size: 1rem;
+        font-weight: normal;
+    }
+    & > p, div > p {
+        margin-top: 1rem;
+    }
+    & > ol, div > ol {
+        list-style-type: number;
+        & > li {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            & > p, div > p {
+                margin-top: 1rem;
+            }
+            & > *:is(:first-child) {
+                margin-left: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            & > *:not(:first-child) {
+                margin-left: 1rem;
+            }
+            & > pre {
+                & > div {
+                    & > code {
+                        & > span {
+                            font-size: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+        ul {
+            list-style-type: disc;
+        }
+        ol {
+            list-style-type: number;
+        }
+        a {
+            &:hover {
+                font-weight: bold;
+            }
+        }
+    }
 `
 
-const MarkdownTitle = styled.span`
-	position: relative;
-	font-size: 2rem;
-	text-decoration: underline;
-	font-weight: bold;
-	width: 100%;
-	margin-top: 2rem;
-`
+const StyledMarkdown: React.FunctionComponent<StyledMarkdownProps> = ({mdx = false, children, ...rest}) => {
+    const StyledMarkdownComponents: object = {
+        code({ node, inline, className, ...props }) {
+            const match = /language-(\w+)/.exec(className || '')
+            const hasMeta = node?.data?.meta
+            const applyHighlights: object = (applyHighlights: number) => {
+                if (hasMeta) {
+                    const RE = /{([\d,-]+)}/
+                    const metadata = node.data.meta?.replace(/\s/g, '')
+                    const strlineNumbers = RE?.test(metadata)
+                        ? RE?.exec(metadata)[1]
+                        : '0'
+                    const highlightLines = rangeParser(strlineNumbers)
+                    const highlight = highlightLines
+                    const data: string = highlight.includes(applyHighlights)
+                        ? 'highlight'
+                        : null
+                    return { data }
+                } else {
+                    return {}
+                }
+            }
+            return match ? (
+                <SyntaxHighlighter
+                style={vscDarkPlus}
+                language={match[1]}
+                className="codeStyle"
+                showLineNumbers={true}
+                wrapLines={hasMeta ? true : false}
+                useInlineStyles={true}
+                lineProps={applyHighlights}
+                {...props}
+                />
+            ) : (<code className={className} {...props} />)
+        }
+    }
 
-const StyledMarkdown: React.FunctionComponent<StyledMarkdownProps> = ({children, ...rest}) => {
-	const emojiSupport = (text) => text.value.replace(/:\w+:/gi, (name: string) => emoji.getUnicode(name))
-
-	return(
-		<>
-			<MarkdownTitle>Project Readme.md</MarkdownTitle>
-			<StyledMarkdownRenderer {...rest} components={{ text: emojiSupport }} rehypePlugins={[rehypeRaw]}>
-				{children}
-			</StyledMarkdownRenderer>
-		</>
-	)
+    return(
+        <>
+            <StyledMarkdownWrapper>
+                {mdx ? <MDXRenderer>
+                    {children}
+                </MDXRenderer> :
+                <ReactMarkdown 
+                    {...rest} 
+                    components={StyledMarkdownComponents} 
+                    rehypePlugins={[rehypeRaw]}
+                >
+                    {children}
+                </ReactMarkdown>
+                }
+            </StyledMarkdownWrapper>
+        </>
+    )
 }
 
 export default StyledMarkdown

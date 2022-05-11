@@ -41,7 +41,7 @@ const ContactRouteTitle = tw.span`
     relative
     font-italic 
     text-primary-500 
-    font-display 
+    font-heading 
     underline
     underline-offset-4
     decoration-primary-100
@@ -90,7 +90,7 @@ const SocialMedia = tw.div`
 `
 
 const SocialMediaLabel = tw.p`
-    font-display
+    font-subheading
     font-bold
     tracking-wider
     text-primary-500

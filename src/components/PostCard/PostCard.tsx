@@ -2,10 +2,8 @@ import React from "react";
 import { graphql, Link, StaticQuery } from "gatsby"
 import tw from "tailwind-styled-components"
 
-import { Dictionary } from "@src/types"
-
 type PostCardProps = {
-	data: Dictionary<string>
+	data: object
 	type: string
 }
 
@@ -34,7 +32,7 @@ const FrontmatterWrapper = tw.div`
 `
 
 const PostTitle = tw.h1`
-	font-display
+	font-heading
 	font-bold
 	text-2xl
 	mr-5
@@ -57,7 +55,7 @@ const ThumbnailMiniature = tw.img`
 
 const PostExcerpt = tw.p`
 	text-justify
-	font-body
+	font-sans
 	text-sm
 	text-primary-400
 	p-1
@@ -83,7 +81,7 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
           query={miniature_query}
 		  render = {(query_result) => {
 			const miniature_matches = query_result.allFile.edges.map(
-				(edge: Dictionary<string>) => {
+				(edge: object) => {
 					if (edge.node.publicURL.includes(data.frontmatter.thumbnail)
 						&& edge.node.absolutePath.includes(type)){
 							return edge.node.publicURL

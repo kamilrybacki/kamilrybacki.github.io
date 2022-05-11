@@ -4,11 +4,10 @@ import styled from "styled-components"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, Link, StaticQuery } from "gatsby";
 
-import Dictionary from "types"
 import PageWrapper from "@components/PageWrapper"
 
 type BlogPostLayoutProps = {
-	pageContext: Dictionary<string> | Dictionary
+	pageContext: object
 }
 
 const BlogPostLayoutWrapper = tw.article`
@@ -43,7 +42,7 @@ const InformationWrapper = tw.div`
 
 const PostTitle = tw.h1`
 	relative
-	font-display
+	font-heading
 	font-bold
 	text-secondary-100
 	text-3xl
@@ -136,9 +135,9 @@ const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageConte
 	return(
 		<StaticQuery
 			query={thumbnail_query}
-			render={(query_result: Dictionary<string>) => {
+			render={(query_result: object) => {
 				const thumbnail_match = query_result.allFile.edges.map(
-					(edge: Dictionary<string>) => {
+					(edge: object) => {
 						if (edge.node.publicURL.includes(context.frontmatter.thumbnail)){
 							return edge.node.publicURL
 						} 

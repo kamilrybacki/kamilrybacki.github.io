@@ -2,17 +2,15 @@ import React, { useEffect } from "react";
 import {useState} from "react"
 
 import tw from "tailwind-styled-components";
-import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, StaticQuery } from "gatsby";
 
-import Dictionary from "types"
 import PageWrapper from "@components/PageWrapper"
 import StackPresentation from "@components/StackPresentation"
 import StyledMarkdown from "@components/StyledMarkdown"
 import StyledSpinner from "@components/StyledSpinner"
 
 type ProjectEntryLayoutProps = {
-	pageContext: Dictionary<string> | Dictionary
+	pageContext: object
 }
 
 type SmallerGalleryProps = {
@@ -23,8 +21,8 @@ const ProjectEntryLayoutWrapper = tw.article`
 	w-full
 `
 
-const PostTitle = tw.h1`
-	font-display
+const ProjectTitle = tw.h1`
+	font-heading
 	font-bold
 	text-primary-500
 	text-3xl
@@ -169,7 +167,7 @@ const ProjectMetadata = tw.div`
 `
 
 const Abstract = tw.p`
-	font-body
+	font-sans
 	text-xl
 	w-full
 	mb-5
@@ -188,7 +186,7 @@ const ProjectLink = tw.a`
 	text-center
 	text-2xl
 	font-bold
-	font-display
+	font-heading
 	bg-primary-500
 	text-accent-500
 	mx-auto
@@ -197,6 +195,19 @@ const ProjectLink = tw.a`
 
 	hover:bg-primary-900
 	hover:text-accent-200
+`
+
+const MarkdownTitle = tw.span`
+    relative
+    text-4xl
+    font-bold
+	font-heading
+	underline
+    w-full
+    mt-5
+
+    md:mt-10
+	md:-ml-5
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
@@ -235,9 +246,9 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 	return(
 		<StaticQuery
 			query={project_gallery_query}
-			render={(query_result: Dictionary<string>) => {
+			render={(query_result: object) => {
 				const thumbnail_matches = query_result.allFile.edges.map(
-					(edge: Dictionary<string>) => {
+					(edge: object) => {
 						if (edge.node.absolutePath.includes(`galleries/${context.frontmatter.gallery}`)){
 							return edge.node.publicURL
 						} 
@@ -246,14 +257,14 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 				return(
 					<PageWrapper extraClass="w-full">
 						<ProjectEntryLayoutWrapper>
-							<PostTitle>{context.frontmatter.title}</PostTitle>
+							<ProjectTitle>{context.frontmatter.title}</ProjectTitle>
 							<ProjectPresentationHero>
 								<GalleryWrapper>
 									<BigPicture src={thumbnail_matches[0]}/>
 									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
 								</GalleryWrapper>
 								<ProjectMetadata>
-									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-display font-bold">Project info</p>
+									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold">Project info</p>
 									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
 									<Abstract>{context.frontmatter.abstract}</Abstract>
 									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>
@@ -261,9 +272,10 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 									<ProjectLink href={context.frontmatter.link}>Link</ProjectLink>
 								</ProjectMetadata>
 							</ProjectPresentationHero>
-							<p className="mt-7 underline text-2xl md:text-4xl font-display tracking-tighter font-bold">The whole story</p>
+							<p className="mt-7 underline text-2xl md:text-4xl font-heading tracking-tighter font-bold">The whole story</p>
 							<ContentWrapper>
-								<MDXRenderer>{context.content}</MDXRenderer>
+								<StyledMarkdown mdx={true}>{context.content}</StyledMarkdown>
+								<MarkdownTitle>Project Readme.md</MarkdownTitle>
 								{readme_loaded ? <StyledMarkdown 
 										className="mt-10"
 										linkTarget="_blank"

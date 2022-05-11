@@ -40,7 +40,7 @@ const Separator = tw.hr`
 
 const MainTitle = tw.title`
 	flex
-	font-display
+	font-heading
 	mx-auto
 	gap-3
 	mt-5
@@ -68,6 +68,7 @@ const SubTitle = tw.p`
 	text-center
 	py-4
 	mx-auto
+	font-body
 
 	md:text-3xl
 	md:child:hidden

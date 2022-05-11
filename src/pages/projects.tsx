@@ -2,7 +2,6 @@ import React from "react"
 import { graphql, StaticQuery } from "gatsby"
 
 import CardsWrapper from "@components/CardsWrapper"
-import { Dictionary } from "@src/types"
 import PostCard from "@components/PostCard" 
 import PageWrapper from "@components/PageWrapper" 
 import SubpageTitle from "@components/SubpageTitle"
@@ -38,10 +37,10 @@ const PostsPage = () => {
         <CardsWrapper>
           <StaticQuery
             query={posts_query}
-            render={(query_result: Dictionary<string>) => {
+            render={(query_result: object) => {
               const posts = query_result.allMdx.nodes
               return(
-                posts.map((post: Dictionary<string>) => <PostCard data={post} key={post.id} type="projects"/>)
+                posts.map((post: object) => <PostCard data={post} key={post.id} type="projects"/>)
               )
             }}
           />
