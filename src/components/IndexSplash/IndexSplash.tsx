@@ -63,7 +63,7 @@ const MainTitleWord = tw.h1`
 	lg:first-letter:text-9xl
 `
 
-const SubTitle = tw.h3`
+const SubTitle = tw.p`
 	text-lg
 	text-center
 	py-4
@@ -95,7 +95,7 @@ const IndexSplash = () => {
 					<MainTitleWord>Kamil</MainTitleWord> 
 					<MainTitleWord>Rybacki</MainTitleWord>
 				</MainTitle>
-				<SubTitle>Personal portfolio &<br/> tech blogging thingamajig</SubTitle>
+				<SubTitle>Pitch the idea.<br/> I will create the experience.</SubTitle>
 				<Separator/>
 				<NavbarMenu/>
 			</TitleWithNavbar>
