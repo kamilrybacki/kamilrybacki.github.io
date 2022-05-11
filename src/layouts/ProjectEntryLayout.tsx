@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {useState} from "react"
 
 import tw from "tailwind-styled-components";
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { graphql, StaticQuery } from "gatsby";
-import "react-loading-skeleton/dist/skeleton.css"
 
 import Dictionary from "types"
 import PageWrapper from "@components/PageWrapper"
 import StackPresentation from "@components/StackPresentation"
+import StyledMarkdown from "@components/StyledMarkdown"
+import StyledSpinner from "@components/StyledSpinner"
 
 type ProjectEntryLayoutProps = {
 	pageContext: Dictionary<string> | Dictionary
@@ -120,6 +121,8 @@ const ReadmeButton = tw.button`
 	hover:translate-y-1
 	hover:border-solid
 	hover:bg-accent-100
+
+	active:bg-accent-500
 `
 
 const SmallerGalleryWrapper = tw.div`
@@ -198,6 +201,8 @@ const ProjectLink = tw.a`
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
 	const [readme_content, setReadmeContent] = useState('')
+	const [readme_spinner, setReadmeUi] = useState()
+	const [readme_loaded, setIfReadmeLoaded] = useState(false)
 
 	const project_gallery_query = graphql`
 		query ProjectsThumbnailQuery {
@@ -213,12 +218,19 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 	`
 
 	const handleReadmeLoad = () => {
+		setReadmeUi(<StyledSpinner id="readme_spinner" size={"5rem"}/>)
 		fetch(context.frontmatter.readme)
 		.then((fetch) => fetch.text())
 		.then((readme) => {
 			setReadmeContent(readme)
 		})
 	}
+
+	useEffect(()=>{
+		if (readme_content !== '') {
+			setIfReadmeLoaded(true)
+		}
+	}, [readme_content])
 
 	return(
 		<StaticQuery
@@ -252,7 +264,14 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 							<p className="mt-7 underline text-2xl md:text-4xl font-display tracking-tighter font-bold">The whole story</p>
 							<ContentWrapper>
 								<MDXRenderer>{context.content}</MDXRenderer>
-								{readme_content ? <MDXRenderer>{readme_content}</MDXRenderer> : <ReadmeButton onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>}
+								{readme_loaded ? <StyledMarkdown 
+										className="mt-10"
+										linkTarget="_blank"
+									>
+										{readme_content} 
+									</StyledMarkdown> : 
+									readme_spinner ? readme_spinner : <ReadmeButton id="readme_button" onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>
+								}
 							</ContentWrapper>
 						</ProjectEntryLayoutWrapper>
 					</PageWrapper>

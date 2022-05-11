@@ -2,17 +2,15 @@ import React from "react"
 import tw from "tailwind-styled-components"
 
 import { SocialIcon } from "react-social-icons"
-import resolveConfig from "tailwindcss/resolveConfig"
-import tailwindConfig from "/tailwind.config.js"
 
-import PageWrapper from "@components/PageWrapper" 
+import PageWrapper, { TailwindThemeContext } from "@components/PageWrapper" 
 import ContactForm from "@components/ContactForm"
 
 const ContactRoutes = tw.section`
     flex
     flex-col
     justify-center
-    gap-5
+    gap-3
 
     sm:gap-10
     sm:flex-row
@@ -69,21 +67,21 @@ const SocialMediaWrapper = tw.div`
     sm:gap-5
     sm:mt-16
 `
-const SocialMedia = tw.a`
+const SocialMedia = tw.div`
     flex
     w-fit
     justify-end
     duration-500
     m-auto
+    scale-75
+    transform-origin-left
+    cursor-pointer
 
     hover:-translate-x-2
     hover:-translate-y-2
     hover:shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
     hover:border-[1px]
     hover:border-primary-500
-
-    scale-75
-    transform-origin-left
 
     sm:py-2
     sm:px-4
@@ -109,31 +107,40 @@ const SocialMediaIconStyle = {
 }
 
 const ContactPage = () => {
-    const currentConfig = resolveConfig(tailwindConfig)
-    const social_media =[
+    const [iconColor, setIconColor] = React.useState('black')
+    const tailwindTheme = React.useContext(TailwindThemeContext)
+
+    const socialMediaList =[
         ["LinkedIn","https://www.linkedin.com/in/kamil-andrzej-rybacki/"],
         ["GitHub", "https://github.com/KamilRybacki"],
         ["Facebook", "https://www.facebook.com/kamilandrzejrybacki/"],
         ["Instagram", "https://www.instagram.com/kamilandrzejrybacki/"],
         ["Twitter", "https://twitter.com/rybacki_kamil"]
     ]
+
+    React.useEffect(()=>{
+        setIconColor(tailwindTheme?.colors ? tailwindTheme.colors.accent["500"] : "black")
+    },[tailwindTheme])
+
     return (
         <PageWrapper footer={false}>
             <ContactRoutes>
                 <ContactRoute>
                     <div className="flex justify-center gap-1 w-full sm:justify-end sm:gap-2">
                         <ContactRouteTitle>You can </ContactRouteTitle>
-                        <ContactRouteTitle className="font-bold text-accent-500 decoration-accent-500 uppercase">catch me here...</ContactRouteTitle>
+                        <ContactRouteTitle className="font-bold text-accent-500 decoration-accent-500 uppercase">catch me here</ContactRouteTitle>
+                        <ContactRouteTitle> ...</ContactRouteTitle>
                     </div>
                     <SocialMediaWrapper>
-                        {social_media ? social_media.map((social_media) => {
+                        {socialMediaList ? socialMediaList.map((socialMedia) => {
+                            const keyBase = socialMedia[1].split("/")[2]
                             return(
-                                <SocialMedia href={social_media[1]}>
-                                    <SocialMediaLabel>{social_media[0]}</SocialMediaLabel>
+                                <SocialMedia onClick={()=>{ window.location.href=socialMedia[1]} } key={`${keyBase}_wrapper`}>
+                                    <SocialMediaLabel key={`${keyBase}_label`}>{socialMedia[0]}</SocialMediaLabel>
                                     <SocialIcon
-                                        bgColor={currentConfig.theme.colors.accent["900"]}
-                                        url={social_media[1]}
-                                        key={social_media[1].split("/")[2]}
+                                        bgColor={iconColor}
+                                        url={socialMedia[1]}
+                                        key={`${keyBase}_icon`}
                                         style={SocialMediaIconStyle}
                                     />
                                 </SocialMedia>
@@ -144,7 +151,7 @@ const ContactPage = () => {
                 <VerticalSeparator/>
                 <HorizontalSeparator/>
                 <ContactRoute>
-                    <div className="flex justify-center gap-1 w-full sm:justify-end sm:gap-2">
+                    <div className="flex justify-center gap-1 w-full sm:justify-start sm:gap-2">
                         <ContactRouteTitle>... or use my contact </ContactRouteTitle>
                         <ContactRouteTitle className="font-bold text-accent-500 decoration-accent-500 uppercase">form</ContactRouteTitle>
                     </div>

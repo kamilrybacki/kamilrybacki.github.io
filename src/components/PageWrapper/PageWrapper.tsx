@@ -24,21 +24,23 @@ const PageWrapperLayout = tw.main`
     mx-auto
 `
 
+const currentTailwindTheme = require("@style/theme")
+const TailwindThemeContext = React.createContext(currentTailwindTheme)
+
 const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({ header = true, footer = true, extraClass = "", children }) => {
     return (
-        <PageWrapperLayout className={extraClass}>
-            <MovingCogs/>
-            {header ? <PageHeader/> : ""}
-            <PageContent>
-                {children}
-            </PageContent>
-            {footer ? <PageFooter/> : ""}
-        </PageWrapperLayout>
+        <TailwindThemeContext.Provider value={currentTailwindTheme}>
+            <PageWrapperLayout className={extraClass}>
+                <MovingCogs/>
+                {header ? <PageHeader/> : ""}
+                <PageContent>
+                    {children}
+                </PageContent>
+                {footer ? <PageFooter/> : ""}
+            </PageWrapperLayout>
+        </TailwindThemeContext.Provider>
     )
 };
 
-PageWrapper.defaultProps = {
-    header: true
-}
-
+export {TailwindThemeContext};
 export default PageWrapper
