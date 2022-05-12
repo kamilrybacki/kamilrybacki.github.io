@@ -36,7 +36,7 @@ const Cog: React.FunctionComponent<CogProps> = ({src}) => {
         const generated_y = 0.1*window.innerHeight + Math.random() * (0.7*window.innerHeight)
 
         const generated_duration = 25 + Math.floor(Math.random() * 100)
-        const generated_opacity = 0.05 + (Math.random() * 0.075)
+        const generated_opacity = 0.025 + (Math.random() * 0.05)
 
         const cogspin_frames = keyframes`
             from {transform: rotate(0deg);}

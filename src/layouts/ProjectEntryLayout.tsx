@@ -29,13 +29,17 @@ const ProjectTitle = tw.h1`
 	mb-8
 	bg-primary-100
 	px-4
-	py-2
+	pt-3
+	pb-2
 	h-fit
 	text-center
+	border-2
+	border-primary-200
 
 	max-w-full
 	md:text-6xl
-	md:py-5
+	md:pt-5
+	md:pb-3
 	md:top-8
 	md:mb-12
 	md:text-left

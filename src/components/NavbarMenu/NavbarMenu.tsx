@@ -14,8 +14,6 @@ const NavbarMenuWrapper = tw.nav`
 	gap-0
 	
 	md:flex-row
-	md:items-center
-	lg:mt-3
 `
 
 const NavbarMenu = () => {

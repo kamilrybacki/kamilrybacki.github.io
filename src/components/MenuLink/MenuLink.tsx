@@ -21,7 +21,7 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true
                 ${pop ? "text-accent-500 underline decoration-primary-300 decoration-2 underline-offset-[0.2rem] decoration-dotted": "text-primary-500"} 
                 ${bold ? "font-bold" : ""}
                 transition-all ease-in-out duration-500
-                md:mx-2 md:my-0
+                md:mx-2 md:my-auto
     `
     return(
         <Link 
