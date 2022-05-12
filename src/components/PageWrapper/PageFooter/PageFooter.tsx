@@ -22,9 +22,10 @@ const PageFooterWrapper = tw.footer`
 `
 
 const PageFooterCopyright = tw.h3`
-	font-sans
+	font-heading
+	text-sm
 	origin-left
-	scale-75
+	scale-90
 	md:scale-100
 `
 

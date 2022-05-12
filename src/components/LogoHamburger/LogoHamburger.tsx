@@ -14,11 +14,11 @@ const LogoHamburgerWrapper = tw.button`
     font-bold
     text-4xl
     md:text-6xl
-    w-20
-    h-20
+    w-[20vw]
+    h-[20vw]
     m-0
     p-3
-	z-50
+    z-50
 
     rounded-full
     border-4
@@ -33,6 +33,7 @@ const LogoHamburgerWrapper = tw.button`
 
     md:border-0
     md:w-0
+    md:h-0
     md:p-0
     md:m-0
     md:invisible
@@ -43,7 +44,7 @@ const LogoHamburgerWrapper = tw.button`
 
 const LogoWrapper = tw.div`
     relative
-	h-full
+    h-full
     flex
     m-0
     p-0
@@ -63,43 +64,45 @@ const LogoSecondHalf = tw.img`
 `
 
 const DropdownMenu = tw.div`
-	fixed
-	top-28
-	px-3
-	border-primary-500
-	bg-secondary-500
-	origin-top-left
-	${(props) => props.active ? "scale-75" : "scale-0"}
-	${(props) => props.active ? "z-40" : "-z-40"}
-	${(props) => props.active ? "h-auto" : "h-0"}
-	${(props) => props.active ? "w-auto" : "w-0"}
-	${(props) => props.active ? "border-4" : "border-0"}	
-	drop-shadow-xl
+    fixed
+    left-[10vw]
+    top-[20vw]
+    px-3
+    border-primary-500
+    bg-secondary-500
+    origin-top-left
+    scale-75
+    z-40
+    h-auto
+    w-auto
+    border-4
+    drop-shadow-xl
 `
 
 const LogoHamburger = () => {
-	const [isMenuOpen, setIfMenuOpen] = React.useState(false)
+    const [isMenuOpen, setIfMenuOpen] = React.useState(false)
+    const [menu, setMenu] = React.useState(<></>)
 
-	React.useState(()=>{
-		!isMenuOpen || console.log(isMenuOpen)
-	})
+    React.useEffect(()=>{
+        setTimeout(()=>{
+            setMenu( isMenuOpen ? <DropdownMenu><NavbarMenu/></DropdownMenu> : <></> )
+        }, 1)
+    }, [isMenuOpen])
 
-	return(
-		<>
-			<LogoHamburgerWrapper 
-				onClick={()=>{setIfMenuOpen(!isMenuOpen)}}
-				onBlur={()=>{setIfMenuOpen(!isMenuOpen)}}
-			>
-				<LogoWrapper>
-					<LogoFirstHalf src={LogoFirstHalfSource}/>
-					<LogoSecondHalf src={LogoSecondHalfSource}/>
-				</LogoWrapper>
-			</LogoHamburgerWrapper>
-			{isMenuOpen? <DropdownMenu active={isMenuOpen}>
-				<NavbarMenu/>
-			</DropdownMenu> : <></>}
-		</>
-	)
+    return(
+        <>
+            <LogoHamburgerWrapper 
+                onClick={()=>{setIfMenuOpen(!isMenuOpen)}}
+                onBlur={()=>{setIfMenuOpen(!isMenuOpen)}}
+            >
+                <LogoWrapper>
+                    <LogoFirstHalf src={LogoFirstHalfSource}/>
+                    <LogoSecondHalf src={LogoSecondHalfSource}/>
+                </LogoWrapper>
+            </LogoHamburgerWrapper>
+            {menu}
+        </>
+    )
 }
 
 export default LogoHamburger

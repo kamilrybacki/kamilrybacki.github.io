@@ -1,6 +1,7 @@
 import React from "react"
 
 import styled from 'styled-components'
+import tw from "tailwind-styled-components/dist/tailwind";
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
 import { MDXRenderer } from "gatsby-plugin-mdx"
@@ -37,10 +38,10 @@ type StyledMarkdownProps = {
     rest: Array<object>
 }
 
-const StyledMarkdownWrapper = styled.div`
-    padding-left: 2rem;
-    padding-right: 2rem;
-    
+const PreStyledMarkdownWrapper = styled.div`
+    & > div {
+        margin-top: 0;
+    }
     & > h1,h2,h3,h4,h5,h6 {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
@@ -101,6 +102,13 @@ const StyledMarkdownWrapper = styled.div`
             }
         }
     }
+`
+
+const StyledMarkdownWrapper = tw(PreStyledMarkdownWrapper)`
+    p-0
+    m-0
+
+    md:p-2
 `
 
 const StyledMarkdown: React.FunctionComponent<StyledMarkdownProps> = ({mdx = false, children, ...rest}) => {

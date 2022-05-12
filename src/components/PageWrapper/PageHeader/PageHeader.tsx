@@ -17,7 +17,6 @@ const MenuWrapper = tw.div`
     w-max
     max-w-5xl
     p-5
-    px-5
 
     md:px-10
 `
@@ -32,8 +31,8 @@ const BigMenuAccent = tw.img`
     lg:m-0
     lg:p-0
     lg:rotate-180
-    lg:h-1/2
     lg:w-auto
+    lg:h-1/2
     lg:my-auto
 `
 
@@ -50,6 +49,8 @@ const ScaledNavbar = tw.div`
     md:visible
 
     lg:ml-3
+    lg:relative
+    lg:top-3
     lg:scale-[0.75]
 `
 

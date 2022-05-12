@@ -102,12 +102,12 @@ const ContentWrapper = tw.main`
 	flex-col
 	align-middle
 	justify-center
-	mt-4
-	px-5
-	pt-3
+	mt-2
 	pb-10
 	w-full
 	bg-secondary-500
+
+	md:mt-4
 `
 
 const ReadmeButton = tw.button`
@@ -208,10 +208,9 @@ const MarkdownTitle = tw.span`
 	font-heading
 	underline
     w-full
-    mt-5
+    my-5
 
     md:mt-10
-	md:-ml-5
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
