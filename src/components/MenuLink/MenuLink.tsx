@@ -9,14 +9,14 @@ type MenuLinkProps = {
     children: JSX.Element | JSX.Element[]
 }
 
-const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true, pop = false, children}) => {
-    const tailwind_hover_styling =`
-        hover:border-[1px] hover:border-primary
-        hover:shadow-[-0.25rem_-0.25rem_0_rgb(0,0,0)]
-        hover:translate-x-1 hover:translate-y-1 
-    `
+const tailwindHoverStyling =`
+    hover:border-[1px] hover:border-primary
+    hover:shadow-[-0.25rem_-0.25rem_0_rgb(0,0,0)]
+    hover:translate-x-1 hover:translate-y-1 
+`
 
-    const tailwind_styling = `
+const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true, pop = false, children}) => {
+    const talwindRegularStyling = `
                 block w-fit mx-auto my-2 h-fit text-${size}xl font-subheading p-3
                 ${pop ? "text-accent-500 underline decoration-primary-300 decoration-2 underline-offset-[0.2rem] decoration-dotted": "text-primary-500"} 
                 ${bold ? "font-bold" : ""}
@@ -26,7 +26,7 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true
     return(
         <Link 
             to={to}
-            className={`${tailwind_styling} ${tailwind_hover_styling}`}
+            className={`${talwindRegularStyling} ${tailwindHoverStyling}`}
         >
             {children}
         </Link>

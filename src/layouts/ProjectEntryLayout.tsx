@@ -175,7 +175,7 @@ const Abstract = tw.p`
 	text-xl
 	w-full
 	mb-5
-
+	text-justify
 	
 	md:overflow-y-scroll
 	md:scrollbar-thin
@@ -214,11 +214,33 @@ const MarkdownTitle = tw.span`
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
-	const [readme_content, setReadmeContent] = useState('')
-	const [readme_spinner, setReadmeUi] = useState()
-	const [readme_loaded, setIfReadmeLoaded] = useState(false)
+	const [readme, setReadmeContent] = useState('')
+	const [spinner, setReadmeUi] = useState()
+	const [isReadmeLoaded, setIfReadmeLoaded] = useState(false)
 
-	const project_gallery_query = graphql`
+	const handleReadmeLoad = async () => {
+		const fetchReadme = async () => {
+			setReadmeUi(<StyledSpinner id="readme_spinner" size={"5rem"}/>)
+			await fetch(context.frontmatter.readme)
+			.then((fetch) => fetch.text())
+			.then((text) => {
+				return text === '404: Not Found' ? '<strong>Failed loading Readme!</strong> <br/> Check the link in the post frontmatter.' : text
+			})
+			.then((readme) => {
+				setReadmeContent(readme)
+			})
+		}
+		await fetchReadme()
+	}
+
+	useEffect(()=>{
+		if (context.frontmatter.readme === 'none') document.getElementById('readme_button').outerHTML = ''
+		if (readme !== '') {
+			setIfReadmeLoaded(true)
+		}
+	}, [readme])
+
+	const projectsGalleryListQuery = graphql`
 		query ProjectsThumbnailQuery {
 			allFile(filter: {relativePath: {regex: "/galleries/"}}) {
 				edges {
@@ -231,26 +253,11 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 		}
 	`
 
-	const handleReadmeLoad = () => {
-		setReadmeUi(<StyledSpinner id="readme_spinner" size={"5rem"}/>)
-		fetch(context.frontmatter.readme)
-		.then((fetch) => fetch.text())
-		.then((readme) => {
-			setReadmeContent(readme)
-		})
-	}
-
-	useEffect(()=>{
-		if (readme_content !== '') {
-			setIfReadmeLoaded(true)
-		}
-	}, [readme_content])
-
 	return(
 		<StaticQuery
-			query={project_gallery_query}
-			render={(query_result: object) => {
-				const thumbnail_matches = query_result.allFile.edges.map(
+			query={projectsGalleryListQuery}
+			render={(projectsGalleryList: object) => {
+				const matchingProjectGallery = projectsGalleryList.allFile.edges.map(
 					(edge: object) => {
 						if (edge.node.absolutePath.includes(`galleries/${context.frontmatter.gallery}`)){
 							return edge.node.publicURL
@@ -263,8 +270,8 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 							<ProjectTitle>{context.frontmatter.title}</ProjectTitle>
 							<ProjectPresentationHero>
 								<GalleryWrapper>
-									<BigPicture src={thumbnail_matches[0]}/>
-									<SmallerGallery pictures={thumbnail_matches.slice(1)}/>
+									<BigPicture src={matchingProjectGallery[0]}/>
+									<SmallerGallery pictures={matchingProjectGallery.slice(1)}/>
 								</GalleryWrapper>
 								<ProjectMetadata>
 									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold">Project info</p>
@@ -278,14 +285,17 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 							<p className="mt-7 underline text-2xl md:text-4xl font-heading tracking-tighter font-bold">The whole story</p>
 							<ContentWrapper>
 								<StyledMarkdown mdx={true}>{context.content}</StyledMarkdown>
-								<MarkdownTitle>Project Readme.md</MarkdownTitle>
-								{readme_loaded ? <StyledMarkdown 
-										className="mt-10"
-										linkTarget="_blank"
-									>
-										{readme_content} 
-									</StyledMarkdown> : 
-									readme_spinner ? readme_spinner : <ReadmeButton id="readme_button" onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>
+								{isReadmeLoaded ? 
+									<>
+										<MarkdownTitle>Project Readme.md</MarkdownTitle>
+										<StyledMarkdown 
+											className="mt-10"
+											linkTarget="_blank"
+										>
+											{readme} 
+										</StyledMarkdown>
+									</>: 
+									spinner ? spinner : <ReadmeButton id="readme_button" onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>
 								}
 							</ContentWrapper>
 						</ProjectEntryLayoutWrapper>

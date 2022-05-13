@@ -1,53 +1,30 @@
 import React from "react"
+import tw from "tailwind-styled-components/dist/tailwind"
+
 import { Link } from "gatsby"
+import PageWrapper from "@components/PageWrapper"
 
-// styles
-const pageStyles = {
-  color: "#232129",
-  padding: "96px",
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-}
-const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  maxWidth: 320,
-}
+const FourOhFourWrapper = tw.article`
+  relative
+  flex
+  flex-col
+  justify-center
+  align-middle
+  text-center
+  top-52
 
-const paragraphStyles = {
-  marginBottom: 48,
-}
-const codeStyles = {
-  color: "#8A6534",
-  padding: 4,
-  backgroundColor: "#FFF4DB",
-  fontSize: "1.25rem",
-  borderRadius: 4,
-}
+  md:top-32
+`
 
-// markup
 const NotFoundPage = () => {
   return (
-    <main style={pageStyles}>
-      <title>Not found</title>
-      <h1 style={headingStyles}>Page not found</h1>
-      <p style={paragraphStyles}>
-        Sorry{" "}
-        <span role="img" aria-label="Pensive emoji">
-          😔
-        </span>{" "}
-        we couldn’t find what you were looking for.
-        <br />
-        {process.env.NODE_ENV === "development" ? (
-          <>
-            <br />
-            Try creating a page in <code style={codeStyles}>src/pages/</code>.
-            <br />
-          </>
-        ) : null}
-        <br />
-        <Link to="/">Go home</Link>.
-      </p>
-    </main>
+    <PageWrapper header={false} footer={false}>
+      <FourOhFourWrapper>
+        <h1 className="-mb-10 font-heading font-bold text-accent-900 text-[10rem] lg:-mb-20 lg:text-[20rem]">404</h1>
+        <h2 className="font-subheading font-bold text-4xl text-primary-500 lg:text-7xl">Page not found!</h2>
+        <Link to='/' className="mt-8 text-2xl underline underline-offset-4 text-primary-500">Return to homepage</Link>
+      </FourOhFourWrapper>
+    </PageWrapper>
   )
 }
 

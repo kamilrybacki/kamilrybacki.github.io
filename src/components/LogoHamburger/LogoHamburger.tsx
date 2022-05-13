@@ -92,8 +92,8 @@ const LogoHamburger = () => {
     return(
         <>
             <LogoHamburgerWrapper 
-                onClick={()=>{setIfMenuOpen(!isMenuOpen)}}
-                onBlur={()=>{setIfMenuOpen(!isMenuOpen)}}
+                onClick={()=>{setIfMenuOpen(true)}}
+                onBlur={()=>{setIfMenuOpen(false)}}
             >
                 <LogoWrapper>
                     <LogoFirstHalf src={LogoFirstHalfSource}/>

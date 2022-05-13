@@ -4,15 +4,17 @@ import tw from "tailwind-styled-components"
 import MenuLink from "@components/MenuLink"
 
 const NavbarMenuWrapper = tw.nav`
+
+	relative
 	flex
 	flex-col
 	align-middle
 	justify-center
-	relative
 	w-full
-	py-3
 	gap-0
+	p-2
 	
+	md:p-0
 	md:flex-row
 `
 

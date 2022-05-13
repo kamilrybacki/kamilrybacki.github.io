@@ -121,7 +121,7 @@ const ContentWrapper = tw.main`
 `
 
 const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageContext: context}) => {
-	const thumbnail_query = graphql`
+	const postsThumbnailsQuery = graphql`
 		query PostsThumbnailQuery {
 			allFile(filter: {relativePath: {regex: "/thumbnails/posts/"}}) {
 				edges {
@@ -134,9 +134,9 @@ const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageConte
 	`
 	return(
 		<StaticQuery
-			query={thumbnail_query}
-			render={(query_result: object) => {
-				const thumbnail_match = query_result.allFile.edges.map(
+			query={postsThumbnailsQuery}
+			render={(postsThumbnailsList: object) => {
+				const firstMatchingThumbnail = postsThumbnailsList.allFile.edges.map(
 					(edge: object) => {
 						if (edge.node.publicURL.includes(context.frontmatter.thumbnail)){
 							return edge.node.publicURL
@@ -146,7 +146,7 @@ const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageConte
 				return(
 					<PageWrapper>
 						<BlogPostLayoutWrapper>
-							<ThumbnailWrapper thumbnail={thumbnail_match}>
+							<ThumbnailWrapper thumbnail={firstMatchingThumbnail}>
 								<PostTitle>{context.frontmatter.title}</PostTitle>
 							</ThumbnailWrapper>
 							<InformationWrapper>

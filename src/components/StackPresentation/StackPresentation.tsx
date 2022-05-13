@@ -55,16 +55,16 @@ const imagesQuery = graphql`
 
 const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({techs}) => {
     const [icons, setIcons] = React.useState([])
-    const images_result = useStaticQuery(imagesQuery)
+    const techIcons = useStaticQuery(imagesQuery)
 
     React.useEffect(()=>{
         setIcons(
-            images_result.allFile.edges
+            techIcons.allFile.edges
                 .filter((image) => techs.includes(image.node.name))
                 .map((image) => image.node.publicURL)
-                .map((icon_url: string, index: number) => {
-                    const icon_alt = icon_url.split("/").at(-1).replace(".svg","")
-                    return(<StackIcon key={`stack_${index}`} src={icon_url} alt={icon_alt}/>)
+                .map((iconUrl: string, index: number) => {
+                    const iconImgAlt = iconUrl.split("/").at(-1).replace(".svg","")
+                    return(<StackIcon key={`stack_${index}`} src={iconUrl} alt={iconImgAlt}/>)
                 })
         )
     }, [])

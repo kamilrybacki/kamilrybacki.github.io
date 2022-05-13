@@ -11,18 +11,6 @@ type CogProps = {
     src: string
 }
 
-const all_images_query = graphql`
-    query AssetsPhotos {
-            allFile(filter: { sourceInstanceName: { eq: "images" }}) {
-                edges {
-                    node {
-                    id
-                    publicURL
-                    }
-                }
-        }
-    }`
-
 const CogsWrapper = tw.div`
     -z-50
     overflow-hidden
@@ -32,22 +20,22 @@ const Cog: React.FunctionComponent<CogProps> = ({src}) => {
     const [cog_element, loadCogElement] = useState(<></>)
 
     useEffect(() => {
-        const generated_x = 0.1*window.innerWidth + Math.random() * (0.7*window.innerWidth)
-        const generated_y = 0.1*window.innerHeight + Math.random() * (0.7*window.innerHeight)
+        const cogX = 0.1*window.innerWidth + Math.random() * (0.7*window.innerWidth)
+        const cogY = 0.1*window.innerHeight + Math.random() * (0.7*window.innerHeight)
+        const cogOpacity = 0.025 + (Math.random() * 0.05)
 
-        const generated_duration = 25 + Math.floor(Math.random() * 100)
-        const generated_opacity = 0.025 + (Math.random() * 0.05)
+        const rotationPeriod = 25 + Math.floor(Math.random() * 100)
 
-        const cogspin_frames = keyframes`
+        const rotationFrames = keyframes`
             from {transform: rotate(0deg);}
             to {transform: rotate(360deg);}
         `
-        const cogspin = css`
-            ${cogspin_frames} ${generated_duration}s linear infinite
+        const cogRotationAnimation = css`
+            ${rotationFrames} ${rotationPeriod}s linear infinite
         `
 
         const StyledCog = styled.img`
-            animation: ${cogspin}
+            animation: ${cogRotationAnimation}
         `
 
         loadCogElement(
@@ -55,10 +43,10 @@ const Cog: React.FunctionComponent<CogProps> = ({src}) => {
                 src={src} 
                 style={{
                     position: "fixed",
-                    left: `${generated_x}px`,
-                    bottom: `${generated_y}px`,
+                    left: `${cogX}px`,
+                    bottom: `${cogY}px`,
                     zIndex: -99,
-                    opacity: `${generated_opacity}`,
+                    opacity: `${cogOpacity}`,
                 }}
             />
         )
@@ -74,21 +62,28 @@ const Cog: React.FunctionComponent<CogProps> = ({src}) => {
 const MovingCogs = () => {
     const [cogs, loadCogs] = useState()
 
-    const all_images_query_result = useStaticQuery(all_images_query)
-    const number_of_cogs = 10
+    const cogSvgFiles = useStaticQuery(graphql`
+        query AssetsPhotos {
+            allFile(filter: {sourceInstanceName: {eq: "images"}, 
+                    absolutePath: {regex: "/images\/cogs\/cog/"}})
+                {
+                    edges {
+                    node {
+                        id
+                        publicURL
+                    }
+                }
+            }
+        }`
+    )
+
+    const numberOfCogs = 10
 
     useEffect(() => {
-        const images_list = all_images_query_result.allFile.edges
-        const cogs_list = images_list.reduce((current_list: Array<string>, image: object) => {
-            const image_url = image.node.publicURL
-            if ( image_url.search(/cog(\d*).svg/i) > 0 ) {
-                return [...current_list, image_url]
-            }
-            return current_list
-        }, [])
+        const cogsPublicUrlList = cogSvgFiles.allFile.edges.map((cog: object) => cog?.node.publicURL)
 
-        const chosen_cog_ids = Array.from(Array(number_of_cogs).keys()).map(() => Math.floor(Math.random() * cogs_list.length))
-        const spawned_cogs = chosen_cog_ids.map((cog_id, index) => <Cog src={cogs_list[cog_id]} key={`cog_${index}`}/>)
+        const cogIdList = Array.from(Array(numberOfCogs).keys()).map(() => Math.floor(Math.random() * cogsPublicUrlList.length))
+        const spawned_cogs = cogIdList.map((cog_id, index) => <Cog src={cogsPublicUrlList[cog_id]} key={`cog_${index}`}/>)
         loadCogs(spawned_cogs)
     }, [])
 

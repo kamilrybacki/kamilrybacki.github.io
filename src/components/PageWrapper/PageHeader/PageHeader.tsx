@@ -12,13 +12,15 @@ const PageHeaderWrapper = tw.header`
 `
 
 const MenuWrapper = tw.div`
-    inline-flex
+    flex
     gap-0
     w-max
     max-w-5xl
     p-5
+    h-fit
 
     md:px-10
+    lg:py-10
 `
 
 const BigMenuAccent = tw.img`
@@ -32,8 +34,7 @@ const BigMenuAccent = tw.img`
     lg:p-0
     lg:rotate-180
     lg:w-auto
-    lg:h-1/2
-    lg:my-auto
+    lg:h-10
 `
 
 const ScaledNavbar = tw.div`
@@ -43,14 +44,14 @@ const ScaledNavbar = tw.div`
     mx-3
     h-0
 
+    md:relative
     md:-ml-8
-    md:origin-left
+    md:origin-top-left
     md:scale-[0.6]
     md:visible
 
+    lg:-top-2
     lg:ml-3
-    lg:relative
-    lg:top-3
     lg:scale-[0.75]
 `
 

@@ -64,7 +64,7 @@ const PostExcerpt = tw.p`
 `
 
 const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
-	const miniature_query = graphql`
+	const thumbnailsQuery = graphql`
 		query MiniatureQuery {
 			allFile(filter: {relativePath: {regex: "/thumbnails/"}}) {
 				edges {
@@ -78,9 +78,9 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
 	`
 	return(
         <StaticQuery
-          query={miniature_query}
-		  render = {(query_result) => {
-			const miniature_matches = query_result.allFile.edges.map(
+          query={thumbnailsQuery}
+		  render = {(queryResult) => {
+			const miniature_matches = queryResult.allFile.edges.map(
 				(edge: object) => {
 					if (edge.node.publicURL.includes(data.frontmatter.thumbnail)
 						&& edge.node.absolutePath.includes(type)){

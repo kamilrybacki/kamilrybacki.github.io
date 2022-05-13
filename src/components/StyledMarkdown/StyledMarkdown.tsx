@@ -63,6 +63,9 @@ const PreStyledMarkdownWrapper = styled.div`
     }
     & > p, div > p {
         margin-top: 1rem;
+        & > strong {
+            
+        }
     }
     & > ol, div > ol {
         list-style-type: number;
