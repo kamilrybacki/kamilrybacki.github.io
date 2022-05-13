@@ -27,7 +27,7 @@ const AboutMePicWrapper = tw.img`
 	drop-shadow-2xl
 	w-3/4
 	mx-auto
-	z-50
+	z-30
 
 	md:ml-auto
 	md:h-3/4
