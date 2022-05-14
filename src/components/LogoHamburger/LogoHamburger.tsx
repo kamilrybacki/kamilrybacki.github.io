@@ -92,7 +92,7 @@ const LogoHamburger = () => {
     return(
         <>
             <LogoHamburgerWrapper 
-                onClick={()=>{setIfMenuOpen(true)}}
+                onClick={()=>{setIfMenuOpen(!isMenuOpen)}}
                 onBlur={()=>{setIfMenuOpen(false)}}
             >
                 <LogoWrapper>

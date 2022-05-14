@@ -63,8 +63,8 @@ const PreStyledMarkdownWrapper = styled.div`
     }
     & > p, div > p {
         margin-top: 1rem;
-        & > strong {
-            
+        & > a {
+            text-decoration: underline;
         }
     }
     & > ol, div > ol {
@@ -75,6 +75,9 @@ const PreStyledMarkdownWrapper = styled.div`
             margin-top: 1rem;
             & > p, div > p {
                 margin-top: 1rem;
+                & > a {
+                    text-decoration: underline;
+                }
             }
             & > *:is(:first-child) {
                 margin-left: 0.5rem;

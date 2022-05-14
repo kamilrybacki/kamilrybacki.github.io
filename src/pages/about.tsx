@@ -13,23 +13,25 @@ const AboutMeWrapper = tw.section`
 	flex-col
 	gap-2
 	-ml-5
+	h-[100vh]
 
-	md:gap-4
+	md:w-[80vw]
+	md:gap-10
 	md:mx-auto
 	md:grid
 	md:grid-cols-2
-	md:w-4/5
 `
 
 const AboutMePicWrapper = tw.img`
 	rounded-full
-	border-4
+	border-2
 	drop-shadow-2xl
-	w-3/4
+	h-1/2
 	mx-auto
-	z-30
 
 	md:ml-auto
+	md:mr-0
+	md:border-4
 	md:h-3/4
 `
 
@@ -42,10 +44,10 @@ const AboutMeSectionParagraph = tw(StyledMarkdown)`
 
 const AboutPage = () => {
 	return (
-		<PageWrapper>
+		<PageWrapper footer={false}>
 			<AboutMeWrapper>
 				<AboutMePicWrapper src={AboutMePic}/>
-				<DropdownSections extraClass="mx-10 md:ml-5 my-10">
+				<DropdownSections extraClass="my-5 md:my-10 md:mx-10 md:ml-5">
 					<Section title="Who am I?">
 						<AboutMeSectionParagraph>
 							**In short**, I am a software developer and organizational journal editor from **Gdańsk**.
@@ -55,13 +57,20 @@ const AboutPage = () => {
 							and everyday life, which can be seen in **my projects**.
 						</AboutMeSectionParagraph>
 						<AboutMeSectionParagraph>
-							Apart from **softdev**, my interests are **electronics**, **3d printing** and spending time together 
-							with other people over **beer** and **horrendously complicated boardgames**.
+							Apart from **softdev**, my interests are **electronics**, [**3d printing**](https://www.printables.com/pl/social/226178-kamil-rybacki) and spending time together with other people over **beer** and [**horrendously complicated boardgames**](https://boardgamegeek.com/user/Kokoszko).
 						</AboutMeSectionParagraph>
 					</Section>
 					<Section title="What do I do?">
 						<AboutMeSectionParagraph>
-							**Profesionally**, I aim to provide solutions to problems encountered in **data mining** and **integration of external APIs/databases** with **user interfaces**.
+							**In terms of my programming job**, I aim to provide solutions to problems encountered in **data mining** and **integration of external APIs/databases** with **user interfaces**. 
+						</AboutMeSectionParagraph>
+						<AboutMeSectionParagraph>
+							Currently, I am **mostly** doing **backend** tasks and my go-to language is **Python** due to a
+							straightforward **integration with popular computation suites/platforms** (such as JupyterLab) and **custom APIs created with FastAPI and/or Celery**.
+						</AboutMeSectionParagraph>
+						<AboutMeSectionParagraph>
+							On the other hand, I am also an **organizational editor** of [**TASK Quarterly**](https://journal.mostwiedzy.pl/TASKQuarterly) **IT scientific journal** i.e. I am responsible for **establishing collaborations with indexation databases** 
+							(e.g. [Directory of Open Access Journals](https://doaj.org/toc/1428-6394)) or other organizations and I am **overseeing integration of tools** such as [Open Journal Systems](https://pkp.sfu.ca/ojs/) into our publishing workflow.
 						</AboutMeSectionParagraph>
 					</Section>
 					<Section title="What do I want?">

@@ -32,6 +32,7 @@ const SectionTitleWrapper = tw.div`
 	pb-2
 
 	hover:border-primary-500
+	hover:child:drop-shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
 `
 
 const SectionTitle = tw.span`
@@ -49,14 +50,6 @@ const SectionTitle = tw.span`
 	lg:text-5xl
 `
 
-const SectionTitleAccent = tw.div`
-	opacity-0
-	w-5
-	h-5
-	mt-3
-	bg-primary-500
-`
-
 const SectionContent = tw.main`
 	duration-100
 	origin-top
@@ -65,47 +58,16 @@ const SectionContent = tw.main`
 const Section: React.FunctionComponent<SectionProps> = ({children, title}) => {
 	const [sectionActive, setIfSectionActive] = React.useState(false)
 
-	const titleId = `${title.toLowerCase().split(' ').join('')}_title`
-	const accentId = `${title.toLowerCase().split(' ').join('')}_accent`
-	const contentId = `${title.toLowerCase().split(' ').join('')}_content`
-
 	const handleSectionState = () => {
-		const accentElement = document.getElementById(accentId)
-		accentElement?.classList.toggle('duration-500')
-		accentElement?.classList.toggle('rotate-90')
-		accentElement.style.clipPath = sectionActive ? "" : "polygon(50% 100%, 0 0, 100% 0)"
 		setIfSectionActive(!sectionActive)
-	}
-
-	const handleMouseHover = () => {
-		changeTitleTextShadow()
-		changeTitleAccent()
-	}
-
-	const changeTitleTextShadow = () => {
-		const titleElement = document.getElementById(titleId)
-		titleElement?.classList.toggle('drop-shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]')
-		titleElement?.classList.toggle('duration-100')
-	}
-
-	const changeTitleAccent = () => {
-		const accentElement = document.getElementById(accentId)
-		accentElement?.classList.toggle('duration-500')
-		accentElement?.classList.toggle('rotate-90')
-		accentElement?.classList.toggle('opacity-100')
 	}
 
 	return(
 		<SectionWrapper>
-			<SectionTitleWrapper 
-				onMouseEnter={handleMouseHover}
-				onMouseLeave={handleMouseHover}
-				onClick={handleSectionState} 
-			>
-				<SectionTitle id={titleId}>{title}</SectionTitle>
-				<SectionTitleAccent id={accentId}/>
+			<SectionTitleWrapper onClick={handleSectionState}>
+				<SectionTitle>{title}</SectionTitle>
 			</SectionTitleWrapper>
-			{sectionActive ? <SectionContent id={contentId}>{children}</SectionContent> : ''}
+			{sectionActive ? <SectionContent>{children}</SectionContent> : ''}
 		</SectionWrapper>
 	)
 }
