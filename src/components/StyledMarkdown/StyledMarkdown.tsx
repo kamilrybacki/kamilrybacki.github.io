@@ -41,9 +41,10 @@ type StyledMarkdownProps = {
 const PreStyledMarkdownWrapper = styled.div`
     & > div {
         margin-top: 0;
+        text-align: justify;
     }
     & > h1,h2,h3,h4,h5,h6 {
-        margin-top: 0.5rem;
+        margin-top: 1rem;
         margin-bottom: 0.5rem;
     }
     & > h1, div > h1 {
@@ -62,29 +63,29 @@ const PreStyledMarkdownWrapper = styled.div`
         font-weight: normal;
     }
     & > p, div > p {
+        text-align: justify;
         margin-top: 1rem;
         & > a {
             text-decoration: underline;
+        }
+        & > strong {
+            margin: none;
         }
     }
     & > ol, div > ol {
         list-style-type: number;
         & > li {
             margin-left: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             margin-top: 1rem;
             & > p, div > p {
                 margin-top: 1rem;
                 & > a {
                     text-decoration: underline;
                 }
-            }
-            & > *:is(:first-child) {
-                margin-left: 0.5rem;
-                margin-bottom: 0.5rem;
-            }
-            & > *:not(:first-child) {
-                margin-left: 1rem;
+                & > strong {
+                    margin: none;
+                }
             }
             & > pre {
                 & > div {
@@ -96,16 +97,36 @@ const PreStyledMarkdownWrapper = styled.div`
                 }
             }
         }
-        ul {
-            list-style-type: disc;
-        }
-        ol {
-            list-style-type: number;
-        }
-        a {
-            &:hover {
-                font-weight: bold;
+    }
+    & > ul, div > ul {
+        list-style-type: disc;
+        & > li {
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+            & > p, div > p {
+                margin-top: 1rem;
+                & > a {
+                    text-decoration: underline;
+                }
+                & > strong {
+                    margin: none;
+                }
             }
+            & > pre {
+                & > div {
+                    & > code {
+                        & > span {
+                            font-size: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    a {
+        &:hover {
+            font-weight: bold;
         }
     }
 `
