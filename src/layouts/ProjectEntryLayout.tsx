@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import {useState} from "react"
 
 import tw from "tailwind-styled-components";
 import { graphql, StaticQuery } from "gatsby";
@@ -214,9 +213,9 @@ const MarkdownTitle = tw.span`
 `
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
-	const [readme, setReadmeContent] = useState('')
-	const [spinner, setReadmeUi] = useState()
-	const [isReadmeLoaded, setIfReadmeLoaded] = useState(false)
+	const [readme, setReadmeContent] = React.useState('')
+	const [spinner, setReadmeUi] = React.useState()
+	const [isReadmeLoaded, setIfReadmeLoaded] = React.useState(false)
 
 	const handleReadmeLoad = async () => {
 		const fetchReadme = async () => {
