@@ -59,8 +59,8 @@ const PostExcerpt = tw.p`
 	text-sm
 	text-primary-400
 	p-1
-	overflow-hidden
-	h-[4rem]
+	overflow-x-hidden
+	h-full
 `
 
 const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
@@ -96,9 +96,9 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
 										} 
 									} ).filter( Boolean )[0]
 							}/><PostExcerpt>
-								{data.excerpt}
+								{data.frontmatter.abstract || data.excerpt}
 							</PostExcerpt></> : <PostExcerpt className="mt-10">
-								{data.excerpt}
+								{data.frontmatter.abstract || data.excerpt}
 							</PostExcerpt>  
 					}
 				</CardWrapper>

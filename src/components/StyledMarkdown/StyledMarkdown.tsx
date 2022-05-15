@@ -47,6 +47,10 @@ const PreStyledMarkdownWrapper = styled.div`
         margin-top: 1rem;
         margin-bottom: 0.5rem;
     }
+    & > img, div > img {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
     & > h1, div > h1 {
         font-weight: bold;
         font-size: 1.5rem;
@@ -60,7 +64,7 @@ const PreStyledMarkdownWrapper = styled.div`
     }
     & > h3, div > h3 {
         font-size: 1rem;
-        font-weight: normal;
+        font-weight: bold;
     }
     & > p, div > p {
         text-align: justify;
@@ -71,9 +75,17 @@ const PreStyledMarkdownWrapper = styled.div`
         & > strong {
             margin: none;
         }
+        & > img, div > img {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
     }
     & > ol, div > ol {
         list-style-type: number;
+        & > img, div > img {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
         & > li {
             margin-left: 1.5rem;
             margin-bottom: 0.5rem;
@@ -86,6 +98,10 @@ const PreStyledMarkdownWrapper = styled.div`
                 & > strong {
                     margin: none;
                 }
+            & > img, div > img {
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
             }
             & > pre {
                 & > div {
