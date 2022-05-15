@@ -5,6 +5,9 @@ const CardsWrapperLayout = tw.main`
 	w-full
 	flex
 	gap-6
+
+	flex-col
+	md:flex-row
 `
 
 const CardsWrapper = ({children}) => {
