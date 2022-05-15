@@ -55,7 +55,7 @@ This **source code of this repo** (sitting under `src/` directory) is organized 
 All React **components**, which could be easily **separated into autonomous entities** with their delegated functionalities, are kept
 **in `components` folder**. Each **component has its own subdirectory** with two TypeScript files: `index.ts` import stub file and
 the actual component source code `tsx` file. This is done for their **easier-to-read (and write/use) imports** in other parts
-of the code base e.g. `@components/Component` (the `@` part will be described shortly) instead of `./src/components/Component/Component.tsx`.
+of the code base e.g. `@components/Component` instead of `./components/Component/Component.tsx`.
 
 The filepath `@` aliases are set up in the `gatsby-config.js` file using `gatsby-plugin-alias-imports` library. This also **significantly** shortens import statements, so they are more digestible.
 
