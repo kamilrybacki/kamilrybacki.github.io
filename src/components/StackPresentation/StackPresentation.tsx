@@ -23,8 +23,8 @@ const StackPresentationWrapper = tw.div`
     overflow-y-scroll
     overscroll-contain
     scrollbar-thin
-    w-[90%]
     mx-auto
+    gap-1
 
     lg:mt-3
     lg:py-6

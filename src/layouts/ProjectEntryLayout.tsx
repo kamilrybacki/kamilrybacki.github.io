@@ -262,16 +262,17 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 							return edge.node.publicURL
 						} 
 					} 
-				)
+				).filter(Boolean)
 				return(
 					<PageWrapper extraClass="w-full">
 						<ProjectEntryLayoutWrapper>
 							<ProjectTitle>{context.frontmatter.title}</ProjectTitle>
 							<ProjectPresentationHero>
-								<GalleryWrapper>
-									<BigPicture src={matchingProjectGallery[0]}/>
-									<SmallerGallery pictures={matchingProjectGallery.slice(1)}/>
-								</GalleryWrapper>
+								{ matchingProjectGallery.length === 3 ? <GalleryWrapper>
+										<BigPicture src={matchingProjectGallery[0]}/>
+										<SmallerGallery pictures={matchingProjectGallery.slice(1)}/>
+									</GalleryWrapper> : <></>
+								}
 								<ProjectMetadata>
 									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold">Project info</p>
 									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
