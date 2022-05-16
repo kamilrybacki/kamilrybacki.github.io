@@ -81,7 +81,7 @@ const GalleryWrapper = tw.section`
 `
 
 const BigPicture = tw.img`
-	bg-secondary-100
+	bg-secondary-50
 	mb-4
 	w-screen
 	h-fit
