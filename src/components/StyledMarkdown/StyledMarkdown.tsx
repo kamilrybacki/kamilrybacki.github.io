@@ -61,10 +61,13 @@ const PreStyledMarkdownWrapper = styled.div`
     & > h2, div > h2 {
         font-size: 1.25rem;
         font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 1rem;
     }
     & > h3, div > h3 {
         font-size: 1rem;
-        font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 1rem;
     }
     & > p, div > p {
         text-align: justify;

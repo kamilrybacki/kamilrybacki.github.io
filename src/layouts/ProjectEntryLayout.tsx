@@ -23,10 +23,10 @@ const ProjectEntryLayoutWrapper = tw.article`
 const ProjectTitle = tw.h1`
 	font-heading
 	font-bold
-	text-primary-500
+	text-primary-900
 	text-3xl
 	mb-8
-	bg-primary-100
+	bg-secondary-100
 	px-4
 	pt-3
 	pb-2
@@ -81,10 +81,8 @@ const GalleryWrapper = tw.section`
 `
 
 const BigPicture = tw.img`
-	bg-secondary-500
+	bg-secondary-100
 	mb-4
-	border-8
-	border-primary-500
 	w-screen
 	h-fit
 
@@ -104,7 +102,7 @@ const ContentWrapper = tw.main`
 	mt-2
 	pb-10
 	w-full
-	bg-secondary-500
+	bg-secondary-50
 
 	md:mt-4
 `
@@ -121,9 +119,9 @@ const ReadmeButton = tw.button`
 
 	hover:translate-y-1
 	hover:border-solid
-	hover:bg-accent-100
+	hover:bg-secondary-200
 
-	active:bg-accent-500
+	active:bg-secondary-400
 `
 
 const SmallerGalleryWrapper = tw.div`
@@ -147,8 +145,6 @@ const SmallerGalleryWrapper = tw.div`
 `
 
 const SmallPicture = tw.img`
-	border-4
-	border-primary-500
 	w-screen
 	lg:w-[25vw]
 `
@@ -190,14 +186,13 @@ const ProjectLink = tw.a`
 	text-2xl
 	font-bold
 	font-heading
-	bg-primary-500
-	text-accent-500
+	bg-primary-900
+	text-accent-200
 	mx-auto
 	px-3
 	py-2
 
-	hover:bg-primary-900
-	hover:text-accent-200
+	hover:text-secondary-100
 `
 
 const MarkdownTitle = tw.span`

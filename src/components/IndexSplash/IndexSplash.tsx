@@ -80,7 +80,7 @@ const IndexProfilePicture = tw.img`
 	rounded-full
 	ring-4
 	ring-primary-500
-	bg-secondary-500
+	bg-secondary-100
 	w-2/3
 	m-auto
 

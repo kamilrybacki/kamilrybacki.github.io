@@ -3,7 +3,6 @@ import tw from "tailwind-styled-components";
 
 import NavbarMenu from "@components/NavbarMenu"
 import LogoHamburger from "@components/LogoHamburger"
-import LogoFirstHalfSource from "@images/logo_1.svg"
 
 const PageHeaderWrapper = tw.header`
     flex
@@ -23,20 +22,6 @@ const MenuWrapper = tw.div`
     lg:py-10
 `
 
-const BigMenuAccent = tw.img`
-    invisible
-    w-0
-    h-0
-
-    lg:visible
-    lg:relative
-    lg:m-0
-    lg:p-0
-    lg:rotate-180
-    lg:w-auto
-    lg:h-10
-`
-
 const ScaledNavbar = tw.div`
     w-fit
     invisible
@@ -51,7 +36,6 @@ const ScaledNavbar = tw.div`
     md:visible
 
     lg:-top-2
-    lg:ml-3
     lg:scale-[0.75]
 `
 
@@ -60,7 +44,6 @@ const PageHeader = () => {
         <PageHeaderWrapper>
             <MenuWrapper>
                 <LogoHamburger/>
-                <BigMenuAccent src={LogoFirstHalfSource}/>
                 <ScaledNavbar>
                     <NavbarMenu/>
                 </ScaledNavbar>

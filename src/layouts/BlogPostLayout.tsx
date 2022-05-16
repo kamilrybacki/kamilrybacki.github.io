@@ -89,7 +89,8 @@ const TagLink = tw(Link)`
 	px-2
 	py-0.25
 	rounded-sm
-	bg-primary-100
+	font-bold
+	bg-secondary-200
 	font-mono
 	tracking-tighter
 	text-sm
@@ -117,7 +118,7 @@ const ContentWrapper = tw.main`
 	px-5
 	pt-3
 	pb-10
-	bg-secondary-500
+	bg-secondary-50
 `
 
 const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageContext: context}) => {

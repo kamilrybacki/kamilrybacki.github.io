@@ -72,10 +72,10 @@ const SocialMedia = tw.div`
     w-fit
     justify-end
     duration-500
-    m-auto
     scale-75
     transform-origin-left
     cursor-pointer
+    ml-auto
 
     hover:-translate-x-2
     hover:-translate-y-2
@@ -86,7 +86,6 @@ const SocialMedia = tw.div`
     sm:py-2
     sm:px-4
     sm:scale-100
-    sm:ml-auto
 `
 
 const SocialMediaLabel = tw.p`

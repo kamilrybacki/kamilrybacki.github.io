@@ -54,7 +54,7 @@ const ContactFormSendButton = tw.button`
 	items-center
 	gap-5
 	bg-accent-500
-	text-secondary-500
+	text-secondary-100
 	font-heading
 	font-semibold
 	tracking-wide

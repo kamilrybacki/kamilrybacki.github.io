@@ -18,7 +18,7 @@ const DropdownSectionsWrapper = tw.div`
 `
 
 const SectionWrapper = tw.section`
-	bg-secondary-500
+	bg-secondary-50
 	px-5
 `
 
@@ -32,7 +32,7 @@ const SectionTitleWrapper = tw.div`
 	pb-2
 
 	hover:border-primary-500
-	hover:child:drop-shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
+	hover:child:drop-shadow-[0.25rem_0.25rem_0_rgba(0,0,0,0.2)]
 `
 
 const SectionTitle = tw.span`

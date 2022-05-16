@@ -2,8 +2,7 @@ import React from "react"
 import tw from "tailwind-styled-components"
 
 import NavbarMenu from "@components/NavbarMenu"
-import LogoFirstHalfSource from "@images/logo_1.svg"
-import LogoSecondHalfSource from "@images/logo_2.svg"
+import LogoSVG from "@images/logo.svg"
 
 const LogoHamburgerWrapper = tw.button`
     flex
@@ -12,10 +11,8 @@ const LogoHamburgerWrapper = tw.button`
     text-primary-500
     font-heading
     font-bold
-    text-4xl
-    md:text-6xl
-    w-[20vw]
-    h-[20vw]
+    w-[25vw]
+    h-[25vw]
     m-0
     p-3
     z-50
@@ -23,7 +20,7 @@ const LogoHamburgerWrapper = tw.button`
     rounded-full
     border-4
     border-primary-100
-    bg-secondary-500
+    bg-secondary-100
     duration-500
 
     focus:border-primary-500
@@ -52,13 +49,8 @@ const LogoWrapper = tw.div`
     justify-center
 `
 
-const LogoFirstHalf = tw.img`
+const LogoSource = tw.img`
     relative
-    m-0
-    p-0
-`
-
-const LogoSecondHalf = tw.img`
     m-0
     p-0
 `
@@ -66,10 +58,10 @@ const LogoSecondHalf = tw.img`
 const DropdownMenu = tw.div`
     fixed
     left-[10vw]
-    top-[20vw]
+    top-[25vw]
     px-3
     border-primary-500
-    bg-secondary-500
+    bg-secondary-100
     origin-top-left
     scale-75
     z-40
@@ -96,8 +88,7 @@ const LogoHamburger = () => {
                 onBlur={()=>{setIfMenuOpen(false)}}
             >
                 <LogoWrapper>
-                    <LogoFirstHalf src={LogoFirstHalfSource}/>
-                    <LogoSecondHalf src={LogoSecondHalfSource}/>
+                    <LogoSource src={LogoSVG}/>
                 </LogoWrapper>
             </LogoHamburgerWrapper>
             {menu}

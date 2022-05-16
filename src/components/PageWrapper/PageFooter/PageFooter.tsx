@@ -8,7 +8,6 @@ type PageFooterProps = {
 }
 
 const PageFooterWrapper = tw.footer`
-	bg-secondary-500
 	fixed
 	w-screen
 	bottom-0
@@ -17,6 +16,8 @@ const PageFooterWrapper = tw.footer`
 	justify-between
 	px-5
 	py-2
+	bg-secondary-50
+
 	md:py-4
 	md:px-10
 `

@@ -9,11 +9,12 @@ type StackPresentationProps = {
 }
 
 const StackPresentationWrapper = tw.div`
+    relative
     flex
     flex-wrap
     flex-auto
     justify-between
-    bg-secondary-500
+    bg-secondary-50
     p-3
     my-5
     border-2
