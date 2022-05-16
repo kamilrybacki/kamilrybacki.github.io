@@ -12,7 +12,7 @@ const CardWrapper = tw(Link)`
 	border-2
 	duration-500
 	shadow-[0.5rem_0.5rem_0_rgb(0,0,0)]
-	bg-secondary-100
+	bg-secondary-50
 
 	hover:translate-x-[0.25rem]
 	hover:translate-y-[0.25rem]
