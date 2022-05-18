@@ -32,7 +32,7 @@ const SectionTitleWrapper = tw.div`
 	pb-2
 
 	hover:border-primary-500
-	hover:child:drop-shadow-[0.25rem_0.25rem_0_rgba(0,0,0,0.2)]
+	hover:child:drop-shadow-[0.125rem_0.125rem_0_rgba(0,0,0)]
 `
 
 const SectionTitle = tw.span`
