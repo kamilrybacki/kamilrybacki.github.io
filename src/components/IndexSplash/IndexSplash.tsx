@@ -34,8 +34,9 @@ const Separator = tw.hr`
 	border-0
 	bg-primary-100
 
+	md:mb-5
+
 	lg:h-1
-	lg:mb-5
 	lg:-ml-1
 `
 
