@@ -17,7 +17,7 @@ const CardWrapper = tw(Link)`
 	hover:-translate-y-[0.5rem]
 	hover:shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
 
-	md:w-1/3
+	md:w-1/4
 `
 
 const FrontmatterWrapper = tw.div`
@@ -31,6 +31,7 @@ const PostTitle = tw.h1`
 	font-heading
 	font-bold
 	text-2xl
+	underline
 	mr-5
 `
 
@@ -43,8 +44,7 @@ const PostDate = tw.span`
 
 const ThumbnailMiniature = tw.img`
 	mt-1
-	mb-3
-	border-2
+	mb-5
 `
 
 const PostExcerpt = tw.p`
@@ -78,7 +78,7 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
 				<CardWrapper to={`/posts/${data.slug}`}>
 					<FrontmatterWrapper>
 						<PostTitle>{data.frontmatter.title}</PostTitle>
-						<PostDate>{data.frontmatter.date}</PostDate>
+						<PostDate>🕑 {data.frontmatter.date}</PostDate>
 					</FrontmatterWrapper> 
 					{
 						data.frontmatter.thumbnail !== 'none' ? <>

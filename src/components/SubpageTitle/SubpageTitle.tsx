@@ -1,9 +1,11 @@
 import tw from "tailwind-styled-components"
 
 const SubpageTitle = tw.h1`
-	text-4xl
+	text-5xl
 	font-heading
-	underline
+	font-bold
+	text-accent-500
+	tracking-wide
 	mb-10
 `
 

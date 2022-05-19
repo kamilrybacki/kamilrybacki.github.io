@@ -17,7 +17,7 @@ const posts_query = graphql`
         excerpt(pruneLength: 250)
         frontmatter {
           title
-          date(formatString: "YYYY MMMM Do")
+          date(formatString: "DD/MM/YY")
           thumbnail
         }
         slug
