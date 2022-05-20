@@ -25,23 +25,20 @@ jobs:
     steps:
       - name: Checking out
         uses: actions/checkout@v1
-      - run: pwd
-      - run: ls -l
       - name: Checking if links in repo Markdown files are up-to-date
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .md
-          folder-path: /github/workspace
       - name: Checking links in posts MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
-          folder-path: /github/workspace/content/posts
+          folder-path: content/posts
       - name: Checking links in projects MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
-          folder-path: /github/workspace/content/projects
+          folder-path: content/projects
