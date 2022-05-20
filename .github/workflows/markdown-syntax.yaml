@@ -29,10 +29,7 @@ jobs:
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
-          file-path: $(git ls-files '*.py')
       - name: Checking links in MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
-          file-extension: .mdx
-          file-path: $(git ls-files '*.py')
