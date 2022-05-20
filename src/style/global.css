@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@100;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Palanquin:wght@100;200;300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -29,4 +28,5 @@ body {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
+  background-color: theme('colors.secondary.50')
 }

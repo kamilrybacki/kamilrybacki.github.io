@@ -71,7 +71,7 @@ const PreStyledMarkdownWrapper = styled.div`
     }
     & > p, div > p {
         text-align: justify;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         & > a {
             text-decoration: underline;
         }
@@ -94,7 +94,7 @@ const PreStyledMarkdownWrapper = styled.div`
             margin-bottom: 0.5rem;
             margin-top: 1rem;
             & > p, div > p {
-                margin-top: 1rem;
+                margin-top: 0.5rem;
                 & > a {
                     text-decoration: underline;
                 }
@@ -153,6 +153,7 @@ const PreStyledMarkdownWrapper = styled.div`
 const StyledMarkdownWrapper = tw(PreStyledMarkdownWrapper)`
     p-0
     m-0
+    font-body
 
     md:p-2
 `

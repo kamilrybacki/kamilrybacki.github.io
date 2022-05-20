@@ -32,7 +32,7 @@ const Separator = tw.hr`
 	p-0
 	h-1
 	border-0
-	bg-primary-100
+	bg-accent-500
 
 	md:mb-5
 
@@ -52,7 +52,7 @@ const MainTitle = tw.title`
 
 const MainTitleWord = tw.h1`
 	text-5xl
-	text-primary-500
+	text-primary-900
 	font-bold
 
 	first-letter:text-accent-400
@@ -72,6 +72,7 @@ const SubTitle = tw.p`
 	mx-auto
 	font-body
 
+	md:my-1
 	md:text-3xl
 	md:child:hidden
 `
@@ -80,7 +81,7 @@ const IndexProfilePicture = tw.img`
 	p-0
 	rounded-full
 	ring-4
-	ring-primary-500
+	ring-primary-900
 	bg-secondary-100
 	w-2/3
 	m-auto

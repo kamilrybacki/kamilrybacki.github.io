@@ -40,7 +40,7 @@ const HorizontalSeparator = tw.div`
 const ContactRouteTitle = tw.span`
     relative
     font-italic 
-    text-primary-500 
+    text-primary-900 
     font-heading 
     underline
     underline-offset-4
@@ -89,10 +89,10 @@ const SocialMedia = tw.div`
 `
 
 const SocialMediaLabel = tw.p`
-    font-subheading
+    font-heading
     font-bold
     tracking-wider
-    text-primary-500
+    text-primary-900
     my-auto
     mr-5
 

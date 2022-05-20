@@ -8,7 +8,7 @@ const LogoHamburgerWrapper = tw.button`
     flex
     justify-center
     align-middle
-    text-primary-500
+    text-primary-900
     font-heading
     font-bold
     w-[25vw]

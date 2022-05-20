@@ -5,7 +5,7 @@ const SubpageTitle = tw.h1`
 	font-heading
 	font-bold
 	text-accent-500
-	tracking-wide
+	tracking-tighter
 	mb-10
 `
 

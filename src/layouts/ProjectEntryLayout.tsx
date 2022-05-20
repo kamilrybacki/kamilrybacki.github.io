@@ -32,8 +32,10 @@ const ProjectTitle = tw.h1`
 	pb-2
 	h-fit
 	text-center
-	border-2
-	border-primary-200
+	underline
+	decoration-dotted
+	decoration-from-font
+	underline-offset-[1rem]
 
 	max-w-full
 	md:text-6xl
@@ -269,7 +271,7 @@ const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({p
 									</GalleryWrapper> : <></>
 								}
 								<ProjectMetadata>
-									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold">Project info</p>
+									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold underline">Project info</p>
 									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
 									<Abstract>{context.frontmatter.abstract}</Abstract>
 									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>

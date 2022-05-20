@@ -53,6 +53,7 @@ const SectionTitle = tw.span`
 const SectionContent = tw.main`
 	duration-100
 	origin-top
+	mb-2
 `
 
 const Section: React.FunctionComponent<SectionProps> = ({children, title}) => {

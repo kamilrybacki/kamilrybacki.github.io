@@ -39,7 +39,7 @@ const AboutMeSectionParagraph = tw(StyledMarkdown)`
 	font-body
 	text-justify
 
-	md:text-2xl
+	md:text-xl
 `
 
 const AboutPage = () => {
