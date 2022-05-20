@@ -30,15 +30,16 @@ jobs:
         with:
           use-quiet-mode: yes
           file-extension: .md
+          folder-path: /github/workspace
       - name: Checking links in posts MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
-          folder-path: content/posts
+          folder-path: /github/workspace/content/posts
       - name: Checking links in projects MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
-          folder-path: content/projects
+          folder-path: /github/workspace/content/projects
