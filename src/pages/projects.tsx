@@ -1,12 +1,21 @@
-import React from "react"
-import { graphql, StaticQuery } from "gatsby"
+import React from 'react';
+import {graphql, StaticQuery} from 'gatsby';
+import tw from 'tailwind-styled-components';
 
-import CardsWrapper from "@components/CardsWrapper"
-import PostCard from "@components/PostCard" 
-import PageWrapper from "@components/PageWrapper" 
-import SubpageTitle from "@components/SubpageTitle"
+import CardsWrapper from '@components/CardsWrapper';
+import PostCard from '@components/PostCard';
+import PageWrapper from '@components/PageWrapper';
 
-const posts_query = graphql`
+const SubpageTitle = tw.h1`
+    text-5xl
+    font-heading
+    font-bold
+    text-accent-500
+    tracking-tighter
+    mb-10
+`;
+
+const postsQuery = graphql`
   query ProjectsQuery {
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC }
@@ -27,27 +36,31 @@ const posts_query = graphql`
       }
     }
   }
-`
+`;
 
 const PostsPage = () => {
-	return(
+  return (
     <>
       <PageWrapper>
         <SubpageTitle>My projects</SubpageTitle>
         <CardsWrapper>
           <StaticQuery
-            query={posts_query}
-            render={(query_result: object) => {
-              const posts = query_result.allMdx.nodes
-              return(
-                posts.map((post: object) => <PostCard data={post} key={post.id} type="projects"/>)
-              )
+            query={postsQuery}
+            render={(queryResult: object) => {
+              const posts = queryResult.allMdx.nodes;
+              return (
+                posts.map((post: object) => {
+                  return (
+                    <PostCard data={post} key={post.id} type="projects"/>
+                  );
+                })
+              );
             }}
           />
         </CardsWrapper>
       </PageWrapper>
     </>
-	)
-} 
+  );
+};
 
-export default PostsPage
+export default PostsPage;

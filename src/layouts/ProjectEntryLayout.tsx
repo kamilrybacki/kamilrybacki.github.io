@@ -1,306 +1,361 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from 'react';
 
-import tw from "tailwind-styled-components";
-import { graphql, StaticQuery } from "gatsby";
+import tw from 'tailwind-styled-components';
+import {graphql, StaticQuery} from 'gatsby';
 
-import PageWrapper from "@components/PageWrapper"
-import StackPresentation from "@components/StackPresentation"
-import StyledMarkdown from "@components/StyledMarkdown"
-import StyledSpinner from "@components/StyledSpinner"
+import PageWrapper from '@components/PageWrapper';
+import StackPresentation from '@components/StackPresentation';
+import StyledMarkdown from '@components/StyledMarkdown';
+import StyledSpinner from '@components/StyledSpinner';
 
 type ProjectEntryLayoutProps = {
-	pageContext: object
+    pageContext: object
 }
 
 type SmallerGalleryProps = {
-	pictures: Array<string>
+    pictures: Array<string>
 }
 
 const ProjectEntryLayoutWrapper = tw.article`
-	w-full
-`
+    w-full
+`;
 
 const ProjectTitle = tw.h1`
-	font-heading
-	font-bold
-	text-primary-900
-	text-3xl
-	mb-8
-	bg-secondary-100
-	px-4
-	pt-3
-	pb-2
-	h-fit
-	text-center
-	underline
-	decoration-dotted
-	decoration-from-font
-	underline-offset-[1rem]
+    font-heading
+    font-bold
+    text-primary-900
+    text-3xl
+    mb-8
+    bg-secondary-100
+    px-4
+    pt-3
+    pb-2
+    h-fit
+    text-center
+    underline
+    decoration-dotted
+    decoration-from-font
+    underline-offset-[1rem]
 
-	max-w-full
-	md:text-6xl
-	md:pt-5
-	md:pb-3
-	md:top-8
-	md:mb-12
-	md:text-left
-`
+    max-w-full
+    md:text-6xl
+    md:pt-5
+    md:pb-3
+    md:top-8
+    md:mb-12
+    md:text-left
+`;
 
 const ProjectPresentationHero = tw.div`
-	flex
-	flex-col
-	w-full
-	gap-4
-	h-fit
+    flex
+    flex-col
+    w-full
+    gap-4
+    h-fit
 
-	md:h-1/3
-	md:flex-row
-	md:justify-center
-	md:align-middle
-	md:gap-10
-	
-	lg:h-fit
-	lg:gap-20
-`
+    md:h-1/3
+    md:flex-row
+    md:justify-center
+    md:align-middle
+    md:gap-10
+    
+    lg:h-fit
+    lg:gap-20
+`;
 
 const GalleryWrapper = tw.section`
-	flex
-	flex-nowrap
-	gap-5
-	overflow-x-scroll
-	overflow-y-hidden
+    flex
+    flex-nowrap
+    gap-5
+    overflow-x-scroll
+    overflow-y-hidden
 
-	md:flex-col
-	md:gap-0
-	md:overflow-x-hidden
-	md:overflow-y-scroll
-	md:w-[50vw]
+    md:flex-col
+    md:gap-0
+    md:overflow-x-hidden
+    md:overflow-y-scroll
+    md:w-[50vw]
 
-	lg:w-fit
-	lg:flex-row
-	lg:gap-5
-	lg:overflow-hidden
-`
+    lg:w-fit
+    lg:flex-row
+    lg:gap-5
+    lg:overflow-hidden
+`;
 
 const BigPicture = tw.img`
-	bg-secondary-50
-	mb-4
-	w-screen
-	h-fit
+    bg-secondary-50
+    mb-4
+    w-screen
+    h-fit
 
-	md:w-full
-	md:mb-0
+    md:w-full
+    md:mb-0
 
-	lg:max-w-lg
-	lg:relative
-	lg:top-10
-`
+    lg:max-w-lg
+    lg:relative
+    lg:top-10
+`;
+
+const ContentTitle = tw.p`
+    mt-7
+    underline
+    text-2xl
+    font-heading
+    tracking-tighter
+    font-bold
+    
+    md:text-4xl
+`;
 
 const ContentWrapper = tw.main`
-	flex
-	flex-col
-	align-middle
-	justify-center
-	mt-2
-	pb-10
-	w-full
-	bg-secondary-50
+    flex
+    flex-col
+    align-middle
+    justify-center
+    mt-2
+    pb-10
+    w-full
+    bg-secondary-50
 
-	md:mt-4
-`
+    md:mt-4
+`;
 
 const ReadmeButton = tw.button`
-	mx-auto
-	my-5
-	p-2
-	text-sans
-	font-bold
-	border-[1px]	
-	border-primary-500
-	border-dashed
+    mx-auto
+    my-5
+    p-2
+    text-sans
+    font-bold
+    border-[1px]
+    border-primary-500
+    border-dashed
 
-	hover:translate-y-1
-	hover:border-solid
-	hover:bg-secondary-200
+    hover:translate-y-1
+    hover:border-solid
+    hover:bg-secondary-200
 
-	active:bg-secondary-400
-`
+    active:bg-secondary-400
+`;
 
 const SmallerGalleryWrapper = tw.div`
-	relative
-	flex
-	flex-row
-	flex-nowrap
-	flex-shrink-0
-	align-middle
-	justify-center
-	m-auto
-	gap-4
-	h-full
-	scrollbar-thin
+    relative
+    flex
+    flex-row
+    flex-nowrap
+    flex-shrink-0
+    align-middle
+    justify-center
+    m-auto
+    gap-4
+    h-full
+    scrollbar-thin
 
-	md:h-fit
-	md:mt-14
-	md:overflow-x-hidden
-	md:overflow-y-scroll
-	md:flex-col
-`
+    md:h-fit
+    md:mt-14
+    md:overflow-x-hidden
+    md:overflow-y-scroll
+    md:flex-col
+`;
 
 const SmallPicture = tw.img`
-	w-screen
-	lg:w-[25vw]
-`
+    w-screen
+    lg:w-[25vw]
+`;
 
+// eslint-disable-next-line max-len
 const SmallerGallery: React.FunctionComponent<SmallerGalleryProps> = ({pictures}) => {
-	return(
-		<SmallerGalleryWrapper>
-			{pictures.map((picture: string, index: number) => <SmallPicture src={picture} key={`smpic_${index}`}/>)}
-		</SmallerGalleryWrapper>
-	)
-}
+  return (
+    <SmallerGalleryWrapper>
+      {pictures.map((picture: string, index: number) => {
+        return (<SmallPicture src={picture} key={`smpic_${index}`}/>)
+      })}
+    </SmallerGalleryWrapper>
+  );
+};
 
 const ProjectMetadata = tw.div`
-	flex
-	flex-col
+    flex
+    flex-col
 
-	md:relative
-	md:w-1/4
-`
+    md:relative
+    md:w-1/4
+`;
+
+const ProjectInfoHeader = tw.p`
+    my-5
+    mx-auto
+    text-2xl
+    font-heading
+    font-bold
+    underline
+
+    md:text-3xl
+    lg:text-5xl
+`;
+
+const ProjectInfoSubheader = tw.p`
+    underline
+    text-sm
+    font-bold
+
+    md:text-lg
+`;
 
 const Abstract = tw.p`
-	font-sans
-	text-xl
-	w-full
-	mb-5
-	text-justify
-	
-	md:overflow-y-scroll
-	md:scrollbar-thin
-	md:h-20
-	lg-text-2xl
-	lg:h-40
-`
+    font-sans
+    text-xl
+    w-full
+    mb-5
+    text-justify
+    
+    md:overflow-y-scroll
+    md:scrollbar-thin
+    md:h-20
+    lg-text-2xl
+    lg:h-40
+`;
 
 const ProjectLink = tw.a`
-	relative
-	w-1/3
-	text-center
-	text-2xl
-	font-bold
-	font-heading
-	bg-primary-900
-	text-accent-200
-	mx-auto
-	px-3
-	py-2
+    relative
+    w-1/3
+    text-center
+    text-2xl
+    font-bold
+    font-heading
+    bg-primary-900
+    text-accent-200
+    mx-auto
+    px-3
+    py-2
 
-	hover:text-secondary-100
-`
+    hover:text-secondary-100
+`;
 
 const MarkdownTitle = tw.span`
     relative
     text-4xl
     font-bold
-	font-heading
-	underline
+    font-heading
+    underline
     w-full
     my-5
 
     md:mt-10
-`
+`;
 
+// eslint-disable-next-line max-len
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
-	const [readme, setReadmeContent] = React.useState('')
-	const [spinner, setReadmeUi] = React.useState()
-	const [isReadmeLoaded, setIfReadmeLoaded] = React.useState(false)
+  const [readme, setReadmeContent] = React.useState('');
+  const [spinner, setReadmeUi] = React.useState();
+  const [isReadmeLoaded, setIfReadmeLoaded] = React.useState(false);
 
-	const handleReadmeLoad = async () => {
-		const fetchReadme = async () => {
-			setReadmeUi(<StyledSpinner id="readme_spinner" size={"5rem"}/>)
-			await fetch(context.frontmatter.readme)
-			.then((fetch) => fetch.text())
-			.then((text) => {
-				return text === '404: Not Found' ? '<strong>Failed loading Readme!</strong> <br/> Check the link in the post frontmatter.' : text
-			})
-			.then((readme) => {
-				setReadmeContent(readme)
-			})
-		}
-		await fetchReadme()
-	}
+  const readmeError = `<strong>
+                          Failed loading Readme!
+                       </strong>
+                       <br/> Check the link in the post frontmatter.
+  `;
 
-	useEffect(()=>{
-		if (context.frontmatter.readme === 'none') document.getElementById('readme_button').outerHTML = ''
-		if (readme !== '') {
-			setIfReadmeLoaded(true)
-		}
-	}, [readme])
+  const handleReadmeLoad = async () => {
+    const fetchReadme = async () => {
+      setReadmeUi(<StyledSpinner id="readme_spinner" size={'5rem'}/>);
+      await fetch(context.frontmatter.readme)
+          .then((fetch) => fetch.text())
+          .then((text) => {
+            return text === '404: Not Found' ? readmeError : text;
+          })
+          .then((readme) => {
+            setReadmeContent(readme);
+          });
+    };
+    await fetchReadme();
+  };
 
-	const projectsGalleryListQuery = graphql`
-		query ProjectsThumbnailQuery {
-			allFile(filter: {relativePath: {regex: "/galleries/"}}) {
-				edges {
-					node {
-						absolutePath
-						publicURL
-					}
-				}
-			}
-		}
-	`
+  useEffect(()=>{
+    if (context.frontmatter.readme === 'none') {
+      const readmeButtonElement = document.getElementById('readme_button');
+      readmeButtonElement.outerHTML = '';
+    }
+    if (readme !== '') {
+      setIfReadmeLoaded(true);
+    }
+  }, [readme]);
 
-	return(
-		<StaticQuery
-			query={projectsGalleryListQuery}
-			render={(projectsGalleryList: object) => {
-				const matchingProjectGallery = projectsGalleryList.allFile.edges.map(
-					(edge: object) => {
-						if (edge.node.absolutePath.includes(`galleries/${context.frontmatter.gallery}`)){
-							return edge.node.publicURL
-						} 
-					} 
-				).filter(Boolean)
-				return(
-					<PageWrapper extraClass="w-full">
-						<ProjectEntryLayoutWrapper>
-							<ProjectTitle>{context.frontmatter.title}</ProjectTitle>
-							<ProjectPresentationHero>
-								{ matchingProjectGallery.length === 3 ? <GalleryWrapper>
-										<BigPicture src={matchingProjectGallery[0]}/>
-										<SmallerGallery pictures={matchingProjectGallery.slice(1)}/>
-									</GalleryWrapper> : <></>
-								}
-								<ProjectMetadata>
-									<p className="my-5 mx-auto text-2xl md:text-3xl lg:text-5xl font-heading font-bold underline">Project info</p>
-									<p className="my-2 underline text-sm md:text-lg font-bold">Quick rundown:</p>
-									<Abstract>{context.frontmatter.abstract}</Abstract>
-									<p className="mt-1 underline text-sm md:text-lg font-bold">Tech Stack:</p>
-									<StackPresentation techs={context.frontmatter.techs}/>
-									<ProjectLink href={context.frontmatter.link}>Link</ProjectLink>
-								</ProjectMetadata>
-							</ProjectPresentationHero>
-							<p className="mt-7 underline text-2xl md:text-4xl font-heading tracking-tighter font-bold">The whole story</p>
-							<ContentWrapper>
-								<StyledMarkdown mdx={true}>{context.content}</StyledMarkdown>
-								{isReadmeLoaded ? 
-									<>
-										<MarkdownTitle>Project Readme.md</MarkdownTitle>
-										<StyledMarkdown 
-											className="mt-10"
-											linkTarget="_blank"
-										>
-											{readme} 
-										</StyledMarkdown>
-									</>: 
-									spinner ? spinner : <ReadmeButton id="readme_button" onClick={() => {handleReadmeLoad()}}>Load Readme.md</ReadmeButton>
-								}
-							</ContentWrapper>
-						</ProjectEntryLayoutWrapper>
-					</PageWrapper>
-				)}
-			}
-		/>
-	)
-}
+  const projectsGalleryListQuery = graphql`
+        query ProjectsThumbnailQuery {
+            allFile(filter: {relativePath: {regex: "/galleries/"}}) {
+                edges {
+                    node {
+                        absolutePath
+                        publicURL
+                    }
+                }
+            }
+        }
+    `;
 
-export default ProjectEntryLayout
+  return (
+    <StaticQuery
+      query={projectsGalleryListQuery}
+      render={(projectsGalleryList: object) => {
+        const galleryPath = `galleries/${context.frontmatter.gallery}`;
+        const matchingProjectGallery = projectsGalleryList.allFile.edges.map(
+            (edge: object) => {
+              if (edge.node.absolutePath.includes(galleryPath)) {
+                return edge.node.publicURL;
+              }
+            },
+        ).filter(Boolean);
+        return (
+          <PageWrapper extraClass="w-full">
+            <ProjectEntryLayoutWrapper>
+              <ProjectTitle>{context.frontmatter.title}</ProjectTitle>
+              <ProjectPresentationHero>
+                { matchingProjectGallery.length === 3 ? <GalleryWrapper>
+                  <BigPicture src={matchingProjectGallery[0]}/>
+                  <SmallerGallery pictures={matchingProjectGallery.slice(1)}/>
+                </GalleryWrapper> : <></>
+                }
+                <ProjectMetadata>
+                  <ProjectInfoHeader>Project info</ProjectInfoHeader>
+                  <ProjectInfoSubheader className="my-2 ">
+                      Quick rundown:
+                  </ProjectInfoSubheader>
+                  <Abstract>{context.frontmatter.abstract}</Abstract>
+                  <ProjectInfoSubheader className="mt-1">
+                      Tech Stack:
+                  </ProjectInfoSubheader>
+                  <StackPresentation techs={context.frontmatter.techs}/>
+                  <ProjectLink href={context.frontmatter.link}>
+                      Link
+                  </ProjectLink>
+                </ProjectMetadata>
+              </ProjectPresentationHero>
+              <ContentTitle>The whole story</ContentTitle>
+              <ContentWrapper>
+                <StyledMarkdown mdx={true}>{context.content}</StyledMarkdown>
+                {isReadmeLoaded ?
+                    <>
+                      <MarkdownTitle>Project Readme.md</MarkdownTitle>
+                      <StyledMarkdown
+                        className="mt-10"
+                        linkTarget="_blank"
+                      >
+                        {readme}
+                      </StyledMarkdown>
+                    </>:
+                      spinner ?
+                      spinner :
+                      <ReadmeButton id="readme_button" onClick={() => {
+                        handleReadmeLoad();
+                      }}>Load Readme.md</ReadmeButton>
+                }
+              </ContentWrapper>
+            </ProjectEntryLayoutWrapper>
+          </PageWrapper>
+        );
+      }}
+    />
+  );
+};
+
+export default ProjectEntryLayout;

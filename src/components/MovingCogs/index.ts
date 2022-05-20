@@ -1,3 +1,5 @@
-import MovingCogs from "./MovingCogs"
+import MovingCogs from './MovingCogs';
+import Cog from './Cog';
 
-export default MovingCogs
+export {Cog};
+export default MovingCogs;

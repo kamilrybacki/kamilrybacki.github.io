@@ -1,21 +1,18 @@
-import React from "react";
-import tw from "tailwind-styled-components";
+import React from 'react';
 
-const CardsWrapperLayout = tw.main`
-	w-full
-	flex
-	gap-6
+import {CardsWrapperLayout} from './style';
 
-	flex-col
-	md:flex-row
-`
-
-const CardsWrapper = ({children}) => {
-	return(
-		<CardsWrapperLayout>
-			{children}
-		</CardsWrapperLayout>
-	)
+type CardsWrapperProps = {
+  children: JSX.Element | JSX.Element[]
 }
 
-export default CardsWrapper
+// eslint-disable-next-line max-len
+const CardsWrapper: React.FunctionComponent<CardsWrapperProps> = ({children}) => {
+  return (
+    <CardsWrapperLayout>
+      {children}
+    </CardsWrapperLayout>
+  );
+};
+
+export default CardsWrapper;

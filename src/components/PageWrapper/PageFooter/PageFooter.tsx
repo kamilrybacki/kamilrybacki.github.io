@@ -1,42 +1,20 @@
-import React from "react";
-import tw from "tailwind-styled-components"
+import React from 'react';
 
-import SocialMediaBar from "../../SocialMediaBar";
+import SocialMediaBar from '../../SocialMediaBar';
+import {PageFooterWrapper, PageFooterCopyright} from './style';
 
 type PageFooterProps = {
 
 }
-
-const PageFooterWrapper = tw.footer`
-	fixed
-	w-screen
-	bottom-0
-	flex
-	align-middle
-	justify-between
-	px-5
-	py-2
-	bg-secondary-50
-
-	md:py-4
-	md:px-10
-`
-
-const PageFooterCopyright = tw.h3`
-	font-heading
-	text-sm
-	origin-left
-	scale-90
-	md:scale-100
-`
-
 const PageFooter: React.FunctionComponent<PageFooterProps> = () => {
-	return(
-		<PageFooterWrapper>
-			<PageFooterCopyright>© Kamil Rybacki {new Date().getFullYear()}</PageFooterCopyright>
-			<SocialMediaBar/>
-		</PageFooterWrapper>
-	)
-}
+  return (
+    <PageFooterWrapper>
+      <PageFooterCopyright>
+          © Kamil Rybacki {new Date().getFullYear()}
+      </PageFooterCopyright>
+      <SocialMediaBar/>
+    </PageFooterWrapper>
+  );
+};
 
-export default PageFooter
+export default PageFooter;

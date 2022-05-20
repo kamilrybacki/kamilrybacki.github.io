@@ -1,3 +1,3 @@
-import CardsWrapper from "./CardsWrapper";
+import CardsWrapper from './CardsWrapper';
 
-export default CardsWrapper
+export default CardsWrapper;

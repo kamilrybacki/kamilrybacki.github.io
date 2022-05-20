@@ -1,3 +1,3 @@
-import StyledMarkdown from './StyledMarkdown'
+import StyledMarkdown from './StyledMarkdown';
 
-export default StyledMarkdown
+export default StyledMarkdown;

@@ -1,10 +1,10 @@
-import React from "react"
-import tw from "tailwind-styled-components"
+import React from 'react';
+import tw from 'tailwind-styled-components';
 
-import { SocialIcon } from "react-social-icons"
+import {SocialIcon} from 'react-social-icons';
 
-import PageWrapper, { TailwindThemeContext } from "@components/PageWrapper" 
-import ContactForm from "@components/ContactForm"
+import PageWrapper, {TailwindThemeContext} from '@components/PageWrapper';
+import ContactForm from '@components/ContactForm';
 
 const ContactRoutes = tw.section`
     flex
@@ -14,7 +14,7 @@ const ContactRoutes = tw.section`
 
     sm:gap-10
     sm:flex-row
-`
+`;
 
 const VerticalSeparator = tw.div`
     relative
@@ -24,7 +24,7 @@ const VerticalSeparator = tw.div`
 
     sm:h-4/5
     sm:w-1
-`
+`;
 
 const HorizontalSeparator = tw.div`
     relative
@@ -35,7 +35,17 @@ const HorizontalSeparator = tw.div`
     h-1
 
     sm:hidden
-`
+`;
+
+const ContactRouteInfoWrapper = tw.div`
+    flex
+    justify-center
+    gap-1
+    w-full
+
+    sm:justify-end
+    sm:gap-2
+`;
 
 const ContactRouteTitle = tw.span`
     relative
@@ -48,7 +58,14 @@ const ContactRouteTitle = tw.span`
 
     text-xl
     sm:text-4xl 
-`
+`;
+
+const ContactRouteTitleAccent = tw(ContactRouteTitle)`
+    font-bold
+    text-accent-500
+    decoration-accent-500
+    uppercase
+`;
 
 const ContactRoute = tw.div`
     relative
@@ -56,7 +73,7 @@ const ContactRoute = tw.div`
     p-1
 
     sm:w-fit
-`
+`;
 const SocialMediaWrapper = tw.div`
     flex
     flex-col
@@ -66,7 +83,7 @@ const SocialMediaWrapper = tw.div`
 
     sm:gap-5
     sm:mt-16
-`
+`;
 const SocialMedia = tw.div`
     flex
     w-fit
@@ -86,7 +103,7 @@ const SocialMedia = tw.div`
     sm:py-2
     sm:px-4
     sm:scale-100
-`
+`;
 
 const SocialMediaLabel = tw.p`
     font-heading
@@ -98,67 +115,76 @@ const SocialMediaLabel = tw.p`
 
     text-2xl
     md:text-3xl
-`
+`;
 
 const SocialMediaIconStyle = {
-    width: '5rem',
-    height: '5rem'
-}
+  width: '5rem',
+  height: '5rem',
+};
 
 const ContactPage = () => {
-    const [iconColor, setIconColor] = React.useState('black')
-    const tailwindTheme = React.useContext(TailwindThemeContext)
+  const [iconColor, setIconColor] = React.useState('black');
+  const tailwindTheme = React.useContext(TailwindThemeContext);
 
-    const socialMediaList =[
-        ["LinkedIn","https://www.linkedin.com/in/kamil-andrzej-rybacki/"],
-        ["GitHub", "https://github.com/KamilRybacki"],
-        ["Facebook", "https://www.facebook.com/kamilandrzejrybacki/"],
-        ["Instagram", "https://www.instagram.com/kamilandrzejrybacki/"],
-        ["Twitter", "https://twitter.com/rybacki_kamil"]
-    ]
+  const socialMediaList =[
+    ['LinkedIn', 'https://www.linkedin.com/in/kamil-andrzej-rybacki/'],
+    ['GitHub', 'https://github.com/KamilRybacki'],
+    ['Facebook', 'https://www.facebook.com/kamilandrzejrybacki/'],
+    ['Instagram', 'https://www.instagram.com/kamilandrzejrybacki/'],
+    ['Twitter', 'https://twitter.com/rybacki_kamil'],
+  ];
 
-    React.useEffect(()=>{
-        setIconColor(tailwindTheme?.colors ? tailwindTheme.colors.accent["500"] : "black")
-    },[tailwindTheme])
+  React.useEffect(()=>{
+    setIconColor(tailwindTheme?.colors ?
+        tailwindTheme.colors.accent['500'] :
+        'black');
+  }, [tailwindTheme]);
 
-    return (
-        <PageWrapper footer={false}>
-            <ContactRoutes>
-                <ContactRoute>
-                    <div className="flex justify-center gap-1 w-full sm:justify-end sm:gap-2">
-                        <ContactRouteTitle>You can </ContactRouteTitle>
-                        <ContactRouteTitle className="font-bold text-accent-500 decoration-accent-500 uppercase">catch me here</ContactRouteTitle>
-                        <ContactRouteTitle> ...</ContactRouteTitle>
-                    </div>
-                    <SocialMediaWrapper>
-                        {socialMediaList ? socialMediaList.map((socialMedia) => {
-                            const keyBase = socialMedia[1].split("/")[2]
-                            return(
-                                <SocialMedia onClick={()=>{ window.location.href=socialMedia[1]} } key={`${keyBase}_wrapper`}>
-                                    <SocialMediaLabel key={`${keyBase}_label`}>{socialMedia[0]}</SocialMediaLabel>
-                                    <SocialIcon
-                                        bgColor={iconColor}
-                                        url={socialMedia[1]}
-                                        key={`${keyBase}_icon`}
-                                        style={SocialMediaIconStyle}
-                                    />
-                                </SocialMedia>
-                            )}
-                        ): ''} 
-                    </SocialMediaWrapper>
-                </ContactRoute>
-                <VerticalSeparator/>
-                <HorizontalSeparator/>
-                <ContactRoute>
-                    <div className="flex justify-center gap-1 w-full sm:justify-start sm:gap-2">
-                        <ContactRouteTitle>... or use my contact </ContactRouteTitle>
-                        <ContactRouteTitle className="font-bold text-accent-500 decoration-accent-500 uppercase">form</ContactRouteTitle>
-                    </div>
-                    <ContactForm endpoint="https://formsubmit.co/d2f32602d5a315ecf57a8ddf8c45f3b9"/>
-                </ContactRoute>
-            </ContactRoutes>
-        </PageWrapper>
-    )
-}
+  return (
+    <PageWrapper footer={false}>
+      <ContactRoutes>
+        <ContactRoute>
+          <ContactRouteInfoWrapper>
+            <ContactRouteTitle>You can </ContactRouteTitle>
+            <ContactRouteTitle className="">catch me here</ContactRouteTitle>
+            <ContactRouteTitle> ...</ContactRouteTitle>
+          </ContactRouteInfoWrapper>
+          <SocialMediaWrapper>
+            {socialMediaList ? socialMediaList.map((socialMedia) => {
+              const keyBase = socialMedia[1].split('/')[2];
+              return (
+                <SocialMedia onClick={()=>{
+                  window.location.href=socialMedia[1];
+                } } key={`${keyBase}_wrapper`}>
+                  <SocialMediaLabel 
+                    key={`${keyBase}_label`}
+                  >
+                    {socialMedia[0]}
+                  </SocialMediaLabel>
+                  <SocialIcon
+                    bgColor={iconColor}
+                    url={socialMedia[1]}
+                    key={`${keyBase}_icon`}
+                    style={SocialMediaIconStyle}
+                  />
+                </SocialMedia>
+              );
+            },
+            ): ''}
+          </SocialMediaWrapper>
+        </ContactRoute>
+        <VerticalSeparator/>
+        <HorizontalSeparator/>
+        <ContactRoute>
+          <ContactRouteInfoWrapper>
+            <ContactRouteTitle>... or use my contact </ContactRouteTitle>
+            <ContactRouteTitleAccent>form</ContactRouteTitleAccent>
+          </ContactRouteInfoWrapper>
+          <ContactForm endpoint="https://formsubmit.co/d2f32602d5a315ecf57a8ddf8c45f3b9"/>
+        </ContactRoute>
+      </ContactRoutes>
+    </PageWrapper>
+  );
+};
 
-export default ContactPage
+export default ContactPage;
