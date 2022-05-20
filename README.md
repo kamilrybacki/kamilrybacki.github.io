@@ -92,8 +92,10 @@ to be created (namely `.css` and `.scss` sheets).
 Styled components is cool because it allows to define styled React components
 in an intuitive manner **and** its parser understands **Sass** syntax,
 so its magic can be used. Tailwind is fast and concise. But what if there was a way
-to combine both of them? **Welcome the awesome [Tailwind-Styled-Component library](https://github.com/MathiasGilson/tailwind-styled-component) by Mathias Gilson**
-that does just that. I've decided to use that for nice separation of styling code
+to combine both of them? Welcome the awesome
+[library](https://github.com/MathiasGilson/tailwind-styled-component)
+by Mathias Gilson that does just that.
+I've decided to use that for nice separation of styling code
 (just like in case of pure `styled-components` lib) i.e.
 **make the JSX portions of components cleaner**.
 If more advanced CSS is to be used, vanilla `styled-components`
