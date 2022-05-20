@@ -23,10 +23,10 @@ jobs:
   links:
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
-      - run: ls -l
       - name: Checking out
         uses: actions/checkout@v1
+      - run: pwd
+      - run: ls -l
       - name: Checking if links in repo Markdown files are up-to-date
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
