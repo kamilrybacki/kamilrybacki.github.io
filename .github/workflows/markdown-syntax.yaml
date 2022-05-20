@@ -29,16 +29,10 @@ jobs:
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
-          file-extension: .md
-      - name: Checking links in posts MDX files 
+          file-path: $(git ls-files '*.py')
+      - name: Checking links in MDX files 
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
-          folder-path: content/posts
-      - name: Checking links in projects MDX files 
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          use-quiet-mode: yes
-          file-extension: .mdx
-          folder-path: content/projects
+          file-path: $(git ls-files '*.py')
