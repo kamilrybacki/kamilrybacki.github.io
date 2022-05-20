@@ -8,7 +8,7 @@ jobs:
     strategy:
       steps:
       - name: Checking out
-      - uses: actions/checkout@v1
+        uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:

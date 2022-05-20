@@ -7,16 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out
-    - uses: actions/checkout@v1
+      uses: actions/checkout@v1
     - name: Using Markdown lint on MD files
-    - uses: articulate/actions-markdownlint@v1
+      uses: articulate/actions-markdownlint@v1
       with:
         config: markdownlint.json
         files: '**/*.md'
         ignore: node_modules
         version: 0.28.1
     - name: Using Markdown lint on MDX files
-    - uses: articulate/actions-markdownlint@v1
+      uses: articulate/actions-markdownlint@v1
       with:
         config: markdownlint.json
         files: '**/*.mdx'
@@ -26,21 +26,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out
-      - uses: actions/checkout@v1
+        uses: actions/checkout@v1
       - name: Checking if links in repo Markdown files are up-to-date
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .md
           folder-path: .
       - name: Checking links in posts MDX files 
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
           folder-path: ./content/posts
       - name: Checking links in projects MDX files 
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           use-quiet-mode: yes
           file-extension: .mdx
@@ -49,9 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out
-      - uses: actions/checkout@v1
+        uses: actions/checkout@v1
       - name: Spellchecking
-      - uses: rojopolis/spellcheck-github-actions@0.24.0
+        uses: rojopolis/spellcheck-github-actions@0.24.0
         with:
           source_files: ./content/**/* ./README.md
           task_name: Markdown
