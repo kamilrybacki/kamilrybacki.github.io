@@ -11,7 +11,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 13.x 
+          node-version: 14 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Typecheck
