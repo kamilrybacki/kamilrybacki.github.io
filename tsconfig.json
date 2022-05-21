@@ -23,5 +23,5 @@
       "@pages": ["src/pages"],
     }
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
 }
