@@ -1,46 +1,12 @@
 import React from 'react';
-import tw from 'tailwind-styled-components';
 
 import AboutMePic from '@images/aboutme_pic.jpg';
 import PageWrapper from '@components/PageWrapper';
-import StyledMarkdown from '@components/StyledMarkdown';
 import DropdownSections from '@components/DropdownSections';
 import {Section} from '@components/DropdownSections';
 
-const AboutMeWrapper = tw.section`
-    relative
-    flex
-    flex-col
-    gap-2
-    -ml-5
-    h-[100vh]
-
-    md:w-[80vw]
-    md:gap-10
-    md:mx-auto
-    md:grid
-    md:grid-cols-2
-`;
-
-const AboutMePicWrapper = tw.img`
-    rounded-full
-    border-2
-    drop-shadow-2xl
-    h-1/2
-    mx-auto
-
-    md:ml-auto
-    md:mr-0
-    md:border-4
-    md:h-3/4
-`;
-
-const AboutMeSectionParagraph = tw(StyledMarkdown)`
-    font-body
-    text-justify
-
-    md:text-xl
-`;
+import {AboutMeWrapper, AboutMePicWrapper,
+  AboutMeSectionParagraph} from '@style/pages/about';
 
 const AboutPage = () => {
   return (
@@ -54,12 +20,15 @@ const AboutPage = () => {
                  and organizational journal editor from **Gdańsk**.
             </AboutMeSectionParagraph>
             <AboutMeSectionParagraph>
-                I **love** playing around with new technologies 
+                I **love** playing around with new technologies
                 and **applying them** in my professional workflow
                 and everyday life, which can be seen in **my projects**.
             </AboutMeSectionParagraph>
             <AboutMeSectionParagraph>
-                Apart from **softdev**, my interests are **electronics**, [**3d printing**](https://www.printables.com/pl/social/226178-kamil-rybacki) and spending time together with other people over **beer** and [**horrendously complicated boardgames**](https://boardgamegeek.com/user/Kokoszko).
+                Apart from **softdev**, my interests are **electronics**,
+                [**3d printing**](https://www.printables.com/pl/social/226178-kamil-rybacki)
+                and spending time together with other people over **good craft beer**
+                and [**chill boardgames**](https://boardgamegeek.com/user/Kokoszko).
             </AboutMeSectionParagraph>
           </Section>
           <Section title="What do I do?">
@@ -77,8 +46,13 @@ const AboutPage = () => {
                 and **custom APIs created with FastAPI and/or Celery**.
             </AboutMeSectionParagraph>
             <AboutMeSectionParagraph>
-                On the other hand, I am also an **organizational editor** of [**TASK Quarterly**](https://journal.mostwiedzy.pl/TASKQuarterly) **IT scientific journal** i.e. I am responsible for **establishing collaborations with indexation databases**
-                (e.g. [Directory of Open Access Journals](https://doaj.org/toc/1428-6394)) or other organizations and I am **overseeing integration of tools** such as [Open Journal Systems](https://pkp.sfu.ca/ojs/) into our publishing workflow.
+                On the other hand, I am also an **organizational editor** of
+                [**TASK Quarterly**](https://journal.mostwiedzy.pl/TASKQuarterly)
+                **IT scientific journal** i.e. I am responsible
+                for **establishing collaborations with indexation databases**
+                (e.g. [Directory of Open Access Journals](https://doaj.org/toc/1428-6394))
+                or other organizations and I am **overseeing integration of tools**
+                such as [Open Journal Systems](https://pkp.sfu.ca/ojs/) into our publishing workflow.
             </AboutMeSectionParagraph>
           </Section>
           <Section title="What do I want?">

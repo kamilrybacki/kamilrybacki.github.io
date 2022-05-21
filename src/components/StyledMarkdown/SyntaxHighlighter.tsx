@@ -4,15 +4,12 @@ import {PrismLight} from 'react-syntax-highlighter';
 import {vscDarkPlus} from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import tsx from 'react-syntax-highlighter/dist/cjs/languages/prism/tsx';
-// eslint-disable-next-line max-len
 import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript';
 import scss from 'react-syntax-highlighter/dist/cjs/languages/prism/scss';
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
-// eslint-disable-next-line max-len
 import markdown from 'react-syntax-highlighter/dist/cjs/languages/prism/markdown';
 import json from 'react-syntax-highlighter/dist/cjs/languages/prism/json';
 import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python';
-// eslint-disable-next-line max-len
 import javascript from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript';
 import jsx from 'react-syntax-highlighter/dist/cjs/languages/prism/jsx';
 import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
@@ -29,7 +26,7 @@ PrismLight.registerLanguage('jsx', jsx);
 PrismLight.registerLanguage('css', css);
 
 type SyntaxHighlighterProps = {
-    children: JSX.Element | JSX.Element[]
+    children: string | string[]
     language: string
     hasMeta: boolean
     lineProps: object

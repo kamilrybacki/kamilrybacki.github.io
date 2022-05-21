@@ -6,6 +6,8 @@ import CardsWrapper from '@components/CardsWrapper';
 import PostCard from '@components/PostCard';
 import PageWrapper from '@components/PageWrapper';
 
+import {ProjectsQuery, Node} from '@root/graphql-types.ts';
+
 const SubpageTitle = tw.h1`
     text-5xl
     font-heading
@@ -15,8 +17,8 @@ const SubpageTitle = tw.h1`
     mb-10
 `;
 
-const postsQuery = graphql`
-  query ProjectsQuery {
+const projectsQuery = graphql`
+  query Projects {
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC }
       filter: {fileAbsolutePath: {regex: "/\/projects\//"}}
@@ -38,18 +40,18 @@ const postsQuery = graphql`
   }
 `;
 
-const PostsPage = () => {
+const ProjectsPage = () => {
   return (
     <>
       <PageWrapper>
         <SubpageTitle>My projects</SubpageTitle>
         <CardsWrapper>
           <StaticQuery
-            query={postsQuery}
-            render={(queryResult: object) => {
+            query={projectsQuery}
+            render={(queryResult: ProjectsQuery) => {
               const posts = queryResult.allMdx.nodes;
               return (
-                posts.map((post: object) => {
+                posts.map((post: Node) => {
                   return (
                     <PostCard data={post} key={post.id} type="projects"/>
                   );
@@ -63,4 +65,4 @@ const PostsPage = () => {
   );
 };
 
-export default PostsPage;
+export default ProjectsPage;

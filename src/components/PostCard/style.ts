@@ -4,7 +4,7 @@ import {Link} from 'gatsby';
 const CardWrapper = tw(Link)`
     p-5
     border-2
-    duration-500
+    duration-300
     bg-secondary-50
 
     hover:-translate-x-[0.5rem]

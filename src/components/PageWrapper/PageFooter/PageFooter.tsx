@@ -1,12 +1,9 @@
 import React from 'react';
 
-import SocialMediaBar from '../../SocialMediaBar';
+import SocialMediaBar from '@components/SocialMediaBar';
 import {PageFooterWrapper, PageFooterCopyright} from './style';
 
-type PageFooterProps = {
-
-}
-const PageFooter: React.FunctionComponent<PageFooterProps> = () => {
+const PageFooter: React.FunctionComponent = () => {
   return (
     <PageFooterWrapper>
       <PageFooterCopyright>

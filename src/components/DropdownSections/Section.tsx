@@ -9,7 +9,7 @@ type SectionProps = {
 }
 
 const Section: React.FunctionComponent<SectionProps> = ({children, title}) => {
-  const [sectionActive, setIfSectionActive] = React.useState(false);
+  const [sectionActive, setIfSectionActive] = React.useState<boolean>(false);
 
   const handleSectionState = () => {
     setIfSectionActive(!sectionActive);

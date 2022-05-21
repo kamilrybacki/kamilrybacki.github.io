@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["ES2017"],
+    "lib": ["ES2017", "dom"],
     "jsx": "react",
     "module": "commonjs", 
     "moduleResolution": "node",
@@ -11,5 +11,6 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["./src/**/*.ts", "src/components/StyledMarkdown/components.tsx"]
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["node_modules", "**/graphql-types.ts"]
 }

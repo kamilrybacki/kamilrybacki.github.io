@@ -1,7 +1,7 @@
 import React from 'react';
 import tw from 'tailwind-styled-components';
 
-import {TailwindThemeContext} from '@components/PageWrapper';
+import {TailwindThemeContext, TailwindThemeType} from '@components/PageWrapper';
 import {SpinnerCircularFixed} from 'spinners-react';
 
 const StyledCircularSpinner = tw(SpinnerCircularFixed)`
@@ -13,11 +13,11 @@ type StyledSpinnerProps = {
 }
 
 const StyledSpinner: React.FunctionComponent<StyledSpinnerProps> = ({size}) => {
-  const tailwindTheme: any = React.useContext(TailwindThemeContext);
+  const tailwindTheme: TailwindThemeType = React.useContext(TailwindThemeContext);
   return (
     <StyledCircularSpinner
       color={tailwindTheme.colors.accent['500']}
-      secondaryColor={tailwindTheme.colors.secondary['500']}
+      secondaryColor={tailwindTheme.colors.primary['900']}
       size={size}
     />
   );

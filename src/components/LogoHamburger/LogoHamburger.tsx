@@ -7,8 +7,8 @@ import {LogoHamburgerWrapper, LogoSource,
   LogoWrapper, DropdownMenu} from './style';
 
 const LogoHamburger = () => {
-  const [isMenuOpen, setIfMenuOpen] = React.useState(false);
-  const [menu, setMenu] = React.useState(<></>);
+  const [isMenuOpen, setIfMenuOpen] = React.useState<boolean>(false);
+  const [menu, setMenu] = React.useState<JSX.Element>(<></>);
 
   React.useEffect(()=>{
     setTimeout(()=>{

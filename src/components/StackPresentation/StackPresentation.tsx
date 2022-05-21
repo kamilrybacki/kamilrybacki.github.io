@@ -5,8 +5,10 @@ import StyledSpinner from '@components/StyledSpinner';
 
 import {StackPresentationWrapper, StackIcon} from './style';
 
+import {Edge} from '@root/graphql-types.ts';
+
 const imagesQuery = graphql`
- query TechsImagesQuery {
+ query TechImages {
     allFile(filter: {absolutePath: {regex: "/techs/"}}) {
         edges {
             node {
@@ -19,7 +21,7 @@ const imagesQuery = graphql`
 `;
 
 type StackPresentationProps = {
-    techs: Array<string>
+    techs: string[]
 }
 
 // eslint-disable-next-line max-len
@@ -30,15 +32,14 @@ const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({tec
   React.useEffect(()=>{
     setIcons(
         techIcons.allFile.edges
-            .filter((image) => techs.includes(image.node.name))
-            .map((image) => image.node.publicURL)
+            .filter((image: Edge) => techs.includes(image.node.name))
+            .map((image: Edge) => image.node.publicURL)
             .map((iconUrl: string, index: number) => {
-              const iconImgAlt = iconUrl.split('/').at(-1).replace('.svg', '');
               return (
                 <StackIcon
                   key={`stack_${index}`}
                   src={iconUrl}
-                  alt={iconImgAlt}
+                  alt='Stack icon'
                 />
               );
             }),

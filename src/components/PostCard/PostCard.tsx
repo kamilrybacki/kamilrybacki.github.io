@@ -4,14 +4,16 @@ import {graphql, StaticQuery} from 'gatsby';
 import {CardWrapper, FrontmatterWrapper,
   PostTitle, PostDate, PostExcerpt, ThumbnailMiniature} from './style';
 
+import {MiniaturesQuery, Edge, Mdx} from '@root/graphql-types.ts';
+
 type PostCardProps = {
-    data: object
+    data: Mdx
     type: string
 }
 
 const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
-  const thumbnailsQuery = graphql`
-        query MiniatureQuery {
+  const miniaturesQuery = graphql`
+        query Miniatures {
             allFile(filter: {relativePath: {regex: "/thumbnails/"}}) {
                 edges {
                     node {
@@ -24,10 +26,10 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
     `;
   return (
     <StaticQuery
-      query={thumbnailsQuery}
-      render = {(queryResult) => {
+      query={miniaturesQuery}
+      render = {(queryResult: MiniaturesQuery) => {
         return (
-          <CardWrapper to={`/posts/${data.slug}`}>
+          <CardWrapper to={`/${type}/${data.slug}`}>
             <FrontmatterWrapper>
               <PostTitle>{data.frontmatter.title}</PostTitle>
               <PostDate>🕑 {data.frontmatter.date}</PostDate>
@@ -35,7 +37,7 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
             {
                 data.frontmatter.thumbnail !== 'none' ? <>
                   <ThumbnailMiniature src={
-                    queryResult.allFile.edges.map((edge: object) => {
+                    queryResult.allFile.edges.map((edge: Edge) => {
                       const thumbnail = data.frontmatter.thumbnail;
                       const isPresent = edge.node.publicURL.includes(thumbnail);
                       if (isPresent && edge.node.absolutePath.includes(type)) {

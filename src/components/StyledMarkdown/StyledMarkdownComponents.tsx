@@ -3,14 +3,15 @@ import React from 'react';
 import rangeParser from 'parse-numeric-range';
 import SyntaxHighlighter from './SyntaxHighlighter';
 
-const highlightFunction: CallableFunction = (node: any) => {
+import {Node} from '@root/graphql-types.ts';
+
+const highlightFunction: CallableFunction = (node: Node) => {
   return (lineId: number) => {
     if (node?.data?.meta) {
       const regexp = /{([\d,-]+)}/;
       const metadata = node.data.meta?.replace(/\s/g, '');
-      const strlineNumbers = regexp?.test(metadata) ?
-                             regexp?.exec(metadata)[1] :
-                             '0';
+      // @ts-ignore
+      const strlineNumbers = regexp?.test(metadata) ? regexp?.exec(metadata)[1] : '0';
       const highlightLines = rangeParser(strlineNumbers);
       const highlight = highlightLines;
       const data: string | null = highlight.includes(lineId) ?
@@ -22,7 +23,7 @@ const highlightFunction: CallableFunction = (node: any) => {
 };
 
 interface codeFunctionInterface {
-  node: any;
+  node: Node;
   children: JSX.Element | JSX.Element[];
 }
 

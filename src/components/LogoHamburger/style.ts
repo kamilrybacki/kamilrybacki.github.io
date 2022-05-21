@@ -17,7 +17,7 @@ const LogoHamburgerWrapper = tw.button`
     border-4
     border-primary-100
     bg-secondary-100
-    duration-500
+    duration-300
 
     focus:border-primary-500
     focus:text-primary-600
