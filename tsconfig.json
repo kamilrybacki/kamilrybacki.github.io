@@ -10,8 +10,6 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "include": ["./src/**/*.ts", "./src/**/*.tsx"],
-    "exclude": ["node_modules", "**/graphql-types.ts"],
     "baseUrl": ".",
     "paths" : {
       "@root": ["."],
@@ -24,5 +22,7 @@
       "@components": ["src/components"],
       "@pages": ["src/pages"],
     }
-  }
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["node_modules", "**/graphql-types.ts"],
 }
