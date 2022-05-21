@@ -10,18 +10,6 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "baseUrl": ".",
-    "paths" : {
-      "@root": ["."],
-      "@src": ["src"],
-      "@style": ["src/style"],
-      "@images": ["assets/images"],
-      "@templates": ["assets/templates"],
-      "@posts": ["assets/posts"],
-      "@projects": ["assets/projects"],
-      "@components": ["src/components"],
-      "@pages": ["src/pages"],
-    }
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"],
   "exclude": ["node_modules", "**/graphql-types.ts"],
