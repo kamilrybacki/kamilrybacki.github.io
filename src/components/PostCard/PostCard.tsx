@@ -4,7 +4,7 @@ import {graphql, StaticQuery} from 'gatsby';
 import {CardWrapper, FrontmatterWrapper,
   PostTitle, PostDate, PostExcerpt, ThumbnailMiniature} from './style';
 
-import {MiniaturesQuery, Edge, Mdx} from '@root/graphql-types.ts';
+import {MiniaturesQuery, Edge, Mdx} from '@root/graphql-types';
 
 type PostCardProps = {
     data: Mdx

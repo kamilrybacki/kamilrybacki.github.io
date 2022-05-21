@@ -3,7 +3,7 @@ import React from 'react';
 import rangeParser from 'parse-numeric-range';
 import SyntaxHighlighter from './SyntaxHighlighter';
 
-import {Node} from '@root/graphql-types.ts';
+import {Node} from '@root/graphql-types';
 
 const highlightFunction: CallableFunction = (node: Node) => {
   return (lineId: number) => {

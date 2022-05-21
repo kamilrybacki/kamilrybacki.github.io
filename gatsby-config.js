@@ -6,7 +6,7 @@ module.exports = {
   plugins: [
     'gatsby-plugin-styled-components', 'gatsby-plugin-image',
     'gatsby-plugin-sharp', 'gatsby-transformer-sharp', 'gatsby-plugin-postcss',
-    'gatsby-plugin-graphql-codegen',
+    'gatsby-plugin-graphql-codegen', 'gatsby-plugin-tsconfig-paths',
     {
       resolve: `gatsby-plugin-alias-imports`,
       options: {

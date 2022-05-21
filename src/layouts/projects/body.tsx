@@ -52,7 +52,9 @@ const ProjectBody: React.FunctionComponent<ProjectBodyProps> = ({readme, title, 
   React.useEffect(()=>{
     if (readme === 'none') {
       const readmeButtonElement = document.getElementById('readme_button');
-      readmeButtonElement.outerHTML = '';
+      if (readmeButtonElement) {
+        readmeButtonElement.outerHTML = '';
+      }
     }
     if (currentReadme !== '') {
       setIfReadmeLoaded(true);

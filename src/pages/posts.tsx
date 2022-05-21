@@ -6,7 +6,7 @@ import CardsWrapper from '@components/CardsWrapper';
 import PostCard from '@components/PostCard';
 import PageWrapper from '@components/PageWrapper';
 
-import {PostsQuery, Node} from '@root/graphql-types.ts';
+import {PostsQuery, Node} from '@root/graphql-types';
 
 const SubpageTitle = tw.h1`
     text-5xl

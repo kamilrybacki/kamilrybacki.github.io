@@ -5,7 +5,7 @@ import StyledSpinner from '@components/StyledSpinner';
 
 import {StackPresentationWrapper, StackIcon} from './style';
 
-import {Edge} from '@root/graphql-types.ts';
+import {Edge} from '@root/graphql-types';
 
 const imagesQuery = graphql`
  query TechImages {
