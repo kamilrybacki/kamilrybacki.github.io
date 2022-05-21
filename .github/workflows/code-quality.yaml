@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Checking out
         uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14 
         uses: actions/setup-node@v1
         with:
           node-version: 14 

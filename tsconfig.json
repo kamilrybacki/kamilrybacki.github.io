@@ -5,6 +5,7 @@
     "jsx": "react",
     "module": "commonjs", 
     "moduleResolution": "node",
+    "types": ["node"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -22,6 +23,5 @@
       "@pages": ["src/pages"],
     }
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
-  "exclude": ["node_modules", "**/graphql-types.ts"],
+  "include": ["./src/**/*.ts"],
 }
