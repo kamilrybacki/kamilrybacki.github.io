@@ -26,14 +26,13 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true
                 md:mx-3 md:my-auto
     `;
   return (
-    <>
-      <Link
-        to={to}
-        className={`${talwindRegularStyling} ${tailwindHoverStyling}`}
-      >
-        {children}
-      </Link>
-    </>
+    // @ts-ignore
+    <Link
+      to={to}
+      className={`${talwindRegularStyling} ${tailwindHoverStyling}`}
+    >
+      {children}
+    </Link>
   );
 };
 

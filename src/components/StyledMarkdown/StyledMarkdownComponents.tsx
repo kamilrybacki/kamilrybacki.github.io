@@ -24,20 +24,22 @@ const highlightFunction: CallableFunction = (node: Node) => {
 
 interface codeFunctionInterface {
   node: Node;
-  children: JSX.Element | JSX.Element[];
+  children: string | string[];
 }
 
 const StyledMarkdownComponents: object = {
   code({node, children}: codeFunctionInterface) {
     const match = /language-(\w+)/.exec('codeStyle' || '');
     return match ? (
-      <SyntaxHighlighter
-        language={match[1]}
-        hasMeta={node?.data?.meta}
-        lineProps={highlightFunction(node)}
-      >
-        {children}
-      </SyntaxHighlighter>
+      <>
+        <SyntaxHighlighter
+          language={match[1]}
+          hasMeta={node?.data?.meta}
+          lineProps={highlightFunction(node)}
+        >
+          {children}
+        </SyntaxHighlighter>
+      </>
     ) : (<code className='codeStyle'>{children}</code>);
   },
 };

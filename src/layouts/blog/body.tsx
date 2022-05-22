@@ -6,7 +6,7 @@ import PageWrapper from '@components/PageWrapper';
 
 import {ThumbnailWrapper, InformationWrapper, PostTitle,
   PostDate, TagsWrapper, TagsLabel, TagLink,
-  FrontmatterSeparator, ContentWrapper} from './style.ts';
+  FrontmatterSeparator, ContentWrapper} from './style';
 
 type BlogBodyPost = {
     thumbnailUrl: string

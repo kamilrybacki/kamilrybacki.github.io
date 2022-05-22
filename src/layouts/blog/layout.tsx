@@ -23,6 +23,7 @@ const postsThumbnailsQuery = graphql`
 
 const BlogPostLayout: React.FunctionComponent<BlogPostLayoutProps> = ({pageContext: context}) => {
   return (
+    // @ts-ignore
     <StaticQuery
       query={postsThumbnailsQuery}
       render={(postsThumbnailsList: Mdx) => {

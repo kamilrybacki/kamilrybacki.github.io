@@ -137,21 +137,19 @@ type StyledMarkdownProps = {
 // eslint-disable-next-line max-len
 const StyledMarkdown: React.FunctionComponent<StyledMarkdownProps> = ({mdx = false, children, ...rest}) => {
   return (
-    <>
-      <StyledMarkdownWrapper>
-        {mdx ? <MDXRenderer>
+    // @ts-ignore
+    <StyledMarkdownWrapper> {mdx ? <MDXRenderer>
+      {children}
+    </MDXRenderer> :
+        <ReactMarkdown
+          {...rest}
+          components={StyledMarkdownComponents}
+          rehypePlugins={[rehypeRaw]}
+        >
           {children}
-        </MDXRenderer> :
-          <ReactMarkdown
-            {...rest}
-            components={StyledMarkdownComponents}
-            rehypePlugins={[rehypeRaw]}
-          >
-            {children}
-          </ReactMarkdown>
-        }
-      </StyledMarkdownWrapper>
-    </>
+        </ReactMarkdown>
+    }
+    </StyledMarkdownWrapper>
   );
 };
 

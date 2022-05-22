@@ -3,8 +3,7 @@ import React from 'react';
 import {SocialIcon} from 'react-social-icons';
 import tw from 'tailwind-styled-components';
 
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '/tailwind.config.js';
+import {TailwindThemeContext, TailwindThemeType} from '@components/PageWrapper';
 
 const SocialMediaBarWrapper = tw.div`
     flex
@@ -17,7 +16,7 @@ const SocialMediaBarWrapper = tw.div`
 `;
 
 const SocialMediaBar = () => {
-  const currentConfig = resolveConfig(tailwindConfig);
+  const tailwindTheme: TailwindThemeType = React.useContext(TailwindThemeContext);
   const links =[
     'https://www.linkedin.com/in/kamil-andrzej-rybacki/',
     'https://github.com/KamilRybacki',
@@ -29,7 +28,7 @@ const SocialMediaBar = () => {
     <SocialMediaBarWrapper>
       {
         links.map((link) => link ? <SocialIcon
-          bgColor={currentConfig.theme.colors.primary['500']}
+          bgColor={tailwindTheme.theme.colors?.primary['500']}
           url={link}
           style={{
             width: '1.5rem',

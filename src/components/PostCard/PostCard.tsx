@@ -25,6 +25,7 @@ const PostCard: React.FunctionComponent<PostCardProps> = ({data, type}) => {
         }
     `;
   return (
+    // @ts-ignore
     <StaticQuery
       query={miniaturesQuery}
       render = {(queryResult: MiniaturesQuery) => {

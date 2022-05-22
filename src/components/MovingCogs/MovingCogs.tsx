@@ -5,7 +5,7 @@ import {graphql, useStaticQuery} from 'gatsby';
 
 import Cog from './Cog';
 
-import {AssetsPhotosQuery, Node} from '@root/graphql-types'
+import {AssetsPhotosQuery, Node} from '@root/graphql-types';
 
 const CogsWrapper = tw.div`
     -z-50

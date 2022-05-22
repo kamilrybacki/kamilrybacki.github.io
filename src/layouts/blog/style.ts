@@ -3,7 +3,11 @@ import styled from 'styled-components';
 
 import {Link} from 'gatsby';
 
-const ThumbnailWrapper = styled.div`
+type ThumbnailWrapperProps = {
+    thumbnail: string
+}
+
+const ThumbnailWrapper = styled.div<ThumbnailWrapperProps>`
     position: relative;
     display: flex;
     padding: 2rem;

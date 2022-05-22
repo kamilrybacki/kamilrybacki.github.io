@@ -35,6 +35,7 @@ type SyntaxHighlighterProps = {
 // eslint-disable-next-line max-len
 const SyntaxHighlighter:React.FunctionComponent<SyntaxHighlighterProps> = ({children, language, hasMeta, lineProps}) => {
   return (
+    // @ts-ignore
     <PrismLight
       style={vscDarkPlus}
       language={language}

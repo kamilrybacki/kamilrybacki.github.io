@@ -43,7 +43,7 @@ const ContactPage = () => {
                 <SocialMedia onClick={()=>{
                   window.location.href=socialMedia[1];
                 } } key={`${keyBase}_wrapper`}>
-                  <SocialMediaLabel 
+                  <SocialMediaLabel
                     key={`${keyBase}_label`}
                   >
                     {socialMedia[0]}

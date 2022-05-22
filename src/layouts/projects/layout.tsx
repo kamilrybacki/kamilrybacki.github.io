@@ -25,6 +25,7 @@ const projectsGalleryList = graphql`
 
 const ProjectEntryLayout: React.FunctionComponent<ProjectEntryLayoutProps> = ({pageContext: context}) => {
   return (
+    // @ts-ignore
     <StaticQuery
       query={projectsGalleryList}
       render={(projectsGalleryList: ProjectsThumbnailsQuery) => {

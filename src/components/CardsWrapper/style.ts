@@ -9,4 +9,4 @@ const CardsWrapperLayout = tw.main`
     md:flex-row
 `;
 
-export {CardsWrapperLayout}
+export {CardsWrapperLayout};
