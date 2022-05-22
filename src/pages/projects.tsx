@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import {graphql, StaticQuery} from 'gatsby';
 import tw from 'tailwind-styled-components';
