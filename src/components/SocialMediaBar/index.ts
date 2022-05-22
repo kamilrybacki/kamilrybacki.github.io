@@ -1,3 +1,3 @@
-import SocialMediaBar from "./SocialMediaBar"
+import SocialMediaBar from './SocialMediaBar';
 
-export default SocialMediaBar
+export default SocialMediaBar;

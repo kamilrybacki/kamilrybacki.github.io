@@ -1,9 +1,7 @@
-const fs = require('fs')
+module.exports.createPages = async ({graphql, actions, reporter}) => {
+  const {createPage} = actions;
 
-module.exports.createPages = async ({ graphql, actions, reporter }) => {
-    const { createPage } = actions
-
-    const posts_result = await graphql(`
+  const postsResult = await graphql(`
       {
         allMdx(
             sort: {fields: [frontmatter___date]}
@@ -23,9 +21,9 @@ module.exports.createPages = async ({ graphql, actions, reporter }) => {
                 }
             }
         }
-    }`)
+    }`);
 
-    const projects_result = await graphql(`
+  const projectsResult = await graphql(`
     {
         allMdx(
             sort: {fields: [frontmatter___date]}
@@ -50,52 +48,50 @@ module.exports.createPages = async ({ graphql, actions, reporter }) => {
                 }
             }
         }
-    }`)
+    }`);
 
-    if (posts_result.errors || projects_result.errors) {
-        reporter.panicOnBuild(`Error while running GraphQL query.`)
-        return
-    }
+  if (postsResult.errors || projectsResult.errors) {
+    reporter.panicOnBuild(`Error while running GraphQL query.`);
+    return;
+  }
 
-    posts_result.data.allMdx.edges.forEach(({ node }) => {
-        const path = `/posts/${node.slug}`
-        createPage({
-            path,
-            component: require.resolve("./src/layouts/BlogPostLayout.tsx"),
-            context: {
-                pagePath: path,
-                frontmatter: {
-                    title: node.frontmatter.title,
-                    date: node.frontmatter.date,
-                    tags: node.frontmatter.tags.split(" ") || [],
-                    time: node.timeToRead,
-                    thumbnail: node.frontmatter.thumbnail,
-                },
-                content: node.body,
-        }})
-    })
+  postsResult.data.allMdx.edges.forEach(({node}) => {
+    const path = `/posts/${node.slug}`;
+    createPage({
+      path,
+      component: require.resolve('./src/layouts/blog/layout.tsx'),
+      context: {
+        pagePath: path,
+        frontmatter: {
+          title: node.frontmatter.title,
+          date: node.frontmatter.date,
+          tags: node.frontmatter.tags.split(' ') || [],
+          thumbnail: node.frontmatter.thumbnail,
+        },
+        content: node.body,
+      }});
+  });
 
-    projects_result.data.allMdx.edges.forEach(({ node }) => {
-        const path = `/posts/${node.slug}`
+  projectsResult.data.allMdx.edges.forEach(({node}) => {
+    const path = `/projects/${node.slug}`;
 
-        createPage({
-            path,
-            component: require.resolve("./src/layouts/ProjectEntryLayout.tsx"),
-            context: {
-                pagePath: path,
-                frontmatter: {
-                    title: node.frontmatter.title,
-                    date: node.frontmatter.date,
-                    tags: node.frontmatter.tags.split(" ") || [],
-                    time: node.timeToRead,
-                    thumbnail: node.frontmatter.thumbnail,
-                    gallery: node.frontmatter.gallery,
-                    techs: node.frontmatter.techs.split(" ") ?? [],
-                    abstract: node.frontmatter.abstract,
-                    link: node.frontmatter.link || '',
-                    readme: node.frontmatter.readme || ''
-                },
-                content: node.body,
-        }})
-    })
-}
+    createPage({
+      path,
+      component: require.resolve('./src/layouts/projects/layout.tsx'),
+      context: {
+        pagePath: path,
+        frontmatter: {
+          title: node.frontmatter.title,
+          date: node.frontmatter.date,
+          tags: node.frontmatter.tags.split(' ') || [],
+          thumbnail: node.frontmatter.thumbnail,
+          gallery: node.frontmatter.gallery,
+          techs: node.frontmatter.techs.split(' ') ?? [],
+          abstract: node.frontmatter.abstract,
+          link: node.frontmatter.link || '',
+          readme: node.frontmatter.readme || '',
+        },
+        content: node.body,
+      }});
+  });
+};

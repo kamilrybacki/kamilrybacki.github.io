@@ -1,5 +1,5 @@
-import DropdownSections from './DropdownSections'
-import { Section } from './DropdownSections'
+import DropdownSections from './DropdownSections';
+import Section from './Section';
 
-export { Section }
-export default DropdownSections
+export {Section};
+export default DropdownSections;

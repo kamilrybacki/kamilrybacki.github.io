@@ -1,3 +1,3 @@
-import LogoHamburger from './LogoHamburger'
+import LogoHamburger from './LogoHamburger';
 
-export default LogoHamburger
+export default LogoHamburger;

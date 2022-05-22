@@ -1,3 +1,3 @@
-import StackPresentation from "./StackPresentation"
+import StackPresentation from './StackPresentation';
 
-export default StackPresentation
+export default StackPresentation;

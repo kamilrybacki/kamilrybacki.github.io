@@ -1,3 +1,3 @@
-import MenuLink from "./MenuLink"
+import MenuLink from './MenuLink';
 
-export default MenuLink
+export default MenuLink;
