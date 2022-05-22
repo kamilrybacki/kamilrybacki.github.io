@@ -1,6 +1,9 @@
 import React from 'react';
 
+// @ts-ignore
 import SocialMediaBar from '@components/SocialMediaBar';
+:w
+
 import {PageFooterWrapper, PageFooterCopyright} from './style';
 
 const PageFooter: React.FunctionComponent = () => {

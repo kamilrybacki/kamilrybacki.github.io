@@ -1,9 +1,10 @@
 import React from 'react';
 
+// @ts-ignore
 import PageWrapper from '@components/PageWrapper';
 
-import {FourOhFourWrapper, FourOhFour,
-  FourOhFourErrorMessage, HomeLink} from '@style/pages/404';
+// @ts-ignore
+import {FourOhFourWrapper, FourOhFour, FourOhFourErrorMessage, HomeLink} from '@style/pages/404';
 
 const NotFoundPage = () => {
   return (

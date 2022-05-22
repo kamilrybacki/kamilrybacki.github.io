@@ -3,6 +3,7 @@ import React from 'react';
 import {SocialIcon} from 'react-social-icons';
 import tw from 'tailwind-styled-components';
 
+// @ts-ignore
 import {TailwindThemeContext, TailwindThemeType} from '@components/PageWrapper';
 
 const SocialMediaBarWrapper = tw.div`

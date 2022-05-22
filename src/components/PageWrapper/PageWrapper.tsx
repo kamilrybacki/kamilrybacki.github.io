@@ -5,6 +5,7 @@ import tw from 'tailwind-styled-components';
 import PageHeader from './PageHeader';
 import PageFooter from './PageFooter';
 import PageContent from './PageContent';
+// @ts-ignore
 import MovingCogs from '@components/MovingCogs';
 
 const PageWrapperLayout = tw.main`

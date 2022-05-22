@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from 'tailwind-styled-components';
 
+// @ts-ignore
 import {TailwindThemeContext, TailwindThemeType} from '@components/PageWrapper';
 import {SpinnerCircularFixed} from 'spinners-react';
 

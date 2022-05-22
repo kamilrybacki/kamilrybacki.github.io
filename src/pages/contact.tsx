@@ -2,12 +2,17 @@ import React from 'react';
 
 import {SocialIcon} from 'react-social-icons';
 
+// @ts-ignore
 import PageWrapper, {TailwindThemeContext, TailwindThemeType} from '@components/PageWrapper';
+// @ts-ignore
 import ContactForm from '@components/ContactForm';
 
-import {ContactRoutes, VerticalSeparator, HorizontalSeparator,
-  ContactRouteInfoWrapper, ContactRouteTitle, ContactRouteTitleAccent, ContactRoute,
-  SocialMediaWrapper, SocialMedia, SocialMediaLabel, SocialMediaIconStyle} from '@style/pages/contact';
+// @ts-ignore
+import {ContactRoutes, VerticalSeparator, HorizontalSeparator, ContactRouteInfoWrapper} from '@style/pages/contact';
+// @ts-ignore
+import {ContactRouteTitle, ContactRouteTitleAccent, ContactRoute} from '@style/pages/contact';
+// @ts-ignore
+import {SocialMediaWrapper, SocialMedia, SocialMediaLabel, SocialMediaIconStyle} from '@style/pages/contact';
 
 const socialMediaList =[
   ['LinkedIn', 'https://www.linkedin.com/in/kamil-andrzej-rybacki/'],

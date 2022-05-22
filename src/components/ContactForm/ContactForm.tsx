@@ -1,5 +1,6 @@
 import React from 'react';
 
+// @ts-ignore
 import SendIconSVG from '@images/send.svg';
 
 import {ContactFormWrapper, ContactInputLabel,

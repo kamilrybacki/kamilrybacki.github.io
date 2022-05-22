@@ -1,6 +1,8 @@
 import React from 'react';
 
+// @ts-ignore
 import NavbarMenu from '@components/NavbarMenu';
+// @ts-ignore
 import LogoSVG from '@images/logo.svg';
 
 import {LogoHamburgerWrapper, LogoSource,

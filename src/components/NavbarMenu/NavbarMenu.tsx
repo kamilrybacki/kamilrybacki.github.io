@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from 'tailwind-styled-components';
 
+// @ts-ignore
 import MenuLink from '@components/MenuLink';
 
 const NavbarMenuWrapper = tw.nav`

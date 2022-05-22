@@ -1,6 +1,8 @@
 import React from 'react';
 
+// @ts-ignore
 import NavbarMenu from '@components/NavbarMenu';
+// @ts-ignore
 import ProfPic from '@images/prof_pic.svg';
 
 import {IndexSplashWrapper, TitleWithNavbar,

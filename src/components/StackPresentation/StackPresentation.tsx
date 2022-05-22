@@ -1,10 +1,12 @@
 import React from 'react';
 import {useStaticQuery, graphql} from 'gatsby';
 
+// @ts-ignore
 import StyledSpinner from '@components/StyledSpinner';
 
 import {StackPresentationWrapper, StackIcon} from './style';
 
+// @ts-ignore
 import {Edge} from '@root/graphql-types';
 
 const imagesQuery = graphql`
