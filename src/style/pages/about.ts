@@ -1,5 +1,6 @@
 import tw from 'tailwind-styled-components';
 
+// @ts-ignore
 import StyledMarkdown from '@components/StyledMarkdown';
 
 const AboutMeWrapper = tw.section`

@@ -1,12 +1,16 @@
 import React from 'react';
 
+// @ts-ignore
 import AboutMePic from '@images/aboutme_pic.jpg';
+// @ts-ignore
 import PageWrapper from '@components/PageWrapper';
+// @ts-ignore
 import DropdownSections from '@components/DropdownSections';
+// @ts-ignore
 import {Section} from '@components/DropdownSections';
 
-import {AboutMeWrapper, AboutMePicWrapper,
-  AboutMeSectionParagraph} from '@style/pages/about';
+// @ts-ignore
+import {AboutMeWrapper, AboutMePicWrapper, AboutMeSectionParagraph} from '@style/pages/about';
 
 const AboutPage = () => {
   return (

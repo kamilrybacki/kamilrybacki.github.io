@@ -4,6 +4,7 @@ import {graphql, StaticQuery} from 'gatsby';
 
 import ProjectBody from './body';
 
+// @ts-ignore
 import {Mdx, Edge, ProjectsThumbnailsQuery} from '@root/graphql-types';
 
 type ProjectEntryLayoutProps = {

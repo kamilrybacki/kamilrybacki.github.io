@@ -3,6 +3,7 @@ import {graphql, StaticQuery} from 'gatsby';
 
 import BlogBody from './body';
 
+// @ts-ignore
 import {Mdx, Node} from '@root/graphql-types';
 
 type BlogPostLayoutProps = {
