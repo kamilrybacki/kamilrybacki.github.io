@@ -29,7 +29,7 @@ const SocialMediaBar = () => {
     <SocialMediaBarWrapper>
       {
         links.map((link) => link ? <SocialIcon
-          bgColor={tailwindTheme.theme.colors?.primary['500']}
+          bgColor={tailwindTheme.colors?.primary['500']}
           url={link}
           style={{
             width: '1.5rem',
