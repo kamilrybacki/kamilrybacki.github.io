@@ -78,6 +78,7 @@ const SEO = () => {
   }, []);
 
   return (
+    // @ts-ignore
     <Helmet>
       <meta charSet="utf-8" />
       <title>{seoMetadata.title}</title>
