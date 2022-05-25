@@ -4,6 +4,7 @@ import React from 'react';
 import NavbarMenu from '@components/NavbarMenu';
 // @ts-ignore
 import LogoHamburger from '@components/LogoHamburger';
+// @ts-ignore
 import SEO from '@components/SEO';
 
 import {PageHeaderWrapper, MenuWrapper, ScaledNavbar} from './style';

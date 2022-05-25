@@ -3,8 +3,10 @@ import {Helmet} from 'react-helmet';
 import {useLocation} from '@reach/router';
 import {useStaticQuery, graphql} from 'gatsby';
 
+// @ts-ignore
 import generalSiteCard from '@images/card.png';
 
+// @ts-ignore
 import {ContentAndMetadataQuery, Node} from '@root/graphql-types';
 
 const seoQuery = graphql`
