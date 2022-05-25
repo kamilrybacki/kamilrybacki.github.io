@@ -11,7 +11,8 @@ const CardWrapper = tw(Link)`
     hover:-translate-y-[0.5rem]
     hover:shadow-[0.25rem_0.25rem_0_rgb(0,0,0)]
 
-    md:w-1/4
+    md:w-1/2
+    lg:w-1/4
 `;
 
 const FrontmatterWrapper = tw.div`

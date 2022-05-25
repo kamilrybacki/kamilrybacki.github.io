@@ -1,7 +1,8 @@
 module.exports = {
   siteMetadata: {
-    title: 'Kamil Rybacki"s site',
-    siteUrl: 'https://kamilrybacki.github.io',
+    baseUrl: 'https://kamilrybacki.github.io',
+    title: 'Kamil Rybacki\'s site',
+    description: 'My personal portfolio and blogging site',
   },
   plugins: [
     'gatsby-plugin-styled-components', 'gatsby-plugin-image',
