@@ -7,6 +7,7 @@ import PageFooter from './PageFooter';
 import PageContent from './PageContent';
 // @ts-ignore
 import MovingCogs from '@components/MovingCogs';
+// @ts-ignore
 import SEO from './SEO';
 
 const PageWrapperLayout = tw.main`
