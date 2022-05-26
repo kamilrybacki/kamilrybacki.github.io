@@ -7,6 +7,9 @@ import {useStaticQuery, graphql} from 'gatsby';
 import generalSiteCard from '@images/card.png';
 
 // @ts-ignore
+import favico from '@images/favico.png';
+
+// @ts-ignore
 import {ContentAndMetadataQuery, Node} from '@root/graphql-types';
 
 const seoQuery = graphql`
@@ -82,12 +85,13 @@ const SEO = () => {
     <Helmet>
       <meta charSet="utf-8" />
       <title>{seoMetadata.title}</title>
+      <link rel="icon" type="image/png" href={favico} sizes="16x16" />
+      <link href={seoMetadata.url} rel="canonical"/>
       <meta property="og:url" content={seoMetadata.url}/>
       <meta property="og:type" content={seoMetadata.type}/>
       <meta property="og:title" content={seoMetadata.ogTitle}/>
       <meta property="og:description" content={seoMetadata.description}/>
       <meta property="og:image" content={seoMetadata.thumbnail} />
-      <link href={seoMetadata.url} rel="canonical"/>
     </Helmet>
   );
 };

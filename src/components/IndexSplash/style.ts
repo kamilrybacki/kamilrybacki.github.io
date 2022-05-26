@@ -46,7 +46,7 @@ const MainTitle = tw.h1`
     lg:px-5
 `;
 
-const MainTitleWord = tw.h2`
+const MainTitleWord = tw.span`
     text-5xl
     text-primary-900
     font-bold
