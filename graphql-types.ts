@@ -247,6 +247,8 @@ export type DirectoryCtimeArgs = {
 export type Site = Node & {
   buildTime?: Maybe<Scalars['Date']>;
   siteMetadata?: Maybe<SiteSiteMetadata>;
+  port?: Maybe<Scalars['Int']>;
+  host?: Maybe<Scalars['String']>;
   polyfill?: Maybe<Scalars['Boolean']>;
   pathPrefix?: Maybe<Scalars['String']>;
   jsxRuntime?: Maybe<Scalars['String']>;
@@ -799,6 +801,8 @@ export type QueryAllDirectoryArgs = {
 export type QuerySiteArgs = {
   buildTime?: InputMaybe<DateQueryOperatorInput>;
   siteMetadata?: InputMaybe<SiteSiteMetadataFilterInput>;
+  port?: InputMaybe<IntQueryOperatorInput>;
+  host?: InputMaybe<StringQueryOperatorInput>;
   polyfill?: InputMaybe<BooleanQueryOperatorInput>;
   pathPrefix?: InputMaybe<StringQueryOperatorInput>;
   jsxRuntime?: InputMaybe<StringQueryOperatorInput>;
@@ -1985,6 +1989,8 @@ export type SiteFieldsEnum =
   | 'siteMetadata___title'
   | 'siteMetadata___description'
   | 'siteMetadata___baseUrl'
+  | 'port'
+  | 'host'
   | 'polyfill'
   | 'pathPrefix'
   | 'jsxRuntime'
@@ -2120,6 +2126,8 @@ export type SiteGroupConnectionGroupArgs = {
 export type SiteFilterInput = {
   buildTime?: InputMaybe<DateQueryOperatorInput>;
   siteMetadata?: InputMaybe<SiteSiteMetadataFilterInput>;
+  port?: InputMaybe<IntQueryOperatorInput>;
+  host?: InputMaybe<StringQueryOperatorInput>;
   polyfill?: InputMaybe<BooleanQueryOperatorInput>;
   pathPrefix?: InputMaybe<StringQueryOperatorInput>;
   jsxRuntime?: InputMaybe<StringQueryOperatorInput>;
@@ -3392,15 +3400,15 @@ export type AssetsPhotosQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AssetsPhotosQuery = { allFile: { edges: Array<{ node: { id: string, publicURL?: string | null } }> } };
 
-export type MiniaturesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MiniaturesQuery = { allFile: { edges: Array<{ node: { absolutePath: string, publicURL?: string | null } }> } };
-
 export type ContentAndMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ContentAndMetadataQuery = { site?: { siteMetadata?: { title?: string | null, description?: string | null } | null } | null, allMdx: { nodes: Array<{ excerpt: string, slug?: string | null, frontmatter?: { title: string } | null }> } };
+
+export type MiniaturesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MiniaturesQuery = { allFile: { edges: Array<{ node: { absolutePath: string, publicURL?: string | null } }> } };
 
 export type TechImagesQueryVariables = Exact<{ [key: string]: never; }>;
 

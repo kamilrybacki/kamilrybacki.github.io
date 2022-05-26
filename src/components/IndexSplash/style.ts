@@ -36,7 +36,7 @@ const Separator = tw.hr`
     lg:-ml-1
 `;
 
-const MainTitle = tw.title`
+const MainTitle = tw.h1`
     flex
     font-heading
     mx-auto
@@ -46,7 +46,7 @@ const MainTitle = tw.title`
     lg:px-5
 `;
 
-const MainTitleWord = tw.h1`
+const MainTitleWord = tw.h2`
     text-5xl
     text-primary-900
     font-bold

@@ -39,7 +39,7 @@ const SEO = () => {
     'url': '',
   });
   const seoQueriedData: ContentAndMetadataQuery = useStaticQuery(seoQuery);
-  const canonicalURL = useLocation().href.split('?')[0];
+  const canonicalURL = (typeof window !== 'undefined') ? useLocation().href.split('?')[0]: '';
 
   const determinePageType = () => {
     const checkIfUrlIsSubpathOf = (pattern: string) => {

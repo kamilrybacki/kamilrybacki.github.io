@@ -7,6 +7,7 @@ import PageFooter from './PageFooter';
 import PageContent from './PageContent';
 // @ts-ignore
 import MovingCogs from '@components/MovingCogs';
+import SEO from './SEO';
 
 const PageWrapperLayout = tw.main`
     relative
@@ -32,6 +33,7 @@ type PageWrapperProps = {
 const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({header = true, footer = true, extraClass = '', children}) => {
   return (
     <TailwindThemeContext.Provider value={currentTailwindTheme}>
+      <SEO/>
       <PageWrapperLayout className={extraClass}>
         <MovingCogs/>
         {header ? <PageHeader/> : ''}

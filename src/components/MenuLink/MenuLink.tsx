@@ -16,7 +16,7 @@ type MenuLinkProps = {
 // eslint-disable-next-line max-len
 const MenuLink: React.FunctionComponent<MenuLinkProps> = ({to, size, bold = true, pop = false, children}) => {
   // eslint-disable-next-line max-len
-  const popTextStyle = 'text-accent-500 underline decoration-primary-300 decoration-2 underline-offset-[0.2rem] decoration-dotted';
+  const popTextStyle = 'text-accent-500 underline decoration-accent-500 decoration-2 underline-offset-[0.2rem] decoration-dotted';
   const talwindRegularStyling = `
                 relative block w-fit h-full mx-auto my-1 
                 text-${size}xl font-heading px-4 py-3
