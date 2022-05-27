@@ -47,8 +47,21 @@ type SEOMetadataProps = {
   }
 }
 
+const defaultSeoMetadata: SEOMetadataProps = {
+  title: '',
+  type: '',
+  ogTitle: '',
+  description: '',
+  thumbnail: '',
+  url: '',
+  social: {
+    fbAppId: 0,
+    twitterUserTag: '',
+  },
+};
+
 const SEO = () => {
-  const [seoMetadata, setSeoMetadata] = React.useState<SEOMetadataProps>({});
+  const [seoMetadata, setSeoMetadata] = React.useState<SEOMetadataProps>(defaultSeoMetadata);
   const seoQueriedData: ContentAndMetadataQuery = useStaticQuery(seoQuery);
   const canonicalURL = (typeof window !== 'undefined') ? useLocation().href.split('?')[0]: '';
 
