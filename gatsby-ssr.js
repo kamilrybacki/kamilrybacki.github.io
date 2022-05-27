@@ -1,11 +1,10 @@
-import './src/style/global.css';
-
-export const onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
-  /**
-     * @type {any[]} headComponents
-     */
+module.exports = onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
+  headComponents.sort((a, b) => {
+    if (a.props && a.props['my-seo']) return -1;
+    if (b.props && b.props['my-seo']) return 1;
+    return 0;
+  });
 
-  headComponents.sort((a) => (a.props && a.props['my-seo']) ? -1 : 1);
   replaceHeadComponents(headComponents);
 };
