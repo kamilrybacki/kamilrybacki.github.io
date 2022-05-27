@@ -33,17 +33,18 @@ type PageWrapperProps = {
 // eslint-disable-next-line max-len
 const PageWrapper: React.FunctionComponent<PageWrapperProps> = ({header = true, footer = true, extraClass = '', children}) => {
   return (
-    <TailwindThemeContext.Provider value={currentTailwindTheme}>
-      <SEO/>
-      <PageWrapperLayout className={extraClass}>
-        <MovingCogs/>
-        {header ? <PageHeader/> : ''}
-        <PageContent>
-          {children}
-        </PageContent>
-        {footer ? <PageFooter/> : ''}
-      </PageWrapperLayout>
-    </TailwindThemeContext.Provider>
+    <SEO>
+      <TailwindThemeContext.Provider value={currentTailwindTheme}>
+        <PageWrapperLayout className={extraClass}>
+          <MovingCogs/>
+          {header ? <PageHeader/> : ''}
+          <PageContent>
+            {children}
+          </PageContent>
+          {footer ? <PageFooter/> : ''}
+        </PageWrapperLayout>
+      </TailwindThemeContext.Provider>
+    </SEO>
   );
 };
 
