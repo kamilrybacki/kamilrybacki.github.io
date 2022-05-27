@@ -63,11 +63,7 @@ const defaultSeoMetadata: SEOMetadataProps = {
   },
 };
 
-type SEOProps = {
-  children: JSX.Element | JSX.Element[]
-}
-
-const SEO: React.FunctionComponent<SEOProps> = ({children}) => {
+const SEO = () => {
   const [seoMetadata, setSeoMetadata] = React.useState<SEOMetadataProps>(defaultSeoMetadata);
   const seoQueriedData: ContentAndMetadataQuery = useStaticQuery(seoQuery);
   const canonicalURL = (typeof window !== 'undefined') ? useLocation().href.split('?')[0]: '';
@@ -111,7 +107,7 @@ const SEO: React.FunctionComponent<SEOProps> = ({children}) => {
 
   return (
     // @ts-ignore
-    <><Helmet>
+    <Helmet>
       <meta charSet="utf-8" />
       <meta httpEquiv="Expires" content="600" />
 
@@ -132,8 +128,6 @@ const SEO: React.FunctionComponent<SEOProps> = ({children}) => {
       <meta name="twitter:description" content={seoMetadata.description} />
       <meta name="twitter:image" content={seoMetadata.thumbnail} />
     </Helmet>
-    {children}
-    </>
   );
 };
 
