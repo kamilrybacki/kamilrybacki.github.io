@@ -247,6 +247,8 @@ export type DirectoryCtimeArgs = {
 export type Site = Node & {
   buildTime?: Maybe<Scalars['Date']>;
   siteMetadata?: Maybe<SiteSiteMetadata>;
+  port?: Maybe<Scalars['Int']>;
+  host?: Maybe<Scalars['String']>;
   polyfill?: Maybe<Scalars['Boolean']>;
   pathPrefix?: Maybe<Scalars['String']>;
   jsxRuntime?: Maybe<Scalars['String']>;
@@ -269,6 +271,12 @@ export type SiteSiteMetadata = {
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   baseUrl?: Maybe<Scalars['String']>;
+  social?: Maybe<SiteSiteMetadataSocial>;
+};
+
+export type SiteSiteMetadataSocial = {
+  fbAppID?: Maybe<Scalars['Float']>;
+  twitterUserTag?: Maybe<Scalars['String']>;
 };
 
 export type SiteFunction = Node & {
@@ -799,6 +807,8 @@ export type QueryAllDirectoryArgs = {
 export type QuerySiteArgs = {
   buildTime?: InputMaybe<DateQueryOperatorInput>;
   siteMetadata?: InputMaybe<SiteSiteMetadataFilterInput>;
+  port?: InputMaybe<IntQueryOperatorInput>;
+  host?: InputMaybe<StringQueryOperatorInput>;
   polyfill?: InputMaybe<BooleanQueryOperatorInput>;
   pathPrefix?: InputMaybe<StringQueryOperatorInput>;
   jsxRuntime?: InputMaybe<StringQueryOperatorInput>;
@@ -1933,6 +1943,12 @@ export type SiteSiteMetadataFilterInput = {
   title?: InputMaybe<StringQueryOperatorInput>;
   description?: InputMaybe<StringQueryOperatorInput>;
   baseUrl?: InputMaybe<StringQueryOperatorInput>;
+  social?: InputMaybe<SiteSiteMetadataSocialFilterInput>;
+};
+
+export type SiteSiteMetadataSocialFilterInput = {
+  fbAppID?: InputMaybe<FloatQueryOperatorInput>;
+  twitterUserTag?: InputMaybe<StringQueryOperatorInput>;
 };
 
 export type SiteConnection = {
@@ -1985,6 +2001,10 @@ export type SiteFieldsEnum =
   | 'siteMetadata___title'
   | 'siteMetadata___description'
   | 'siteMetadata___baseUrl'
+  | 'siteMetadata___social___fbAppID'
+  | 'siteMetadata___social___twitterUserTag'
+  | 'port'
+  | 'host'
   | 'polyfill'
   | 'pathPrefix'
   | 'jsxRuntime'
@@ -2120,6 +2140,8 @@ export type SiteGroupConnectionGroupArgs = {
 export type SiteFilterInput = {
   buildTime?: InputMaybe<DateQueryOperatorInput>;
   siteMetadata?: InputMaybe<SiteSiteMetadataFilterInput>;
+  port?: InputMaybe<IntQueryOperatorInput>;
+  host?: InputMaybe<StringQueryOperatorInput>;
   polyfill?: InputMaybe<BooleanQueryOperatorInput>;
   pathPrefix?: InputMaybe<StringQueryOperatorInput>;
   jsxRuntime?: InputMaybe<StringQueryOperatorInput>;
@@ -3395,7 +3417,7 @@ export type AssetsPhotosQuery = { allFile: { edges: Array<{ node: { id: string, 
 export type ContentAndMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ContentAndMetadataQuery = { site?: { siteMetadata?: { title?: string | null, description?: string | null, baseUrl?: string | null } | null } | null, allMdx: { nodes: Array<{ excerpt: string, slug?: string | null, frontmatter?: { title: string } | null }> } };
+export type ContentAndMetadataQuery = { site?: { siteMetadata?: { baseUrl?: string | null, title?: string | null, description?: string | null, social?: { fbAppID?: number | null, twitterUserTag?: string | null } | null } | null } | null, allMdx: { nodes: Array<{ excerpt: string, slug?: string | null, frontmatter?: { title: string } | null }> } };
 
 export type MiniaturesQueryVariables = Exact<{ [key: string]: never; }>;
 

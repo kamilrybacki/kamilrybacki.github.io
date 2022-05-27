@@ -16,13 +16,12 @@ const seoQuery = graphql`
   query contentAndMetadata {
     site {
       siteMetadata {
+        baseUrl
         title
         description
-        baseUrl
         social {
           fbAppID
           twitterUserTag
-
         }
       }
     }
@@ -98,7 +97,7 @@ const SEO = () => {
         'title': `${titleFlair}${seoQueriedData.site.siteMetadata.title}`.trim(),
         'type': pageType ? 'article' : 'website',
         'ogTitle': articleMetadata.title,
-        'description': articleMetadata.description.replace('\n', ' '),
+        'description': articleMetadata.description?.replace('\n', ' '),
         'thumbnail': `${seoQueriedData.site.siteMetadata.baseUrl}${generalSiteCard}`,
         'url': canonicalURL,
         'social': seoQueriedData.site.social,
@@ -123,10 +122,10 @@ const SEO = () => {
       <meta property="og:title" content={seoMetadata.ogTitle} />
       <meta property="og:description" content={seoMetadata.description} />
       <meta property="og:image" content={seoMetadata.thumbnail} />
-      <meta property="fb:app_id" content={seoMetadata.social.fbAppId.toString()} />
+      <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} />
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={seoMetadata.social.twitterUserTag} />
+      <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} />
       <meta name="twitter:title" content={seoMetadata.title} />
       <meta name="twitter:description" content={seoMetadata.description} />
       <meta name="twitter:image" content={seoMetadata.thumbnail} />
