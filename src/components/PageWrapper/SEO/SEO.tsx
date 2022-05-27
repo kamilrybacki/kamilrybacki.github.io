@@ -112,27 +112,27 @@ const SEO: React.FunctionComponent<SEOProps> = ({children}) => {
   return (
     // @ts-ignore
     <><Helmet>
-      <meta charSet="utf-8" />
-      <meta httpEquiv="Expires" content="600" />
+      <meta charSet="utf-8" my-seo />
+      <meta httpEquiv="Expires" content="600" my-seo />
 
-      <title>{seoMetadata.title}</title>
-      <link rel="icon" type="image/png" href={favico} sizes="16x16" />
-      <link href={seoMetadata.url} rel="canonical" />
-      <meta name="description" content={seoMetadata.description} />
-      <meta name="image" content={seoMetadata.thumbnail} />
+      <title my-seo>{seoMetadata.title}</title>
+      <link rel="icon" type="image/png" href={favico} sizes="16x16" my-seo />
+      <link href={seoMetadata.url} rel="canonical" my-seo />
+      <meta name="description" content={seoMetadata.description} my-seo />
+      <meta name="image" content={seoMetadata.thumbnail} my-seo />
 
-      <meta property="og:url" content={seoMetadata.url} />
-      <meta property="og:type" content={seoMetadata.type} />
-      <meta property="og:title" content={seoMetadata.ogTitle} />
-      <meta property="og:description" content={seoMetadata.description} />
-      <meta property="og:image" content={seoMetadata.thumbnail} />
-      <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} />
+      <meta property="og:url" content={seoMetadata.url} my-seo />
+      <meta property="og:type" content={seoMetadata.type} my-seo />
+      <meta property="og:title" content={seoMetadata.ogTitle} my-seo />
+      <meta property="og:description" content={seoMetadata.description} my-seo />
+      <meta property="og:image" content={seoMetadata.thumbnail} my-seo />
+      <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} my-seo />
 
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} />
-      <meta name="twitter:title" content={seoMetadata.title} />
-      <meta name="twitter:description" content={seoMetadata.description} />
-      <meta name="twitter:image" content={seoMetadata.thumbnail} />
+      <meta name="twitter:card" content="summary_large_image" my-seo />
+      <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} my-seo />
+      <meta name="twitter:title" content={seoMetadata.title} my-seo />
+      <meta name="twitter:description" content={seoMetadata.description} my-seo />
+      <meta name="twitter:image" content={seoMetadata.thumbnail} my-seo />
     </Helmet>
     {children}
     </>

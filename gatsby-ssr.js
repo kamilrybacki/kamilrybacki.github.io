@@ -7,7 +7,7 @@ export const onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
 
   headComponents.sort((a, b) => {
-    if (a.props && a.props['data-react-helmet']) {
+    if (a.props && a.props['my-seo']) {
       return 0;
     }
     return 1;
