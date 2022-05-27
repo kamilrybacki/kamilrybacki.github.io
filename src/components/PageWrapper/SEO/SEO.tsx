@@ -110,9 +110,6 @@ const SEO = () => {
     <Helmet>
       <meta charSet="utf-8" />
       <meta httpEquiv="Expires" content="600" />
-
-      <title>{seoMetadata.title}</title>
-      <link rel="icon" type="image/png" href={favico} sizes="16x16" />
       <meta name="description" content={seoMetadata.description} />
       <meta name="image" content={seoMetadata.thumbnail} />
 
@@ -127,6 +124,9 @@ const SEO = () => {
       <meta name="twitter:title" content={seoMetadata.title} />
       <meta name="twitter:description" content={seoMetadata.description} />
       <meta name="twitter:image" content={seoMetadata.thumbnail} />
+
+      <title>{seoMetadata.title}</title>
+      <link rel="icon" type="image/png" href={favico} sizes="16x16" />
     </Helmet>
   );
 };
