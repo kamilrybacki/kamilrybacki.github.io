@@ -19,6 +19,7 @@ const seoQuery = graphql`
         title
         description
         baseUrl
+        social
       }
     }
     allMdx {
@@ -33,15 +34,21 @@ const seoQuery = graphql`
   }
 `;
 
+type SEOMetadataProps = {
+  title: string,
+  type: string,
+  ogTitle: string,
+  description: string,
+  thumbnail: string,
+  url: string,
+  social: {
+    fbAppId: number,
+    twitterUserTag: string
+  }
+}
+
 const SEO = () => {
-  const [seoMetadata, setSeoMetadata] = React.useState({
-    'title': '',
-    'type': '',
-    'ogTitle': '',
-    'description': '',
-    'thumbnail': '',
-    'url': '',
-  });
+  const [seoMetadata, setSeoMetadata] = React.useState<SEOMetadataProps>({});
   const seoQueriedData: ContentAndMetadataQuery = useStaticQuery(seoQuery);
   const canonicalURL = (typeof window !== 'undefined') ? useLocation().href.split('?')[0]: '';
 
@@ -77,6 +84,7 @@ const SEO = () => {
         'description': articleMetadata.description.replace('\n', ' '),
         'thumbnail': `${seoQueriedData.site.siteMetadata.baseUrl}${generalSiteCard}`,
         'url': canonicalURL,
+        'social': seoQueriedData.site.social,
       });
     });
   }, []);
@@ -85,15 +93,26 @@ const SEO = () => {
     // @ts-ignore
     <Helmet>
       <meta charSet="utf-8" />
+      <meta httpEquiv="Expires" content="600" />
+
       <title>{seoMetadata.title}</title>
       <link rel="icon" type="image/png" href={favico} sizes="16x16" />
-      <meta httpEquiv="Expires" content="600"/>
-      <link href={seoMetadata.url} rel="canonical"/>
-      <meta property="og:url" content={seoMetadata.url}/>
-      <meta property="og:type" content={seoMetadata.type}/>
-      <meta property="og:title" content={seoMetadata.ogTitle}/>
-      <meta property="og:description" content={seoMetadata.description}/>
+      <link href={seoMetadata.url} rel="canonical" />
+      <meta name="description" content={seoMetadata.description} />
+      <meta name="image" content={seoMetadata.thumbnail} />
+
+      <meta property="og:url" content={seoMetadata.url} />
+      <meta property="og:type" content={seoMetadata.type} />
+      <meta property="og:title" content={seoMetadata.ogTitle} />
+      <meta property="og:description" content={seoMetadata.description} />
       <meta property="og:image" content={seoMetadata.thumbnail} />
+      <meta property="fb:app_id" content={seoMetadata.social.fbAppId.toString()} />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content={seoMetadata.social.twitterUserTag} />
+      <meta name="twitter:title" content={seoMetadata.title} />
+      <meta name="twitter:description" content={seoMetadata.description} />
+      <meta name="twitter:image" content={seoMetadata.thumbnail} />
     </Helmet>
   );
 };

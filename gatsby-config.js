@@ -3,6 +3,10 @@ module.exports = {
     baseUrl: 'https://kamilrybacki.github.io',
     title: 'Kamil Rybacki\'s site',
     description: 'My personal portfolio and blogging site',
+    social: {
+      'fbAppID': 530846295083921,
+      'twitterUserTag': '@@rybacki_kamil',
+    },
   },
   plugins: [
     'gatsby-plugin-styled-components', 'gatsby-plugin-image',
