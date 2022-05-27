@@ -6,11 +6,6 @@ export const onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
      */
   const headComponents = getHeadComponents();
 
-  headComponents.sort((a, b) => {
-    if (a.props && a.props['my-seo']) {
-      return 0;
-    }
-    return 1;
-  });
+  headComponents.sort((a) => (a.props && a.props['my-seo']) ? -1 : 0);
   replaceHeadComponents(headComponents);
 };
