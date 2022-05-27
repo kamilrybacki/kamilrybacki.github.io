@@ -86,8 +86,8 @@ const SEO = () => {
       <meta charSet="utf-8" />
       <title>{seoMetadata.title}</title>
       <link rel="icon" type="image/png" href={favico} sizes="16x16" />
-      <link href={seoMetadata.url} rel="canonical"/>
       <meta httpEquiv="Expires" content="600"/>
+      <link href={seoMetadata.url} rel="canonical"/>
       <meta property="og:url" content={seoMetadata.url}/>
       <meta property="og:type" content={seoMetadata.type}/>
       <meta property="og:title" content={seoMetadata.ogTitle}/>
