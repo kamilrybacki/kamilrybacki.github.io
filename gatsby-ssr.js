@@ -18,15 +18,15 @@ exports.onRenderBody = (
   ]);
 };
 
+const isReactMetaTag = ({props}) => {
+  return props && ('data-react-helmet' in props || 'content' in props);
+};
+
 exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
-
   const orderedHeadComponents = headComponents.sort((x, y) => {
-    if (x.props && (x.props['data-react-helmet'] || x.props['content'])) {
-      return -1;
-    } else if (y.props && (y.props['data-react-helmet'] || y.props['content'])) {
-      return 1;
-    }
+    if (isReactMetaTag(x)) return -1;
+    if (isReactMetaTag(y)) return 1;
     return 0;
   });
 
