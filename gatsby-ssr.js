@@ -29,7 +29,5 @@ exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
     if (isReactMetaTag(y)) return 1;
     return 0;
   });
-
-
   replaceHeadComponents(orderedHeadComponents);
 };
