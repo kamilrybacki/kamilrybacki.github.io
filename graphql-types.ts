@@ -3403,7 +3403,7 @@ export type AssetsPhotosQuery = { allFile: { edges: Array<{ node: { id: string, 
 export type ContentAndMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ContentAndMetadataQuery = { site?: { siteMetadata?: { title?: string | null, description?: string | null } | null } | null, allMdx: { nodes: Array<{ excerpt: string, slug?: string | null, frontmatter?: { title: string } | null }> } };
+export type ContentAndMetadataQuery = { site?: { siteMetadata?: { title?: string | null, description?: string | null, baseUrl?: string | null } | null } | null, allMdx: { nodes: Array<{ excerpt: string, slug?: string | null, frontmatter?: { title: string } | null }> } };
 
 export type MiniaturesQueryVariables = Exact<{ [key: string]: never; }>;
 

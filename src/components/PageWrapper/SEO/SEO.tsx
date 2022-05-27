@@ -18,6 +18,7 @@ const seoQuery = graphql`
       siteMetadata {
         title
         description
+        baseUrl
       }
     }
     allMdx {
@@ -73,8 +74,8 @@ const SEO = () => {
         'title': `${titleFlair}${seoQueriedData.site.siteMetadata.title}`.trim(),
         'type': pageType ? 'article' : 'website',
         'ogTitle': articleMetadata.title,
-        'description': articleMetadata.description,
-        'thumbnail': generalSiteCard,
+        'description': articleMetadata.description.replace('\n', ' '),
+        'thumbnail': `${seoQueriedData.site.siteMetadata.baseUrl}${generalSiteCard}`,
         'url': canonicalURL,
       });
     });
