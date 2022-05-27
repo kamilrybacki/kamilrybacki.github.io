@@ -4,7 +4,6 @@ const {Helmet} = require('react-helmet');
 
 exports.onRenderBody = (
     {setHeadComponents, setHtmlAttributes, setBodyAttributes},
-    pluginOptions,
 ) => {
   const helmet = Helmet.renderStatic();
   setHtmlAttributes(helmet.htmlAttributes.toComponent());

@@ -117,11 +117,9 @@ const SEO: React.FunctionComponent<SEOProps> = ({children}) => {
 
       <title my-seo>{seoMetadata.title}</title>
       <link rel="icon" type="image/png" href={favico} sizes="16x16" my-seo />
-      <link href={seoMetadata.url} rel="canonical" my-seo />
       <meta name="description" content={seoMetadata.description} my-seo />
       <meta name="image" content={seoMetadata.thumbnail} my-seo />
 
-      <meta property="og:url" content={seoMetadata.url} my-seo />
       <meta property="og:type" content={seoMetadata.type} my-seo />
       <meta property="og:title" content={seoMetadata.ogTitle} my-seo />
       <meta property="og:description" content={seoMetadata.description} my-seo />
