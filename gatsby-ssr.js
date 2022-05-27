@@ -22,9 +22,9 @@ exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
 
   const orderedHeadComponents = headComponents.sort((x, y) => {
-    if (x.props && x.props['data-react-helmet']) {
+    if (x.props && (x.props['data-react-helmet'] || x.props['content'])) {
       return -1;
-    } else if (y.props && y.props['data-react-helmet']) {
+    } else if (y.props && (y.props['data-react-helmet'] || y.props['content'])) {
       return 1;
     }
     return 0;
