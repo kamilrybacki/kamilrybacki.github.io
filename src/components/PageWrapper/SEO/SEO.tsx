@@ -19,7 +19,11 @@ const seoQuery = graphql`
         title
         description
         baseUrl
-        social
+        social {
+          fbAppID
+          twitterUserTag
+
+        }
       }
     }
     allMdx {
