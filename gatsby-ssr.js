@@ -1,29 +1,17 @@
-// eslint-disable-next-line no-unused-vars
-const React = require('react');
 const {Helmet} = require('react-helmet');
 
 exports.onRenderBody = (
-    {setHeadComponents, setHtmlAttributes, setBodyAttributes},
+    {setHeadComponents, setHtmlAttributes, setBodyAttributes,
+      getHeadComponents, replaceHeadComponents},
 ) => {
   const helmet = Helmet.renderStatic();
-  setHtmlAttributes(helmet.htmlAttributes.toComponent());
-  setBodyAttributes(helmet.bodyAttributes.toComponent());
-  setHeadComponents([
-    helmet.title.toComponent(),
-    helmet.link.toComponent(),
-    helmet.meta.toComponent(),
-    helmet.noscript.toComponent(),
-    helmet.script.toComponent(),
-    helmet.style.toComponent(),
-  ]);
-};
-
-exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
   const orderedHeadComponents = headComponents.sort((a, b) => {
     if (a.type === 'meta') return -1;
     if (a.type === b.type && a.type === 'meta') return 0;
     return 1;
   });
-  replaceHeadComponents(orderedHeadComponents);
+  setHtmlAttributes(helmet.htmlAttributes.toComponent());
+  setHeadComponents(orderedHeadComponents);
+  setBodyAttributes(helmet.bodyAttributes.toComponent());
 };
