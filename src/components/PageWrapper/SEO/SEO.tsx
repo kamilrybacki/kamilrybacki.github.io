@@ -81,8 +81,8 @@ const SEO = () => {
       return node.slug === currentSlug;
     });
     return {
-      'title': pageNode.frontmatter.title,
-      'description': pageNode.excerpt,
+      'title': pageNode?.frontmatter.title,
+      'description': pageNode?.excerpt,
     };
   };
 
