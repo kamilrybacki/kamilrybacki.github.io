@@ -108,22 +108,22 @@ const SEO = () => {
   return (
     // @ts-ignore
     <Helmet>
-      <meta charSet="utf-8" />
-      <meta httpEquiv="Expires" content="600" />
-      <meta name="description" content={seoMetadata.description} />
-      <meta name="image" content={seoMetadata.thumbnail} />
+      <meta charSet="utf-8" key='seoMeta' />
+      <meta httpEquiv="Expires" content="600" key='seoMeta' />
+      <meta name="description" content={seoMetadata.description} key='seoMeta' />
+      <meta name="image" content={seoMetadata.thumbnail} key='seoMeta' />
 
-      <meta property="og:type" content={seoMetadata.type} />
-      <meta property="og:title" content={seoMetadata.ogTitle} />
-      <meta property="og:description" content={seoMetadata.description} />
-      <meta property="og:image" content={seoMetadata.thumbnail} />
-      <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} />
+      <meta property="og:type" content={seoMetadata.type} key='seoMeta' />
+      <meta property="og:title" content={seoMetadata.ogTitle} key='seoMeta' />
+      <meta property="og:description" content={seoMetadata.description} key='seoMeta' />
+      <meta property="og:image" content={seoMetadata.thumbnail} key='seoMeta' />
+      <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} key='seoMeta' />
 
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} />
-      <meta name="twitter:title" content={seoMetadata.title} />
-      <meta name="twitter:description" content={seoMetadata.description} />
-      <meta name="twitter:image" content={seoMetadata.thumbnail} />
+      <meta name="twitter:card" content="summary_large_image" key='seoMeta' />
+      <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} key='seoMeta' />
+      <meta name="twitter:title" content={seoMetadata.title} key='seoMeta' />
+      <meta name="twitter:description" content={seoMetadata.description} key='seoMeta' />
+      <meta name="twitter:image" content={seoMetadata.thumbnail} key='seoMeta' />
 
       <title>{seoMetadata.title}</title>
       <link rel="icon" type="image/png" href={favico} sizes="16x16" />
