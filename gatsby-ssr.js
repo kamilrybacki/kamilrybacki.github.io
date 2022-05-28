@@ -18,16 +18,13 @@ exports.onRenderBody = (
   ]);
 };
 
-const isReactMetaTag = ({props}) => {
-  return props && ('data-react-helmet' in props || 'content' in props);
-};
-
 exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
-  const orderedHeadComponents = headComponents.sort((x, y) => {
-    if (isReactMetaTag(x)) return -1;
-    if (isReactMetaTag(y)) return 1;
-    return 0;
+  const orderedHeadComponents = headComponents.sort((a, b) => {
+    if (a.type === b.type ||
+       (a.type !== 'meta' && b.type !== 'meta')) return 0;
+    if (a.type === 'meta') return 1;
+    if (b.type === 'meta') return -1;
   });
   replaceHeadComponents(orderedHeadComponents);
 };
