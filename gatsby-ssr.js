@@ -19,8 +19,8 @@ exports.onRenderBody = (
 exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
   const orderedHeadComponents = headComponents.sort((a, b) => {
-    if (x.key === 'seoMeta') return -1;
-    if (y.key === 'seoMeta') return 1;
+    if (a.key === 'seoMeta') return -1;
+    if (b.key === 'seoMeta') return 1;
     return 0;
   });
   replaceHeadComponents(orderedHeadComponents);
