@@ -115,11 +115,13 @@ const SEO = () => {
       <meta property="og:title" content={seoMetadata.ogTitle} key='seoMeta' />
       <meta property="og:description" content={seoMetadata.description} key='seoMeta' />
       <meta property="og:image" content={seoMetadata.thumbnail} key='seoMeta' />
+      <meta property="og:image:url" content={seoMetadata.thumbnail} key='seoMeta' />
       <meta property="fb:app_id" content={seoMetadata.social?.fbAppId.toString()} key='seoMeta' />
 
       <meta name="twitter:card" content="summary_large_image" key='seoMeta' />
       <meta name="twitter:creator" content={seoMetadata.social?.twitterUserTag} key='seoMeta' />
       <meta name="twitter:title" content={seoMetadata.title} key='seoMeta' />
+      <meta name="twitter:text:title" content={seoMetadata.title} key='seoMeta' />
       <meta name="twitter:description" content={seoMetadata.description} key='seoMeta' />
       <meta name="twitter:image" content={seoMetadata.thumbnail} key='seoMeta' />
 
