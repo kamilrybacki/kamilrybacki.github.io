@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import {Helmet} from 'react-helmet';
 import {useLocation} from '@reach/router';
 import {useStaticQuery, graphql} from 'gatsby';
 
@@ -88,20 +88,18 @@ const SEO = () => {
 
   React.useEffect(() => {
     const pageType = determinePageType();
-    const getArticleMetadata = async () => {
-      return pageType ? await filterQueriedData() : seoQueriedData;
-    };
-    getArticleMetadata().then((articleMetadata) => {
-      const titleFlair = articleMetadata.title ? `${articleMetadata.title} | ` : '';
-      setSeoMetadata({
-        'title': `${titleFlair}${seoQueriedData.site.siteMetadata.title}`.trim(),
-        'type': pageType ? 'article' : 'website',
-        'ogTitle': articleMetadata.title,
-        'description': articleMetadata.description?.replace('\n', ' '),
-        'thumbnail': `${seoQueriedData.site.siteMetadata.baseUrl}${generalSiteCard}`,
-        'url': canonicalURL,
-        'social': seoQueriedData.site.social,
-      });
+    const getArticleMetadata = () => pageType ? filterQueriedData() : seoQueriedData;
+    const articleMetadata = getArticleMetadata();
+
+    const titleFlair = articleMetadata.title ? `${articleMetadata.title} | ` : '';
+    setSeoMetadata({
+      'title': `${titleFlair}${seoQueriedData.site.siteMetadata.title}`.trim(),
+      'type': pageType ? 'article' : 'website',
+      'ogTitle': articleMetadata.title,
+      'description': articleMetadata.description?.replace('\n', ' '),
+      'thumbnail': `${seoQueriedData.site.siteMetadata.baseUrl}${generalSiteCard}`,
+      'url': canonicalURL,
+      'social': seoQueriedData.site.social,
     });
   }, []);
 
