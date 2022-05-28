@@ -2,7 +2,7 @@ const {Helmet} = require('react-helmet');
 
 exports.onRenderBody = (
     {setHeadComponents, setHtmlAttributes, setBodyAttributes,
-      getHeadComponents, replaceHeadComponents},
+      getHeadComponents},
 ) => {
   const helmet = Helmet.renderStatic();
   const headComponents = getHeadComponents();
