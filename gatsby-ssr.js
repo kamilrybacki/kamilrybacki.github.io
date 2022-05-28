@@ -21,10 +21,9 @@ exports.onRenderBody = (
 exports.onPreRenderHTML = ({getHeadComponents, replaceHeadComponents}) => {
   const headComponents = getHeadComponents();
   const orderedHeadComponents = headComponents.sort((a, b) => {
-    if (a.type === b.type ||
-       (a.type !== 'meta' && b.type !== 'meta')) return 0;
-    if (a.type === 'meta') return 1;
-    if (b.type === 'meta') return -1;
+    if (a.type === 'meta') return -1;
+    if (a.type === b.type && a.type === 'meta') return 0;
+    return 1;
   });
   replaceHeadComponents(orderedHeadComponents);
 };
