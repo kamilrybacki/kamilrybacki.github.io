@@ -79,9 +79,6 @@ const AboutPage = () => {
                 I am constantly working on my **design** skills to
                 create the aforementioned interfaces **NOT**
                 make my users gouge their eyes out.
-                So **in short**, I want to eventually be
-                a **Full-stack developer** with
-                some **UI/UX skills under my belt**.
             </AboutMeSectionParagraph>
           </Section>
         </DropdownSections>
