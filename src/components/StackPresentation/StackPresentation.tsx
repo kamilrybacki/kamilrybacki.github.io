@@ -4,7 +4,7 @@ import {useStaticQuery, graphql} from 'gatsby';
 // @ts-ignore
 import StyledSpinner from '@components/StyledSpinner';
 
-import {StackPresentationWrapper, StackIcon} from './style';
+import {StackPresentationWrapper, StackIcon, StackPresentationContent} from './style';
 
 // @ts-ignore
 import {Edge} from '@root/graphql-types';
@@ -50,7 +50,9 @@ const StackPresentation: React.FunctionComponent<StackPresentationProps> = ({tec
 
   return (
     <StackPresentationWrapper>
-      {icons ? icons : <StyledSpinner size="30%"/>}
+      <StackPresentationContent>
+        {icons ? icons : <StyledSpinner size="30%"/>}
+      </StackPresentationContent>
     </StackPresentationWrapper>
   );
 };

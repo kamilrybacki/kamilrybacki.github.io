@@ -1,26 +1,31 @@
 import tw from 'tailwind-styled-components';
 
 const StackPresentationWrapper = tw.div`
-    relative
     flex
-    flex-wrap
-    flex-auto
-    justify-between
+    items-center
+    justify-center
     bg-secondary-50
-    p-3
-    my-5
     border-2
     rounded-lg
     border-primary-100
+    p-3
+    my-5
+    mx-auto
+
+    lg:mt-3
+    lg:py-6
+`;
+
+const StackPresentationContent = tw.div`
+    flex
+    flex-wrap
+    items-center
+    justify-start
     overflow-x-hidden
     overflow-y-scroll
     overscroll-contain
     scrollbar-thin
-    mx-auto
-    gap-1
-
-    lg:mt-3
-    lg:py-6
+    gap-2
 `;
 
 const StackIcon = tw.img`
@@ -34,4 +39,4 @@ const StackIcon = tw.img`
     lg:mx-3
 `;
 
-export {StackPresentationWrapper, StackIcon};
+export {StackPresentationWrapper, StackPresentationContent, StackIcon};

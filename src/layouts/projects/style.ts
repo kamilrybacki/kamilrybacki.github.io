@@ -112,7 +112,7 @@ const ProjectPresentationHero = tw.div`
     md:justify-center
     md:align-middle
     md:gap-10
-    
+
     lg:h-fit
     lg:gap-20
 `;
@@ -123,6 +123,7 @@ const GalleryWrapper = tw.section`
     gap-5
     overflow-x-scroll
     overflow-y-hidden
+    items-center
 
     md:flex-col
     md:gap-0
@@ -141,6 +142,7 @@ const BigPicture = tw.img`
     mb-4
     w-screen
     h-fit
+    py-auto
 
     md:w-full
     md:mb-0
