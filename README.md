@@ -54,7 +54,7 @@ The project `mdx` **frontmatter** includes the information mentioned
 in the posts description, **but** also **HAVE** to contain the following fields:
 
 1. `gallery` which contains the name to the
-   **project `assets/images/galleries/ folder with images**
+   **project `assets/images/galleries/` folder with images**
    presented beside the main thumbnail
 2. `techs` **whitespace separated list of technologies** used in the project.
    These **labels** are then used to look **for their corresponding SVGs**
