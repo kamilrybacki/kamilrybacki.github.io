@@ -1,6 +1,6 @@
 ---
 import SVG from '@components/StyledSVG.astro';
-const { icon, url } = Astro.props;
+const { icon, url, size } = Astro.props;
 ---
 
 <a
@@ -11,7 +11,7 @@ const { icon, url } = Astro.props;
 >
   <SVG
     src={`badges/${icon}`}
-    width="40"
-    height="40"
+    width={size || 40}
+    height={size || 40}
   />
 </a>

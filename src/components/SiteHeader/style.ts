@@ -9,6 +9,7 @@ export const Header = tw.header`
 `
 
 export const LogoWrapper = tw.div`
+  relative
   flex
   items-center
   justify-center
@@ -18,11 +19,14 @@ export const Logo = tw.a`
   flex
   items-center
   justify-center
-  h-12
-  w-12
+  h-14
+  w-14
+  text-foreground
 `
 
 export const LogoTitle = tw.h1`
+  relative
+  top-2
   text-3xl
   font-bold
   ml-1
@@ -34,6 +38,7 @@ export const ContactWrapper = tw.div`
   justify-center
   p-1
   ml-auto
+  gap-3
 `
 
 export const HeaderUnderline = tw.div`
