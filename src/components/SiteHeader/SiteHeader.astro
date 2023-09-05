@@ -1,0 +1,26 @@
+---
+import * as Style from './style';
+
+import SVG from '@components/StyledSVG.astro';
+import Contact from '@components/Contact.astro';
+---
+
+<div class="flex flex-col">
+  <Style.Header>
+    <Style.LogoWrapper>
+      <Style.Logo href="/">
+        <SVG src="images/logo"/>
+      </Style.Logo>
+      <Style.LogoTitle>
+        amil Rybacki
+      </Style.LogoTitle>
+    </Style.LogoWrapper>
+    <Style.ContactWrapper>
+      <Contact
+        icon="github"
+        url="https://github.com/KamilRybacki"
+      />
+    </Style.ContactWrapper>
+  </Style.Header>
+  <Style.HeaderUnderline/>
+</div>
