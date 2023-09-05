@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
@@ -8,7 +9,11 @@ module.exports = {
       'glow': "#EAF2FA",
       'accent': '#F4E04D',
     },
-		extend: {},
+		extend: {
+      fontFamily: {
+        display: ['Anybody Variable']
+      },
+    },
 	},
 	plugins: [],
 }

@@ -19,16 +19,17 @@ export const Logo = tw.a`
   flex
   items-center
   justify-center
+  text-foreground
   h-14
   w-14
-  text-foreground
 `
 
 export const LogoTitle = tw.h1`
   relative
-  top-2
+  top-1
   text-3xl
-  font-bold
+  font-display
+  font-[700]
   ml-1
 `
 
