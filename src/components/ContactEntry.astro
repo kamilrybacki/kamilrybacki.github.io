@@ -1,0 +1,33 @@
+---
+import SVG from '@components/StyledSVG.astro';
+
+const { icon, url, size } = Astro.props;
+---
+<script define:vars={{icon}}>
+  import { glowColorRGB } from '@utils/theming';
+  document.addEventListener('DOMContentLoaded', () => {
+    const badge = document.getElementById(`badge-${icon}`);
+    badge.style.filter = `drop-shadow(0 0 0.05rem rgb(${glowColorRGB}))`;
+    const glow = badge.style.filter;
+    badge.addEventListener('mouseenter', () => {
+      badge.style.filter = `drop-shadow(0 0 0.1rem rgb(${glowColorRGB}))`;
+    });
+    badge.addEventListener('mouseleave', () => {
+      badge.style.filter = glow;
+    });
+  });
+</script>
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={icon}
+>
+  <SVG
+    src={`badges/${icon}`}
+    width={size || 40}
+    height={size || 40}
+    id={`badge-${icon}`}
+  />
+</a>

@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-background;
+    @apply text-foreground;
+    @apply p-8;
+  }
+  body {
+    @apply bg-background;
+    @apply text-foreground;
+  }
+}
+
+@layer component {
+  .glowing {
+    animation: glowing 2000ms infinite;
+  }
+
+  @keyframes glowing {
+    0% {
+      filter: drop-shadow(0 0 0.05rem rgb(theme('colors.glow')));
+    }
+    50% {
+      filter: drop-shadow(0 0 0.1rem rgb(theme('colors.glow')));
+    }
+    100% {
+      filter: drop-shadow(0 0 0.05rem rgb(theme('colors.glow')));
+    }
+  }
+}

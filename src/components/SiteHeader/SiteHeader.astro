@@ -1,34 +1,33 @@
 ---
-import * as Style from './style';
-
 import SVG from '@components/StyledSVG.astro';
-import Contact from '@components/Contact.astro';
----
+import Contacts from '@components/Contacts.astro';
 
+import { glowColorRGB } from '@utils/theming';
+
+import * as Style from './style';
+---
 <div class="flex flex-col">
   <Style.Header>
     <Style.LogoWrapper>
       <Style.Logo href="/">
+<<<<<<< HEAD
         <SVG 
           src="images/logo"
+=======
+        <SVG
+          src="images/logo"
+          alt="Logo"
+          class="glowing"
+>>>>>>> c61baa3 (save changes to site)
         />
       </Style.Logo>
       <Style.LogoTitle>
-        amil Rybacki
+        <span class="glowing twitching">
+          amil Rybacki
+        </span>
       </Style.LogoTitle>
     </Style.LogoWrapper>
-    <Style.ContactWrapper>
-      <Contact
-        icon="github"
-        url="https://github.com/KamilRybacki"
-        size="2rem"
-      />
-      <Contact
-        icon="linkedin"
-        url="https://www.linkedin.com/in/kamil-andrzej-rybacki"
-        size="2rem"
-      />
-    </Style.ContactWrapper>
+    <Contacts/>
   </Style.Header>
   <Style.HeaderUnderline/>
 </div>
