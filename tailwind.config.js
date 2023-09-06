@@ -7,6 +7,10 @@ export const theme = {
     'glow': "#E5F2FF",
     'accent': '#F4E04D',
   },
-  extend: {},
+  extend: {
+    fontFamily: {
+      display: ['Anybody Variable']
+    },
+  },
 };
 export const plugins = [];

@@ -2,27 +2,20 @@
 import SVG from '@components/StyledSVG.astro';
 import Contacts from '@components/Contacts.astro';
 
-import { glowColorRGB } from '@utils/theming';
-
 import * as Style from './style';
 ---
 <div class="flex flex-col">
   <Style.Header>
     <Style.LogoWrapper>
       <Style.Logo href="/">
-<<<<<<< HEAD
-        <SVG 
-          src="images/logo"
-=======
         <SVG
           src="images/logo"
           alt="Logo"
           class="glowing"
->>>>>>> c61baa3 (save changes to site)
         />
       </Style.Logo>
       <Style.LogoTitle>
-        <span class="glowing twitching">
+        <span class="glowing">
           amil Rybacki
         </span>
       </Style.LogoTitle>
