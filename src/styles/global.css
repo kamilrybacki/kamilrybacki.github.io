@@ -12,22 +12,23 @@
     @apply bg-background;
     @apply text-foreground;
   }
+  :root {
+    --neon-glow-color: theme('colors.glow');
+  }
 }
 
 @layer component {
-  .glowing {
-    animation: glowing 2000ms infinite;
+  /* Using the value of the color.glow color from Tailwind theme, make a glowing animation class */
+  .neon-glow {
+    animation: neon-glow 2s ease-in-out infinite alternate;
   }
 
-  @keyframes glowing {
-    0% {
-      filter: drop-shadow(0 0 0.05rem rgb(theme('colors.glow')));
+  @keyframes neon-glow {
+    from {
+      text-shadow: 0 0 0px var(--neon-glow-color);
     }
-    50% {
-      filter: drop-shadow(0 0 0.1rem rgb(theme('colors.glow')));
-    }
-    100% {
-      filter: drop-shadow(0 0 0.05rem rgb(theme('colors.glow')));
+    to {
+      text-shadow: 0 0 10px var(--neon-glow-color);
     }
   }
 }
