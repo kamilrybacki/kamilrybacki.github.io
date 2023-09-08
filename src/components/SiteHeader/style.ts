@@ -3,25 +3,25 @@ import tw from "tailwind-styled-components";
 export const Header = tw.header`
   flex
   items-center
-  px-8
-  py-2
+  px-12
+  pb-2
   text-white
 `
 
-export const LogoWrapper = tw.div`
+export const LogoWrapper = tw.a`
   relative
   flex
   items-center
   justify-center
+  neon-glow
 `
 
-export const Logo = tw.a`
+export const Logo = tw.div`
   flex
-  items-center
   justify-center
-  text-foreground
   h-14
   w-14
+  text-accent
 `
 
 export const LogoTitle = tw.h1`
@@ -40,12 +40,4 @@ export const ContactWrapper = tw.div`
   p-1
   ml-auto
   gap-3
-`
-
-export const HeaderUnderline = tw.div`
-  h-[1px]
-  bg-foreground
-  w-[99%]
-  mt-4
-  mx-auto
 `

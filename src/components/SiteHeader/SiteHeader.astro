@@ -4,23 +4,30 @@ import Contacts from '@components/Contacts.astro';
 
 import * as Style from './style';
 ---
-<div class="flex flex-col">
+<div class="flex flex-col" id="header">
   <Style.Header>
-    <Style.LogoWrapper>
-      <Style.Logo href="/">
+    <Style.LogoWrapper
+      href="/"
+    >
+      <Style.Logo>
         <SVG
           src="images/logo"
           alt="Logo"
-          class="glowing"
         />
       </Style.Logo>
       <Style.LogoTitle>
-        <span class="neon-glow">
-          amil Rybacki
+        <span>
+          {
+            'amil Rybacki'
+              .split('')
+              .map((letter, index) => {
+                  return <span>{letter}</span>
+                }
+              )
+          }
         </span>
       </Style.LogoTitle>
     </Style.LogoWrapper>
     <Contacts/>
   </Style.Header>
-  <Style.HeaderUnderline/>
 </div>

@@ -1,12 +1,49 @@
 ---
 import SiteHeader from '@components/SiteHeader';
+import SiteFooter from '@components/SiteFooter.astro';
 
 import '@styles/global.css';
-
 import '@fontsource-variable/anybody';
 
 const { title } = Astro.props;
 ---
+<script>
+  import { createRandomNeonGlowKeyframesGenerator, glowAnimationName } from '@utils/theming';
+  const glowKeyFramesGenerator = createRandomNeonGlowKeyframesGenerator();
+  const generateNewAnimation = (element: HTMLElement) => {
+    const newAnimation = glowKeyFramesGenerator();
+    element.animate(newAnimation.keyframes, newAnimation.properties);
+    setTimeout(() => {
+      generateNewAnimation(element as HTMLElement);
+    }, newAnimation.properties.duration);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const glowingElements = document.querySelectorAll('.' + glowAnimationName);
+    glowingElements.forEach((element) => {
+      generateNewAnimation(element as HTMLElement);
+    });
+  });
+  const html = document.querySelector('html');
+  const htmlPadding = parseInt(window.getComputedStyle(html as HTMLElement).getPropertyValue('padding').replace('px', ''));
+
+  const headerHeight = document.getElementById('header')?.offsetHeight;
+
+  const footer = document.getElementById('footer');
+  const footerHeight = footer?.clientHeight;
+  const footerMargin = parseInt(window.getComputedStyle(footer as HTMLElement).getPropertyValue('margin-bottom').replace('px', ''));
+
+  const calculationError = 10;
+  const occupiedSpace = (headerHeight || 0) + (footerHeight || 0) + (footerMargin || 0) + (htmlPadding * 2) + calculationError;
+
+  const content = document.getElementById('content')
+
+  console.log(headerHeight, footerHeight, htmlPadding, footerMargin)
+  if (content) {
+    const contentHeight = (window.innerHeight - occupiedSpace) + 'px';
+    content.style.minHeight = contentHeight;
+    console.log(contentHeight)
+  }
+</script>
 
 <html lang="en">
 	<head>
@@ -16,8 +53,14 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-  <SiteHeader/>
   <body>
-    <slot/>
+    <SiteHeader/>
+    <div 
+      class="border-accent border-[2px] border-opacity-25 p-4 m-4 shadow-accent drop-shadow-[1px_1px_0_theme(colors.glow)]"
+      id="content"
+    >
+      <slot/>
+    </div>
+    <SiteFooter/>
 	</body>
 </html>

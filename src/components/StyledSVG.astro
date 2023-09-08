@@ -33,6 +33,6 @@ function getSVG(name: string) {
   const { attributes: baseAttributes, innerHTML } = getSVG(src);
 
   const svgAttributes = { ...baseAttributes, ...attributes };
-  ---
+---
 
-  <svg {...svgAttributes} fill="currentColor" set:html={innerHTML}/>
+<svg {...svgAttributes} fill="currentColor" set:html={innerHTML}/>
