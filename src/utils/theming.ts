@@ -5,8 +5,8 @@ import { generateNumberFromRange } from '@utils/logic';
 export const glowAnimationName = 'neon-glow';
 export const glowAnimationMinimumIntensity = 50;
 export const glowAnimationMaximumIntensity = 25;
-export const glowAnimationMinimumDuration = 500; // miliseconds
-export const glowAnimationMaximumDuration = 2500; // miliseconds
+export const glowAnimationMinimumDuration = 1000; // miliseconds
+export const glowAnimationMaximumDuration =2500; // miliseconds
 export const glowAnimationMinimumOpacity = 75;
 export const glowAnimationMaximumOpacity = 100;
 export const glowAnimationMinimumSize = 10; // rems * 100
@@ -60,7 +60,7 @@ export const createRandomNeonGlowKeyframesGenerator = () => {
         },
         keyframes: randomKeyframesParameters.map(([opacity, size]) => {
           return {
-            textShadow: `1px 1px ${size/100}rem ${neonColor}`,
+            textShadow: `0px 0px ${size/100}rem ${neonColor}`,
             opacity: `${opacity/100}`
           }
         }),

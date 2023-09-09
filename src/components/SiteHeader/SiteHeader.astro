@@ -6,28 +6,9 @@ import * as Style from './style';
 ---
 <div class="flex flex-col" id="header">
   <Style.Header>
-    <Style.LogoWrapper
-      href="/"
-    >
-      <Style.Logo>
-        <SVG
-          src="images/logo"
-          alt="Logo"
-        />
-      </Style.Logo>
-      <Style.LogoTitle>
-        <span>
-          {
-            'amil Rybacki'
-              .split('')
-              .map((letter, index) => {
-                  return <span>{letter}</span>
-                }
-              )
-          }
-        </span>
-      </Style.LogoTitle>
-    </Style.LogoWrapper>
+    <Style.Logo href="/">
+      <SVG src="images/logo" alt="Logo"/>
+    </Style.Logo>
     <Contacts/>
   </Style.Header>
 </div>

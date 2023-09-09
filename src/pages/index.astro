@@ -1,8 +1,16 @@
 ---
+import SVG from '@components/StyledSVG.astro';
 import BasicPageLayout from '@layouts/BasicPageLayout.astro';
+import tw from 'tailwind-styled-components';
 ---
 
-<BasicPageLayout
-  title="Kamil Rybacki"
->
+<BasicPageLayout title="Kamil Rybacki">
+    <div class="flex flex-row justify-center align-center">
+      <div class="flex justify-center h-32 w-32 text-accent">
+        <SVG src="images/logo" alt="Logo"/>
+      </div>
+      <h1 class="relative top-5 text-8xl font-display font-[700] ml-1">
+        amil Rybacki
+      </h1>
+    </div>
 </BasicPageLayout>
