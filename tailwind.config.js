@@ -9,7 +9,8 @@ export const theme = {
   },
   extend: {
     fontFamily: {
-      display: ['Anybody Variable']
+      display: ['Anybody Variable'],
+      body: ['Raleway Variable'],
     },
   },
 };

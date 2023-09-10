@@ -1,16 +1,36 @@
 ---
 import SVG from '@components/StyledSVG.astro';
 import BasicPageLayout from '@layouts/BasicPageLayout.astro';
-import tw from 'tailwind-styled-components';
+import SplashDecoration from '@components/SplashDecoration';
+
+import '@styles/glitch.css';
 ---
+<style>
+
+</style>
 
 <BasicPageLayout title="Kamil Rybacki">
-    <div class="flex flex-row justify-center align-center">
-      <div class="flex justify-center h-32 w-32 text-accent">
-        <SVG src="images/logo" alt="Logo"/>
+  <div>
+    <div class="absolute bottom-[36%] left-[6%]">
+      <div class="flex flex-row justify-center align-center">
+        <div class="relative flex justify-center h-36 w-36 text-accent">
+          <SVG src="images/logo" alt="Logo"/>
+        </div>
+        <h1 class="relative top-8 text-8xl font-display font-[700]">
+          amil Rybacki
+        </h1>
       </div>
-      <h1 class="relative top-5 text-8xl font-display font-[700] ml-1">
-        amil Rybacki
-      </h1>
+      <div class="border-[1px] border-accent my-4"/>
+      <h2 class="text-4xl mt-2 ml-6 font-body font-[700] text-glow flex gap-4 align-center">
+        <span class="my-auto">Figuring out</span>
+        <span
+          class="hero glitch layers deform text-5xl"
+          data-text="undefineds"
+        >undefineds<span>
+      </h2>
     </div>
+  </div>
+  <div class="fixed right-[10%] bottom-[10%]">
+    <SplashDecoration/>
+  </div>
 </BasicPageLayout>
