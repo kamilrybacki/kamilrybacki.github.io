@@ -2,20 +2,17 @@
 import SVG from '@components/StyledSVG.astro';
 import { colorsRGB } from '@utils/theming';
 
-import abstractGif from '@images/abstract.gif';
+import abstractGif from '@images/glitch2.gif';
 ---
 <style>
   @keyframes rotate {
     0% {
-      opacity: 1;
       transform: rotate(0deg);
     }
     50% {
-      opacity: 0.5;
       transform: rotate(180deg);
     }
     100% {
-      opacity: 1;
       transform: rotate(360deg);
     }
   }
@@ -23,28 +20,31 @@ import abstractGif from '@images/abstract.gif';
 <script define:vars={{colorsRGB}}>
   document.addEventListener('DOMContentLoaded', () => {
     const gif = document.getElementById('splash-gif');
+    const svg = document.getElementById('splash-svg');
+    svg.style.width = '100%';
     gif.style.animation = 'rotate';
-    gif.style.animationDuration = '20s';
+    gif.style.animationDuration = '50s';
     gif.style.animationIterationCount = 'infinite';
     gif.style.animationTimingFunction = 'linear';
     gif.style.transformOrigin = 'center';
+    gif.style.width = '40%';
   });
 </script>
 
-<div
-  class='text-glow'
-  id="splash"
+<div 
+  id="splash" 
+  class="flex flex-row relative mx-auto"
 >
   <SVG 
     src='images/splash'
     width=600
     height=600
+    id="splash-svg"
   />
   <img 
     src={abstractGif.src} 
     alt='splash'
-    width=130
-    class="absolute top-[32%] left-[9%] z-[-999] rotate-[-5deg]"
     id="splash-gif"
+    class="absolute top-[30%] left-[0%] invert neon-glow"
   />
 </div>

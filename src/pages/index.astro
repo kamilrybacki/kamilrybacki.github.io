@@ -5,32 +5,33 @@ import SplashDecoration from '@components/SplashDecoration';
 
 import '@styles/glitch.css';
 ---
-<style>
-
-</style>
-
-<BasicPageLayout title="Kamil Rybacki">
-  <div>
-    <div class="absolute bottom-[36%] left-[6%]">
-      <div class="flex flex-row justify-center align-center">
-        <div class="relative flex justify-center h-36 w-36 text-accent">
+<BasicPageLayout 
+  title="Kamil Rybacki"
+  style="flex flex-col justify-center items-center"
+>
+  <div class="flex flex-row justify-around items-center my-auto w-full">
+    <div class="w-fit ml-auto flex flex-col items-end">
+      <div class="flex flex-row">
+        <div class="relative flex justify-center w-32 text-accent ml-3">
           <SVG src="images/logo" alt="Logo"/>
         </div>
-        <h1 class="relative top-8 text-8xl font-display font-[700]">
+        <h1 class="relative top-6 text-8xl font-display font-[700]">
           amil Rybacki
         </h1>
       </div>
-      <div class="border-[1px] border-accent my-4"/>
-      <h2 class="text-4xl mt-2 ml-6 font-body font-[700] text-glow flex gap-4 align-center">
-        <span class="my-auto">Figuring out</span>
+      <div class="border-[1px] border-accent my-4 w-[105%]"/>
+      <h2 class="relative flex flex-row items-center text-5xl mt-2 ml-3 font-body font-[700] text-glow gap-3">
+        <span class="my-auto">
+          Figuring out
+        </span>
         <span
-          class="hero glitch layers deform text-5xl"
+          class="hero glitch layers deform text-5xl tracking-widest my-auto"
           data-text="undefineds"
-        >undefineds<span>
+        >
+          undefineds
+      </span>
       </h2>
     </div>
-  </div>
-  <div class="fixed right-[11%] bottom-[10%]">
     <SplashDecoration/>
   </div>
 </BasicPageLayout>
