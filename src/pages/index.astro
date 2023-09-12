@@ -2,9 +2,30 @@
 import SVG from '@components/StyledSVG.astro';
 import BasicPageLayout from '@layouts/BasicPageLayout.astro';
 import SplashDecoration from '@components/SplashDecoration';
+import Menu from '@components/Menu';
 
 import '@styles/glitch.css';
+
+const indexOptions = [
+  {
+    name: 'Projects',
+    link: '/projects',
+    style: 'text-accent text-7xl'
+  },
+  {
+    name: 'Blog',
+    link: '/about',
+    style: ''
+  },
+  {
+    name: 'Contact',
+    link: '/contact',
+    style: ''
+  }
+];
 ---
+<script define:vars={{indexOptions}}/>
+
 <BasicPageLayout 
   title="Kamil Rybacki"
   style="flex flex-col justify-center items-center"
@@ -31,6 +52,11 @@ import '@styles/glitch.css';
           undefineds
       </span>
       </h2>
+      <Menu
+        options={indexOptions}
+        style='flex flex-col gap-6 text-5xl font-bold mt-20'
+        globalListStyle="ml-auto"
+      />
     </div>
     <SplashDecoration/>
   </div>

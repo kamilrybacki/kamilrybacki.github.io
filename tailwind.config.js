@@ -11,6 +11,8 @@ export const theme = {
     fontFamily: {
       display: ['Anybody Variable'],
       body: ['Raleway Variable'],
+      code: ['Source Code Pro Variable'],
+      handwriting: ['Indie Flower']
     },
   },
 };
