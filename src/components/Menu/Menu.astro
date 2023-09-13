@@ -7,15 +7,22 @@ interface Props {
   }[];
   style: string;
   globalListStyle: string;
+  [key: string]: any;
 }
 
-const { options, style, globalListStyle } = Astro.props;
+const { options, style, globalListStyle, ...rest } = Astro.props;
 ---
-<ul class={style}>
+<ul 
+  class={style}
+  {...rest}
+>
   {
     options.map((option) => {
       return (
-        <li class={`${option.style} ${globalListStyle}`} id={`${option.name}-menu-li`}>
+        <li 
+          class={option.style + (option.style ? ' ': '') + globalListStyle} 
+          id={`${option.name}-menu-li`}
+        >
           <a href={option.link} id={`${option.name}-menu-a`}>
             {option.name}
           </a>
