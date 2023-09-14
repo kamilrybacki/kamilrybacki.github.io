@@ -43,8 +43,19 @@ const indexOptions = [
   document.addEventListener('DOMContentLoaded', () => {
     const menuElement = document.getElementById('index-menu');
     const glitchTextElement = document.getElementById('glitch-text');
-    const targetPosition = computeElementCenter(glitchTextElement);
     const listElements = [...menuElement.getElementsByTagName('li')];
+
+    const pointOfOrigin = {
+      x: menuElement.offsetLeft,
+      y: menuElement.offsetTop - menuElement.clientHeight
+    };
+
+    const absoluteTargetPosition = computeElementCenter(glitchTextElement)
+    const targetPosition = {
+      x: absoluteTargetPosition.x - pointOfOrigin.x,
+      y: absoluteTargetPosition.y - pointOfOrigin.y
+    }
+
     const drawPathFromPoints = (points, color, size, dash) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       points.forEach((point, index) => {
@@ -57,9 +68,12 @@ const indexOptions = [
       dash && path.setAttribute('stroke-dasharray', dash);
       return path;
     }
+
     const createPathsSVG = () => {
       const svgID = `path-${menuElement.id}`;
-      const pathsSVG = document.getElementById(svgID) ? document.getElementById(svgID) : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const pathsSVG = document.getElementById(svgID) 
+        ? document.getElementById(svgID)
+        : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       pathsSVG.childNodes && pathsSVG.childNodes.forEach((child) => {
         child.remove();
       })
@@ -67,68 +81,39 @@ const indexOptions = [
       pathsSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       pathsSVG.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
       pathsSVG.setAttribute('id', svgID)
-      pathsSVG.setAttribute('width', window.innerWidth);
-      pathsSVG.setAttribute('height', window.innerHeight);
+      pathsSVG.setAttribute('width', menuElement.clientWidth);
+      pathsSVG.setAttribute('height', menuElement.clientHeight);
 
-      const distances = listElements.map((listElement) => {
-        const elementCenter = computeElementCenter(listElement);
-        return {
-          x: Math.abs(targetPosition.x - elementCenter.x),
-          y: Math.abs(targetPosition.y - elementCenter.y)
-        }
-      }).reduce((acc, curr) => {
-        return {
-          x: Math.max(acc.x, curr.x),
-          y: Math.max(acc.y, curr.y)
-        }
-      }, { x: 0, y: 0 });
-
+      const distance = targetPosition.y - pointOfOrigin.y;
       const offsetCoefficient = 0.9;
-      const rawPathsData = listElements.map((listElement) => {
-        const elementCenter = computeElementCenter(listElement);
+      const pathsPoints = listElements.map((listElement) => {
+        const rawElementCenter = computeElementCenter(listElement);
+        const elementCenter = {
+          x: rawElementCenter.x - pointOfOrigin.x,
+          y: rawElementCenter.y - pointOfOrigin.y
+        };
+
         return [
           {
             x: elementCenter.x,
-            y: elementCenter.y - menuElement.clientHeight * offsetCoefficient,
+            y: elementCenter.y + menuElement.clientHeight * offsetCoefficient,
           },
           {
             x: elementCenter.x,
-            y: elementCenter.y -  menuElement.clientHeight * offsetCoefficient - distances.y / 5,
+            y: elementCenter.y +  menuElement.clientHeight * offsetCoefficient - distance / 2,
           },
           {
             x: targetPosition.x,
-            y: elementCenter.y -  menuElement.clientHeight * offsetCoefficient - distances.y / 5
+            y: elementCenter.y +  menuElement.clientHeight * offsetCoefficient - distance / 2
           },
           {
             x: targetPosition.x,
-            y: targetPosition.y + glitchTextElement.clientHeight * offsetCoefficient - distances.y / 10
+            y: targetPosition.y
           }
         ];
-      })
-
-      const canvasBoundingRectangle = rawPathsData.reduce((acc, curr) => {
-        const xCoords = curr.map((point) => point.x);
-        const yCoords = curr.map((point) => point.y);
-        return {
-          width: Math.max(...xCoords) - Math.min(...xCoords),
-          height: Math.max(...yCoords) - Math.min(...yCoords)
-        }
-      }, {
-        width: 0,
-        height: 0
       });
 
-      const menuElementRectangle = menuElement.getBoundingClientRect();
-      const pathsData = rawPathsData.map((points) => {
-        return points.map((point) => {
-          return {
-            x: menuElementRectangle.width * point.x / canvasBoundingRectangle.width,
-            y: menuElementRectangle.width * point.y / canvasBoundingRectangle.height
-          }
-        })
-      });
-
-      pathsData.forEach((data) =>{
+      pathsPoints.forEach((data) =>{
         const path = drawPathFromPoints(data, theme.colors.glow, 1, 1);
         path.width = menuElement.clientWidth;
         path.height = menuElement.clientHeight;
@@ -136,7 +121,8 @@ const indexOptions = [
       })
 
       pathsSVG.childNodes.forEach((child) => child.classList.add('opacity-50'))
-      pathsSVG.classList.add('absolute', 'z-1', 'top-0', 'left-0');
+      pathsSVG.classList.add('absolute', 'z-1');
+      pathsSVG.style.bottom = `${menuElement.clientHeight}px`;
       menuElement.appendChild(pathsSVG);
     }
 
