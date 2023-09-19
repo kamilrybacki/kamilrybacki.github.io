@@ -5,40 +5,44 @@ import SplashDecoration from '@components/SplashDecoration';
 import Menu from '@components/Menu';
 import { theme } from '@root/tailwind.config';
 
+import codeGif from '@images/code.gif';
+import noteGif from '@images/note.gif';
+import mailGif from '@images/mail.gif';
+import squiggleGif from '@images/squiggle.gif';
+
 import '@styles/glitch.css';
 
-const indexOptions = [
-  {
-    name: 'Projects',
+const indexOptions = {
+  projects: {
     link: '/projects',
-    style: 'text-accent text-7xl'
+    style: 'text-accent text-7xl',
+    font: 'font-code',
+    gif: codeGif.src
   },
-  {
-    name: 'Blog',
+  blog: {
     link: '/about',
-    style: ''
+    style: '',
+    font: 'font-handwriting',
+    gif: noteGif.src
   },
-  {
-    name: 'Contact',
+  contact: {
     link: '/contact',
-    style: ''
+    style: '',
+    font: 'font-body',
+    gif: mailGif.src
   }
-];
+}
 ---
 <style>
   @keyframes dash {
     to {
-      stroke-dashoffset: 0;
+      opacity: 0.5;
+      stroke-dashoffset: 10;
+      stroke-dasharray: 10;
     }
   }
 </style>
-<script define:vars={{indexOptions, theme}}>
-  const fontsMap = {
-    'Projects': 'font-code',
-    'Blog': 'font-handwriting',
-    'Contact': 'font-display'
-  }
-
+<script define:vars={{indexOptions, theme, squiggleGif}}>
   function getOffset(element) {
     const rect = element.getBoundingClientRect();
     return {
@@ -47,7 +51,7 @@ const indexOptions = [
     };
   }
 
-  const drawLinesPathFromPoints = (steps, color, size, dash) => {
+  const drawLinesPathFromPoints = (steps, color, size) => {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
     const curve = steps.reduce((currentCurve, displacements) => {
@@ -62,12 +66,6 @@ const indexOptions = [
     path.setAttribute('stroke', color);
     path.setAttribute('stroke-width', size);
 
-    path.classList.add('h-fit');
-
-    path.style.strokeDasharray = path.getTotalLength();
-    path.style.strokeDashoffset = path.getTotalLength();
-
-    dash && path.setAttribute('stroke-dasharray', dash);
     return path;
   }
 
@@ -128,14 +126,16 @@ const indexOptions = [
             y: pathEnd.y + gap / 3,
           }
         ];
-        const path = drawLinesPathFromPoints(pathData, theme.colors.glow, 1, 1);
-        path.classList.add('stroke-current', 'stroke-linecap-round', 'stroke-linejoin-round');
+        const path = drawLinesPathFromPoints(pathData, theme.colors.glow, 3);
+        path.style.strokeDasharray = path.getTotalLength();
+        path.style.strokeDashoffset = path.getTotalLength();
+        path.classList.add('stroke-current', 'stroke-linecap-round', 'stroke-linejoin-round', 'opacity-0');
         path.id = `path-${listElement.id}`;
         pathsSVG.appendChild(path);
       });
     }
 
-    const pathVelocity = 0.75;  // px/ms
+    const animationTime = 400;
 
     const previousResizeListener = window.onresize;
     document.addEventListener('resize', () => {
@@ -145,12 +145,18 @@ const indexOptions = [
     createPathsSVG();
     listElements.forEach(element => {
       const matchingPath = document.getElementById(`path-${element.id}`);
-      const animationTime = matchingPath.getTotalLength() / pathVelocity;
+      const matchingFont = indexOptions[element.innerText.toLowerCase()].font;
+      const splashGifImage = document.getElementById('splash-gif');
+      const originalGifSource = splashGifImage.src;
       element.onmouseenter = () => {
         matchingPath.style.animation = `dash ${animationTime}ms ease-in-out forwards`;
+        glitchTextElement.classList.add(matchingFont);
+        splashGifImage.src = indexOptions[element.innerText.toLowerCase()].gif;
       };
       element.onmouseleave = () => {
-        matchingPath.style.animation = "none";
+        matchingPath.style.animation = `none`;
+        glitchTextElement.classList.remove(matchingFont);
+        splashGifImage.src = originalGifSource;
       };
     })
   }); 
@@ -176,7 +182,7 @@ const indexOptions = [
           Figuring out
         </span>
         <span
-          class="hero glitch layers deform text-4xl tracking-widest my-auto"
+          class="flex mx-auto px-auto py-auto hero glitch layers deform text-4xl tracking-widest my-auto w-64"
           data-text="undefineds"
           id="glitch-text"
         >

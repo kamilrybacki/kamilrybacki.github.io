@@ -1,10 +1,14 @@
 ---
+import type { title } from 'process';
 interface Props {
   options: {
-    name: string;
-    link: string;
-    style: string;
-  }[];
+    [key: string]: {
+      link: string;
+      style: string;
+      font: string;
+      gif: string;
+    }
+  };
   style: string;
   globalListStyle: string;
   [key: string]: any;
@@ -17,14 +21,16 @@ const { options, style, globalListStyle, ...rest } = Astro.props;
   {...rest}
 >
   {
-    options.map((option) => {
+    Object.entries(options).map(([key, option]) => {
       return (
         <li 
           class={option.style + (option.style ? ' ': '') + globalListStyle} 
-          id={`${option.name}-menu-li`}
+          id={`${key}-menu-li`}
         >
-          <a href={option.link} id={`${option.name}-menu-a`}>
-            {option.name}
+          <a href={option.link} id={`${key}-menu-a`}>
+            {key.toLowerCase().split(' ').map(function(word) {
+              return (word.charAt(0).toUpperCase() + word.slice(1));
+            }).join(' ')}
           </a>
         </li>
       );

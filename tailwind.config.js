@@ -12,7 +12,7 @@ export const theme = {
       display: ['Anybody Variable'],
       body: ['Raleway Variable'],
       code: ['Source Code Pro Variable'],
-      handwriting: ['Indie Flower']
+      handwriting: ['Walter Turncoat']
     },
   },
 };

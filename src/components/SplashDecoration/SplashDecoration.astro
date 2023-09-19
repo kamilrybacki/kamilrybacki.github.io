@@ -2,7 +2,7 @@
 import SVG from '@components/StyledSVG.astro';
 import { colorsRGB } from '@utils/theming';
 
-import abstractGif from '@images/glitch2.gif';
+import abstractGif from '@images/squiggle.gif';
 ---
 <style>
   @keyframes rotate {
@@ -22,12 +22,7 @@ import abstractGif from '@images/glitch2.gif';
     const gif = document.getElementById('splash-gif');
     const svg = document.getElementById('splash-svg');
     svg.style.width = '100%';
-    gif.style.animation = 'rotate';
-    gif.style.animationDuration = '50s';
-    gif.style.animationIterationCount = 'infinite';
-    gif.style.animationTimingFunction = 'linear';
-    gif.style.transformOrigin = 'center';
-    gif.style.width = '40%';
+    gif.style.transform = 'rotate(-4deg)';
   });
 </script>
 
@@ -41,10 +36,14 @@ import abstractGif from '@images/glitch2.gif';
     height=600
     id="splash-svg"
   />
-  <img 
-    src={abstractGif.src} 
-    alt='splash'
-    id="splash-gif"
-    class="absolute top-[30%] left-[0%] invert neon-glow"
-  />
+  <div
+    class="absolute top-[30%] left-[0%] w-60"
+  >
+    <img 
+      src={abstractGif.src} 
+      alt='splash'
+      id="splash-gif"
+      class="invert grayscale"
+    />
+  </div>
 </div>

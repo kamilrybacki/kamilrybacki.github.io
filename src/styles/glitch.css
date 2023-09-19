@@ -356,27 +356,27 @@
 @keyframes movement {
   0% {
     top: 0px;
-    left: -20px;
-  }
-
-  15% {
-    top: 10px;
-    left: 10px;
-  }
-
-  60% {
-    top: 5px;
     left: -10px;
   }
 
+  15% {
+    top: 5px;
+    left: 5px;
+  }
+
+  60% {
+    top: 2.5px;
+    left: -5px;
+  }
+
   75% {
-    top: -5px;
-    left: 20px;
+    top: -2.5px;
+    left: 10px;
   }
 
   100% {
-    top: 10px;
-    left: 5px;
+    top: 5px;
+    left: 2.5px;
   }
 }
 
@@ -447,31 +447,31 @@
 
 @keyframes deform {
   0% {
-    text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
-      0.025em 0.04em 0 #fffc00;
+    text-shadow: 0.025em 0 0 #00fffc, -0.015em -0.02em 0 #fc00ff,
+      0.0125em 0.02em 0 #fffc00;
   }
   15% {
-    text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
-      0.025em 0.04em 0 #fffc00;
+    text-shadow: 0.025em 0 0 #00fffc, -0.015em -0.02em 0 #fc00ff,
+      0.0125em 0.02em 0 #fffc00;
   }
   16% {
-    text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
-      -0.05em -0.05em 0 #fffc00;
+    text-shadow: -0.025em -0.0125em 0 #00fffc, 0.0125em 0.0175em 0 #fc00ff,
+      -0.025em -0.025em 0 #fffc00;
   }
   49% {
-    text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
-      -0.05em -0.05em 0 #fffc00;
+    text-shadow: -0.025em -0.0125em 0 #00fffc, 0.0125em 0.0175em 0 #fc00ff,
+      -0.025em -0.025em 0 #fffc00;
   }
   50% {
-    text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
-      0 -0.04em 0 #fffc00;
+    text-shadow: 0.025em 0.0175em 0 #00fffc, 0.015em 0 0 #fc00ff,
+      0 -0.02em 0 #fffc00;
   }
   99% {
-    text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
-      0 -0.04em 0 #fffc00;
+    text-shadow: 0.025em 0.0175em 0 #00fffc, 0.015em 0 0 #fc00ff,
+      0 -0.02em 0 #fffc00;
   }
   100% {
-    text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff,
-      -0.04em -0.025em 0 #fffc00;
+    text-shadow: -0.025em 0 0 #00fffc, -0.0125em -0.02em 0 #fc00ff,
+      -0.02em -0.0125em 0 #fffc00;
   }
 }
