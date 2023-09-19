@@ -25,49 +25,56 @@ const indexOptions = [
   }
 ];
 ---
+<style>
+  @keyframes dash {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
 <script define:vars={{indexOptions, theme}}>
   const fontsMap = {
     'Projects': 'font-code',
     'Blog': 'font-handwriting',
     'Contact': 'font-display'
   }
-  const computeElementCenter = (element) => {
-    const centerX = element.getBoundingClientRect().left + element.clientWidth / 2;
-    const centerY = element.getBoundingClientRect().top + element.clientHeight;
+
+  function getOffset(element) {
+    const rect = element.getBoundingClientRect();
     return {
-      x: centerX,
-      y: centerY
-    } 
+      x: rect.left + window.scrollX + rect.width / 2,
+      y: rect.top + window.scrollY + rect.height / 2,
+    };
+  }
+
+  const drawLinesPathFromPoints = (steps, color, size, dash) => {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+    const curve = steps.reduce((currentCurve, displacements) => {
+      if (currentCurve.length === 0) {
+        return `M ${displacements.x} ${displacements.y} `;
+      }
+      return currentCurve + `L ${displacements.x} ${displacements.y} `;
+    }, '');
+
+    path.setAttribute('d', curve);
+    path.setAttribute('fill', 'transparent');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', size);
+
+    path.classList.add('h-fit');
+
+    path.style.strokeDasharray = path.getTotalLength();
+    path.style.strokeDashoffset = path.getTotalLength();
+
+    dash && path.setAttribute('stroke-dasharray', dash);
+    return path;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     const menuElement = document.getElementById('index-menu');
     const glitchTextElement = document.getElementById('glitch-text');
     const listElements = [...menuElement.getElementsByTagName('li')];
-
-    const pointOfOrigin = {
-      x: menuElement.offsetLeft,
-      y: menuElement.offsetTop - menuElement.clientHeight
-    };
-
-    const absoluteTargetPosition = computeElementCenter(glitchTextElement)
-    const targetPosition = {
-      x: absoluteTargetPosition.x - pointOfOrigin.x,
-      y: absoluteTargetPosition.y - pointOfOrigin.y
-    }
-
-    const drawPathFromPoints = (points, color, size, dash) => {
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      points.forEach((point, index) => {
-        const command = index === 0 ? 'M' : 'L';
-        path.setAttribute('d', `${path.getAttribute('d') || ''} ${command} ${point.x} ${point.y}`);
-      })
-      path.setAttribute('fill', 'transparent');
-      path.setAttribute('stroke', color);
-      path.setAttribute('stroke-width', size);
-      dash && path.setAttribute('stroke-dasharray', dash);
-      return path;
-    }
 
     const createPathsSVG = () => {
       const svgID = `path-${menuElement.id}`;
@@ -81,50 +88,54 @@ const indexOptions = [
       pathsSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       pathsSVG.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
       pathsSVG.setAttribute('id', svgID)
-      pathsSVG.setAttribute('width', menuElement.clientWidth);
-      pathsSVG.setAttribute('height', menuElement.clientHeight);
 
-      const distance = targetPosition.y - pointOfOrigin.y;
-      const offsetCoefficient = 0.9;
-      const pathsPoints = listElements.map((listElement) => {
-        const rawElementCenter = computeElementCenter(listElement);
-        const elementCenter = {
-          x: rawElementCenter.x - pointOfOrigin.x,
-          y: rawElementCenter.y - pointOfOrigin.y
-        };
+      pathsSVG.setAttribute('width', window.innerWidth);
+      pathsSVG.setAttribute('height', window.innerHeight);
 
-        return [
+      pathsSVG.classList.add('fixed', 'z-1', 'top-0', 'left-0', 'w-full', 'h-full', 'pointer-events-none');
+      menuElement.appendChild(pathsSVG);
+
+      const targetPosition = getOffset(glitchTextElement);
+      const menuElementCenter = getOffset(menuElement);
+
+      const gap = Math.abs(targetPosition.x - menuElementCenter.x);
+
+      listElements.forEach((listElement) => {
+        const linkElement = listElement.getElementsByTagName('a')[0];
+        const elementCenter = getOffset(linkElement);
+
+        const pathStart = {
+          x: elementCenter.x,
+          y: elementCenter.y + linkElement.offsetHeight / 3.5,
+        }
+        const pathEnd = {
+          x: targetPosition.x,
+          y: targetPosition.y + glitchTextElement.offsetHeight / 2,
+        }
+
+        const pathData = [
+          pathStart,
           {
-            x: elementCenter.x,
-            y: elementCenter.y + menuElement.clientHeight * offsetCoefficient,
+            x: pathStart.x,
+            y: pathEnd.y + gap / 2,
           },
           {
-            x: elementCenter.x,
-            y: elementCenter.y +  menuElement.clientHeight * offsetCoefficient - distance / 2,
+            x: pathEnd.x,
+            y: pathEnd.y + gap / 2,
           },
           {
-            x: targetPosition.x,
-            y: elementCenter.y +  menuElement.clientHeight * offsetCoefficient - distance / 2
-          },
-          {
-            x: targetPosition.x,
-            y: targetPosition.y
+            x: pathEnd.x,
+            y: pathEnd.y + gap / 3,
           }
         ];
-      });
-
-      pathsPoints.forEach((data) =>{
-        const path = drawPathFromPoints(data, theme.colors.glow, 1, 1);
-        path.width = menuElement.clientWidth;
-        path.height = menuElement.clientHeight;
+        const path = drawLinesPathFromPoints(pathData, theme.colors.glow, 1, 1);
+        path.classList.add('stroke-current', 'stroke-linecap-round', 'stroke-linejoin-round');
+        path.id = `path-${listElement.id}`;
         pathsSVG.appendChild(path);
-      })
-
-      pathsSVG.childNodes.forEach((child) => child.classList.add('opacity-50'))
-      pathsSVG.classList.add('absolute', 'z-1');
-      pathsSVG.style.bottom = `${menuElement.clientHeight}px`;
-      menuElement.appendChild(pathsSVG);
+      });
     }
+
+    const pathVelocity = 0.75;  // px/ms
 
     const previousResizeListener = window.onresize;
     document.addEventListener('resize', () => {
@@ -133,8 +144,13 @@ const indexOptions = [
     })
     createPathsSVG();
     listElements.forEach(element => {
+      const matchingPath = document.getElementById(`path-${element.id}`);
+      const animationTime = matchingPath.getTotalLength() / pathVelocity;
       element.onmouseenter = () => {
-        console.log('enter')
+        matchingPath.style.animation = `dash ${animationTime}ms ease-in-out forwards`;
+      };
+      element.onmouseleave = () => {
+        matchingPath.style.animation = "none";
       };
     })
   }); 
@@ -142,10 +158,10 @@ const indexOptions = [
 
 <BasicPageLayout 
   title="Kamil Rybacki"
-  style="flex flex-col justify-center items-center"
+  style="flex flex-col justify-center items-center overflow-hidden"
 >
   <div class="flex flex-row justify-around items-center my-auto w-full">
-    <div class="w-fit ml-auto flex flex-col items-end z-1">
+    <div class="w-fit ml-auto flex flex-col items-end z-1" id="menu-wrapper">
       <div class="flex flex-row mr-auto">
         <div class="relative flex justify-center w-32 text-accent ml-3">
           <SVG src="images/logo" alt="Logo"/>
