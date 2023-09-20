@@ -28,7 +28,7 @@ const PostsViewer = ({articles, poems}: PostsViewerProps) => {
               {
                 post.frontmatter.image ?
                   <img
-                    src={post.frontmatter.image.url}
+                    src={post.frontmatter.image.src}
                     alt={post.frontmatter.image.alt}
                   /> :
                   null
