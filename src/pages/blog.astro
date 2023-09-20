@@ -1,0 +1,18 @@
+---
+import BasicPageLayout from "@layouts/BasicPageLayout.astro";
+import PostsViewer from "@components/PostsViewer";
+
+const articles = await Astro.glob("../../content/articles/*.mdx");
+const poems = await Astro.glob("../../content/poems/*.mdx")
+
+---
+
+<BasicPageLayout
+  title="Blog"
+>
+  <PostsViewer
+    articles={articles}
+    poems={poems}
+    client:load
+  />
+</BasicPageLayout>

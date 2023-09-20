@@ -3,10 +3,12 @@ import SiteHeader from '@components/SiteHeader';
 import SiteFooter from '@components/SiteFooter.astro';
 
 import '@styles/global.css';
+
 import '@fontsource-variable/anybody';
 import '@fontsource-variable/raleway';
 import '@fontsource-variable/source-code-pro';
 import '@fontsource/walter-turncoat';
+import '@fontsource/redacted-script';
 
 interface Props {
   title: string;
@@ -69,7 +71,7 @@ const { title, style } = Astro.props;
   <body>
     <SiteHeader/>
     <div 
-      class={`border-glow border-[2px] p-4 m-4 border-opacity-10 ${style || ''}`}
+      class={`p-4 m-4 border-opacity-10 ${style || ''}`}
       id="content"
     >
       <slot/>

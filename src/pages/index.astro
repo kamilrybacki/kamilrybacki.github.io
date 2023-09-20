@@ -6,183 +6,107 @@ import Menu from '@components/Menu';
 import { theme } from '@root/tailwind.config';
 
 import codeGif from '@images/code.gif';
-import noteGif from '@images/note.gif';
-import mailGif from '@images/mail.gif';
+import blogGif from '@images/blog.gif';
 import squiggleGif from '@images/squiggle.gif';
+
 
 import '@styles/glitch.css';
 
 const indexOptions = {
+  blog: {
+    link: '/blog',
+    style: '',
+    font: 'font-handwriting',
+    gif: blogGif.src
+  },
   projects: {
     link: '/projects',
     style: 'text-accent text-7xl',
     font: 'font-code',
     gif: codeGif.src
   },
-  blog: {
-    link: '/about',
-    style: '',
-    font: 'font-handwriting',
-    gif: noteGif.src
-  },
-  contact: {
-    link: '/contact',
-    style: '',
-    font: 'font-body',
-    gif: mailGif.src
-  }
 }
 ---
 <style>
-  @keyframes dash {
-    to {
-      opacity: 0.5;
-      stroke-dashoffset: 10;
-      stroke-dasharray: 10;
+  @keyframes fadeout {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes fadein {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
     }
   }
 </style>
+
 <script define:vars={{indexOptions, theme, squiggleGif}}>
-  function getOffset(element) {
-    const rect = element.getBoundingClientRect();
-    return {
-      x: rect.left + window.scrollX + rect.width / 2,
-      y: rect.top + window.scrollY + rect.height / 2,
-    };
-  }
-
-  const drawLinesPathFromPoints = (steps, color, size) => {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
-    const curve = steps.reduce((currentCurve, displacements) => {
-      if (currentCurve.length === 0) {
-        return `M ${displacements.x} ${displacements.y} `;
-      }
-      return currentCurve + `L ${displacements.x} ${displacements.y} `;
-    }, '');
-
-    path.setAttribute('d', curve);
-    path.setAttribute('fill', 'transparent');
-    path.setAttribute('stroke', color);
-    path.setAttribute('stroke-width', size);
-
-    return path;
-  }
-
+  const glitchEffect = "hero glitch layers deform".split(' ');
   document.addEventListener('DOMContentLoaded', () => {
+    const SVGLogoElement = document.getElementById('header-logo');
     const menuElement = document.getElementById('index-menu');
     const glitchTextElement = document.getElementById('glitch-text');
     const listElements = [...menuElement.getElementsByTagName('li')];
 
-    const createPathsSVG = () => {
-      const svgID = `path-${menuElement.id}`;
-      const pathsSVG = document.getElementById(svgID) 
-        ? document.getElementById(svgID)
-        : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      pathsSVG.childNodes && pathsSVG.childNodes.forEach((child) => {
-        child.remove();
-      })
-      pathsSVG.setAttribute('version', '1.1');
-      pathsSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      pathsSVG.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-      pathsSVG.setAttribute('id', svgID)
-
-      pathsSVG.setAttribute('width', window.innerWidth);
-      pathsSVG.setAttribute('height', window.innerHeight);
-
-      pathsSVG.classList.add('fixed', 'z-1', 'top-0', 'left-0', 'w-full', 'h-full', 'pointer-events-none');
-      menuElement.appendChild(pathsSVG);
-
-      const targetPosition = getOffset(glitchTextElement);
-      const menuElementCenter = getOffset(menuElement);
-
-      const gap = Math.abs(targetPosition.x - menuElementCenter.x);
-
-      listElements.forEach((listElement) => {
-        const linkElement = listElement.getElementsByTagName('a')[0];
-        const elementCenter = getOffset(linkElement);
-
-        const pathStart = {
-          x: elementCenter.x,
-          y: elementCenter.y + linkElement.offsetHeight / 3.5,
-        }
-        const pathEnd = {
-          x: targetPosition.x,
-          y: targetPosition.y + glitchTextElement.offsetHeight / 2,
-        }
-
-        const pathData = [
-          pathStart,
-          {
-            x: pathStart.x,
-            y: pathEnd.y + gap / 2,
-          },
-          {
-            x: pathEnd.x,
-            y: pathEnd.y + gap / 2,
-          },
-          {
-            x: pathEnd.x,
-            y: pathEnd.y + gap / 3,
-          }
-        ];
-        const path = drawLinesPathFromPoints(pathData, theme.colors.glow, 3);
-        path.style.strokeDasharray = path.getTotalLength();
-        path.style.strokeDashoffset = path.getTotalLength();
-        path.classList.add('stroke-current', 'stroke-linecap-round', 'stroke-linejoin-round', 'opacity-0');
-        path.id = `path-${listElement.id}`;
-        pathsSVG.appendChild(path);
-      });
-    }
-
-    const animationTime = 400;
+    SVGLogoElement.style.visibility = 'hidden';
+    glitchEffect.forEach(effect => {
+      glitchTextElement.classList.add(effect);
+    });
+    glitchTextElement.classList.add('font-abstract')
 
     const previousResizeListener = window.onresize;
     document.addEventListener('resize', () => {
       previousResizeListener && previousResizeListener();
-      createPathsSVG();
-    })
-    createPathsSVG();
+    });
+
     listElements.forEach(element => {
-      const matchingPath = document.getElementById(`path-${element.id}`);
       const matchingFont = indexOptions[element.innerText.toLowerCase()].font;
       const splashGifImage = document.getElementById('splash-gif');
       const originalGifSource = splashGifImage.src;
+
       element.onmouseenter = () => {
-        matchingPath.style.animation = `dash ${animationTime}ms ease-in-out forwards`;
+        glitchTextElement.classList.remove('font-abstract')
         glitchTextElement.classList.add(matchingFont);
         splashGifImage.src = indexOptions[element.innerText.toLowerCase()].gif;
       };
+
       element.onmouseleave = () => {
-        matchingPath.style.animation = `none`;
         glitchTextElement.classList.remove(matchingFont);
+        glitchTextElement.classList.add('font-abstract')
         splashGifImage.src = originalGifSource;
       };
-    })
-  }); 
+    });
+  });
 </script>
 
 <BasicPageLayout 
   title="Kamil Rybacki"
   style="flex flex-col justify-center items-center overflow-hidden"
 >
-  <div class="flex flex-row justify-around items-center my-auto w-full">
-    <div class="w-fit ml-auto flex flex-col items-end z-1" id="menu-wrapper">
-      <div class="flex flex-row mr-auto">
-        <div class="relative flex justify-center w-32 text-accent ml-3">
+  <div class="flex flex-row justify-between items-center my-auto w-full">
+    <SplashDecoration/>
+    <div class="flex flex-col gap-3 justify-end items-center w-fit mr-auto my-auto flex flex-col items-end z-1" id="menu-wrapper">
+      <div class="flex flex-row mt-12">
+        <div class="relative flex justify-end w-40 text-accent">
           <SVG src="images/logo" alt="Logo"/>
         </div>
-        <h1 class="relative top-9 text-7xl font-display font-[700]">
+        <h1 class="relative top-12 text-8xl font-display font-[700]">
           amil Rybacki
         </h1>
       </div>
-      <div class="border-[1px] border-accent my-4 w-[105%] opacity-50"/>
-      <h2 class="relative flex flex-row items-center text-4xl mt-2 ml-3 font-body font-[700] text-glow gap-3">
-        <span class="my-auto">
+      <div class="border-[1px] border-accent mb-4 mt-6 w-[105%] opacity-50"/>
+      <h2 class="relative flex flex-row items-center text-4xl mt-2 mr-auto font-body font-[500] text-glow gap-4">
+        <span class="my-auto py-auto">
           Figuring out
         </span>
         <span
-          class="flex mx-auto px-auto py-auto hero glitch layers deform text-4xl tracking-widest my-auto w-64"
+          class="flex px-auto py-auto tracking-widest my-auto w-64"
           data-text="undefineds"
           id="glitch-text"
         >
@@ -191,11 +115,10 @@ const indexOptions = {
       </h2>
       <Menu
         options={indexOptions}
-        style='relative flex flex-row-reverse gap-6 text-5xl font-bold mt-20 items-center justify-center'
-        globalListStyle="relative bg-background my-auto z-99"
+        style='h-36 relative flex flex-row-reverse gap-8 text-5xl font-bold mt-10 items-center justify-center'
+        globalListStyle="relative bg-background my-auto z-99 hover:translate-x-2 hover:-translate-y-2 transition-all duration-[600ms] ease-in-out"
         id="index-menu"
       />
     </div>
-    <SplashDecoration/>
   </div>
 </BasicPageLayout>

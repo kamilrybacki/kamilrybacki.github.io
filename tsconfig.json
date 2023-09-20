@@ -9,6 +9,7 @@
       "@images/*": ["assets/images/*"],
       "@badges/*": ["assets/badges/*"],
       "@utils/*": ["src/utils/*"],
+      "@content/*": ["content/*"],
       "@root/*": ["./*"],
     },
     "plugins": [

@@ -20,30 +20,18 @@ import abstractGif from '@images/squiggle.gif';
 <script define:vars={{colorsRGB}}>
   document.addEventListener('DOMContentLoaded', () => {
     const gif = document.getElementById('splash-gif');
-    const svg = document.getElementById('splash-svg');
-    svg.style.width = '100%';
     gif.style.transform = 'rotate(-4deg)';
+    gif.style.width = '40rem';
   });
 </script>
 
-<div 
-  id="splash" 
-  class="flex flex-row relative mx-auto"
+<div
+  class="mx-auto my-auto neon-glow"
 >
-  <SVG 
-    src='images/splash'
-    width=600
-    height=600
-    id="splash-svg"
+  <img 
+    src={abstractGif.src} 
+    alt='splash'
+    id="splash-gif"
+    class="invert grayscale"
   />
-  <div
-    class="absolute top-[30%] left-[0%] w-60"
-  >
-    <img 
-      src={abstractGif.src} 
-      alt='splash'
-      id="splash-gif"
-      class="invert grayscale"
-    />
-  </div>
 </div>

@@ -12,7 +12,8 @@ export const theme = {
       display: ['Anybody Variable'],
       body: ['Raleway Variable'],
       code: ['Source Code Pro Variable'],
-      handwriting: ['Walter Turncoat']
+      handwriting: ['Walter Turncoat'],
+      abstract: ['Redacted Script']
     },
   },
 };
