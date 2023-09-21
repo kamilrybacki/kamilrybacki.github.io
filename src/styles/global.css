@@ -6,10 +6,12 @@
   html {
     @apply bg-background;
     @apply text-foreground;
+    @apply border-accent;
     @apply p-8;
   }
   body {
     @apply bg-background;
+    @apply border-accent;
     @apply text-foreground;
   }
 }

@@ -1,10 +1,11 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
+
 import BasicPageLayout from "@layouts/BasicPageLayout.astro";
 import PostsViewer from "@components/PostsViewer";
 
-const articles = await Astro.glob("../../content/articles/*.mdx");
-const poems = await Astro.glob("../../content/poems/*.mdx")
-
+const articles = await getCollection('articles');
+const poems = await getCollection('poems');
 ---
 
 <BasicPageLayout

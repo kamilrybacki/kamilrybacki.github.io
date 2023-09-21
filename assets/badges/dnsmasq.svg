@@ -86,8 +86,8 @@
        in="offsetBlur" /><feMergeNode
        id="feMergeNode6274"
        in="SourceGraphic" /></feMerge></filter></defs><sodipodi:namedview
-   pagecolor="#ffffff"
-   bordercolor="#666666"
+   
+   bordercolor="currentColor"
    borderopacity="1"
    objecttolerance="10"
    gridtolerance="10"

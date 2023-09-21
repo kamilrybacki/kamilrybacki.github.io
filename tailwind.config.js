@@ -5,6 +5,7 @@ export const theme = {
     'foreground': '#C4D8ED',
     'background': '#090E11',
     'accent': "#E5F2FF",
+    'glow': "#C4D8ED",
   },
   extend: {
     fontFamily: {
