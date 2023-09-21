@@ -9,7 +9,6 @@ import codeGif from '@images/code.gif';
 import blogGif from '@images/blog.gif';
 import squiggleGif from '@images/squiggle.gif';
 
-
 import '@styles/glitch.css';
 
 const indexOptions = {
@@ -21,7 +20,7 @@ const indexOptions = {
   },
   projects: {
     link: '/projects',
-    style: 'text-accent text-7xl',
+    style: '',
     font: 'font-code',
     gif: codeGif.src
   },
@@ -101,7 +100,7 @@ const indexOptions = {
         </h1>
       </div>
       <div class="border-[1px] border-accent mb-4 mt-6 w-[105%] opacity-50"/>
-      <h2 class="relative flex flex-row items-center text-4xl mt-2 mr-auto font-body font-[500] text-glow gap-4">
+      <h2 class="relative flex flex-row items-center text-4xl mt-2 mr-auto font-body font-[500] text-accent gap-4">
         <span class="my-auto py-auto">
           Figuring out
         </span>
@@ -115,8 +114,8 @@ const indexOptions = {
       </h2>
       <Menu
         options={indexOptions}
-        style='h-36 relative flex flex-row-reverse gap-8 text-5xl font-bold mt-10 items-center justify-center'
-        globalListStyle="relative bg-background my-auto z-99 hover:translate-x-2 hover:-translate-y-2 transition-all duration-[600ms] ease-in-out"
+        style='h-36 relative flex flex-row-reverse gap-8 text-6xl font-bold mt-10 items-center justify-center'
+        globalListStyle="relative bg-background my-auto z-99 transition-all duration-[500ms] ease-in-out hover:-translate-y-5 hover:cursor-pointer"
         id="index-menu"
       />
     </div>

@@ -2,7 +2,7 @@ import { theme } from '@root/tailwind.config.js'
 import { parseColor } from "tailwindcss/lib/util/color";
 import { generateNumberFromRange } from '@utils/logic';
 
-export const glowAnimationName = 'neon-glow';
+export const glowAnimationName = 'neon-accent';
 export const glowAnimationMinimumIntensity = 50;
 export const glowAnimationMaximumIntensity = 25;
 export const glowAnimationMinimumDuration = 1000; // miliseconds
@@ -35,7 +35,7 @@ export const createRandomNeonGlowKeyframesGenerator = () => {
   return () => {
       const glowIntensity = generateNumberFromRange(glowAnimationMinimumIntensity, glowAnimationMaximumIntensity); 
       const neonColor = colorMixer(
-        parseColor(theme.colors.glow).color,
+        parseColor(theme.colors.accent).color,
         parseColor(theme.colors.background).color,
         glowIntensity
       )

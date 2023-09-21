@@ -64,11 +64,12 @@ const { title, style } = Astro.props;
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/styles/doodle/doodle.css">
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-  <body>
+  <body class="doodle">
     <SiteHeader/>
     <div 
       class={`p-4 m-4 border-opacity-10 ${style || ''}`}

@@ -27,9 +27,9 @@ const PostsViewer = ({articles, poems}: PostsViewerProps) => {
             <Style.PostCard key={post.file}>
               {
                 post.frontmatter.image ?
-                  <img
-                    src={post.frontmatter.image.src}
-                    alt={post.frontmatter.image.alt}
+                  <Style.PostCardThumbnail
+                    src={`/assets/thumbnails/${post.frontmatter.image.thumbnail}`}
+                    alt={`Thumbnail for ${post.frontmatter.title}`}
                   /> :
                   null
               }

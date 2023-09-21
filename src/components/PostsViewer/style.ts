@@ -18,10 +18,16 @@ export const PostsWrapper = tw.div`
 
 export const PostCard = tw.div`
   bg-background
-  rounded-lg
   p-6
   mb-4
-  border-2
-  border-foreground
-  w-1/3
+  border-[1px]
+  border-accent
+  border-dashed
+  w-1/4
+`;
+
+export const PostCardThumbnail = tw.img`
+  max-h-32
+  rounded-lg
+  mb-4
 `;
