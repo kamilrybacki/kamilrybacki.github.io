@@ -1,3 +1,17 @@
 ---
+import { getCollection } from 'astro:content';
 
+import BasicPageLayout from "@layouts/BasicPageLayout.astro";
+import ProjectsViewer from "@components/ProjectsViewer";
+
+const projects = await getCollection('projects');
 ---
+
+<BasicPageLayout
+  title="My projects"
+>
+  <ProjectsViewer
+    data={projects}
+  />
+</BasicPageLayout>
+
