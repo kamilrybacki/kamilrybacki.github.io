@@ -13,7 +13,14 @@ const PostsViewer = ({articles, poems}: PostsViewerProps) => {
 
   return (
     <div className="posts-viewer">
-      <h1 className='text-9xl font-handwriting mb-2'>Posts</h1>
+      <nav className='flex flex-row justify-between w-full'>
+        <h1 className='text-9xl font-handwriting mb-2'>Posts</h1>
+        <button className='p-2 h-fit mt-auto hover:translate-x-2'>
+          <a href='/projects' className='font-bold font-handwriting'>
+            Go to projects
+          </a>
+        </button>
+      </nav>
       <hr className='my-4 opacity-25'/>
       <Style.PostsMenu>
         <div className='flex flex-row gap-4 my-4'>

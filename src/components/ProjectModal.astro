@@ -1,0 +1,17 @@
+---
+const {id, open} = Astro.props;
+---
+<style lang="scss">
+  dialog {
+    position: absolute;
+    width: 75%;
+    margin: auto;
+  }
+</style>
+
+<dialog id={id} class="bg-background doodle-border p-6 color-foreground">
+  <slot name="main" />
+  <form method="dialog">
+    <slot name="close" />
+  </form>
+</dialog>

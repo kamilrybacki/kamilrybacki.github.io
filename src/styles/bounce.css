@@ -1,0 +1,32 @@
+.bounce {
+    animation-name: bounce;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: bounce;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-direction: alternate;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+}
+  
+@keyframes bounce {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(0, -1rem, 0);
+    }
+}
+  
+@-webkit-keyframes bounce {
+    from {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        -webkit-transform: translate3d(0, -1rem, 0);
+        transform: translate3d(0, -1rem, 0);
+    }
+}

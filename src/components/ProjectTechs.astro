@@ -1,0 +1,23 @@
+---
+import StyledSVG from "./StyledSVG.astro";
+
+interface Props {
+  techs: string
+}
+
+const { techs } = Astro.props;
+---
+<span class="flex flex-row gap-2">
+  {
+    techs.split(' ').map((tech) => (
+      <StyledSVG
+        key={tech}
+        src={`badges/${tech}`}
+        height="30"
+        width="30"
+        alt={tech}
+        id={`${tech}-svg`}
+      />
+    ))
+  }
+</span>

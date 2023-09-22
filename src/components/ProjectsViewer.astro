@@ -1,0 +1,115 @@
+---
+import ProjectTechs from '@components/ProjectTechs.astro';
+import ProjectModal from '@components/ProjectModal.astro';
+
+import '@styles/bounce.css';
+
+interface Props {
+  data: any[];
+}
+
+const { data } = Astro.props;
+const renderedData = await Promise.all(data.map((post) => post.render()));
+---
+<script>
+  const contentStyling = {
+    'h2': 'text-3xl font-handwriting mb-1 mt-2',
+    'h3': 'text-2xl font-handwriting mb-1 mt-2',
+    'h4': 'text-xl font-handwriting mb-1 mt-2',
+    'h5': 'text-lg font-handwriting mb-1 mt-2',
+    'p': 'font-body text-md py-2',
+    'a': 'font-display outline-none font-bold'
+  }
+
+  const contentEntries = [...document.getElementsByClassName('project-content')];
+  contentEntries.forEach((entry: HTMLSectionElement) => {
+    Object.entries(contentStyling).forEach(([tag, style]) => {
+      const styleClasses = style.split(" ");
+        const elements = entry.getElementsByTagName(tag);
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.add(...styleClasses);
+        }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const projectCards = [...document.getElementsByClassName('project-card')];
+    projectCards.forEach((entry: HTMLArticleElement) => {
+      const modalElement = document.getElementById(
+        entry.getAttribute('key').replace('-card','-modal')
+      );
+      modalElement.getElementsByTagName('button')[0].addEventListener('click', () => {
+        document.getElementById("content").classList.remove(...['opacity-25', 'blur']);
+        modalElement.close();
+      });
+      entry.addEventListener('click', () => {
+        document.getElementById("content").classList.add(...['opacity-25', 'blur']);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            document.getElementById("content").classList.remove(...['opacity-25', 'blur']);
+            modalElement.close();
+          }
+        });
+        modalElement.showModal();
+      });
+    })
+  });
+</script>
+
+<main class="flex flex-row items-center justify-center w-full gap-10">
+  {
+    renderedData && renderedData.map((post) => {
+      const frontmatter = post.remarkPluginFrontmatter;
+      const simpleTitle = frontmatter.title.replace(/\s/g, "").toLowerCase();
+      return (
+        <>
+          <article 
+            key={`${simpleTitle}-card`} 
+            class='project-card doodle-border flex flex-col flex-wrap items-center justify-center p-4 w-[40%] cursor-pointer hover:-translate-y-2 duration-500'
+          >
+            <h1 class='text-5xl font-bold font-handwriting mt-5 mb-7 text-center mx-auto'>{frontmatter.title}</h1>
+            <ProjectTechs techs={frontmatter.techs}/>
+            <p class='font-body text-md mt-8'>{frontmatter.description}</p>
+          </article>
+          <ProjectModal id={`${simpleTitle}-modal`} open={'See more'}>
+            <section class="project-content text-foreground" slot="main">
+              <p class='text-7xl font-bold font-handwriting mt-5 mb-7 text-center mx-auto'>{frontmatter.title}</p>
+              <img
+                src={`/assets/thumbnails/${frontmatter.image}`}
+                class="max-h-96 my-8 mx-auto"
+              />
+              <div class="flex flex-row items-center">
+                <span class="mr-2 font-display my-auto">Tech stack:</span>
+                <ProjectTechs techs={frontmatter.techs}/>
+                <div class="flex flex-row items-center justify-center ml-auto">
+                  Date:
+                  <span class="ml-2 text-sm font-body">{frontmatter.date}</span>
+                </div>
+              </div>
+              <hr class="w-full my-4"/>
+              <post.Content/>
+              <nav class="flex flex-row justify-between">
+                <button
+                  slot='close'
+                  id={`${simpleTitle}-modal-close`}
+                  class="px-2 mt-6 text-3xl hover:-translate-x-2 duration-500"
+                >
+                  Close modal
+                </button>
+                <button
+                  slot='close'
+                  id={`${simpleTitle}-modal-close`}
+                  class="px-2 mt-6 hover:translate-x-2 duration-500"
+                >
+                  <a href={frontmatter.link}>
+                    Check it out
+                  </a>
+                </button>
+              </nav>
+            </section>
+          </ProjectModal>
+        </>
+      )
+    })
+  }
+</main>

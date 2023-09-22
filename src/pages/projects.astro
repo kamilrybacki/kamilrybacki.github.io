@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import BasicPageLayout from "@layouts/BasicPageLayout.astro";
-import ProjectsViewer from "@components/ProjectsViewer";
+import ProjectsViewer from "@components/ProjectsViewer.astro";
 
 const projects = await getCollection('projects');
 ---
@@ -10,8 +10,15 @@ const projects = await getCollection('projects');
 <BasicPageLayout
   title="My projects"
 >
-  <ProjectsViewer
-    data={projects}
-  />
+  <nav class='flex flex-row justify-between w-full'>
+    <p class='text-9xl font-handwriting mb-2'>Projects</p>
+    <button class='p-2 h-fit mt-auto hover:translate-x-2'>
+      <a href='/blog' class='font-bold font-handwriting'>
+        Go to blog
+      </a>
+    </button>
+  </nav>
+  <hr class='mb-10 mt-6 opacity-25'/>
+  <ProjectsViewer data={projects}/>
 </BasicPageLayout>
 

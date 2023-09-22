@@ -1,5 +1,5 @@
 ---
-import SVG from '@components/StyledSVG.astro';
+import StyledSVG from '@components/StyledSVG.astro';
 import { colorsRGB } from '@utils/theming';
 
 const { icon, url, size } = Astro.props;
@@ -24,7 +24,7 @@ const { icon, url, size } = Astro.props;
   rel="noopener noreferrer"
   aria-label={icon}
 >
-  <SVG
+  <StyledSVG
     src={`badges/${icon}`}
     width={size || 40}
     height={size || 40}
