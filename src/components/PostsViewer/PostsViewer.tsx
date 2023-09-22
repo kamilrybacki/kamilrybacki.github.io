@@ -27,7 +27,7 @@ const PostsViewer = ({articles, poems}: PostsViewerProps) => {
           <Style.PostsTypeButton onClick={() => setSelectedPosts(articles)}>Articles</Style.PostsTypeButton>
           <Style.PostsTypeButton onClick={() => setSelectedPosts(poems)}>Poems (in Polish)</Style.PostsTypeButton>
         </div>
-        <Style.PostsSearch type="text" placeholder="Search" />
+        {/* <Style.PostsSearch type="text" placeholder="Search" /> */}
       </Style.PostsMenu>
       <hr className='my-4 opacity-25'/>
       <Style.PostsWrapper>
