@@ -1,6 +1,7 @@
 ---
 import ProjectModal from '@components/ProjectModal.astro';
 import ProjectTechs from '@components/ProjectTechs.astro';
+import { Image } from 'astro:assets';
 
 interface Props {
   data: any[];
@@ -74,8 +75,9 @@ const renderedData = await Promise.all(data.map((post) => post.render()));
           <ProjectModal id={`${simpleTitle}-modal`} open={'See more'}>
             <section class="project-content w-full text-foreground lg:w-auto" slot="main">
               <p class='mx-auto mb-3 mt-2 text-center font-handwriting text-5xl font-bold lg:mb-7 lg:mt-5 lg:text-7xl'>{frontmatter.title}</p>
-              <img
+              <Image
                 src={`/assets/thumbnails/${frontmatter.image}`}
+                alt={frontmatter.title}
                 class="mx-auto my-4 max-h-48 lg:my-8 lg:max-h-96"
               />
               <div class="flex w-full flex-col lg:flex-row lg:items-center">
