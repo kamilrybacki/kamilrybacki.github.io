@@ -22,5 +22,5 @@ jobs:
           node-version: 12
       - name: NPM install
         run: npm i
-      - name: Running ESLint
-        uses: icrawl/action-eslint@v1
+      - name: Running ESLint (with autofix enabled)
+        run: eslint . --fix

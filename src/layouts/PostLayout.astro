@@ -1,8 +1,7 @@
 ---
-import BasicPageLayout from "./BasicPageLayout.astro";
 import StyledSVG from "@components/StyledSVG.astro";
 
-import '@styles/neon.css'
+import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
 ---
@@ -38,11 +37,11 @@ const { frontmatter } = Astro.props;
   style="flex flex-col items-center"
 >
   <article class="lg:w-[66%]">
-    <div class="mb-6 pb-2 mx-auto w-full">
-      <h1 class="text-4xl lg:text-7xl font-handwriting mb-6 w-full flex">
+    <div class="mx-auto mb-6 w-full pb-2">
+      <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
         {frontmatter.title} 
       </h1>
-      <span class="text-lg font-body ml-auto w-full opacity-75">Published: {frontmatter.date}</span>
+      <span class="ml-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
       <hr class="mt-4">
       {
         frontmatter.image ?
@@ -50,19 +49,19 @@ const { frontmatter } = Astro.props;
           <StyledSVG
             src={`hero/${frontmatter.image.hero}`}
             alt={frontmatter.image.alt}
-            class="w-full my-1 lg:my-6 mx-auto"
+            class="mx-auto my-1 w-full lg:my-6"
             id="hero-image"
           />
           <hr>
         </> : null
       }
     </div>
-    <main class="font-body px-10" id="post-content">
+    <main class="px-10 font-body" id="post-content">
       <slot/>
     </main>
   </article>
-  <button class="fixed left-8 bottom-20 hover:-translate-x-2">
-    <a href="/blog" class="text-2xl font-handwriting mt-10">
+  <button class="fixed bottom-20 left-8 hover:-translate-x-2">
+    <a href="/blog" class="mt-10 font-handwriting text-2xl">
       Go back
     </a>
   </button>

@@ -1,8 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
-
-import BasicPageLayout from "@layouts/BasicPageLayout.astro";
 import PostsViewer from "@components/PostsViewer.tsx";
+import BasicPageLayout from "@layouts/BasicPageLayout.astro";
+import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
 
 const articles = await getCollection('articles');
 const poems = await getCollection('poems');

@@ -1,7 +1,6 @@
 ---
-import { colorsRGB } from '@utils/theming';
-
 import abstractGif from '@images/squiggle.gif';
+import { colorsRGB } from '@utils/theming';
 
 interface Props {
   className?: string;
@@ -31,7 +30,7 @@ const { className } = Astro.props;
 </script>
 
 <div
-  class="mx-auto my-12 lg:mr-0 lg:ml-auto lg:my-auto w-4/5 lg:w-auto"
+  class="mx-auto my-12 w-4/5 lg:my-auto lg:ml-auto lg:mr-0 lg:w-auto"
 >
   <img 
     src={abstractGif.src} 

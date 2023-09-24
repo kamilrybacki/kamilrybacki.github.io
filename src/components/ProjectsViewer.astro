@@ -1,8 +1,6 @@
 ---
-import ProjectTechs from '@components/ProjectTechs.astro';
 import ProjectModal from '@components/ProjectModal.astro';
-
-import '@styles/bounce.css';
+import ProjectTechs from '@components/ProjectTechs.astro';
 
 interface Props {
   data: any[];
@@ -55,7 +53,7 @@ const renderedData = await Promise.all(data.map((post) => post.render()));
   });
 </script>
 
-<main class="flex flex-col lg:flex-row items-center justify-center w-full gap-4 lg:gap-10">
+<main class="flex w-full flex-col items-center justify-center gap-4 lg:flex-row lg:gap-10">
   {
     renderedData && renderedData.map((post) => {
       const frontmatter = post.remarkPluginFrontmatter;
@@ -64,46 +62,46 @@ const renderedData = await Promise.all(data.map((post) => post.render()));
         <>
           <article 
             data-key={`${simpleTitle}-card`} 
-            class='project-card doodle-border flex flex-col flex-wrap items-center justify-center p-2 lg:p-4 w-[95%] lg:w-[40%] cursor-pointer hover:-translate-y-2 duration-500'
+            class='project-card doodle-border flex w-[95%] cursor-pointer flex-col flex-wrap items-center justify-center p-2 duration-500 hover:-translate-y-2 lg:w-[40%] lg:p-4'
           >
-            <h1 class='text-2xl lg:text-5xl font-bold font-handwriting mt-2 mb-4 lg:mt-5 lg:mb-7 text-center mx-auto'>{frontmatter.title}</h1>
+            <h1 class='mx-auto mb-4 mt-2 text-center font-handwriting text-2xl font-bold lg:mb-7 lg:mt-5 lg:text-5xl'>{frontmatter.title}</h1>
             <ProjectTechs
               techs={frontmatter.techs}
               label=""
             />
-            <p class='font-body text-sm lg:text-md mt-4 lg:mt-8 text-justify'>{frontmatter.description}</p>
+            <p class='lg:text-md mt-4 text-justify font-body text-sm lg:mt-8'>{frontmatter.description}</p>
           </article>
           <ProjectModal id={`${simpleTitle}-modal`} open={'See more'}>
-            <section class="project-content text-foreground w-full lg:w-auto" slot="main">
-              <p class='text-5xl lg:text-7xl font-bold font-handwriting mt-2 mb-3 lg:mt-5 lg:mb-7 text-center mx-auto'>{frontmatter.title}</p>
+            <section class="project-content w-full text-foreground lg:w-auto" slot="main">
+              <p class='mx-auto mb-3 mt-2 text-center font-handwriting text-5xl font-bold lg:mb-7 lg:mt-5 lg:text-7xl'>{frontmatter.title}</p>
               <img
                 src={`assets/thumbnails/${frontmatter.image}`}
-                class="max-h-48 lg:max-h-96 my-4 lg:my-8 mx-auto"
+                class="mx-auto my-4 max-h-48 lg:my-8 lg:max-h-96"
               />
-              <div class="flex flex-col lg:flex-row lg:items-center w-full">
+              <div class="flex w-full flex-col lg:flex-row lg:items-center">
                 <ProjectTechs 
                   techs={frontmatter.techs}
                   label="Tech stack:"
                 />
                 <div class="flex flex-row items-center justify-center lg:ml-auto">
                   Date:
-                  <span class="ml-2 text-sm font-body">{frontmatter.date}</span>
+                  <span class="ml-2 font-body text-sm">{frontmatter.date}</span>
                 </div>
               </div>
-              <hr class="w-full my-2 lg:my-4"/>
+              <hr class="my-2 w-full lg:my-4"/>
               <post.Content/>
-              <nav class="flex flex-row justify-between mt-2">
+              <nav class="mt-2 flex flex-row justify-between">
                 <button
                   slot='close'
                   id={`${simpleTitle}-modal-close`}
-                  class="py-1 lg:px-1 mt-auto text-md lg:text-xl font-handwriting hover:-translate-x-2 duration-500 h-fit"
+                  class="text-md mt-auto h-fit py-1 font-handwriting duration-500 hover:-translate-x-2 lg:px-1 lg:text-xl"
                 >
                   Close modal
                 </button>
                 <button
                   slot='close'
                   id={`${simpleTitle}-modal-close`}
-                  class="px-2 lg:px-3 mt-auto py-1 lg:py-2 mt-6 hover:translate-x-2 duration-500 h-fit"
+                  class="mt-auto h-fit px-2 py-1 duration-500 hover:translate-x-2 lg:px-3 lg:py-2"
                 >
                   <a href={frontmatter.link} class="font-handwriting text-2xl lg:text-4xl">
                     Check it out

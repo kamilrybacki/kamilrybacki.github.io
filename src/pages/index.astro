@@ -1,15 +1,14 @@
 ---
-import SVG from '@components/StyledSVG.astro';
-import BasicPageLayout from '@layouts/BasicPageLayout.astro';
-import SplashDecoration from '@components/SplashDecoration.astro';
-import Menu from '@components/Menu.astro';
-import { theme } from '@root/tailwind.config';
-
-import codeGif from '@images/code.gif';
-import blogGif from '@images/blog.gif';
-import squiggleGif from '@images/squiggle.gif';
-
 import '@styles/glitch.css';
+
+import Menu from '@components/Menu.astro';
+import SplashDecoration from '@components/SplashDecoration.astro';
+import SVG from '@components/StyledSVG.astro';
+import blogGif from '@images/blog.gif';
+import codeGif from '@images/code.gif';
+import squiggleGif from '@images/squiggle.gif';
+import BasicPageLayout from '@layouts/BasicPageLayout.astro';
+import { theme } from '@root/tailwind.config';
 
 const indexOptions = {
   blog: {
@@ -88,26 +87,26 @@ const indexOptions = {
   title="Kamil Rybacki"
   style="flex flex-col justify-center items-center overflow-hidden"
 >
-  <div class="flex flex-col-reverse lg:flex-row lg:justify-around justify-center items-center my-auto lg:w-full lg:py-12">
+  <div class="my-auto flex flex-col-reverse items-center justify-center lg:w-full lg:flex-row lg:justify-around lg:py-12">
     <SplashDecoration
-      className="invert grayscale"
+      className="grayscale invert"
     />
-    <div class="mt-4 flex flex-col lg:gap-3 gap-1 justify-end items-center w-fit mx-auto lg:mr-auto my-auto flex flex-col items-end z-1" id="menu-wrapper">
+    <div class="z-1 m-auto mt-4 flex w-fit flex-col items-center justify-end gap-1 lg:mr-auto lg:gap-3" id="menu-wrapper">
       <div class="flex flex-row lg:mt-12">
-        <div class="relative flex lg:justify-end w-16 lg:w-40 text-accent">
+        <div class="relative flex w-16 text-accent lg:w-40 lg:justify-end">
           <SVG src="images/logo" alt="Logo"/>
         </div>
-        <h1 class="relative lg:top-12 top-2 lg:text-8xl text-[2.25rem] font-body font-[700]">
+        <h1 class="relative top-2 font-body text-[2.25rem] font-bold lg:top-12 lg:text-8xl">
           amil Rybacki
         </h1>
       </div>
-      <div class="border-[1px] border-accent my-3 lg:mb-4 lg:mt-6 w-[105%] opacity-50"/>
-      <h2 class="relative flex flex-row items-center text-xl lg:text-4xl lg:mt-2 mx-auto lg:ml-0 lg:mr-auto font-body font-[500] text-accent gap-3 lg:gap-4">
-        <span class="my-auto py-auto">
+      <div class="my-3 w-[105%] border-[1px] border-accent opacity-50 lg:mb-4 lg:mt-6"/>
+      <h2 class="relative mx-auto flex flex-row items-center gap-3 font-body text-xl font-medium text-accent lg:ml-0 lg:mr-auto lg:mt-2 lg:gap-4 lg:text-4xl">
+        <span class="py-auto my-auto">
           Figuring out
         </span>
         <span
-          class="flex px-auto py-auto tracking-widest my-auto lg:w-64"
+          class="px-auto py-auto my-auto flex tracking-widest lg:w-64"
           data-text="undefineds"
           id="glitch-text"
         >

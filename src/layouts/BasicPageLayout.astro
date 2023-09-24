@@ -1,15 +1,14 @@
 ---
-import SiteHeader from '@components/SiteHeader.astro';
-import SiteFooter from '@components/SiteFooter.astro';
-
 import '@styles/global.css';
 import '@styles/doodle.css';
-
 import '@fontsource-variable/anybody';
 import '@fontsource-variable/raleway';
 import '@fontsource-variable/source-code-pro';
 import '@fontsource/walter-turncoat';
 import '@fontsource/redacted-script';
+
+import SiteFooter from '@components/SiteFooter.astro';
+import SiteHeader from '@components/SiteHeader.astro';
 
 interface Props {
   title: string;
@@ -19,15 +18,6 @@ interface Props {
 const { title, style } = Astro.props;
 ---
 <script>
-  import { createRandomNeonGlowKeyframesGenerator, glowAnimationName } from '@utils/theming';
-  const glowKeyFramesGenerator = createRandomNeonGlowKeyframesGenerator();
-  const generateNewAnimation = (element: HTMLElement) => {
-    const newAnimation = glowKeyFramesGenerator();
-    element.animate(newAnimation.keyframes, newAnimation.properties);
-    setTimeout(() => {
-      generateNewAnimation(element as HTMLElement);
-    }, newAnimation.properties.duration);
-  }
   const resizeContentElement = () => {
     const html = document.querySelector('html');
     const htmlPadding = parseInt(window.getComputedStyle(html as HTMLElement).getPropertyValue('padding').replace('px', ''));
@@ -51,13 +41,6 @@ const { title, style } = Astro.props;
       content.style.minWidth = contentWidth;
     }
   }
-  document.addEventListener('DOMContentLoaded', () => {
-    resizeContentElement();
-    const glowingElements = document.querySelectorAll('.' + glowAnimationName);
-    glowingElements.forEach((element) => {
-      generateNewAnimation(element as HTMLElement);
-    });
-  });
   document.addEventListener('resize', () => resizeContentElement());
 </script>
 
@@ -72,7 +55,7 @@ const { title, style } = Astro.props;
   <body class="doodle">
     <SiteHeader/>
     <div 
-      class={`py-4 lg:p-4 lg:m-4 border-opacity-10 ${style || ''}`}
+      class={`border-opacity-10 py-4 lg:m-4 lg:p-4 ${style || ''}`}
       id="content"
     >
       <slot/>

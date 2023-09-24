@@ -10,7 +10,7 @@ const { id } = Astro.props;
   });
 </script>
 
-<dialog id={id} class="absolute w-full lg:w-[75%] bg-background doodle-border py-2 px-3 lg:p-6 color-foreground m-auto">
+<dialog id={id} class="doodle-border color-foreground absolute m-auto w-full bg-background px-3 py-2 lg:w-[75%] lg:p-6">
   <slot name="main" />
   <form method="dialog">
     <slot name="close" />

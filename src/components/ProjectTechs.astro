@@ -51,12 +51,12 @@ const { techs, label } = Astro.props;
 
 <span class="flex flex-row flex-wrap gap-2">
   {
-    label.length > 0 && <span class="mr-2 font-display my-auto">{label}</span>
+    label.length > 0 && <span class="my-auto mr-2 font-display">{label}</span>
   }
   {
     techs.split(' ').map((tech) => (
       <div class="tech-with-tooltip">
-        <p class="hidden doodle-border font-handwriting p-1 color-foreground">
+        <p class="doodle-border color-foreground hidden p-1 font-handwriting">
           {tech.charAt(0).toUpperCase() + tech.slice(1)}
         </p>
         <StyledSVG

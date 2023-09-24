@@ -1,6 +1,6 @@
 ---
-import { getCollection } from 'astro:content';
 import PostLayout from '@layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
