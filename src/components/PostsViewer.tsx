@@ -5,13 +5,6 @@ interface PostsViewerProps {
     poems: any[];
 }
 
-// export const PostsSearch = tw.input`
-//   font-body
-//   py-1
-//   px-2
-//   w-1/3
-// `;
-
 const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
     const [selectedPosts, setSelectedPosts] = React.useState(articles);
 
@@ -25,17 +18,17 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
                     </a>
                 </button>
             </nav>
-            <hr className="mb-4 mt-3 w-full opacity-25 lg:mb-10 lg:mt-6" />
-            <nav className="mb-4 flex flex-col items-center justify-between lg:flex-row">
-                <div className="my-2 flex flex-row justify-center gap-4 lg:my-4 lg:justify-start">
+            <hr className="mb-4 mt-3 w-full opacity-25 lg:mb-6 lg:mt-6" />
+            <nav className="mb-6 flex flex-col items-center justify-between lg:flex-row">
+                <div className="my-2 flex flex-row justify-center gap-4 lg:my-2 lg:justify-start">
                     <button
-                        className="p-1 font-handwriting font-bold transition-all duration-500 hover:translate-y-2"
+                        className="p-1 font-handwriting font-bold transition-all focus:translate-y-2 duration-200"
                         onClick={() => setSelectedPosts(articles)}
                     >
                         Articles
                     </button>
                     <button
-                        className="p-1 font-handwriting font-bold transition-all duration-500 hover:translate-y-2"
+                        className="p-1 font-bold transition-all focus:translate-y-2 font-abstract hover:font-handwriting focus:font-handwriting duration-200"
                         onClick={() => setSelectedPosts(poems)}
                     >
                         Poems (in Polish)
@@ -47,7 +40,7 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
             <div className="mt-8 flex flex-col items-center justify-between lg:flex-row lg:flex-wrap">
                 {selectedPosts.map((post) => (
                     <article
-                        className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6  py-4 lg:w-[500px]"
+                        className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px]"
                         key={post.slug}
                         onMouseEnter={(e) => {
                             e.currentTarget.classList.add("floating");
