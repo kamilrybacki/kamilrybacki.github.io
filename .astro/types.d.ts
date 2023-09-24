@@ -179,6 +179,13 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"articles": {
+"migration.mdx": {
+	id: "migration.mdx";
+  slug: "migration";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 };
 "poems": {
 "30$.mdx": {
