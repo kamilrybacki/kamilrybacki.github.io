@@ -1,4 +1,9 @@
 {
   "comment": "All rules",
-  "default": true
+  "default": true,
+  "MD033": {
+    "allowed_elements": [
+      "br"
+    ]
+  }
 }

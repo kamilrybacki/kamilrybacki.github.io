@@ -1,0 +1,68 @@
+---
+import StyledSVG from "@components/StyledSVG.astro";
+
+import BasicPageLayout from "./BasicPageLayout.astro";
+
+const { frontmatter } = Astro.props;
+---
+<script>
+  const contentStyling = {
+    'h2': 'text-3xl lg:text-5xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h3': 'text-2xl lg:text-4xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h4': 'text-xl lg:text-3xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h5': 'text-md lg:text-2xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'p': 'text-md py-1 lg:py-2',
+  }
+
+  const postContent = document.getElementById("post-content");
+  if (!postContent) {
+    throw new Error("No post content found");
+  }
+  Object.entries(contentStyling).forEach(([tag, style]) => {
+    const styleClasses = style.split(" ");
+    const elements = postContent.getElementsByTagName(tag);
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.add(...styleClasses);
+    }
+  });
+
+  const heroImage = document.getElementById("hero-image");
+  if (heroImage) {
+    heroImage.style.animation = "flicker 5s ease-in-out infinite alternate";
+  }
+</script>
+
+<BasicPageLayout
+  title={frontmatter.title}
+  style="flex flex-col items-center"
+>
+  <article class="lg:w-[66%]">
+    <div class="mx-auto mb-6 w-full pb-2">
+      <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
+        {frontmatter.title} 
+      </h1>
+      <span class="ml-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
+      <hr class="mt-4">
+      {
+        frontmatter.image ?
+        <>
+          <StyledSVG
+            src={`hero/${frontmatter.image.hero}`}
+            alt={frontmatter.image.alt}
+            class="mx-auto my-1 w-full lg:my-6"
+            id="hero-image"
+          />
+          <hr>
+        </> : null
+      }
+    </div>
+    <main class="px-10 font-body" id="post-content">
+      <slot/>
+    </main>
+  </article>
+  <button class="fixed bottom-20 left-8 hover:-translate-x-2">
+    <a href="/blog" class="mt-10 font-handwriting text-2xl">
+      Go back
+    </a>
+  </button>
+</BasicPageLayout>

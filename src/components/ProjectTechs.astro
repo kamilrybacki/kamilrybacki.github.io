@@ -1,0 +1,73 @@
+---
+import StyledSVG from "./StyledSVG.astro";
+
+interface Props {
+  techs: string
+  label: string
+}
+
+const { techs, label } = Astro.props;
+---
+<style>
+  .tech-with-tooltip {
+    position: relative;
+  }
+
+  p {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 1rem;
+    z-index: 1;
+    background: theme('colors.background');
+    animation: fadeIn 0.6s;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    const techs = document.querySelectorAll('.tech-with-tooltip');
+    techs.forEach((tech) => {
+      const svg = tech.querySelector('svg');
+      const p = tech.querySelector('p') as HTMLParagraphElement;
+      svg?.addEventListener('mouseover', () => {
+        p.style.display = 'block';
+      });
+      svg?.addEventListener('mouseout', () => {
+        p.style.display = 'none';
+      });
+    });
+  });
+</script>
+
+<span class="flex flex-row flex-wrap gap-2">
+  {
+    label.length > 0 && <span class="my-auto mr-2 font-display">{label}</span>
+  }
+  {
+    techs.split(' ').map((tech) => (
+      <div class="tech-with-tooltip">
+        <p class="doodle-border color-foreground hidden p-1 font-handwriting">
+          {tech.charAt(0).toUpperCase() + tech.slice(1)}
+        </p>
+        <StyledSVG
+          key={tech}
+          src={`badges/${tech}`}
+          height="2rem"
+          width="2rem"
+          alt={tech}
+          id={`${tech}-svg`}
+        />
+      </div>
+    ))
+  }
+</span>

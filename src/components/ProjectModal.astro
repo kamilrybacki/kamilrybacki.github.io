@@ -1,0 +1,18 @@
+---
+const { id } = Astro.props;
+---
+<script define:vars={{id}}>
+  document.addEventListener('click', (e) => {
+    if (e?.target.matches(`#${id}`)) {
+      e?.target.close();
+      document.getElementById("content")?.classList.remove(...['opacity-25', 'blur']);
+    }
+  });
+</script>
+
+<dialog id={id} class="doodle-border color-foreground absolute m-auto w-full bg-background px-3 py-2 lg:w-[75%] lg:p-6">
+  <slot name="main" />
+  <form method="dialog">
+    <slot name="close" />
+  </form>
+</dialog>

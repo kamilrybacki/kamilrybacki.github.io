@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: theme('colors.glow');
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: theme('colors.glow');
+}
+
+@layer base {
+  html {
+    @apply bg-background;
+    @apply text-foreground;
+    @apply border-accent;
+    @apply p-6;
+  }
+  body {
+    @apply bg-background;
+    @apply border-accent;
+    @apply text-foreground;
+  }
+}

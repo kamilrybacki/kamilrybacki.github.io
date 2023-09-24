@@ -1,27 +1,23 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["ES2017", "dom"],
-    "jsx": "react",
-    "module": "commonjs", 
-    "moduleResolution": "node",
-    "types": ["node"],
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
     "baseUrl": ".",
-    "paths" : {
-      "@root/*": ["."],
-      "@src/*": ["./src"],
-      "@style/*": ["./src/style"],
-      "@images/*": ["./assets/images"],
-      "@templates/*": ["./assets/templates"],
-      "@posts/*": ["./assets/posts"],
-      "@projects/*": ["./assets/projects"],
-      "@components/*": ["./src/components"],
-      "@pages/*": ["./src/pages"],
-    }
-  },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@styles/*": ["src/styles/*"],
+      "@images/*": ["public/assets/images/*"],
+      "@badges/*": ["pubic/assets/badges/*"],
+      "@utils/*": ["src/utils/*"],
+      "@content/*": ["content/*"],
+      "@root/*": ["./*"],
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
 }

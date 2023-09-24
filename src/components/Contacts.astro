@@ -1,0 +1,30 @@
+---
+import ContactEntry from '@components/ContactEntry.astro';
+
+const iconsSize = "2rem";
+const contactInfo: {
+  email: string,
+  socialMedia: {[key: string]: string}
+} = {
+  email: "kamilandrzejrybacki@gmail.com",
+  socialMedia: {
+    linkedin: "https://www.linkedin.com/in/kamil-andrzej-rybacki",
+    github: "https://github.com/KamilRybacki",
+    facebook: "https://www.facebook.com/kamilandrzejrybacki/"
+  }
+}
+---
+<div class="flex flex-row items-center justify-center gap-3">
+  {
+    Object.keys(contactInfo.socialMedia).map((key) => {
+      const contactUrl = contactInfo.socialMedia[key];
+      return (
+        <ContactEntry
+          url={contactUrl}
+          icon={key}
+          size={iconsSize}
+        />
+      )
+    })
+  }
+</div>

@@ -1,0 +1,65 @@
+---
+import '@styles/global.css';
+import '@styles/doodle.css';
+import '@fontsource-variable/anybody';
+import '@fontsource-variable/raleway';
+import '@fontsource-variable/source-code-pro';
+import '@fontsource/walter-turncoat';
+import '@fontsource/redacted-script';
+
+import SiteFooter from '@components/SiteFooter.astro';
+import SiteHeader from '@components/SiteHeader.astro';
+
+interface Props {
+  title: string;
+  style?: string;
+}
+
+const { title, style } = Astro.props;
+---
+<script>
+  const resizeContentElement = () => {
+    const html = document.querySelector('html');
+    const htmlPadding = parseInt(window.getComputedStyle(html as HTMLElement).getPropertyValue('padding').replace('px', ''));
+
+    const headerHeight = document.getElementById('header')?.offsetHeight;
+
+    const footer = document.getElementById('footer');
+    const footerHeight = footer?.clientHeight;
+    const footerMargin = parseInt(window.getComputedStyle(footer as HTMLElement).getPropertyValue('margin-bottom').replace('px', ''));
+
+    const calculationError = 10;
+    const occupiedVerticalSpace = (headerHeight || 0) + (footerHeight || 0) + (footerMargin || 0) + (htmlPadding * 2) + calculationError;
+    const occupiedHorizontalSpace = (htmlPadding * 4) + calculationError;
+
+    const content = document.getElementById('content')
+
+    if (content) {
+      const contentHeight = (window.innerHeight - occupiedVerticalSpace) + 'px';
+      const contentWidth = (window.innerWidth - occupiedHorizontalSpace) + 'px';
+      content.style.minHeight = contentHeight;
+      content.style.minWidth = contentWidth;
+    }
+  }
+  document.addEventListener('resize', () => resizeContentElement());
+</script>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+  <body class="doodle">
+    <SiteHeader/>
+    <div 
+      class={`border-opacity-10 py-4 lg:m-4 lg:p-4 ${style || ''}`}
+      id="content"
+    >
+      <slot/>
+    </div>
+    <SiteFooter/>
+	</body>
+</html>

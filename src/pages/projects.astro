@@ -1,0 +1,24 @@
+---
+import ProjectsViewer from "@components/ProjectsViewer.astro";
+import BasicPageLayout from "@layouts/BasicPageLayout.astro";
+import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
+
+const projects = await getCollection('projects');
+---
+
+<BasicPageLayout
+  title="My projects"
+  style="flex flex-col justify-center items-center"
+>
+  <nav class='mt-2 flex w-full flex-row justify-between'>
+    <p class='mb-2 font-handwriting text-4xl lg:text-9xl'>Projects</p>
+    <button class='mt-auto h-fit p-1 hover:translate-y-2 lg:p-2 lg:hover:translate-x-2'>
+      <a href='/blog' class='font-handwriting font-bold'>
+        Go to blog
+      </a>
+    </button>
+  </nav>
+  <hr class='mb-4 mt-3 w-full opacity-25 lg:mb-10 lg:mt-6'/>
+  <ProjectsViewer data={projects}/>
+</BasicPageLayout>
+

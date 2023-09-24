@@ -1,0 +1,23 @@
+---
+import Contacts from '@components/Contacts.astro';
+import SVG from '@components/StyledSVG.astro';
+---
+<div class="flex flex-col" id="header">
+  <header class="flex items-center pb-2 text-accent lg:px-12">
+    <a 
+      href="/"
+      id="header-logo"
+      class="flex h-14 w-14 justify-center text-accent"
+    >
+      <SVG src="images/logo" alt="Logo"/>
+    </a>
+    <div class="ml-auto flex flex-row">
+      <SVG 
+        src="images/contactme"
+        alt="Contact me!"
+        class="invert grayscale mr-4 w-32 lg:w-40"
+      />
+      <Contacts/>
+    </div>
+  </header>
+</div>
