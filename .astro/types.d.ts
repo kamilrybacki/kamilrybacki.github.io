@@ -188,6 +188,13 @@ declare module 'astro:content' {
   collection: "poems";
   data: InferEntrySchema<"poems">
 } & { render(): Render[".mdx"] };
+"brawobardzoladnie.mdx": {
+	id: "brawobardzoladnie.mdx";
+  slug: "brawobardzoladnie";
+  body: string;
+  collection: "poems";
+  data: InferEntrySchema<"poems">
+} & { render(): Render[".mdx"] };
 };
 "projects": {
 "diffcache.mdx": {

@@ -37,7 +37,7 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
                 {/* <Style.PostsSearch type="text" placeholder="Search" /> */}
             </nav>
             <hr className="my-4 opacity-25" />
-            <div className="mt-8 flex flex-col items-center justify-between lg:flex-row lg:flex-wrap">
+            <div className="mt-8 flex flex-col items-center gap-2 lg:gap-4 lg:flex-row lg:flex-wrap">
                 {selectedPosts.map((post) => (
                     <article
                         className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px]"

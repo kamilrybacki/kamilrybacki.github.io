@@ -1,12 +1,6 @@
 ---
 import Contacts from '@components/Contacts.astro';
 import SVG from '@components/StyledSVG.astro';
-
-interface Props {
-  addContactMe?: boolean;
-}
-
-const { addContactMe } = Astro.props;
 ---
 <div class="flex flex-col" id="header">
   <header class="flex items-center pb-2 text-accent lg:px-12">
@@ -18,14 +12,11 @@ const { addContactMe } = Astro.props;
       <SVG src="images/logo" alt="Logo"/>
     </a>
     <div class="ml-auto flex flex-row">
-      {
-        addContactMe ? 
-          <SVG 
-            src="images/contactme"
-            alt="Contact me!"
-            class="invert grayscale mr-4 w-32 lg:w-40"
-          /> : null
-      }
+      <SVG 
+        src="images/contactme"
+        alt="Contact me!"
+        class="invert grayscale mr-4 w-32 lg:w-40"
+      />
       <Contacts/>
     </div>
   </header>
