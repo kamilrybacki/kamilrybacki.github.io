@@ -1,14 +1,16 @@
 ---
 import SVG from '@components/StyledSVG.astro';
 import Contacts from '@components/Contacts.astro';
-
-import * as Style from './style';
 ---
 <div class="flex flex-col" id="header">
-  <Style.Header>
-    <Style.Logo href="/" id="header-logo">
+  <header class="flex items-center lg:px-12 pb-2 text-accent">
+    <a 
+      href="/"
+      id="header-logo"
+      class="flex justify-center h-14 w-14 text-accent"
+    >
       <SVG src="images/logo" alt="Logo"/>
-    </Style.Logo>
+    </a>
     <Contacts/>
-  </Style.Header>
+  </header>
 </div>

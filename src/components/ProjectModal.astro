@@ -1,15 +1,16 @@
 ---
-const {id, open} = Astro.props;
+const { id } = Astro.props;
 ---
-<style lang="scss">
-  dialog {
-    position: absolute;
-    width: 75%;
-    margin: auto;
-  }
-</style>
+<script define:vars={{id}}>
+  document.addEventListener('click', (e) => {
+    if (e?.target.matches(`#${id}`)) {
+      e?.target.close();
+      document.getElementById("content")?.classList.remove(...['opacity-25', 'blur']);
+    }
+  });
+</script>
 
-<dialog id={id} class="bg-background doodle-border p-6 color-foreground">
+<dialog id={id} class="absolute w-full lg:w-[75%] bg-background doodle-border py-2 px-3 lg:p-6 color-foreground m-auto">
   <slot name="main" />
   <form method="dialog">
     <slot name="close" />

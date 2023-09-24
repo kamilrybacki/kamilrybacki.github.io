@@ -28,7 +28,7 @@
     @apply bg-background;
     @apply text-foreground;
     @apply border-accent;
-    @apply p-8;
+    @apply p-6;
   }
   body {
     @apply bg-background;

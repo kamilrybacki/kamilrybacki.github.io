@@ -1,5 +1,7 @@
 import { theme } from '@root/tailwind.config.js'
-import { parseColor } from "tailwindcss/lib/util/color";
+// @ts-ignore
+import pkg from 'tailwindcss/lib/util/color.js';
+const { parseColor } = pkg;
 import { generateNumberFromRange } from '@utils/logic';
 
 export const glowAnimationName = 'neon-accent';

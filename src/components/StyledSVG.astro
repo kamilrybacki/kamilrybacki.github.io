@@ -3,36 +3,38 @@ import { parse } from 'node-html-parser';
 
 export interface Props {
   src: string;
-  [key: string]: string;
+  [key: string]: string | boolean | number | undefined;
 }
 
-function getSVG(name: string) {
-  const filepath = `/assets/${name}.svg`;
-  const files = import.meta.glob<string>('/assets/**/*.svg', {
-    as: 'raw',
+function getSVG(path: string) {
+  const files = import.meta.glob<string>('/public/assets/**/*.svg', {
     eager: true,
+    as: 'raw',
   });
 
-  if (!(filepath in files)) {
-    throw new Error(`${filepath} not found`);
+  const fullPath = `/public/assets/${path}.svg`
+  if (!(fullPath in files)) {
+    throw new Error(`${fullPath} not found`);
   }
-
-  const root = parse(files[filepath]);
+  const root = parse(files[fullPath]);
 
   const svg = root.querySelector('svg');
-    const { attributes = {} } = svg || {};
-    const innerHTML = svg?.innerHTML || '';
-
-    return {
-      attributes,
-      innerHTML,
-    };
+  if (!svg) {
+    throw new Error(`svg not found in ${fullPath}`);
   }
 
-  const { src, ...attributes } = Astro.props as Props;
-  const { attributes: baseAttributes, innerHTML } = getSVG(src);
+  const { attributes, innerHTML } = svg;
 
-  const svgAttributes = { ...baseAttributes, ...attributes };
+  return {
+    attributes,
+    innerHTML,
+  };
+}
+
+const { src, ...attributes } = Astro.props as Props;
+const { attributes: baseAttributes, innerHTML } = getSVG(src);
+
+const svgAttributes = { ...baseAttributes, ...attributes };
 ---
 
 <svg {...svgAttributes} fill="currentColor" set:html={innerHTML}/>

@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import BasicPageLayout from "@layouts/BasicPageLayout.astro";
-import PostsViewer from "@components/PostsViewer";
+import PostsViewer from "@components/PostsViewer.tsx";
 
 const articles = await getCollection('articles');
 const poems = await getCollection('poems');
@@ -10,6 +10,7 @@ const poems = await getCollection('poems');
 
 <BasicPageLayout
   title="Blog"
+  style="flex flex-col justify-center items-center"
 >
   <PostsViewer
     articles={articles}

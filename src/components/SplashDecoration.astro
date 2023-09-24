@@ -1,8 +1,13 @@
 ---
-import SVG from '@components/StyledSVG.astro';
 import { colorsRGB } from '@utils/theming';
 
 import abstractGif from '@images/squiggle.gif';
+
+interface Props {
+  className?: string;
+}
+
+const { className } = Astro.props;
 ---
 <style>
   @keyframes rotate {
@@ -26,12 +31,12 @@ import abstractGif from '@images/squiggle.gif';
 </script>
 
 <div
-  class="mx-auto my-auto neon-accent"
+  class="mx-auto my-12 lg:mr-0 lg:ml-auto lg:my-auto w-4/5 lg:w-auto"
 >
   <img 
     src={abstractGif.src} 
     alt='splash'
     id="splash-gif"
-    class="invert grayscale"
+    class={className}
   />
 </div>

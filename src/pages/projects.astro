@@ -9,16 +9,17 @@ const projects = await getCollection('projects');
 
 <BasicPageLayout
   title="My projects"
+  style="flex flex-col justify-center items-center"
 >
-  <nav class='flex flex-row justify-between w-full'>
-    <p class='text-9xl font-handwriting mb-2'>Projects</p>
-    <button class='p-2 h-fit mt-auto hover:translate-x-2'>
+  <nav class='flex flex-row justify-between w-full mt-2'>
+    <p class='text-4xl lg:text-9xl font-handwriting mb-2'>Projects</p>
+    <button class='p-1 lg:p-2 h-fit mt-auto hover:translate-y-2 lg:hover:translate-x-2'>
       <a href='/blog' class='font-bold font-handwriting'>
         Go to blog
       </a>
     </button>
   </nav>
-  <hr class='mb-10 mt-6 opacity-25'/>
+  <hr class='mb-4 lg:mb-10 mt-3 lg:mt-6 opacity-25 w-full'/>
   <ProjectsViewer data={projects}/>
 </BasicPageLayout>
 

@@ -8,11 +8,11 @@ const { frontmatter } = Astro.props;
 ---
 <script>
   const contentStyling = {
-    'h2': 'text-5xl font-handwriting mb-2 mt-4',
-    'h3': 'text-4xl font-handwriting mb-2 mt-4',
-    'h4': 'text-3xl font-handwriting mb-2 mt-4',
-    'h5': 'text-2xl font-handwriting mb-2 mt-4',
-    'p': 'text-lg py-2',
+    'h2': 'text-3xl lg:text-5xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h3': 'text-2xl lg:text-4xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h4': 'text-xl lg:text-3xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'h5': 'text-md lg:text-2xl font-handwriting mb-1 mt-2 lg:mb-2 lg:mt-4',
+    'p': 'text-md py-1 lg:py-2',
   }
 
   const postContent = document.getElementById("post-content");
@@ -37,9 +37,9 @@ const { frontmatter } = Astro.props;
   title={frontmatter.title}
   style="flex flex-col items-center"
 >
-  <article class="w-[66%]">
+  <article class="lg:w-[66%]">
     <div class="mb-6 pb-2 mx-auto w-full">
-      <h1 class="text-7xl font-handwriting mb-6 w-full flex">
+      <h1 class="text-4xl lg:text-7xl font-handwriting mb-6 w-full flex">
         {frontmatter.title} 
       </h1>
       <span class="text-lg font-body ml-auto w-full opacity-75">Published: {frontmatter.date}</span>
@@ -50,7 +50,7 @@ const { frontmatter } = Astro.props;
           <StyledSVG
             src={`hero/${frontmatter.image.hero}`}
             alt={frontmatter.image.alt}
-            class="w-auto my-6 mx-auto"
+            class="w-full my-1 lg:my-6 mx-auto"
             id="hero-image"
           />
           <hr>
