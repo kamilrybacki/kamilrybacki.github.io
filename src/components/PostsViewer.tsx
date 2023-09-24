@@ -52,7 +52,7 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
                         {post.data.image ? (
                             <img
                                 className="mx-auto mb-4 max-h-[150px] w-[200px] rounded-lg lg:max-h-[200px] lg:w-[350px]"
-                                src={`thumbnails/${post.data.image.thumbnail}.svg`}
+                                src={`/assets/thumbnails/${post.data.image.thumbnail}.svg`}
                                 alt={`Thumbnail for ${post.data.title}`}
                             />
                         ) : null}
