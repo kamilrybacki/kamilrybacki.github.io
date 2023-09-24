@@ -13,9 +13,10 @@ import SiteHeader from '@components/SiteHeader.astro';
 interface Props {
   title: string;
   style?: string;
+  index?: boolean;
 }
 
-const { title, style } = Astro.props;
+const { title, style, index: indexPage } = Astro.props;
 ---
 <script>
   const resizeContentElement = () => {
@@ -53,7 +54,9 @@ const { title, style } = Astro.props;
 		<title>{title}</title>
 	</head>
   <body class="doodle">
-    <SiteHeader/>
+    <SiteHeader
+      addContactMe={indexPage}
+    />
     <div 
       class={`border-opacity-10 py-4 lg:m-4 lg:p-4 ${style || ''}`}
       id="content"
