@@ -75,7 +75,7 @@ const renderedData = await Promise.all(data.map((post) => post.render()));
             <section class="project-content w-full text-foreground lg:w-auto" slot="main">
               <p class='mx-auto mb-3 mt-2 text-center font-handwriting text-5xl font-bold lg:mb-7 lg:mt-5 lg:text-7xl'>{frontmatter.title}</p>
               <img
-                src={`assets/thumbnails/${frontmatter.image}`}
+                src={`thumbnails/${frontmatter.image}`}
                 class="mx-auto my-4 max-h-48 lg:my-8 lg:max-h-96"
               />
               <div class="flex w-full flex-col lg:flex-row lg:items-center">
