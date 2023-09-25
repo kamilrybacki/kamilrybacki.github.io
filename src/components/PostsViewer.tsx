@@ -7,7 +7,6 @@ interface PostsViewerProps {
 
 const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
     const [selectedPosts, setSelectedPosts] = React.useState(articles);
-
     return (
         <div className="posts-viewer w-full">
             <nav className="mt-2 flex w-full flex-row justify-between">
@@ -34,17 +33,13 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
                         Poems (in Polish)
                     </button>
                 </div>
-                {/* <Style.PostsSearch type="text" placeholder="Search" /> */}
             </nav>
             <hr className="my-4 opacity-25" />
             <div className="mt-8 flex flex-col items-center gap-2 lg:gap-4 lg:flex-row lg:flex-wrap">
                 {selectedPosts.map((post) => (
                     <article
-                        className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px]"
+                        className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px] duration-500 hover:-translate-y-2"
                         key={post.slug}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.classList.add("floating");
-                        }}
                         onClick={() => {
                             window.location.href = `/posts/${post.slug}` || "/";
                         }}

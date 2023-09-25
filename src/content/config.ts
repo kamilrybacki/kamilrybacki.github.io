@@ -25,6 +25,15 @@ const poemsCollection = defineCollection({
 
 const projectsCollection = defineCollection({
     type: "content",
+    schema: z.object({
+      title: z.string(),
+      date: z.string(),
+      tags: z.array(z.string()),
+      image: z.string(),
+      techs: z.string(),
+      description: z.string(),
+      link: z.string(),
+    }),
 });
 
 export const collections = {

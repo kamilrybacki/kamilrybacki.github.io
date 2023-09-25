@@ -1,0 +1,39 @@
+@keyframes flicker {
+  0% {
+    opacity:0.1;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+  2% {
+    opacity:1;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+  4% {
+    opacity:0.1;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+  
+  8% {
+    opacity:1;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+  70% {
+    opacity:0.7;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+  100% {
+    opacity:1;
+    -webkit-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+-moz-drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+drop-shadow: 0px 0px 78px 4px theme('colors.glow');
+  }
+}
