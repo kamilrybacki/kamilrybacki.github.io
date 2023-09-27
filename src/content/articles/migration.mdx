@@ -9,6 +9,8 @@ image:
   alt: "Astro logo"
 ---
 
+## Preamble
+
 Throught the history, humanity has consitently managed to push the boundaries of what is possible,
 with the constant rush of innovation and new ideas being the unstoppable force behind it,
 impervious to the obstacles imposed by the laws of nature or other theories previously established by man.
@@ -32,6 +34,16 @@ More importantly. I will try to explain **why** I did it and what **did I gain**
 The structure of this artivle will be dead simple. Each reason will be presented in a separate section
 and supplemented (maybe) by a cool drawing.
 
+### Disclaimer
+
+I think that Gatsby is a great framework and I've learned a lot using it. I am not saying that it is bad,
+I am just saying that Astro is better for me and my use case. It seems to be a more specialized tool,
+that is more focused on the developer experience and simplicity of use, rather than the flexibility
+to fit a wide range of use cases. **Please, don't take this article as a Gatsby hate speech.**
+I respect it and I am grateful for the knowledge I've gained using it.
+
+So...
+
 ## Profit #1: Simpler file-based routing
 
 The first reason why I decided to migrate my blog to Astro was the file-based routing.
@@ -41,8 +53,6 @@ via `createPage` method, while keeping the structure of the blog posts in the `f
 
 This generated for me a bit of overhead, since I had to keep the structure of the blog posts in two places,
 which was a bit of a pain to maintain. For example, creation of project pages looked a little bit like this:
-
-**gatsby-node.js**
 
 ```js
 const projectsResult = await graphql(`
@@ -98,7 +108,7 @@ projectsResult.data.allMdx.edges.forEach(({node}) => {
 });
 ```
 
-As you can see, *I* had to explicitly query the Markdown files,
+As you can see, **I** had to explicitly query the Markdown files,
 extract the data from them and then pass it to the `createPage` method.
 
 Also, note the `.js` extension of the file, which means that I had to use
@@ -217,9 +227,7 @@ Continuing the topic of magical `.astro` nuggets of happiness,
 let's talk about component scoped styling and logic.
 
 So, when it comes to writing code, I tend to favour consistency,
-even when it means doing seemingly unnecessary things. It may sound weird,
-but I know that inside one folder bearing the component's name
-I will find three, little files, each with a specific purpose.
+even when it means doing seemingly unnecessary things.
 
 That's actually how I've structured my blog's codebase when using Gatsby
 or other React-like project ever since I've started my front-end shinangans.
@@ -231,17 +239,30 @@ Inside `component/` folder there was:
 3. `style.css` - the component's styling done via plain CSS
 4. `index.ts` - the component's entry point, where I've exported the component's logic and styling
 
-So separation of concerns was the name of the game here, with a hidden bonus of being able to write
-`import { Component } from '@components/component'` instead of `import { Component } from '@components/component/component'`.
+So, by doing this weird ritual, I know that inside one folder bearing the component's name
+I will find three, little files, each with a specific purpose. Here, separation of concerns was the name of the game here, 
+with a hidden bonus of being able to write `import { Component } from '@components/component'`
+instead of `import { Component } from '@components/component/component'`.
 
-But this approach had one major flaw - it was a bit of a pain to maintain.
-Also, consider TailwindCSS. It's great, I love it. And no, I won't say anything bad about it right now,
-there is no trick to this statement. *BUT*, imagine a situation when I had to style a very simple element.
-One word span. How to do it? Inline in the `component.tsx` file? Sure, why not. Inside `style.ts`,
-exporting it from there. Sure, why not. Inside `style.css`? Sure, why not. Three options. Curse of abundance.
-In case of one components I decide to do it one way, in case of another component, one week later, I decide to do it another way.
+But this approach had one major flaw - it was a bit of a pain to maintain (and kind of over the top).
+Also, consider for a second a library like TailwindCSS. It's great, I love it. And no, I won't say anything bad about it right now,
+there is no trick to this statement. **BUT**, imagine a situation when I had to style a very simple element.
+One word span. How to do it? 
 
-This leads to messy codebase and leads to me breaking my own consistency rule.
+Inline in the `component.tsx` file? Sure, why not.
+
+Inside `style.ts`, exporting it from there? Sure, why not.
+
+Inside `style.css`? Sure, why not.
+
+Three options. Curse of abundance.
+In case of one component I may decide to do it one way, in case of another component, one week later, I decide to do it another way.
+
+This leads to messy codebase and leads to me breaking my own consistency rule. Sounds weird, I know, but
+believe it or not, software engineering is centered about us humans pushing around magic, electric fairies
+through sheets of heavily processed sand by use of esoteric phrases such as `for` and `do while`.
+It is abstract by nature, so a little human error here and there is inevitable.
+
 How Astro can help me with that? Well, it's simple. It's all in one file. The `.astro` file.
 
 ```astro
@@ -259,3 +280,51 @@ How Astro can help me with that? Well, it's simple. It's all in one file. The `.
 
 So, the component's logic and styling are in one place, which is great. I win a battle with myself one more time.
 Thanks Astro.
+
+What if I want to separate the styling from the logic? Well, I can do that too.
+Just define the component's styling in the stylesheet file and import it in the component's script section.
+(**not** the `<script>` tag, but the section with the dashes). I can keep this file in some other directory
+in my codebase, so it is still separated and doesn't clutter mt `components/` section. This is also true
+for any kind of animations or other CSS-related things that I may share between components
+(for an example of that see the [`glitch.css`] file in my blog's codebase).
+
+[Everything in its right place].
+
+## Profit #4: Retaining extendability
+
+What makes `.mdx` files so great? Well, the fact that they are just Markdown files,
+but they also possess the ability to be extended with React components.
+
+So, by simplifying other aspects of maintaining my blog, I can focus on providing
+more visual and interactive content, which I plan to do **in the near future**.
+
+This aspect is also connected in the way in which I can structure my frontend codebase
+around different frameworks. For example, I can use Svelte for the interactive components
+and React for the static ones. Astro lets You do that through its integrations,
+that require You to run one `npm install` command and You are set.
+
+I would love to delve into topics connected with data flow and processing on my blog,
+since it is a topic that I am very interested in and what I do every day,
+alongside my other, DevOps-ey duties. How cool would be to visualize the data
+I am speaking about using `Chart.js` or other library? Or maybe present it in
+a neat looking table? How about a possible integration with Python code
+through `pyscript`?
+
+By unloading the burden of complicated tooling, I can think about
+**extending** the experience I want to create, not simply **keep everything together**,
+afraid that if I modify one part of GraphQL query, the whole thing will break.
+
+## Summary
+
+I hope that this short list of reasons will show You why I have decided to take a leap
+of faith and migrate my blog to Astro. I love getting to know new tools and frameworks,
+so I am very excited to see what Astro will bring to the table in the future of my blog.
+
+### Useful links
+
+- [Migrating from Gatsby to Astro](https://docs.astro.build/en/guides/migrate-to-astro/from-gatsby/#migrating-tests)
+- [MDX](https://mdxjs.com/)
+- [My site GitHub repo](https://github.com/kamilrybacki/kamilrybacki.github.io)
+
+[`glitch.css`]: https://github.com/kamilrybacki/kamilrybacki.github.io/blob/main/src/styles/glitch.css
+[Everything in its right place]: https://www.youtube.com/watch?v=NUnXxh5U25Y
