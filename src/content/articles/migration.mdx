@@ -9,4 +9,253 @@ image:
   alt: "Astro logo"
 ---
 
-Coming soon ...
+Throught the history, humanity has consitently managed to push the boundaries of what is possible,
+with the constant rush of innovation and new ideas being the unstoppable force behind it,
+impervious to the obstacles imposed by the laws of nature or other theories previously established by man.
+
+Information technology was always no exception to this rule, having defied this confinement by simple logic.
+One instance would be be the pronouncement of the death of Moore's law by Jensen Huang in 2022,
+a law that was said to describe the exponential growth of our computational power. 
+
+Another one would be the rise of the internet inseflt, which was said to be impossible by many, but yet here we are, 
+connecting to other people via our phones, that are connecting to other phones via satellies wandering around the globe.
+Definement of rules is one of the main reasons why we are able to push the boundaries of what is possible.
+
+Another rule that is consistently broken by software developers is the rule of "If it ain't broke, don't fix it".
+And so, during this warm month of September 2023, I've decided to break my fully-functioning personal blog
+and migrate it from Gatsby to Astro framework. 
+
+I won't delve much into how I did it (i.e. how to init Astro project etc.), since I guess it has been presented
+plenty of times by other webdev afficionados and documentation of Astro is top-notch.
+More importantly. I will try to explain **why** I did it and what **did I gain** doing so.
+
+The structure of this artivle will be dead simple. Each reason will be presented in a separate section
+and supplemented (maybe) by a cool drawing.
+
+## Profit #1: Simpler file-based routing
+
+The first reason why I decided to migrate my blog to Astro was the file-based routing.
+Taking a look at the previous version of my blog, you can see that I had to utilize
+Gatsby's GraphQL API to query all the markdown files and then generate the pages
+via `createPage` method, while keeping the structure of the blog posts in the `frontmatter` of each markdown file.
+
+This generated for me a bit of overhead, since I had to keep the structure of the blog posts in two places,
+which was a bit of a pain to maintain. For example, creation of project pages looked a little bit like this:
+
+**gatsby-node.js**
+
+```js
+const projectsResult = await graphql(`
+  {
+      allMdx(
+          sort: {fields: [frontmatter___date]}
+          filter: {fileAbsolutePath: {regex: "/\/projects\//"}}
+      ) {
+          edges {
+              node {
+                  frontmatter {
+                      date(formatString: "MM/DD/YYYY")
+                      title
+                      tags
+                      thumbnail
+                      gallery
+                      techs
+                      abstract
+                      link
+                      readme
+                  }
+                  slug
+                  timeToRead
+                  body
+              }
+          }
+      }
+  }`);
+
+...
+
+projectsResult.data.allMdx.edges.forEach(({node}) => {
+  const path = `/projects/${node.slug}`;
+
+  createPage({
+    path,
+    component: require.resolve('./src/layouts/projects/layout.tsx'),
+    context: {
+      pagePath: path,
+      frontmatter: {
+        title: node.frontmatter.title,
+        date: node.frontmatter.date,
+        tags: node.frontmatter.tags.split(' ') || [],
+        thumbnail: node.frontmatter.thumbnail,
+        gallery: node.frontmatter.gallery,
+        techs: node.frontmatter.techs.split(' ') ?? [],
+        abstract: node.frontmatter.abstract,
+        link: node.frontmatter.link || '',
+        readme: node.frontmatter.readme || '',
+      },
+      content: node.body,
+    }});
+});
+```
+
+As you can see, *I* had to explicitly query the Markdown files,
+extract the data from them and then pass it to the `createPage` method.
+
+Also, note the `.js` extension of the file, which means that I had to use
+plain JavaScript to do all of this, which is not a big deal, but I would
+prefer to use TypeScript instead and have the type safety, but after some
+pain with properly typing the GraphQL queries, I decided to give up on that.
+
+So, GraphQL, maintaining the structure of the blog posts in two places
+and keeping a series of config files had a bit of steep learning curve.
+
+On the other hand, Astro's file-based routing is a breeze to use.
+Just plop down the `.md. or `.mdx` file in the `src/content` directory and you're done.
+Later You can just use the `.glob` syntax to query all the markdown files and
+render appropriate routing components for them.
+
+```astro
+---
+const posts = await Astro.glob('@content/*.md')  // query all the markdown files
+---
+<div>
+  ... // render the posts
+</div>
+```
+
+There is no chance to mess up the destructuring of the frontmatter data
+or writing a buggy GraphQL query, because there is none of that here.
+If you want a strongly typed data, you can group Your content into collections
+and define their frontmatter structure using Zod schemas (through the `z` object).
+
+```ts
+
+import { defineCollection, z } from "astro:content";
+
+const whateverCollection = defineCollection({
+    type: "content",
+    schema: z.object({
+        title: z.string(),
+        date: z.string(),
+    }),
+});
+
+... // other collections
+
+export const collections = {
+    newCollectionName: whateverCollection,
+    ...
+};
+```
+
+But what with the routing? Well, Astro will automatically generate the routes
+based on the tree structure of `src/pages` directory. For fully static pages,
+just define `.astro` files that correspond to the routes You want to generate.
+
+For dynamically generated pages e.g. blog posts, just define the `[...slug].astro` file
+in the `src/pages/[subpath]` directory. Inside this file, export the `getStaticPaths` function
+for astro to automatically generate the routes for You.
+
+```astro
+---
+import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
+
+export async function getStaticPaths() {
+  const newCollectionEntries = await getCollection('newCollectionName');
+  return newCollectionEntries.map((entry: any) => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+... // Do things with entry and Content objects
+```
+
+From now on, rendered entries will be available under the `[siteURL]/[subpath]/[postSlug]` route.
+
+So, to sum up - Astro's file-based routing is a breeze to use and it's much simpler than Gatsby's GraphQL API.
+I define the structure of my posts in one place, the autocompletion *works* in my IDE out of the box
+and the routing is done by creating files mirroring by desired routes, even if the routes are dynamic.
+
+## Profit #2: Server-side code alongside HTML markup
+
+Astro components are **the bomb**. In one `.astro` file, You can define two crucial things:
+
+1. Operatons done on the server-side (e.g. fetching data from the database)
+2. HTML markup that will be rendered on the client-side
+
+```astro
+---
+// server-side code
+---
+// HTML markup
+```
+
+Dead simple.
+
+This is a huge advantage over Gatsby, where You had to define the server-side operations
+in the `gatsby-node.js` file and then pass the data to the front end framework of Your choice.
+
+But fetching data is asynchronous, so there is sure a lot of mental, `async/await` gymnastics, right?
+No. You just `await` those operations. The asynchronicity of code defined 
+in the server-side section is (rightfully so) implicit.
+
+```astro
+---
+const coolData = await fetch('https://coolapi.com/coolData').then(res => res.json());
+---
+... // use coolData in the HTML markup
+```
+
+I guess there is no need to explain why this is convenient.
+
+## Profit #3: Component scoped styling and logic
+
+Continuing the topic of magical `.astro` nuggets of happiness, 
+let's talk about component scoped styling and logic.
+
+So, when it comes to writing code, I tend to favour consistency,
+even when it means doing seemingly unnecessary things. It may sound weird,
+but I know that inside one folder bearing the component's name
+I will find three, little files, each with a specific purpose.
+
+That's actually how I've structured my blog's codebase when using Gatsby
+or other React-like project ever since I've started my front-end shinangans.
+
+Inside `component/` folder there was:
+
+1. `component.tsx` - the component's logic
+2. `style.ts` - the component's styling done via `styled-components` library (hence the `.ts` extension)
+3. `style.css` - the component's styling done via plain CSS
+4. `index.ts` - the component's entry point, where I've exported the component's logic and styling
+
+So separation of concerns was the name of the game here, with a hidden bonus of being able to write
+`import { Component } from '@components/component'` instead of `import { Component } from '@components/component/component'`.
+
+But this approach had one major flaw - it was a bit of a pain to maintain.
+Also, consider TailwindCSS. It's great, I love it. And no, I won't say anything bad about it right now,
+there is no trick to this statement. *BUT*, imagine a situation when I had to style a very simple element.
+One word span. How to do it? Inline in the `component.tsx` file? Sure, why not. Inside `style.ts`,
+exporting it from there. Sure, why not. Inside `style.css`? Sure, why not. Three options. Curse of abundance.
+In case of one components I decide to do it one way, in case of another component, one week later, I decide to do it another way.
+
+This leads to messy codebase and leads to me breaking my own consistency rule.
+How Astro can help me with that? Well, it's simple. It's all in one file. The `.astro` file.
+
+```astro
+---
+... // You know the drill
+---
+<style>
+  ... // component's styling SCOPED ONLY TO THIS COMPONENT
+</style>
+
+<script>
+  ... // component's logic
+</script>
+```
+
+So, the component's logic and styling are in one place, which is great. I win a battle with myself one more time.
+Thanks Astro.
