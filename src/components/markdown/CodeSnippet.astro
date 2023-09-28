@@ -1,0 +1,18 @@
+---
+import { Code } from 'astro:components';
+
+const { filename, sourceCode, language } = Astro.props;
+
+if (!filename) {
+  throw new Error('Missing required prop: filename');
+}
+---
+
+<div class="flex flex-col">
+  <span class="font-bold mr-auto bg-foreground text-background px-4 py-2 rounded-t-lg">{filename}</span>
+  </div>
+  <Code
+    language={language}
+    code={sourceCode}
+  />
+</div>
