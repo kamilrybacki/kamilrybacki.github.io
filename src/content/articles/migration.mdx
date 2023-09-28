@@ -183,7 +183,7 @@ const { Content } = await entry.render();
 ... // Do things with entry and Content objects
 ```
 
-From now on, rendered entries will be available under the `[siteURL]/[subpath]/[postSlug]` route.
+From now on, rendered entries should be available under the `[siteURL]/[subpath]/[postSlug]` route.
 
 So, to sum up - Astro's file-based routing is a breeze to use and it's much simpler than Gatsby's GraphQL API.
 I define the structure of my posts in one place, the autocompletion *works* in my IDE out of the box
@@ -219,7 +219,9 @@ const coolData = await fetch('https://coolapi.com/coolData').then(res => res.jso
 ... // use coolData in the HTML markup
 ```
 
-I guess there is no need to explain why this is convenient.
+I guess there is no need to explain why this is convenient. Moreover, more computational intensive operations on arrays of data can be easily delegated to the server, making the client-side experience more smooth, eliminating annoying "Loading..." views, when You simply reduce an array of frontmatter data before serving it to the user.
+
+This separation, of course, opens up the possibility of fetching data not only from local files or APIs, but also from a headless CMS of Your choice and Astro offers a series of integrations with the most popular ones.
 
 ## Profit #3: Component scoped styling and logic
 
@@ -279,7 +281,6 @@ How Astro can help me with that? Well, it's simple. It's all in one file. The `.
 ```
 
 So, the component's logic and styling are in one place, which is great. I win a battle with myself one more time.
-Thanks Astro.
 
 What if I want to separate the styling from the logic? Well, I can do that too.
 Just define the component's styling in the stylesheet file and import it in the component's script section.
