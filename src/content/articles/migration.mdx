@@ -17,15 +17,15 @@ impervious to the obstacles imposed by the laws of nature or other theories prev
 
 Information technology was always no exception to this rule, having defied this confinement by simple logic.
 One instance would be be the pronouncement of the death of Moore's law by Jensen Huang in 2022,
-a law that was said to describe the exponential growth of our computational power. 
+a law that was said to describe the exponential growth of our computational power.
 
-Another one would be the rise of the internet inseflt, which was said to be impossible by many, but yet here we are, 
+Another one would be the rise of the internet inseflt, which was said to be impossible by many, but yet here we are,
 connecting to other people via our phones, that are connecting to other phones via satellies wandering around the globe.
 Definement of rules is one of the main reasons why we are able to push the boundaries of what is possible.
 
 Another rule that is consistently broken by software developers is the rule of "If it ain't broke, don't fix it".
 And so, during this warm month of September 2023, I've decided to break my fully-functioning personal blog
-and migrate it from Gatsby to Astro framework. 
+and migrate it from Gatsby to Astro framework.
 
 I won't delve much into how I did it (i.e. how to init Astro project etc.), since I guess it has been presented
 plenty of times by other webdev afficionados and documentation of Astro is top-notch.
@@ -209,7 +209,7 @@ This is a huge advantage over Gatsby, where You had to define the server-side op
 in the `gatsby-node.js` file and then pass the data to the front end framework of Your choice.
 
 But fetching data is asynchronous, so there is sure a lot of mental, `async/await` gymnastics, right?
-No. You just `await` those operations. The asynchronicity of code defined 
+No. You just `await` those operations. The asynchronicity of code defined
 in the server-side section is (rightfully so) implicit.
 
 ```astro
@@ -219,13 +219,17 @@ const coolData = await fetch('https://coolapi.com/coolData').then(res => res.jso
 ... // use coolData in the HTML markup
 ```
 
-I guess there is no need to explain why this is convenient. Moreover, more computational intensive operations on arrays of data can be easily delegated to the server, making the client-side experience more smooth, eliminating annoying "Loading..." views, when You simply reduce an array of frontmatter data before serving it to the user.
+I guess there is no need to explain why this is convenient. Moreover, more computational intensive operations
+on arrays of data can be easily delegated to the server, making the client-side experience more smooth,
+eliminating annoying "Loading..." views, when You simply reduce an array of frontmatter data
+before serving it to the user.
 
-This separation, of course, opens up the possibility of fetching data not only from local files or APIs, but also from a headless CMS of Your choice and Astro offers a series of integrations with the most popular ones.
+This separation, of course, opens up the possibility of fetching data not only from local files or APIs,
+but also from a headless CMS of Your choice and Astro offers a series of integrations with the most popular ones.
 
 ## Profit #3: Component scoped styling and logic
 
-Continuing the topic of magical `.astro` nuggets of happiness, 
+Continuing the topic of magical `.astro` nuggets of happiness,
 let's talk about component scoped styling and logic.
 
 So, when it comes to writing code, I tend to favour consistency,
@@ -242,14 +246,15 @@ Inside `component/` folder there was:
 4. `index.ts` - the component's entry point, where I've exported the component's logic and styling
 
 So, by doing this weird ritual, I know that inside one folder bearing the component's name
-I will find three, little files, each with a specific purpose. Here, separation of concerns was the name of the game here, 
-with a hidden bonus of being able to write `import { Component } from '@components/component'`
-instead of `import { Component } from '@components/component/component'`.
+I will find three, little files, each with a specific purpose. Here, separation of concerns was
+the name of the game here, with a hidden bonus of being able to write
+`import { Component } from '@components/component'` instead of
+`import { Component } from '@components/component/component'`.
 
 But this approach had one major flaw - it was a bit of a pain to maintain (and kind of over the top).
-Also, consider for a second a library like TailwindCSS. It's great, I love it. And no, I won't say anything bad about it right now,
-there is no trick to this statement. **BUT**, imagine a situation when I had to style a very simple element.
-One word span. How to do it? 
+Also, consider for a second a library like TailwindCSS. It's great, I love it.
+And no, I won't say anything bad about it right now, there is no trick to this statement.
+**BUT**, imagine a situation when I had to style a very simple element. One word span. How to do it?
 
 Inline in the `component.tsx` file? Sure, why not.
 
@@ -258,7 +263,8 @@ Inside `style.ts`, exporting it from there? Sure, why not.
 Inside `style.css`? Sure, why not.
 
 Three options. Curse of abundance.
-In case of one component I may decide to do it one way, in case of another component, one week later, I decide to do it another way.
+In case of one component I may decide to do it one way, in case of another component, one week later,
+I decide to do it another way.
 
 This leads to messy codebase and leads to me breaking my own consistency rule. Sounds weird, I know, but
 believe it or not, software engineering is centered about us humans pushing around magic, electric fairies
