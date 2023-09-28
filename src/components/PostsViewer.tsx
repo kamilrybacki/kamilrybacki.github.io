@@ -36,32 +36,38 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
             </nav>
             <hr className="my-4 opacity-25" />
             <div className="mt-8 flex flex-col items-center gap-2 lg:gap-4 lg:flex-row lg:flex-wrap">
-                {selectedPosts.map((post) => (
-                    <article
-                        className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px] duration-500 hover:-translate-y-2"
-                        key={post.slug}
-                        onClick={() => {
-                            window.location.href = `/posts/${post.slug}` || "/";
-                        }}
-                    >
-                        {post.data.image ? (
-                            <img
-                                className="mx-auto mb-4 max-h-[150px] w-[200px] rounded-lg lg:max-h-[200px] lg:w-[350px] invert grayscale"
-                                src={`/assets/thumbnails/${post.data.image.thumbnail}.svg`}
-                                alt={`Thumbnail for ${post.data.title}`}
-                            />
-                        ) : null}
-                        <h2 className="mb-2 truncate font-handwriting text-3xl font-bold">{post.data.title}</h2>
-                        {post.data.description ? (
-                            <>
-                                <hr className="mb-2" />
-                                <p className="text-justify font-body text-sm">
-                                    {post.data.description.slice(0, 256).concat("...")}
-                                </p>
-                            </>
-                        ) : null}
-                    </article>
-                ))}
+                {selectedPosts.map((post) => {
+                    if (post.data.slug[0] != "_") {
+                      return (
+                        <article
+                            className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px] duration-500 hover:-translate-y-2"
+                            key={post.slug}
+                            onClick={() => {
+                                window.location.href = `/posts/${post.slug}` || "/";
+                            }}
+                        >
+                            {post.data.image ? (
+                                <img
+                                    className="mx-auto mb-4 max-h-[150px] w-[200px] rounded-lg lg:max-h-[200px] lg:w-[350px] invert grayscale"
+                                    src={`/assets/thumbnails/${post.data.image.thumbnail}.svg`}
+                                    alt={`Thumbnail for ${post.data.title}`}
+                                />
+                            ) : null}
+                            <h2 className="mb-2 truncate font-handwriting text-3xl font-bold">{post.data.title}</h2>
+                            {post.data.description ? (
+                                <>
+                                    <hr className="mb-2" />
+                                    <p className="text-justify font-body text-sm">
+                                        {post.data.description.slice(0, 256).concat("...")}
+                                    </p>
+                                </>
+                            ) : null}
+                        </article>
+                      )
+                    }
+                    return null
+                  })
+                }
             </div>
         </div>
     );
