@@ -1,10 +1,10 @@
 ---
+import '@styles/neon.css';
+import '@styles/markdown.css';
+
 import StyledSVG from "@components/StyledSVG.astro";
 
 import BasicPageLayout from "./BasicPageLayout.astro";
-
-import '@styles/neon.css';
-import '@styles/markdown.css';
 
 const { frontmatter } = Astro.props;
 ---
@@ -13,6 +13,19 @@ const { frontmatter } = Astro.props;
     animation: flicker 5s ease-in-out infinite alternate;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const code = document.querySelectorAll('.astro-code');
+    code.forEach((el) => {
+      el.classList.remove('astro-code');
+      el.classList.add(...['rounded-md', 'text-sm', 'p-2']);
+      const codeLines = el.getElementsByTagName('span');
+      [...codeLines].forEach((line) => {
+      });
+    });
+  })
+</script>
 
 <BasicPageLayout
   title={frontmatter.title}

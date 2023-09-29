@@ -5,6 +5,7 @@ const {code, language, filename} = Astro.props;
 ---
 <style>
   .astro-code-content {
+    @apply my-4;
     .astro-code-filename {
       @apply text-sm font-bold text-background mx-auto;
       @apply flex flex-row gap-1 items-center w-full;
@@ -16,14 +17,6 @@ const {code, language, filename} = Astro.props;
     }
   }
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const code = document.querySelector('.astro-code');
-    code?.classList.remove('astro-code');
-    code?.classList.add(...['rounded-b-md', 'text-sm']);
-  })
-</script>
 
 <div class="astro-code-content">
   <div class="astro-code-filename flex gap-1">

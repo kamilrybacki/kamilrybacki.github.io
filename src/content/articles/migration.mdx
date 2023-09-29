@@ -54,59 +54,62 @@ via `createPage` method, while keeping the structure of the blog posts in the `f
 This generated for me a bit of overhead, since I had to keep the structure of the blog posts in two places,
 which was a bit of a pain to maintain. For example, creation of project pages looked a little bit like this:
 
-```js
-const projectsResult = await graphql(`
-  {
-      allMdx(
-          sort: {fields: [frontmatter___date]}
-          filter: {fileAbsolutePath: {regex: "/\/projects\//"}}
-      ) {
-          edges {
-              node {
-                  frontmatter {
-                      date(formatString: "MM/DD/YYYY")
-                      title
-                      tags
-                      thumbnail
-                      gallery
-                      techs
-                      abstract
-                      link
-                      readme
+<CodeSnippet
+  language="js"
+  filename="gatsby-node.js"
+  code={`
+    const projectsResult = await graphql(\`
+      {
+          allMdx(
+              sort: {fields: [frontmatter___date]}
+              filter: {fileAbsolutePath: {regex: "/\/projects\//"}}
+          ) {
+              edges {
+                  node {
+                      frontmatter {
+                          date(formatString: "MM/DD/YYYY")
+                          title
+                          tags
+                          thumbnail
+                          gallery
+                          techs
+                          abstract
+                          link
+                          readme
+                      }
+                      slug
+                      timeToRead
+                      body
                   }
-                  slug
-                  timeToRead
-                  body
               }
+            }
           }
-      }
-  }`);
+    \`);
 
-...
+    projectsResult.data.allMdx.edges.forEach(({node}) => {
+      const path = \`/projects/\${node.slug}\`;
 
-projectsResult.data.allMdx.edges.forEach(({node}) => {
-  const path = `/projects/${node.slug}`;
-
-  createPage({
-    path,
-    component: require.resolve('./src/layouts/projects/layout.tsx'),
-    context: {
-      pagePath: path,
-      frontmatter: {
-        title: node.frontmatter.title,
-        date: node.frontmatter.date,
-        tags: node.frontmatter.tags.split(' ') || [],
-        thumbnail: node.frontmatter.thumbnail,
-        gallery: node.frontmatter.gallery,
-        techs: node.frontmatter.techs.split(' ') ?? [],
-        abstract: node.frontmatter.abstract,
-        link: node.frontmatter.link || '',
-        readme: node.frontmatter.readme || '',
-      },
-      content: node.body,
-    }});
-});
-```
+      createPage({
+        path,
+        component: require.resolve('./src/layouts/projects/layout.tsx'),
+        context: {
+          pagePath: path,
+          frontmatter: {
+            title: node.frontmatter.title,
+            date: node.frontmatter.date,
+            tags: node.frontmatter.tags.split(' ') || [],
+            thumbnail: node.frontmatter.thumbnail,
+            gallery: node.frontmatter.gallery,
+            techs: node.frontmatter.techs.split(' ') ?? [],
+            abstract: node.frontmatter.abstract,
+            link: node.frontmatter.link || '',
+            readme: node.frontmatter.readme || '',
+          },
+          content: node.body,
+        }});
+    });
+  `}
+/>
 
 As you can see, **I** had to explicitly query the Markdown files,
 extract the data from them and then pass it to the `createPage` method.
@@ -124,39 +127,46 @@ Just plop down the `.md`. or `.mdx` file in the `src/content` directory and you'
 Later You can just use the `.glob` syntax to query all the markdown files and
 render appropriate routing components for them.
 
-```astro
----
-const posts = await Astro.glob('@content/*.md')  // query all the markdown files
----
-<div>
-  ... // render the posts
-</div>
-```
+<CodeSnippet
+  language="astro"
+  filename="src/pages/blog.astro"
+  code={`
+    ---
+    const posts = await Astro.glob('@content/*.md')  // query all the markdown files
+    ---
+    <div>
+      ... // Render the posts
+    </div>
+  `}
+/>
 
 There is no chance to mess up the destructuring of the frontmatter data
 or writing a buggy GraphQL query, because there is none of that here.
 If you want a strongly typed data, you can group Your content into collections
 and define their frontmatter structure using Zod schemas (through the `z` object).
 
-```ts
+<CodeSnippet
+  language="ts"
+  filename="src/content/config.ts"
+  code={`
+    import { defineCollection, z } from "astro:content";
 
-import { defineCollection, z } from "astro:content";
+    const whateverCollection = defineCollection({
+        type: "content",
+        schema: z.object({
+            title: z.string(),
+            date: z.string(),
+        }),
+    });
 
-const whateverCollection = defineCollection({
-    type: "content",
-    schema: z.object({
-        title: z.string(),
-        date: z.string(),
-    }),
-});
+    ... // other collections
 
-... // other collections
-
-export const collections = {
-    newCollectionName: whateverCollection,
-    ...
-};
-```
+    export const collections = {
+        newCollectionName: whateverCollection,
+        ...
+    };
+  `}
+/>
 
 But what with the routing? Well, Astro will automatically generate the routes
 based on the tree structure of `src/pages` directory. For fully static pages,
@@ -166,22 +176,26 @@ For dynamically generated pages e.g. blog posts, just define the `[...slug].astr
 in the `src/pages/[subpath]` directory. Inside this file, export the `getStaticPaths` function
 for astro to automatically generate the routes for You.
 
-```astro
----
-import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
+<CodeSnippet
+  language="astro"
+  filename="src/pages/[subpath]/[...slug].astro"
+  code={`
+    ---
+    import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
 
-export async function getStaticPaths() {
-  const newCollectionEntries = await getCollection('newCollectionName');
-  return newCollectionEntries.map((entry: any) => ({
-    params: { slug: entry.slug }, props: { entry },
-  }));
-}
+    export async function getStaticPaths() {
+      const newCollectionEntries = await getCollection('newCollectionName');
+      return newCollectionEntries.map((entry: any) => ({
+        params: { slug: entry.slug }, props: { entry },
+      }));
+    }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
----
-... // Do things with entry and Content objects
-```
+    const { entry } = Astro.props;
+    const { Content } = await entry.render();
+    ---
+    ... // Do things with entry and Content objects
+  `}
+/>
 
 From now on, rendered entries should be available under the `[siteURL]/[subpath]/[postSlug]` route.
 
@@ -196,12 +210,16 @@ Astro components are **the bomb**. In one `.astro` file, You can define two cruc
 1. Operatons done on the server-side (e.g. fetching data from the database)
 2. HTML markup that will be rendered on the client-side
 
-```astro
----
-// server-side code
----
-// HTML markup
-```
+<CodeSnippet
+  language="astro"
+  filename="component.astro"
+  code={`
+    ---
+    // Server-side code
+    ---
+    // HTML markup
+  `}
+/>
 
 Dead simple.
 
@@ -212,12 +230,20 @@ But fetching data is asynchronous, so there is sure a lot of mental, `async/awai
 No. You just `await` those operations. The asynchronicity of code defined
 in the server-side section is (rightfully so) implicit.
 
-```astro
----
-const coolData = await fetch('https://coolapi.com/coolData').then(res => res.json());
----
-... // use coolData in the HTML markup
-```
+<CodeSnippet
+  language="astro"
+  filename="coolComponent.astro"
+  code={`
+    ---
+    const coolData = await fetch('https://coolapi.com/coolData').then(res => res.json());
+    ---
+    // Use coolData in the HTML markup
+    <div>
+      <h1>{coolData.title}</h1>
+      <p>{coolData.description}</p>
+    </div>
+  `}
+/>
 
 I guess there is no need to explain why this is convenient. Moreover, more computational intensive operations
 on arrays of data can be easily delegated to the server, making the client-side experience more smooth,
@@ -273,18 +299,22 @@ It is abstract by nature, so a little human error here and there is inevitable.
 
 How Astro can help me with that? Well, it's simple. It's all in one file. The `.astro` file.
 
-```astro
----
-... // You know the drill
----
-<style>
-  ... // component's styling SCOPED ONLY TO THIS COMPONENT
-</style>
+<CodeSnippet
+  language="astro"
+  filename="allInOne.astro"
+  code={`
+    ---
+    ... // Server-side logic
+    ---
+    <style>
+      ... // Styling SCOPED ONLY TO THIS COMPONENT
+    </style>
 
-<script>
-  ... // component's logic
-</script>
-```
+    <script>
+      ... // Client-side logic
+    </script>
+  `}
+/>
 
 So, the component's logic and styling are in one place, which is great. I win a battle with myself one more time.
 
