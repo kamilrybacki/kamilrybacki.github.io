@@ -1,18 +1,39 @@
 ---
-import { Code } from 'astro:components';
+import { Code } from "astro:components";
 
-const { filename, sourceCode, language } = Astro.props;
-
-if (!filename) {
-  throw new Error('Missing required prop: filename');
-}
+const {code, language, filename} = Astro.props;
 ---
+<style>
+  .astro-code-content {
+    .astro-code-filename {
+      @apply text-sm font-bold text-background mx-auto;
+      @apply flex flex-row gap-1 items-center w-full;
+      @apply mr-auto bg-foreground px-4 py-1 rounded-t-md;
+    }
+    .astro-code-button {
+      @apply w-2 h-2 rounded-full;
+      @apply bg-background;
+    }
+  }
+</style>
 
-<div class="flex flex-col">
-  <span class="font-bold mr-auto bg-foreground text-background px-4 py-2 rounded-t-lg">{filename}</span>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const code = document.querySelector('.astro-code');
+    code?.classList.remove('astro-code');
+    code?.classList.add(...['rounded-b-md', 'text-sm']);
+  })
+</script>
+
+<div class="astro-code-content">
+  <div class="astro-code-filename flex gap-1">
+    <div class="astro-code-button"/>
+    <div class="astro-code-button"/>
+    <span class="mx-auto">{filename}</span>
   </div>
-  <Code
-    language={language}
-    code={sourceCode}
-  />
-</div>
+  <Code 
+    code={code}
+    lang={language}
+    theme="github-dark"
+  >
+<div>

@@ -9,10 +9,10 @@ image:
   alt: "Astro logo"
 ---
 
-import CodeSnippet from '@components/markdown/CodeSnippet.astro'
-
 <CodeSnippet
-  sourceCode={'# Siema'}
-  language="markdown"
-  filename="index.md"
+  language="js"
+  filename="test.js"
+  code={`
+    import { useState } from 'react'
+  `}
 />

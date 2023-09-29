@@ -4,11 +4,17 @@ import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 
+import remarkCodeTitles from "remark-code-titles";
+
 // https://astro.build/config
 export default defineConfig({
     site: "https://kamilrybacki.github.io/",
     integrations: [
-        mdx(),
+        mdx({
+          remarkPlugins: [
+            remarkCodeTitles
+          ]
+        }),
         tailwind({
             config: {
                 applyBaseStyles: false,
