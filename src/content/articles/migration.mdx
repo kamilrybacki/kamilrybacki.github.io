@@ -197,7 +197,9 @@ for astro to automatically generate the routes for You.
   `}
 />
 
-From now on, rendered entries should be available under the `[siteURL]/[subpath]/[postSlug]` route.
+From now on, rendered entries should be available under the following route:
+
+`.../[subpath]/[postSlug]`
 
 So, to sum up - Astro's file-based routing is a breeze to use and it's much simpler than Gatsby's GraphQL API.
 I define the structure of my posts in one place, the autocompletion *works* in my IDE out of the box
@@ -273,8 +275,12 @@ Inside `component/` folder there was:
 
 So, by doing this weird ritual, I know that inside one folder bearing the component's name
 I will find three, little files, each with a specific purpose. Here, separation of concerns was
-the name of the game here, with a hidden bonus of being able to write
-`import { Component } from '@components/component'` instead of
+the name of the game here, with a hidden bonus of being able to write:
+
+`import { Component } from '@components/component'`
+
+instead of:
+
 `import { Component } from '@components/component/component'`.
 
 But this approach had one major flaw - it was a bit of a pain to maintain (and kind of over the top).

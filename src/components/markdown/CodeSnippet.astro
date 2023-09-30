@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import StyledSVG from "@components/StyledSVG.astro";
 
 const {code, language, filename} = Astro.props;
 ---
@@ -18,7 +19,24 @@ const {code, language, filename} = Astro.props;
   }
 </style>
 
-<div class="astro-code-content">
+<script define:vars={{ code, filename }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyContent = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log('Content copied to clipboard');
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    }
+    const copyButtons = document.getElementById(`copy-${filename}`);
+    copyButtons.addEventListener('click', () => {
+      copyContent(code.split('\n').map((line) => line.slice(4)).join('\n'));
+    });
+  });
+</script>
+
+<div class="astro-code-content relative">
   <div class="astro-code-filename flex gap-1">
     <div class="astro-code-button"/>
     <div class="astro-code-button"/>
@@ -28,5 +46,15 @@ const {code, language, filename} = Astro.props;
     code={code}
     lang={language}
     theme="github-dark"
+  />
+  <div
+    class="absolute bottom-4 right-4 cursor-pointer font-bold text-glow hover:scale-110"
+    id={`copy-${filename}`}
   >
+    <StyledSVG
+      src="images/copy"
+      alt="Copy to clipboard"
+      class="h-6 w-6 text-glow"
+    />
+  </div>
 <div>

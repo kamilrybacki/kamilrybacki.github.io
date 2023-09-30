@@ -17,6 +17,11 @@
     }
     & > p {
       @apply text-xl text-justify py-1 lg:py-2 lg:text-base;
+      & > pre,code {
+        @apply text-base;
+        white-space: normal;
+        word-wrap: break-word;
+      }
     }
     & > ul {
       @apply list-disc list-inside my-2;

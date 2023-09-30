@@ -21,7 +21,20 @@ const { frontmatter } = Astro.props;
       el.classList.remove('astro-code');
       el.classList.add(...['rounded-md', 'text-sm', 'p-2']);
       const codeLines = el.getElementsByTagName('span');
+      let foundLinesIndex = 1;
       [...codeLines].forEach((line) => {
+        if (line.classList.contains('line')) {
+          line.classList.add('hover:font-bold');
+          const lineNumberOpacity = line.innerText.trim() ? 'opacity-25' : 'opacity-10';
+          const numberSpan = document.createElement('span');
+          numberSpan.classList.add(...['text-glow', 'ml-2', 'mr-4', lineNumberOpacity, 'w-10']);
+          numberSpan.innerText = foundLinesIndex.toString();
+          line.insertBefore(
+            numberSpan,
+            line.firstChild
+          );
+          foundLinesIndex++;
+        }
       });
     });
   })
