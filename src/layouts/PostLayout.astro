@@ -9,34 +9,14 @@ import BasicPageLayout from "./BasicPageLayout.astro";
 const { frontmatter } = Astro.props;
 ---
 <style>
-  #hero-image {
+  .flickering {
     animation: flicker 5s ease-in-out infinite alternate;
   }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const code = document.querySelectorAll('.astro-code');
-    code.forEach((el) => {
-      el.classList.remove('astro-code');
-      el.classList.add(...['rounded-b-md', 'text-sm', 'py-4', 'px-2']);
-      const codeLines = el.getElementsByTagName('span');
-      let foundLinesIndex = 1;
-      [...codeLines].forEach((line) => {
-        if (line.classList.contains('line')) {
-          line.classList.add('hover:font-bold');
-          const lineNumberOpacity = line.innerText.trim() ? 'opacity-25' : 'opacity-10';
-          const numberSpan = document.createElement('span');
-          numberSpan.classList.add(...['text-glow', lineNumberOpacity]);
-          numberSpan.innerText = `${foundLinesIndex.toString().padStart(3, ' ')}`;
-          line.insertBefore(
-            numberSpan,
-            line.firstChild
-          );
-          foundLinesIndex++;
-        }
-      });
-    });
+   
   })
 </script>
 
@@ -57,8 +37,7 @@ const { frontmatter } = Astro.props;
           <StyledSVG
             src={`hero/${frontmatter.image.hero}`}
             alt={frontmatter.image.alt}
-            class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10"
-            id="hero-image"
+            class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10 flickering"
           />
           <hr>
         </> : null
