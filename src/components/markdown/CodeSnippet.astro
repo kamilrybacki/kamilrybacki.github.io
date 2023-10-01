@@ -98,7 +98,15 @@ const {code, language, filename, annotations} = Astro.props;
     };
     const insertMultiLineComment = (lines, text) => {
       const [start, end] = lines.split('-');
-      console.log(start, end);
+      codeLines
+        .slice(
+          parseInt(start) - 1,
+          parseInt(end)
+        )
+        .forEach((line, index) => {
+          line.firstChild.classList.remove('opacity-25');
+          line.firstChild.classList.add(...['font-bold', 'border-r-[1px]', 'pr-1', '-mr-1']);
+        })
     }
     annotations && annotations
       .split('\n')
