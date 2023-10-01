@@ -1,18 +1,13 @@
 ---
-import { Code } from "astro:components";
 import StyledSVG from "@components/StyledSVG.astro";
-
-interface CodeLineAnnotation {
-  lineNumber: number | number[],
-  annotation: string,
-  style?: string
-}
+import { parse } from 'node-html-parser';
+import { Code } from "astro:components";
 
 interface Props {
   code: string,
   language: string,
   filename: string,
-  annotations: CodeLineAnnotation[]
+  annotations?: string
 }
 
 const {code, language, filename, annotations} = Astro.props;
@@ -32,7 +27,7 @@ const {code, language, filename, annotations} = Astro.props;
   }
 </style>
 
-<script define:vars={{ code, filename }}>
+<script define:vars={{ code, filename, annotations }}>
   const copyContent = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -41,8 +36,13 @@ const {code, language, filename, annotations} = Astro.props;
       console.error('Failed to copy: ', err);
     }
   }
+
   document.addEventListener('DOMContentLoaded', () => {
-    const codeLines = document.querySelectorAll('.astro-code');
+    const codeLinesWrapper = document
+      .getElementById(`astro-code-${filename}`)
+      .getElementsByTagName('pre')
+      .item(0);
+    codeLinesWrapper.classList.add(...['rounded-b-md', 'text-sm', 'py-4', 'px-2']);
     const copyButtons = document.getElementById(`copy-${filename}`);
     copyButtons.addEventListener('click', () => {
       copyContent(
@@ -52,30 +52,69 @@ const {code, language, filename, annotations} = Astro.props;
           .join('\n')
       );
     });
-    codeLines.forEach((el) => {
-      el.classList.remove('astro-code');
-      el.classList.add(...['rounded-b-md', 'text-sm', 'py-4', 'px-2']);
-      const codeLines = el.getElementsByTagName('span');
-      let foundLinesIndex = 1;
-      [...codeLines].forEach((line) => {
-        if (line.classList.contains('line')) {
-          line.classList.add('hover:font-bold');
-          const lineNumberOpacity = line.innerText.trim() ? 'opacity-25' : 'opacity-10';
-          const numberSpan = document.createElement('span');
-          numberSpan.classList.add(...['text-glow', lineNumberOpacity]);
-          numberSpan.innerText = `${foundLinesIndex.toString().padStart(3, ' ')}`;
-          line.insertBefore(
-            numberSpan,
-            line.firstChild
-          );
-          foundLinesIndex++;
-        }
-      });
+    const codeLines = Array.from(codeLinesWrapper
+      .getElementsByTagName('span'))
+      .filter((span) => span.classList.contains('line'));
+    let foundLinesIndex = 1;
+    [...codeLines].forEach((line) => {
+      line.classList.add('hover:font-bold');
+      const lineNumberOpacity = line.innerText.trim() ? 'opacity-25' : 'opacity-10';
+      const numberSpan = document.createElement('span');
+      numberSpan.classList.add(...['text-glow', lineNumberOpacity]);
+      numberSpan.innerText = `${foundLinesIndex.toString().padStart(4, ' ')}`;
+      line.insertBefore(
+        numberSpan,
+        line.firstChild
+      );
+      foundLinesIndex++;
     });
+    const insertSingleLineComment = (line, text) => {
+      const annotatedLine = codeLines[parseInt(line)-1];
+      const annotationOverlay = document.createElement('div');
+      annotationOverlay.setAttribute('id', `astro-code-annotation-${filename}-${line}`)
+      annotationOverlay.classList.add(...[
+        'absolute', 'h-fit', 'w-fit',
+        'rounded-md', 'p-2', 'text-xs',
+        'transition-opacity', 'duration-200', 'ease-in-out',
+        'bg-background', 'bg-opacity-75', 'opacity-0',
+      ]);
+      annotatedLine.firstChild.classList.add('font-bold');
+      annotatedLine.firstChild.classList.remove('opacity-25')
+      annotatedLine.firstChild.innerText = `!${annotatedLine.firstChild.innerText.trim().padStart(3, ' ')}`;
+      annotatedLine.appendChild(annotationOverlay);
+      const lineBoundingRect = annotatedLine.getBoundingClientRect();
+      const relativeVerticalPosition = lineBoundingRect.y - codeLinesWrapper.getBoundingClientRect().y;
+      const annotationTop = relativeVerticalPosition + lineBoundingRect.height + annotationOverlay.offsetHeight / 4.0;
+      const annotationLeft = lineBoundingRect.width;
+      annotationOverlay.style.left = `calc(${annotationLeft}px + 1rem)`;
+      annotationOverlay.style.top = `${annotationTop}px`;
+      annotationOverlay.innerText = text;
+      annotatedLine.onmouseenter = () => {
+        annotationOverlay.style.opacity = '1';
+      };
+      annotatedLine.onmouseleave = () => {
+        annotationOverlay.style.opacity = '0';
+      };
+    };
+    const insertMultiLineComment = (lines, text) => {
+      const [start, end] = lines.split('-');
+      console.log(start, end);
+    }
+    annotations && annotations
+      .split('\n')
+      .filter((annotation) => annotation.trim() !== '')
+      .forEach((annotation) => {
+        const [locations, comments] = annotation.split(':');
+        if (locations.includes('-')) insertMultiLineComment(locations, comments)
+        else insertSingleLineComment(locations, comments);
+      });
   });
 </script>
 
-<div class="astro-code-content relative">
+<div
+  class="astro-code-content relative"
+  id={`astro-code-${filename}`}
+>
   <div class="astro-code-filename flex gap-1">
     <div class="astro-code-button"/>
     <div class="astro-code-button"/>

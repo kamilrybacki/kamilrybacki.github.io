@@ -115,6 +115,16 @@ which was a bit of a pain to maintain. For example, creation of project pages lo
         }});
     });
   `}
+  annotations='
+    2:Beginning of the GraphQL query
+    4:Selecting all the markdown files from the `projects` directory
+    10:Querying the frontmatter data
+    30:Iterating over the globbed markdown files
+    33:Creating the page based on the project layout and passing the data to it
+    41:Handling the case when tags are empty
+    44:Handling the case when techs are empty (with random `??` operator)
+    6-8:src/pages/projects/coolProject
+  '
 />
 
 As you can see, **I** had to explicitly query the Markdown files,
