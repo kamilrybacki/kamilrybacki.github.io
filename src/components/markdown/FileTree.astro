@@ -1,0 +1,13 @@
+---
+interface Props {
+  tree: {
+    [key: string]: string | object;
+  };
+}
+
+const { tree } = Astro.props;
+---
+<div>
+  <h1>Tree</h1>
+  <pre>{JSON.stringify(tree, null, 2)}</pre>
+</div>
