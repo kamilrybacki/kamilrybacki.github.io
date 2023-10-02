@@ -36,13 +36,70 @@ const {code, language, filename, annotations} = Astro.props;
       console.error('Failed to copy: ', err);
     }
   }
-
   document.addEventListener('DOMContentLoaded', () => {
+    const appendCommentTooltip = (lineElement, text, prefix) => {
+        const annotationOverlay = document.createElement('div');
+        annotationOverlay.classList.add(...[
+          'absolute', 'h-fit', 'w-fit',
+          'rounded-md', 'p-2', 'text-xs',
+          'transition-opacity', 'duration-200', 'ease-in-out',
+          'bg-background', 'bg-opacity-75', 'opacity-0',
+        ]);
+        annotationOverlay.setAttribute('role', 'tooltip')
+        if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
+          lineElement.appendChild(annotationOverlay);
+          const lineBoundingRect = lineElement.getBoundingClientRect();
+          const relativeVerticalPosition = lineBoundingRect.y - codeLinesWrapper.getBoundingClientRect().y;
+          const annotationTop = relativeVerticalPosition + lineBoundingRect.height + annotationOverlay.offsetHeight / 4.0;
+          const annotationLeft = lineBoundingRect.width;
+          annotationOverlay.style.left = `calc(${annotationLeft}px + 1rem)`;
+          annotationOverlay.style.top = `${annotationTop}px`;
+          annotationOverlay.innerText = `${prefix}: ${text}`;
+          lineElement.onmouseenter = () => {
+            annotationOverlay.style.opacity = '1';
+          };
+          lineElement.onmouseleave = () => {
+            annotationOverlay.style.opacity = '0';
+          };
+        };
+    };
+    const insertSingleLineComment = (line, text) => {
+      const annotatedLine = codeLines[parseInt(line)-1];
+      annotatedLine.firstChild.classList.add('font-bold');
+      annotatedLine.firstChild.classList.remove('opacity-25')
+      annotatedLine.firstChild.innerText = `!${annotatedLine.firstChild.innerText.trim().padStart(3, ' ')}`;
+      appendCommentTooltip(annotatedLine, text, '!');
+    };
+    const insertMultiLineComment = (lines, text) => {
+      const [start, end] = lines.split('-');
+      codeLines
+        .slice(
+          parseInt(start) - 1,
+          parseInt(end)
+        )
+        .forEach((line, index) => {
+          line.firstChild.classList.remove('opacity-25');
+          line.firstChild.classList.add(...['font-bold', 'border-r-[1px]', 'pr-1', '-mr-1']);
+          if (index == 0) {
+            line.firstChild.innerText = `{${line.firstChild.innerText.trim().padStart(3, ' ')}`;
+          }
+          if (index == parseInt(end) - parseInt(start)) {
+            line.firstChild.innerText = `}${line.firstChild.innerText.trim().padStart(3, ' ')}`;
+          }
+          appendCommentTooltip(line, text, '{}');
+        })
+    };
+
+    document.getElementsByClassName('legend')[0].style.backgroundColor =
+      document
+        .getElementsByClassName(`astro-code`)[0]
+        .style.backgroundColor;
+
     const codeLinesWrapper = document
       .getElementById(`astro-code-${filename}`)
       .getElementsByTagName('pre')
       .item(0);
-    codeLinesWrapper.classList.add(...['rounded-b-md', 'text-sm', 'py-4', 'px-2']);
+    codeLinesWrapper.classList.add(...['rounded-b-md', 'text-sm', 'pb-4', 'px-2']);
     const copyButtons = document.getElementById(`copy-${filename}`);
     copyButtons.addEventListener('click', () => {
       copyContent(
@@ -55,6 +112,7 @@ const {code, language, filename, annotations} = Astro.props;
     const codeLines = Array.from(codeLinesWrapper
       .getElementsByTagName('span'))
       .filter((span) => span.classList.contains('line'));
+
     let foundLinesIndex = 1;
     [...codeLines].forEach((line) => {
       line.classList.add('hover:font-bold');
@@ -68,46 +126,7 @@ const {code, language, filename, annotations} = Astro.props;
       );
       foundLinesIndex++;
     });
-    const insertSingleLineComment = (line, text) => {
-      const annotatedLine = codeLines[parseInt(line)-1];
-      const annotationOverlay = document.createElement('div');
-      annotationOverlay.setAttribute('id', `astro-code-annotation-${filename}-${line}`)
-      annotationOverlay.classList.add(...[
-        'absolute', 'h-fit', 'w-fit',
-        'rounded-md', 'p-2', 'text-xs',
-        'transition-opacity', 'duration-200', 'ease-in-out',
-        'bg-background', 'bg-opacity-75', 'opacity-0',
-      ]);
-      annotatedLine.firstChild.classList.add('font-bold');
-      annotatedLine.firstChild.classList.remove('opacity-25')
-      annotatedLine.firstChild.innerText = `!${annotatedLine.firstChild.innerText.trim().padStart(3, ' ')}`;
-      annotatedLine.appendChild(annotationOverlay);
-      const lineBoundingRect = annotatedLine.getBoundingClientRect();
-      const relativeVerticalPosition = lineBoundingRect.y - codeLinesWrapper.getBoundingClientRect().y;
-      const annotationTop = relativeVerticalPosition + lineBoundingRect.height + annotationOverlay.offsetHeight / 4.0;
-      const annotationLeft = lineBoundingRect.width;
-      annotationOverlay.style.left = `calc(${annotationLeft}px + 1rem)`;
-      annotationOverlay.style.top = `${annotationTop}px`;
-      annotationOverlay.innerText = text;
-      annotatedLine.onmouseenter = () => {
-        annotationOverlay.style.opacity = '1';
-      };
-      annotatedLine.onmouseleave = () => {
-        annotationOverlay.style.opacity = '0';
-      };
-    };
-    const insertMultiLineComment = (lines, text) => {
-      const [start, end] = lines.split('-');
-      codeLines
-        .slice(
-          parseInt(start) - 1,
-          parseInt(end)
-        )
-        .forEach((line, index) => {
-          line.firstChild.classList.remove('opacity-25');
-          line.firstChild.classList.add(...['font-bold', 'border-r-[1px]', 'pr-1', '-mr-1']);
-        })
-    }
+
     annotations && annotations
       .split('\n')
       .filter((annotation) => annotation.trim() !== '')
@@ -120,7 +139,7 @@ const {code, language, filename, annotations} = Astro.props;
 </script>
 
 <div
-  class="astro-code-content relative"
+  class="astro-code-content relative flex flex-col"
   id={`astro-code-${filename}`}
 >
   <div class="astro-code-filename flex gap-1">
@@ -128,6 +147,11 @@ const {code, language, filename, annotations} = Astro.props;
     <div class="astro-code-button"/>
     <span class="mx-auto">{filename}</span>
   </div>
+  <span class="text-right text-xs font-code w-full legend pr-2 pb-1 pt-2 text-glow text-opacity-50">
+    ! - Single line comment
+    /
+    {"{}"}  - Multi line comment
+  </span>
   <Code 
     code={code}
     lang={language}
