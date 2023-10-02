@@ -116,9 +116,8 @@ const {code, language, filename, annotations} = Astro.props;
     let foundLinesIndex = 1;
     [...codeLines].forEach((line) => {
       line.classList.add('hover:font-bold');
-      const lineNumberOpacity = line.innerText.trim() ? 'opacity-25' : 'opacity-10';
       const numberSpan = document.createElement('span');
-      numberSpan.classList.add(...['text-glow', lineNumberOpacity]);
+      numberSpan.classList.add(...['text-glow', 'opacity-50']);
       numberSpan.innerText = `${foundLinesIndex.toString().padStart(4, ' ')}`;
       line.insertBefore(
         numberSpan,
