@@ -41,7 +41,10 @@ const {code, language, filename, annotations} = Astro.props;
       .getElementById(`astro-code-${filename}`)
       .getElementsByTagName('pre')
       .item(0);
-    codeLinesWrapper.classList.add(...['rounded-b-md', 'text-sm', 'pb-4', 'px-2']);
+    codeLinesWrapper.classList.add(...['rounded-b-md', 'text-sm', 'pb-4', 'px-4']);
+    if (!annotations) {
+      codeLinesWrapper.classList.add('pt-4');
+    }
     const updateCommentState = (mouseEvent, overlay, opacity) => {
       overlay.style.opacity = opacity;
       if (mouseEvent !== null) {
@@ -112,10 +115,12 @@ const {code, language, filename, annotations} = Astro.props;
       });
     };
 
-    document.getElementsByClassName('legend')[0].style.backgroundColor =
-      document
+    const legendElement = document.getElementById(`legend-${filename}`);
+    if (legendElement) {
+      legendElement.style.backgroundColor = document
         .getElementsByClassName(`astro-code`)[0]
         .style.backgroundColor;
+    }
 
     const copyButtons = document.getElementById(`copy-${filename}`);
     copyButtons.addEventListener('click', () => {
@@ -162,11 +167,17 @@ const {code, language, filename, annotations} = Astro.props;
     <div class="astro-code-button"/>
     <span class="mx-auto">{filename}</span>
   </div>
-  <span class="lg:text-right text-xs font-code w-full legend pl-2 lg:pr-2 pb-1 pt-2 text-glow text-opacity-50">
-    ! - Line comment
-    /
-    {"{}"}  - Block comment
-  </span>
+  {
+    annotations ?
+    <span 
+      id={`legend-${filename}`}
+      class="lg:text-right text-xs font-code w-full pl-2 lg:pr-2 pb-1 pt-2 text-glow text-opacity-50"
+    >
+      ! - Line comment
+      /
+      {"{}"}  - Block comment
+    </span> : null
+  }
   <Code 
     code={code}
     lang={language}
