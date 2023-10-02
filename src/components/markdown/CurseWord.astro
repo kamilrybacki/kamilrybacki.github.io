@@ -1,6 +1,41 @@
 ---
+import { colorsRGB } from "@utils/theming";
+
+const semiTransparentGlow = `rgba(${colorsRGB.glow.split(' ').join(', ')}, 0.35)`;
+
+interface Props {
+  word: string;
+}
+
 const { word } = Astro.props;
+const [prefix, censoredWord, suffix] = word.split(':');
+
+const wordBeginning = censoredWord.slice(0, prefix);
+const wordEnding = censoredWord.slice(-suffix);
+const censoredPortion = censoredWord.slice(prefix, -suffix).replace(/./g, 'x');
 ---
-<span>
-  {word}
+<style define:vars={{semiTransparentGlow}}>
+  span > p {
+    position: relative;
+    white-space: pre;
+    &:after {
+      background: theme('colors.glow');
+      border-radius: 0.1em;
+      box-shadow: 0 0 1px var(--semiTransparentGlow);
+      content: " ";
+      width: 100%;
+      height: 1.2em;
+      left: 0;
+      position: absolute;
+      transform: skewY(-3deg) rotate(3deg);
+    }
+}
+</style>
+
+<span class="flex flex-row gap-0">
+  {wordBeginning}
+  <p class="mr-[1px] ml-[2px]">
+    {censoredPortion}
+  </p>
+  {wordEnding}
 </span>

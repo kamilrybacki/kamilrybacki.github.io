@@ -2,6 +2,7 @@
 import PostLayout from '@layouts/PostLayout.astro';
 import CodeSnippet from '@components/markdown/CodeSnippet.astro'
 import StyledSVG from '@components/StyledSVG.astro';
+import CurseWord from '@components/markdown/CurseWord.astro';
 
 import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
 
@@ -18,5 +19,5 @@ const { Content } = await entry.render();
 
 ---
 <PostLayout frontmatter={entry.data}>
-  <Content components={{CodeSnippet, StyledSVG}}/>
+  <Content components={{CodeSnippet, StyledSVG, CurseWord}}/>
 </PostLayout>

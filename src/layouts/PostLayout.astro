@@ -8,12 +8,6 @@ import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
 ---
-<style>
-  .flickering {
-    animation: flicker 5s ease-in-out infinite alternate;
-  }
-</style>
-
 <BasicPageLayout
   title={frontmatter.title}
   style="flex flex-col items-center"
