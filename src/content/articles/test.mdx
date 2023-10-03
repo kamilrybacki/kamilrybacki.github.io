@@ -8,30 +8,15 @@ image:
   hero: ""
   alt: "Astro logo"
 ---
-<FileTree
-  tree={[
-    'file_1',
-    {
-      'subfolder_1': [
-        'file_2',
-        'file_3'
-      ]
-    },
-    {
-      'subfolder_2': []
-    },
-    'file_4'
-  ]}
-  root='home'
-  annotations={`
-    file_1: This is file 1
-    subfolder_1: This is subfolder 1
-    file_2: This is file 2
-    file_3: This is file 3
-    subfolder_2: This is subfolder 2
-    file_4: This is file 
-  `}
-  links={`
-    file_1: http://google.com
-  `}
+
+<ScribbleGraph
+  type='line'
+  title='Test graph'
+  data={{
+    x: [1,2,3,4],
+    y: [1,2,3,4]
+  }}
+  options={{
+    roughness: 2,
+  }}
 />
