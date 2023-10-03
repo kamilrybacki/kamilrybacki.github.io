@@ -35,12 +35,12 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
                 </div>
             </nav>
             <hr className="my-4 opacity-25" />
-            <div className="mt-8 flex flex-col items-center gap-2 lg:gap-4 lg:flex-row lg:flex-wrap">
+            <div className="relative mt-8 flex flex-col items-center gap-2 lg:gap-4 lg:flex-row lg:flex-wrap">
                 {selectedPosts.map((post) => {
                     if (post.slug[0] !== "_") {
                       return (
                         <article
-                            className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px] duration-500 hover:-translate-y-2"
+                            className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 lg:w-[500px] duration-500 hover:-translate-y-2 lg:h-[400px]"
                             key={post.slug}
                             onClick={() => {
                                 window.location.href = `/posts/${post.slug}` || "/";
