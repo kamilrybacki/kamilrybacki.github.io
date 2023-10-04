@@ -8,15 +8,16 @@ image:
   hero: ""
   alt: "Astro logo"
 ---
+import ScribbleGraph from '@components/markdown/ScribbleGraph.tsx';
 
 <ScribbleGraph
   type='line'
   title='Test graph'
-  data={{
-    x: [1,2,3,4],
-    y: [1,2,3,4]
-  }}
+  data='https://raw.githubusercontent.com/jwilber/random_data/master/tweets.csv'
+  height={400}
+  width={600}
   options={{
     roughness: 2,
   }}
+  client:visible
 />

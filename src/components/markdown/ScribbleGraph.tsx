@@ -1,5 +1,6 @@
-import roughViz from "rough-viz";
 import * as React from "react";
+import roughViz from "rough-viz";
+import { theme } from "@root/tailwind.config.js";
 
 type PossibleGraphType = roughViz.Bar | roughViz.BarH | roughViz.Donut | roughViz.Line | roughViz.Pie | roughViz.Scatter | roughViz.StackedBar;
 
@@ -20,36 +21,38 @@ interface ScribbleGraphProps {
   data: {
     [key: string]: any[];
   } | string;
+  height: number;
+  width: number;
   title: string;
   options: {
     [key: string]: any;
   };
 }
 
-const ScribbleGraph: React.FC<ScribbleGraphProps> = (props) => {
-  const [graph, setGraph] = React.useState<PossibleGraphType>(null);
-  const { type, data, title, options } = props;
+const ScribbleGraph: React.FC<ScribbleGraphProps> = ({ type, data, height, width, title, options }: ScribbleGraphProps) => {
   const graphContainerId = `graph-${title.replace(/\s/g, '').toLowerCase()}`;
 
   React.useEffect(() => {
-    setGraph(
-      new graphTypeMap[type]({
-        element: `#${graphContainerId}`,
-        data: data,
-        ...options,
-        title: title,
-      })
-    );
+    new graphTypeMap[type]({
+      element: `#${graphContainerId}`,
+      data: data,
+      ...options,
+      stroke: theme.colors.glow,
+    })
   }, []);
 
   return (
-    <>
-      {
-        graph ?
-          <div id={graphContainerId}></div> :
-          null
-      }
-    </>
+    <section className="flex flex-col justify-center">
+      <span className="mx-auto text-3xl font-bold font-handwriting">{title}</span>
+      <div
+        id={graphContainerId}
+        className="mx-auto my-4"
+        style={{
+          width: width,
+          height: height,
+        }}
+      />
+    </section>
   );
 };
 
