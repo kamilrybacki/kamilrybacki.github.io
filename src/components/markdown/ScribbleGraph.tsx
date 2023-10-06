@@ -1,7 +1,7 @@
 import * as React from "react";
 import roughViz from "rough-viz";
 import { theme } from "@root/tailwind.config.js";
-import invert from 'invert-color';
+import invert from "invert-color";
 
 type PossibleGraphType =
   | roughViz.Bar
@@ -70,79 +70,66 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
         ...rest,
         stroke: invert(theme.colors.glow),
         color: invert(theme.colors.glow),
-        colors: rest.colors ? 
-          rest.colors.map((color: string) => invert(color))
-          : [],
-        titleFontSize: '1.5rem',
+        colors: rest.colors ? rest.colors.map((currentColor: string) => invert(currentColor)) : [],
+        titleFontSize: "1.5rem",
         margin: { top: 0, right: 0, bottom: 25, left: 25 },
       });
       setGraph(newGraph);
       if (!window.localStorage.getItem("lastGraphId")) {
         window.localStorage.setItem("lastGraphId", "1");
       } else {
-        setGraphCounter(
-          parseInt(
-            window.localStorage.getItem("lastGraphId") || "1",
-          ) + 1
-        );
-
+        setGraphCounter(parseInt(window.localStorage.getItem("lastGraphId") || "1") + 1);
       };
     }
   }, [data, options]);
 
   return (
-    <section className="flex flex-col justify-center my-4">
-      <span className="mx-auto text-3xl font-bold font-handwriting mb-2" >{title}</span>
-      <main 
-        className="w-fit mx-auto"
-        style={{ 
-          display: 'grid',
-          gridTemplateAreas: `'yLabel graph' 'blank xLabel'`,
-          gridTemplateColumns: 'auto auto',
-          gridTemplateRows: 'auto auto',
+    <section className="my-4 flex flex-col justify-center">
+      <span className="mx-auto mb-2 font-handwriting text-3xl font-bold">{title}</span>
+      <main
+        className="mx-auto w-fit"
+        style={{
+          display: "grid",
+          gridTemplateAreas: `"yLabel graph" "blank xLabel"`,
+          gridTemplateColumns: "auto auto",
+          gridTemplateRows: "auto auto",
         }}
       >
-        {
-          yLabel &&
-          <span 
-            className="my-auto font-handwriting text-xl -rotate-90"
+        {yLabel && (
+          <span
+            className="my-auto -rotate-90 font-handwriting text-xl"
             style={{
-              gridArea: 'yLabel',
+              gridArea: "yLabel",
             }}
           >
             {yLabel}
           </span>
-        }
-        <div 
+        )}
+        <div
           ref={graphRef}
           id={graphContainerId}
-          className="mx-auto my-4 invert text-background"
+          className="mx-auto my-4 text-background invert"
           style={{ 
             width: width,
             height: height,
-            gridArea: 'graph',
+            gridArea: "graph",
           }}
         />
-        {
-          xLabel &&
+        {xLabel && (
           <span 
-            className="mx-auto font-bold text-xl font-handwriting mb-3 -mt-2"
+            className="mx-auto -mt-2 mb-3 font-handwriting text-xl font-bold"
             style={{
-              gridArea: 'xLabel',
+              gridArea: "xLabel",
             }}
           >
             {xLabel}
           </span>
-        }
+        )}
       </main>
-      <p className="mx-auto w-fit text-sm flex gap-1">
-        <span className="font-bold my-auto text-base">
-          Figure {graphCounter}:
-        </span>
-        <span className="my-auto">
-          {caption.endsWith(".") ? caption.slice(0,caption.length - 1) : caption}
-        </span>
-      </p> 
+      <p className="mx-auto flex w-fit gap-1 text-sm">
+        <span className="my-auto text-base font-bold">Figure {graphCounter}:</span>
+        <span className="my-auto">{caption.endsWith(".") ? caption.slice(0, caption.length - 1) : caption}</span>
+      </p>
     </section>
   );
 };

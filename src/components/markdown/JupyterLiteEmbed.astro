@@ -9,9 +9,13 @@ interface Props {
 const { size, title, main, content } = Astro.props;
 const jupyterliteEmbedID = `jupyterlite-embed-${title.replace(/\s/g, '-').toLowerCase()}`;
 
-const contentToURLQueryParams = `?${main}&` + content
+const contentToURLQueryParams = `?` + [...content, main]
   .map((url) => `fromURL=${url}`)
   .join('&');
+
+const mainFileName = main.split('/').pop();
+const jupyterliteURL = `https://myjupyterlite.vercel.app/lab/index.html${contentToURLQueryParams}&path=${mainFileName}`;
+console.log(jupyterliteURL);
 ---
 <script define:vars={{size, jupyterliteEmbedID}}>
   const supportedUnits = {
@@ -63,7 +67,7 @@ const contentToURLQueryParams = `?${main}&` + content
 </script>
 
 <iframe
-  src={`https://myjupyterlite.vercel.app/lab/index.html${contentToURLQueryParams}`}
+  src={jupyterliteURL}
   width="100%"
   id={jupyterliteEmbedID}
 />
