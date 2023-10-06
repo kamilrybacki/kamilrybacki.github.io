@@ -1,13 +1,17 @@
 ---
-import { convertCssUnit } from '@utils/theming';
-
 interface Props {
   size: string;
   title: string;
+  main: string;
+  content: string[];
 }
 
-const { size, title } = Astro.props;
+const { size, title, main, content } = Astro.props;
 const jupyterliteEmbedID = `jupyterlite-embed-${title.replace(/\s/g, '-').toLowerCase()}`;
+
+const contentToURLQueryParams = `?${main}&` + content
+  .map((url) => `fromURL=${url}`)
+  .join('&');
 ---
 <script define:vars={{size, jupyterliteEmbedID}}>
   const supportedUnits = {
@@ -54,13 +58,12 @@ const jupyterliteEmbedID = `jupyterlite-embed-${title.replace(/\s/g, '-').toLowe
   };
   document.addEventListener('DOMContentLoaded', () => {
     const iframe = document.getElementById(jupyterliteEmbedID);
-    console.log('iframe', iframe)
     iframe.setAttribute('height', convertCssUnit(size));
   });
 </script>
 
 <iframe
-  src="https://myjupyterlite.vercel.app/lab/index.html"
+  src={`https://myjupyterlite.vercel.app/lab/index.html${contentToURLQueryParams}`}
   width="100%"
   id={jupyterliteEmbedID}
 />
