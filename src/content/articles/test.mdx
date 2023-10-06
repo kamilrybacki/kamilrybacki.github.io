@@ -13,9 +13,10 @@ import ScribbleGraph from '@components/markdown/ScribbleGraph.tsx';
 <ScribbleGraph
   type='line'
   title='Test graph'
+  caption='This is a test graph'
   data='https://raw.githubusercontent.com/jwilber/random_data/master/tweets.csv'
   height={400}
-  width={600}
+  width={400}
   options={{
     roughness: 1,
     y: 'favorites',
@@ -23,6 +24,29 @@ import ScribbleGraph from '@components/markdown/ScribbleGraph.tsx';
     y3: 'tweets',
     interactive: false,
     strokeWidth: 0.5,
+    xLabel: 'Day',
+    yLabel: 'Count',
+    circleRadius: 5,
+    legendPosition: 'left',
+    colors: ['#ff0000', '#00ff00', '#0000ff'],
   }}
-  client:visible
+  client:load
+/>
+
+<ScribbleGraph
+  type='stackedBar'
+  title='Test graph 2'
+  caption='This is a test graph 2'
+  data={[
+    {month:'Jan', A:20, B: 5},
+    {month:'Feb', A:25, B: 10},
+  ]}
+  height={300}
+  width={400}
+  options={{
+    labels: 'month',
+    xLabel: 'Month',
+    yLabel: 'Count',
+  }}
+  client:load
 />
