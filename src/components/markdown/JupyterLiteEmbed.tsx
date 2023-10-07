@@ -59,7 +59,7 @@ const JupyterLiteEmbed = ({ size, title, main, content }: JupyterLiteEmbedProps)
 
   return (
     <iframe
-      src={`https://myjupyterlite.vercel.app/retro/notebooks/?path=${mainFileName}&toolbar=1&${contentToURLQueryParams}`}
+      src={`https://myjupyterlite.vercel.app/retro/tree/?toolbar=1&${contentToURLQueryParams}`}
       width="100%"
       id={`jupyterlite-embed-${title.replace(/\s/g, "-").toLowerCase()}`}
     />
