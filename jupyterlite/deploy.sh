@@ -12,6 +12,6 @@ micromamba install python=3.10 -c conda-forge -y
 
 python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
-mkdir ./dist/files
+mkdir ./files
 
-cp -r ../src/content/jupyterlite/* ./dist/files
+cp -r ../src/content/jupyterlite/* ./files
