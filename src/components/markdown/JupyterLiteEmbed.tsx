@@ -1,9 +1,12 @@
 import * as React from "react";
 
+const JUPYTERLITE_URL = 'myjupyterlite-67h2sketr-kamilrybacki.vercel.app'
+
 interface JupyterLiteEmbedProps {
   size: string;
   title: string;
   file: string;
+  kernel: string;
 }
 
 const supportedUnits: {
@@ -43,7 +46,7 @@ const convertCssUnit = function (cssvalue: string) {
   return cssvalue;
 };
 
-const JupyterLiteEmbed = ({ size, title, file }: JupyterLiteEmbedProps) => {
+const JupyterLiteEmbed = ({ size, title, file, kernel }: JupyterLiteEmbedProps) => {
   React.useEffect(() => {
     const iframe = document.getElementById(
       `jupyterlite-embed-${title.replace(/\s/g, "-").toLowerCase()}`
@@ -55,7 +58,7 @@ const JupyterLiteEmbed = ({ size, title, file }: JupyterLiteEmbedProps) => {
 
   return (
     <iframe
-      src={`https://myjupyterlite.vercel.app/retro/tree/?toolbar=1&path=${file}`}
+      src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
       width="100%"
       id={`jupyterlite-embed-${title.replace(/\s/g, "-").toLowerCase()}`}
     />
