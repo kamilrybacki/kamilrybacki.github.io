@@ -8,6 +8,7 @@ image:
   hero: ""
   alt: "Astro logo"
 ---
+import JupyterLiteEmbed from '@components/markdown/JupyterLiteEmbed'
 
 <JupyterLiteEmbed
   size='50rem'
@@ -16,4 +17,5 @@ image:
   content={[
     "https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/data/iris.csv"
   ]}
+  client:load
 />
