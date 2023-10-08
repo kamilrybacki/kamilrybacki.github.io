@@ -2,7 +2,6 @@
 jupyterlite-core==0.1.3
 jupyterlab~=3.5.1
 jupyterlab-open-url-parameter
-notebook
 
 # Kernels 
 jupyterlite-pyodide-kernel==0.1.3
