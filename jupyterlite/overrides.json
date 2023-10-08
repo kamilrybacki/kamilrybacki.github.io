@@ -12,9 +12,5 @@
 		"rawCellConfig": {
 			"lineNumbers": true
 		}
-	},
-  "@retrolab/application-extension:zen": {
-    "zenMode": true,
-    "zenModeEnabled": true
-  }
+	}
 }
