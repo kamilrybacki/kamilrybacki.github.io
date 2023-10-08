@@ -13,7 +13,7 @@
 			"lineNumbers": true
 		}
 	},
-  "@retrolab/application-extension:tops": {
+  "@retrolab/application-extension:top": {
     "visible": false
   }
 }
