@@ -4,7 +4,6 @@ const JUPYTERLITE_URL = 'myjupyterlite-git-5-new-mdx-components-kamilrybacki.ver
 
 interface JupyterLiteEmbedProps {
   size: string;
-  title: string;
   file: string;
   kernel: string;
 }
@@ -46,21 +45,20 @@ const convertCssUnit = function (cssvalue: string) {
   return cssvalue;
 };
 
-const JupyterLiteEmbed = ({ size, title, file, kernel }: JupyterLiteEmbedProps) => {
+const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
+  const jupyterIFrameRef = React.useRef<HTMLIFrameElement>(null);
+
   React.useEffect(() => {
-    const iframe = document.getElementById(
-      `jupyterlite-embed-${title.replace(/\s/g, "-").toLowerCase()}`
-    ) as HTMLIFrameElement;
-    if (iframe) {
-      iframe.style.height = convertCssUnit(size) + "px";
+    if (jupyterIFrameRef.current) {
+      jupyterIFrameRef.current.style.height = convertCssUnit(size) + "px";
     }
-  });
+  }, []);
 
   return (
     <iframe
       src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
       width="100%"
-      id={`jupyterlite-embed-${title.replace(/\s/g, "-").toLowerCase()}`}
+      ref={jupyterIFrameRef}
     />
   );
 };
