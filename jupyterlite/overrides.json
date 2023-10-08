@@ -13,5 +13,8 @@
         "rank": 50
       }
     ]
+  },
+  "@jupyter-notebook/application-extension:top": {
+    "visible": false
   }
 }
