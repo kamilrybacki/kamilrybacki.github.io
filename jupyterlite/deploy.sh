@@ -16,4 +16,4 @@ cp -r ../src/content/_jupyter/* ./files
 python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
 
-cat ./dist/schemas/@retrolab/application-extension/top.json
+cat ./dist/build/schemas/@retrolab/application-extension/top.json
