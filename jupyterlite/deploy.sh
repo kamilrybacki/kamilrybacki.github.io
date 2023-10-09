@@ -17,5 +17,7 @@ python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
 
 tree ./dist
+cat .dist/schemas/@jupyterlab/@retrolab/spplication-extension/top.json
+ls .dist/build/themes
 
 # cat ./hide_topbar.css >> .dist/build/themes/jupyterlab-night/index.css
