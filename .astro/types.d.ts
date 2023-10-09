@@ -236,7 +236,7 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		"jupyter": {
+		"_jupyter": {
 };
 
 	};
