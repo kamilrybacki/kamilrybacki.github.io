@@ -1,0 +1,10 @@
+
+#top-panel-wrapper {
+    visibility: hidden !important;
+    height: 0px !important;
+}
+
+#menu-panel-wrapper {
+    visibility: hidden !important;
+    height: 0px !important;
+}

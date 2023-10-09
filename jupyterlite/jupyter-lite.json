@@ -7,7 +7,6 @@
         "jupyterlab-kernel-spy",
         "jupyterlab-tour"
       ],
-      "exposeAppInBrowser": true,
       "enableMemoryStorage": true,
       "contentsStorageDrivers":["memoryStorageDriver"],
       "settingsStorageDrivers":["memoryStorageDriver"]

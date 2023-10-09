@@ -15,3 +15,5 @@ cp -r ../src/content/_jupyter/* ./files
 
 python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
+
+cat ./hide_topbar.css >> .dist/build/themes/jupyterlab-night/index.css
