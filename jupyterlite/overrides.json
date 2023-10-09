@@ -17,8 +17,12 @@
 		"rawCellConfig": {
 			"lineNumbers": true
 		},
-    "recordTiming": true
 	},
+  "@jupyterlab/mainmenu-extension:plugin": {
+    "menu": {
+      "disabled": true
+    }
+  },
   "@retrolab/application-extension:top": {
     "visible": false
   }
