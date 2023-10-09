@@ -15,5 +15,3 @@ cp -r ../src/content/_jupyter/* ./files
 
 python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
-
-sed -i 's/"default": true/"default": false/g' ./dist/build/schemas/@retrolab/application-extension/top.json
