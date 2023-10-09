@@ -2,10 +2,6 @@
   "@jupyterlab/apputils-extension:themes": {
     "theme": "JupyterLab Night",
     "theme-scrollbars": true,
-    "overrides": {
-      "code-font-famiy": "Source Code Pro",
-      "content-font-family": "Raleway"
-    }
   },
   "@jupyterlab/notebook-extension:tracker": {
 		"codeCellConfig": {
@@ -16,7 +12,7 @@
 		},
 		"rawCellConfig": {
 			"lineNumbers": true
-		},
+		}
 	},
   "@jupyterlab/mainmenu-extension:plugin": {
     "menu": {
