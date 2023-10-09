@@ -1,8 +1,13 @@
 {
   "@jupyterlab/apputils-extension:themes": {
-    "theme": "JupyterLab Night"
+    "theme": "JupyterLab Night",
+    "theme-scrollbars": true,
+    "overrides": {
+      "code-font-famiy": "Source Code Pro",
+      "content-font-family": "Raleway"
+    }
   },
-  "@jupyterlab/notebook-extension:tracker":{
+  "@jupyterlab/notebook-extension:tracker": {
 		"codeCellConfig": {
 			"lineNumbers": true
 		},
@@ -11,8 +16,14 @@
 		},
 		"rawCellConfig": {
 			"lineNumbers": true
-		}
+		},
+    "recordTiming": true
 	},
+  "@jupyterlab/mainmenu-extension:plugin": {
+    "menu": {
+      "disabled": true
+    }
+  },
   "@retrolab/application-extension:top": {
     "visible": false
   }
