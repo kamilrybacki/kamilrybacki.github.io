@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yum install wget tree
+yum install wget
 
 wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
 
@@ -16,8 +16,4 @@ cp -r ../src/content/_jupyter/* ./files
 python -m pip install -r requirements.txt
 jupyter lite build --output-dir ./dist
 
-tree ./dist
-cat .dist/schemas/@jupyterlab/@retrolab/spplication-extension/top.json
-ls .dist/build/themes
-
-# cat ./hide_topbar.css >> .dist/build/themes/jupyterlab-night/index.css
+cat ./hide_topbar.css >> ./dist/build/themes/jupyterlab-night/index.css
