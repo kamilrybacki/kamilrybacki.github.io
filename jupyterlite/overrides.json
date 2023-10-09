@@ -1,7 +1,6 @@
 {
   "@jupyterlab/apputils-extension:themes": {
-    "theme": "JupyterLab Night",
-    "theme-scrollbars": true
+    "theme": "JupyterLab Night"
   },
   "@jupyterlab/notebook-extension:tracker": {
 		"codeCellConfig": {
