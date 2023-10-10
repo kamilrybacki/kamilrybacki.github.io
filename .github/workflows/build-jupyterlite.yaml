@@ -25,7 +25,8 @@ jobs:
 
           python -m pip install -r requirements.txt
           jupyter lite build --output-dir ./dist
-    
+          cp vercel.json ./dist
+
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
