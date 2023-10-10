@@ -8,8 +8,8 @@ jobs:
     name: Build and push Jupyterlite
     env:
       BUILD_BRANCH: jupyterlite
-      JUPYTERLITE_OUTPUT_DIR: ${GITHUB_WORKSPACE}/jupyterlite/dist
-      JUPYTERLITE_CONTENT_DIR: ${GITHUB_WORKSPACE}/src/content/_jupyter
+      JUPYTERLITE_OUTPUT_DIR: jupyterlite/dist
+      JUPYTERLITE_CONTENT_DIR: src/content/_jupyter
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
