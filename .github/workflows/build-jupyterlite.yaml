@@ -12,19 +12,15 @@ jobs:
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
 
       - name: Build Jupyterlite
         run: |
           cd jupyterlite
-          sudo apt install wget
-          wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
-
-          ./bin/micromamba shell init -s bash -p ~/micromamba
-          source ~/.bashrc
-
-          micromamba activate
-          micromamba install python=3.10 -c conda-forge -y
-
           mkdir ./files
           cp -r ../src/content/_jupyter/* ./files
 
