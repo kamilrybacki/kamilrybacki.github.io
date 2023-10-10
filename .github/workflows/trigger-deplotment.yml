@@ -1,0 +1,12 @@
+name: Trigger deplotment on Vercel via Deploy Hook
+
+on: [push]
+
+jobs:
+  start-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install curl
+        run: sudo apt-get install curl
+      - name: Trigger deployment
+        run: curl -X POST -d {} ${{ secrets.VERCEL_DEPLOY_URL }}
