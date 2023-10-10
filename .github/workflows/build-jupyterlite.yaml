@@ -1,14 +1,15 @@
-name: Build and deploy Jupyterlite on Vercel via Deploy Hook after CI
+name: Build Jupyterlite and push it to build branch
 
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build Jupyterlite and push to build branch
+    name: Build and push Jupyterlite
     env:
       BUILD_BRANCH: jupyterlite
-      JUPYTERLITE_OUTPUT_DIR: dist
+      JUPYTERLITE_OUTPUT_DIR: ${GITHUB_WORKSPACE}/jupyterlite/dist
+      JUPYTERLITE_CONTENT_DIR: ${GITHUB_WORKSPACE}/src/content/_jupyter
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
@@ -22,10 +23,10 @@ jobs:
         run: |
           cd jupyterlite
           mkdir ./files
-          cp -r ../src/content/_jupyter/* ./files
+          cp -r ${{ env.JUPYTERLITE_CONTENT_DIR }}/* ./files
 
           python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ./${{ env.JUPYTERLITE_OUTPUT_DIR }}
+          jupyter lite build --output-dir ${{ env.JUPYTERLITE_OUTPUT_DIR }}
     
       - name: Push
         uses: s0/git-publish-subdir-action@develop
