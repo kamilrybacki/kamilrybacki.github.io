@@ -1,0 +1,25 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2023-10-10T16:02:44.198566Z",
+      "format": null,
+      "last_modified": "2023-10-10T16:02:44.198566Z",
+      "mimetype": null,
+      "name": "lorenz",
+      "path": "lorenz",
+      "size": null,
+      "type": "directory",
+      "writable": true
+    }
+  ],
+  "created": "2023-10-10T16:02:44.198566Z",
+  "format": "json",
+  "last_modified": "2023-10-10T16:02:44.198566Z",
+  "mimetype": null,
+  "name": "",
+  "path": "",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
