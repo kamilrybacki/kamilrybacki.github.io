@@ -3,10 +3,6 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
-// We copy some of the pageconfig parsing logic in @jupyterlab/coreutils
-// below, since this must run before any other files are loaded (including
-// @jupyterlab/coreutils).
-
 /**
  * Get global configuration data for the Jupyter application.
  *
