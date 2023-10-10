@@ -32,7 +32,7 @@ jobs:
         env:
           REPO: self
           BRANCH: ${{ env.BUILD_BRANCH }}
-          FOLDER: jupyterlite/dist
+          FOLDER: jupyterlite/public
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
           TARGET_DIR: public
