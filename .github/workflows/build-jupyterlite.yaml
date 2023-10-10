@@ -8,8 +8,6 @@ jobs:
     name: Build and push Jupyterlite
     env:
       BUILD_BRANCH: jupyterlite
-      JUPYTERLITE_OUTPUT_DIR: /jupyterlite/dist
-      JUPYTERLITE_CONTENT_DIR: /src/content/_jupyter
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
@@ -23,16 +21,16 @@ jobs:
         run: |
           cd jupyterlite
           mkdir ./files
-          cp -r ${{ env.JUPYTERLITE_CONTENT_DIR }}/* ./files
+          cp -r ../src/content/_jupyter/* ./files
 
           python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ${{ env.JUPYTERLITE_OUTPUT_DIR }}
+          jupyter lite build --output-dir ./dist
     
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: ${{ env.BUILD_BRANCH }}
-          FOLDER: ${{ env.JUPYTERLITE_OUTPUT_DIR }}
+          FOLDER: jupyterlite/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
