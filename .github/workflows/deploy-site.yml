@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install curl
-        run: apt-get install curl
+        run: sudo apt-get install curl
       - name: Use deploy hook
         run: curl -X POST ${{ secrets.VERCEL_DEPLOY_URL }}
