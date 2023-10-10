@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$VERCEL_GIT_COMMIT_REF" == "jupyterlite" ]] ; then
-  cho "✅ - Build can proceed"
+  echo "✅ - Build can proceed"
   exit 1;
 
 else
