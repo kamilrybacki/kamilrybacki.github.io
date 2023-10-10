@@ -24,8 +24,8 @@ jobs:
           cp -r ../src/content/_jupyter/* ./files
 
           python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ./dist
-          cp vercel.json ./dist
+          jupyter lite build --output-dir ./public
+          cp vercel.json ./public
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
@@ -35,4 +35,4 @@ jobs:
           FOLDER: jupyterlite/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
-          TARGET_DIR: dist
+          TARGET_DIR: public
