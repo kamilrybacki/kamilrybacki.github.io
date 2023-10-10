@@ -7,6 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install curl
-        run: sudo apt-get install curl
+        run: |
+          sudo \
+            apt-get \
+              install \
+                curl
       - name: Trigger deployment
-        run: curl -X POST -d {} ${{ secrets.VERCEL_DEPLOY_URL }}
+        run: |
+          curl \
+            -X \
+              POST \
+            -d \
+              {} \
+              ${{ secrets.VERCEL_DEPLOY_URL }}
+
