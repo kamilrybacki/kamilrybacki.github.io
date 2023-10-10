@@ -9,13 +9,13 @@ jobs:
     - name: Checking out
       uses: actions/checkout@v1
     - name: Using Markdown lint on MD files
-      uses: articulate/actions-markdownlint@v1
+      uses: articulate/actions-markdownlint@v1.1.0
       with:
         config: markdownlint.json
         files: '**/*.md'
         ignore: node_modules
     - name: Using Markdown lint on MDX files
-      uses: articulate/actions-markdownlint@v1
+      uses: articulate/actions-markdownlint@v1.1.0
       with:
         config: markdownlint.json
         files: '**/*.mdx'
