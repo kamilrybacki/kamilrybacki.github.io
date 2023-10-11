@@ -259,9 +259,7 @@ async function main() {
   bundle.src = preloader.href;
   bundle.main = preloader.attributes.main;
   document.head.appendChild(bundle);
+  console.log('Finished main script');
 }
 
-/**
- * TODO: consider better pattern for invocation.
- */
-await main();
+export default main;
