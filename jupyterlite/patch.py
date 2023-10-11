@@ -56,8 +56,8 @@ if __name__ == "__main__":
         raise ValueError("PATCHES_DIRECTORY is not set")
 
     available_handlers = Handlers(
-        patches_root_directory=os.path.join(os.getcwd(), patches_root),
-        source_root_directory=os.path.join(os.getcwd(), source_root)
+        patches_root_directory=patches_root,
+        source_root_directory=source_root
     )
     operations = open_patch_operations_file("patches/operations.json")
     for supported_operation in Operations.__annotations__.keys():
