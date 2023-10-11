@@ -23,10 +23,13 @@ class Handlers:
 
     def delete(self, commands: list[str]) -> None:
         for command in commands:
-            shutil.rmtree(
-                os.path.join(self.source_root_directory, command),
-                ignore_errors=True
-            )
+            if os.path.isdir(os.path.join(self.source_root_directory, command)):
+                shutil.rmtree(
+                    os.path.join(self.source_root_directory, command),
+                    ignore_errors=True
+                )
+            else:
+                os.remove(os.path.join(self.source_root_directory, command))
 
     def copy(self, commands: dict[str, str]) -> None:
         for source, target in commands.items():
