@@ -26,12 +26,12 @@ jobs:
           cp -r ../src/content/_jupyter/* ./files
 
           python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ./${{ env.BUILD_OUTPUT_DIRECTORY }}}
+          jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
 
       - name: Apply custom patches
         env:
-          PATCHES_DIRECTORY: ./patches
-          TARGET_DIRECTORY: ./${{ env.BUILD_OUTPUT_DIRECTORY }}
+          PATCHES_DIRECTORY: patches
+          TARGET_DIRECTORY: ${{ env.BUILD_OUTPUT_DIRECTORY }}
         run: |
           cd ${{ env.BUILD_DIRECTORY }}
           python patch.py
