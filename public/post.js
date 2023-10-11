@@ -22,6 +22,9 @@ const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
 
 const notebookToolbarClass = '.jp-NotebookPanel-toolbar';
+const commandButtonClass = '.jp-CommandToolbarButton';
+const cellTypeDropdownClass = '.jp-Notebook-toolbarCellType';
+const kernelSelectorClass = '.jp-KernelName';
 
 const menuItemsToHide = [
   'notebook:insert-cell-below',
@@ -31,36 +34,30 @@ const menuItemsToHide = [
   'docmanager:save'
 ];
 
-const hideElement = (selector) => {
-  const element = document.querySelector(selector);
-  if (element) {
-    element.style.display = 'none';
-  }
+const hideElement = async (selector) => {
+  await waitForElementToExist(selector)
+    .then((element) => {
+      element.style.display = 'none';
+    });
 }
 
 async function post () {
-  waitForElementToExist(topPanelId).then(() => {
-    [topPanelId, menuPanelId]
-      .forEach((id) => hideElement(id));
-  });
-  waitForElementToExist(notebookToolbarClass).then((toolbar) => {
-    const commandButtons = toolbar.getElementsByClassName('jp-CommandToolbarButton');
-    waitForElementToExist('.jp-Button').then(() => {
+  await hideElement(topPanelId);
+  await hideElement(menuPanelId);
+  await waitForElementToExist(notebookToolbarClass)
+    .then((toolbar) => {
+      const commandButtons = toolbar.getElementsByClassName(commandButtonClass.slice(1));
       [...commandButtons].forEach((button) => {
-        const buttonElement = button.querySelector('.jp-Button');
-        const command = buttonElement.getAttribute('data-command');
+        const command = button.firstChild.getAttribute('data-command');
         if (menuItemsToHide.includes(command)) {
-          console.log(`Hiding ${command}`)
-          button.style.display = 'none';
+          console.log(`Disabling command: ${command}`);
+          hideElement(`[data-command="${command}"]`);
         }
-      })
-    });
-    ['jp-Notebook-toolbarCellType', 'jp-KernelName'].forEach((className) => {
-      waitForElementToExist(className).then((element) => {
-        element.style.display = 'none';
       });
     });
-  });
+  await hideElement(cellTypeDropdownClass);
+  await hideElement(kernelSelectorClass);
+
   console.log('Finished post script');
 };
 
