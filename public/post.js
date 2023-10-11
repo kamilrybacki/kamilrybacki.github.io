@@ -45,18 +45,21 @@ async function post () {
   });
   waitForElementToExist(notebookToolbarClass).then((toolbar) => {
     const commandButtons = toolbar.getElementsByClassName('jp-CommandToolbarButton');
-    [...commandButtons].forEach((button) => {
-      const buttonElement = button.querySelector('.jp-Button');
-      const command = buttonElement.getAttribute('data-command');
-      if (menuItemsToHide.includes(command)) {
-        console.log(`Hiding ${command}`)
-        button.style.display = 'none';
-      }
-    })
-    const cellTypeDropdown = toolbar.getElementsByClassName('jp-Notebook-toolbarCellType')[0];
-    cellTypeDropdown.style.display = 'none';
-    const kernelSelector = toolbar.getElementsByClassName('jp-KernelName')[0];
-    kernelSelector.style.display = 'none';
+    waitForElementToExist('.jp-Button').then(() => {
+      [...commandButtons].forEach((button) => {
+        const buttonElement = button.querySelector('.jp-Button');
+        const command = buttonElement.getAttribute('data-command');
+        if (menuItemsToHide.includes(command)) {
+          console.log(`Hiding ${command}`)
+          button.style.display = 'none';
+        }
+      })
+    });
+    ['jp-Notebook-toolbarCellType', 'jp-KernelName'].forEach((className) => {
+      waitForElementToExist(className).then((element) => {
+        element.style.display = 'none';
+      });
+    });
   });
   console.log('Finished post script');
 };
