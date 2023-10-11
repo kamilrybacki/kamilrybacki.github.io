@@ -8,6 +8,8 @@ jobs:
     name: Build and push Jupyterlite
     env:
       BUILD_BRANCH: jupyterlite
+      BUILD_DIRECTORY: jupyterlite
+      BUILD_OUTPUT_DIRECTORY: public
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
@@ -19,20 +21,27 @@ jobs:
 
       - name: Build Jupyterlite
         run: |
-          cd jupyterlite
+          cd ${{ env.BUILD_DIRECTORY }}
           mkdir ./files
           cp -r ../src/content/_jupyter/* ./files
 
           python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ./public
-          cp vercel.json ./public
+          jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}}
+
+      - name: Apply custom patches
+        env:
+          PATCHES_DIRECTORY: patches
+          TARGET_DIRECTORY: ${{ env.BUILD_OUTPUT_DIRECTORY }}
+        run: |
+          cd ${{ env.BUILD_DIRECTORY }}
+          python patch.py
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: ${{ env.BUILD_BRANCH }}
-          FOLDER: jupyterlite/public
+          FOLDER: ${{ env.BUILD_DIRECTORY }}/${{ env.BUILD_OUTPUT_DIRECTORY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
           TARGET_DIR: public
