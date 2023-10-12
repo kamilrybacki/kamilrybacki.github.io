@@ -42,7 +42,7 @@ jobs:
             cd $EXTENSION
             jlpm cache clean
             npm install
-            pip install -ve .
+            pip install -v .
             jlpm run build
             cd ../
           done
