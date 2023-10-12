@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const JUPYTERLITE_URL = 'myjupyterlite-git-5-new-mdx-components-kamilrybacki.vercel.app';
+const JUPYTERLITE_URL = 'myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app';
 
 interface JupyterLiteEmbedProps {
   size: string;
