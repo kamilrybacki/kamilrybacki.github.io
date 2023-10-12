@@ -1,6 +1,10 @@
 name: Build Jupyterlite and push it to build branch
 
-on: [push]
+on:
+  push:
+    paths:
+      - jupyterlite/**
+      - tailwind.config.js
 
 jobs:
   build:
