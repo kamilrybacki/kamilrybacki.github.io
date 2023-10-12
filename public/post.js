@@ -20,17 +20,26 @@ function waitForElementToExist(selector) {
 
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
+const notebookContentsClass = '.jp-Notebook'
 
 const hideElement = async (selector) => {
-  await waitForElementToExist(selector)
+  return await waitForElementToExist(selector)
     .then((element) => {
       element.style.display = 'none';
+      return element;
     });
 }
 
 async function post () {
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
+  await waitForElementToExist(notebookContentsClass)
+    .then(() => {
+      const r = document.querySelector(':root');
+      r.style.setProperty("--jp-layout-color2", "black");
+      r.style.setProperty("--jp-toolbar-background", "black");
+      r.style.setProperty("--jp-content-font-color1", "white")
+    })
   console.log('Finished post script');
 };
 
