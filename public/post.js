@@ -44,7 +44,7 @@ async function post () {
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
   await waitForElementToExist(mainPanelId)
-    .then((panel) => panel.style.top = '0px');
+    .then((panel) => panel.style.setProperty('top','0px'));
   await waitForElementToExist(notebookContentsClass)
     .then(() => import('./theme.js'))
     .then((m) => m.theme)
