@@ -21,19 +21,6 @@ function waitForElementToExist(selector) {
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
 
-const notebookToolbarClass = '.jp-NotebookPanel-toolbar';
-const commandButtonClass = '.jp-CommandToolbarButton';
-const cellTypeDropdownClass = '.jp-Notebook-toolbarCellType';
-const kernelSelectorClass = '.jp-KernelName';
-
-const menuItemsToHide = [
-  'notebook:insert-cell-below',
-  'notebook:cut-cell',
-  'notebook:paste-cell-below',
-  'notebook:copy-cell',
-  'docmanager:save'
-];
-
 const hideElement = async (selector) => {
   await waitForElementToExist(selector)
     .then((element) => {
@@ -44,20 +31,6 @@ const hideElement = async (selector) => {
 async function post () {
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
-  // await waitForElementToExist(notebookToolbarClass)
-  //   .then((toolbar) => {
-  //     const commandButtons = toolbar.getElementsByClassName(commandButtonClass.slice(1));
-  //     [...commandButtons].forEach((button) => {
-  //       const command = button.firstChild.getAttribute('data-command');
-  //       if (menuItemsToHide.includes(command)) {
-  //         console.log(`Disabling command: ${command}`);
-  //         hideElement(`[data-command="${command}"]`);
-  //       }
-  //     });
-  //   });
-  // await hideElement(cellTypeDropdownClass);
-  // await hideElement(kernelSelectorClass);
-
   console.log('Finished post script');
 };
 
