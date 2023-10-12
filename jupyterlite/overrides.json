@@ -13,5 +13,21 @@
 		"rawCellConfig": {
 			"lineNumbers": true
 		}
-	}
+	},
+  "@jupyterlab/notebook-extension:panel": {
+    "toolbar": [
+      { "name": "save", "disabled": true },
+      { "name": "insert", "disabled": true},
+      { "name": "cut", "disabled": true},
+      { "name": "copy", "disabled": true },
+      { "name": "paste", "disabled": true },
+      { "name": "kernelName", "disabled": true },
+      { "name": "cellType", "disabled": true },
+      {
+        "name": "clear-all-outputs",
+        "command": "notebook:clear-all-cell-outputs",
+        "label": "Clear outputs"
+      }
+    ]
+  }
 }
