@@ -97,6 +97,13 @@
         "load": "static/remoteEntry.aa1060b2d1221f8e5688.js",
         "name": "jupyterlab_pygments",
         "style": "./style"
+      },
+      {
+        "extension": "./extension",
+        "liteExtension": false,
+        "load": "static/remoteEntry.5d3bde48a604b2048d15.js",
+        "name": "notebook-content-load-notify",
+        "style": "./style"
       }
     ],
     "fileTypes": {
