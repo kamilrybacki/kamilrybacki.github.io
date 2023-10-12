@@ -44,19 +44,19 @@ const hideElement = async (selector) => {
 async function post () {
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
-  await waitForElementToExist(notebookToolbarClass)
-    .then((toolbar) => {
-      const commandButtons = toolbar.getElementsByClassName(commandButtonClass.slice(1));
-      [...commandButtons].forEach((button) => {
-        const command = button.firstChild.getAttribute('data-command');
-        if (menuItemsToHide.includes(command)) {
-          console.log(`Disabling command: ${command}`);
-          hideElement(`[data-command="${command}"]`);
-        }
-      });
-    });
-  await hideElement(cellTypeDropdownClass);
-  await hideElement(kernelSelectorClass);
+  // await waitForElementToExist(notebookToolbarClass)
+  //   .then((toolbar) => {
+  //     const commandButtons = toolbar.getElementsByClassName(commandButtonClass.slice(1));
+  //     [...commandButtons].forEach((button) => {
+  //       const command = button.firstChild.getAttribute('data-command');
+  //       if (menuItemsToHide.includes(command)) {
+  //         console.log(`Disabling command: ${command}`);
+  //         hideElement(`[data-command="${command}"]`);
+  //       }
+  //     });
+  //   });
+  // await hideElement(cellTypeDropdownClass);
+  // await hideElement(kernelSelectorClass);
 
   console.log('Finished post script');
 };

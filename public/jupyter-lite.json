@@ -389,6 +389,43 @@
         "theme": "JupyterLab Night",
         "theme-scrollbars": true
       },
+      "@jupyterlab/notebook-extension:panel": {
+        "toolbar": [
+          {
+            "disabled": true,
+            "name": "save"
+          },
+          {
+            "disabled": true,
+            "name": "insert"
+          },
+          {
+            "disabled": true,
+            "name": "cut"
+          },
+          {
+            "disabled": true,
+            "name": "copy"
+          },
+          {
+            "disabled": true,
+            "name": "paste"
+          },
+          {
+            "disabled": true,
+            "name": "kernelName"
+          },
+          {
+            "disabled": true,
+            "name": "cellType"
+          },
+          {
+            "command": "notebook:clear-all-cell-outputs",
+            "label": "Clear outputs",
+            "name": "clear-all-outputs"
+          }
+        ]
+      },
       "@jupyterlab/notebook-extension:tracker": {
         "codeCellConfig": {
           "lineNumbers": true
