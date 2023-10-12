@@ -42,8 +42,10 @@ jobs:
             cd $EXTENSION
             npm install
             jlpm run build
+            cd ../
           done
 
+          ## Build Jupyterlite
           cd ../
           jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
 
