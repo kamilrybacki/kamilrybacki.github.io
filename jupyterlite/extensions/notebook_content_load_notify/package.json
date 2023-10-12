@@ -54,11 +54,11 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "^3.5.3",
-    "@jupyterlab/apputils": "^3.5.3"
+    "@jupyterlab/application": "^4.0.7",
+    "@jupyterlab/apputils": "^4.0.7"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.5.3",
+    "@jupyterlab/builder": "^4.0.7",
     "@types/json-schema": "^7.0.11",
     "@types/react": "^18.0.26",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
