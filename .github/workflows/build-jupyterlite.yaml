@@ -44,6 +44,7 @@ jobs:
             jlpm run build
             cd ../
           done
+          jupyter labextension list
 
           ## Build Jupyterlite
           cd ../
