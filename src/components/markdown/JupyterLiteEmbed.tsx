@@ -30,6 +30,12 @@ const supportedUnits: {
   turn: (value: number) => value * 360,
 };
 
+declare global {
+  interface Window {
+    notify: () => void;
+  }
+}
+
 const convertCssUnit = function (cssvalue: string) {
   const allUnits = Object.keys(supportedUnits).join("|");
   const pattern = new RegExp(`^([0-9]+(?:\\.[0-9]+)?)(${allUnits})$`, "i");
