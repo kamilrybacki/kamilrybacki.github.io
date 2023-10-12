@@ -5,6 +5,7 @@ on:
     paths:
       - jupyterlite/**
       - tailwind.config.js
+      - .github/workflows/build-jupyterlite.yml
 
 jobs:
   build:
