@@ -19,6 +19,7 @@ function waitForElementToExist(selector) {
 }
 
 const mainPanelId = '#main-panel'
+const topSpacerId = '#spacer-widget'
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
 const notebookContentsClass = ".jp-Notebook"
@@ -44,7 +45,9 @@ async function post () {
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
   await waitForElementToExist(mainPanelId)
-    .then((panel) => panel.style.setProperty('top','0px'));
+    .then((panel) => panel.style.setProperty('top', '0px'));
+  await waitForElementToExist(topSpacerId)
+    .then((panel) => panel.style.setProperty('top', '0px'));
   await waitForElementToExist(notebookContentsClass)
     .then(() => import('./theme.js'))
     .then((m) => m.theme)
