@@ -45,15 +45,8 @@ async function applyBaseSiteTheme() {
     });
 };
 
-async function resetPostition(elementId) {
-  const element = document.querySelector(elementId);
-  element.style.top = '0px';
-  element.style.left = '0px';
-}
-
 async function post () {
   await applyBaseSiteTheme();
-  await resetPostition(mainPanelId);
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
   console.log('Finished post script');
