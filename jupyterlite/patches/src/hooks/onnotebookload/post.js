@@ -1,3 +1,5 @@
+import main from './main.js';
+
 function waitForElementToExist(selector) {
   return new Promise(resolve => {
     if (document.querySelector(selector)) {
@@ -18,9 +20,9 @@ function waitForElementToExist(selector) {
   });
 }
 
+const mainPanelId = '#main-panel';
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
-const notebookContentsClass = ".jp-Notebook"
 
 const hideElement = async (selector) => {
   await waitForElementToExist(selector)
@@ -41,10 +43,18 @@ async function applyBaseSiteTheme() {
       rootElement.style.setProperty('--jp-content-font-color0', colors.foreground);
       rootElement.style.setProperty('--jp-content-font-color1', colors.foreground);
     });
+};
+
+async function resetPostition(elementId) {
+  const element = document.querySelector(elementId);
+  element.style.position = 'relative';
+  element.style.top = '0px';
+  element.style.left = '0px';
 }
 
 async function post () {
   await applyBaseSiteTheme();
+  await resetPostition(mainPanelId);
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
   console.log('Finished post script');
