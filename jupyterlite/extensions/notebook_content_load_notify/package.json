@@ -79,7 +79,7 @@
     "stylelint-config-standard": "^26.0.0",
     "stylelint-prettier": "^2.0.0",
     "typescript": "~5.0.2",
-    "yjs": "^13.5.0",
+    "yjs": "^13.5.0"
   },
   "sideEffects": [
     "style/*.css",
