@@ -23,21 +23,30 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Build Jupyterlite
-        run: |
-          cd ${{ env.BUILD_DIRECTORY }}
-          mkdir ./files
-          cp -r ../src/content/_jupyter/* ./files
-
-          python -m pip install -r requirements.txt
-          jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
-
-      - name: Apply custom patches
+      - name: Build Jupyterlite with custom extensions
         env:
           PATCHES_DIRECTORY: patches
           TARGET_DIRECTORY: ${{ env.BUILD_OUTPUT_DIRECTORY }}
+        working-directory: ${{ env.BUILD_DIRECTORY }}
         run: |
-          cd ${{ env.BUILD_DIRECTORY }}
+          ## Install dependencies for Jupyterlite and Jupyterlab
+          python -m pip install -r requirements.txt
+
+          ## Copy content (notebooks, images, etc.)
+          mkdir ./files
+          cp -r ../src/content/_jupyter/* ./files
+
+          ## Install extensions
+          cd extensions/
+          for EXTENSION in $(ls -d */); do
+            cd $EXTENSION
+            jlpm run build
+          done
+
+          cd ../
+          jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
+
+          ## Patch the build
           python patch.py
 
       - name: Push
