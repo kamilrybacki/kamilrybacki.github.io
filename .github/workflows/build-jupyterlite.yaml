@@ -40,6 +40,7 @@ jobs:
           cd extensions/
           for EXTENSION in $(ls -d */); do
             cd $EXTENSION
+            jlpm cache clean
             npm install
             pip install -ve .
             jlpm run build
