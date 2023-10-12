@@ -47,7 +47,6 @@ async function applyBaseSiteTheme() {
 
 async function resetPostition(elementId) {
   const element = document.querySelector(elementId);
-  element.style.position = 'relative';
   element.style.top = '0px';
   element.style.left = '0px';
 }
