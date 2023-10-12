@@ -59,9 +59,6 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
       src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
       width="100%"
       ref={jupyterIFrameRef}
-      style={{
-        paddingTop: "-70px !important",
-      }}
     />
   );
 };

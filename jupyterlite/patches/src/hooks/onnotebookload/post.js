@@ -49,6 +49,8 @@ async function post () {
   await applyBaseSiteTheme();
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
+  await waitForElementToExist(mainPanelId)
+    .then((element) => element.style.setProperty('top', '0px'));
   console.log('Finished post script');
 };
 
