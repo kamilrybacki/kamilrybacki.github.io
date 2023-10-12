@@ -49,7 +49,6 @@ async function post () {
   await applyBaseSiteTheme();
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
-  parent.parent.notify && parent.parent.notify();
   console.log('Finished post script');
 };
 
