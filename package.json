@@ -29,6 +29,7 @@
     "node-html-parser": "^6.1.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-spinners": "^0.13.8",
     "react-svg": "^16.1.23",
     "remark-code-titles": "^0.1.2",
     "rough-viz": "^2.0.2",

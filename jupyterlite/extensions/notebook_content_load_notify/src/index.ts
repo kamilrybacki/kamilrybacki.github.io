@@ -16,7 +16,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const notifyNotebookContentLoaded = (): void => {
       const message = { type: 'from-iframe-to-host', notebookContentLoaded: true };
       window.parent.postMessage(message, '*');
-      console.log('Message sent to the host:', message);
     }
 
     app.serviceManager.sessions.runningChanged

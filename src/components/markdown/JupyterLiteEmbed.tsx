@@ -1,6 +1,9 @@
 import * as React from "react";
+import { ClockLoader } from "react-spinners";
 
-const JUPYTERLITE_URL = 'myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app';
+import { theme } from "@root/tailwind.config";
+
+const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app";
 
 interface JupyterLiteEmbedProps {
   size: string;
@@ -30,12 +33,6 @@ const supportedUnits: {
   turn: (value: number) => value * 360,
 };
 
-declare global {
-  interface Window {
-    notify: () => void;
-  }
-}
-
 const convertCssUnit = function (cssvalue: string) {
   const allUnits = Object.keys(supportedUnits).join("|");
   const pattern = new RegExp(`^([0-9]+(?:\\.[0-9]+)?)(${allUnits})$`, "i");
@@ -48,24 +45,100 @@ const convertCssUnit = function (cssvalue: string) {
       return supportedUnits[unit](value);
     }
   }
-  return cssvalue;
+  return 0;
 };
 
+const loadingTimeout = 5000;
+const targetLoaderSize = "7.5rem";
+const loaderColor = theme.colors.glow;
+
 const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
+  const [startNotebook, setStartNotebook] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [loaderSize, setLoaderSize] = React.useState(0);
+  const [loadingText, setLoadingText] = React.useState(["Loading notebook"]);
+  const [loadingSpeed, setLoadingSpeed] = React.useState(0.5);
+  const loadingSpinnerRef = React.useRef<HTMLDivElement>(null);
+  const iframeWrapperRef = React.useRef<HTMLDivElement>(null);
   const jupyterIFrameRef = React.useRef<HTMLIFrameElement>(null);
 
   React.useEffect(() => {
-    if (jupyterIFrameRef.current) {
-      jupyterIFrameRef.current.style.height = convertCssUnit(size) + "px";
-    }
+    loadingSpinnerRef.current!.style.width = `${iframeWrapperRef.current!.clientWidth}px`;
+    loadingSpinnerRef.current!.style.paddingTop = convertCssUnit(size) / 4 + "px";
   }, []);
 
+  React.useEffect(() => {
+    if (startNotebook) {
+      iframeWrapperRef.current!.style.height = convertCssUnit(size) + "px";
+      loadingSpinnerRef.current!.style.height = convertCssUnit(size) + "px";
+      jupyterIFrameRef.current!.style.height = convertCssUnit(size) + "px";
+      window.addEventListener("message", ({ data }) => setIsLoaded(data.notebookContentLoaded));
+      loadingSpinnerRef.current!.classList.replace("hidden", "flex");
+      loadingSpinnerRef.current!.classList.add("flex-col");
+      if (loaderSize === 0) {
+        const calculatedLoaderSize = convertCssUnit(targetLoaderSize);
+        setLoaderSize(calculatedLoaderSize);
+        setTimeout(() => {
+          setLoadingText(["Still loading notebook..."]);
+          setLoadingSpeed(0.25);
+          setTimeout(() => {
+            setLoadingText(["Still loading notebook...", "(maybe come back here in a while)"]);
+            setLoadingSpeed(0.1);
+          }, loadingTimeout);
+        }, loadingTimeout);
+      }
+    }
+  }, [startNotebook]);
+
+  React.useEffect(() => {
+    if (startNotebook) {
+      const elementToFadeOut = isLoaded ? loadingSpinnerRef.current : jupyterIFrameRef.current;
+      const elementToFadeIn = isLoaded ? jupyterIFrameRef.current : loadingSpinnerRef.current;
+      elementToFadeOut!.style.opacity = "0";
+      elementToFadeIn!.style.opacity = "1";
+    }
+  }, [isLoaded]);
+
   return (
-    <iframe
-      src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
-      width="100%"
-      ref={jupyterIFrameRef}
-    />
+    <div className="w-full">
+      <div className="mx-auto mb-4 w-1/2 border-[1px] border-dashed opacity-25 notebook-spacer" />
+      <div className="pointer-events-none absolute z-10 m-auto hidden" ref={loadingSpinnerRef}>
+        {loadingText.map((text, index) => (
+          <span key={index} className="mx-auto mb-1 font-body text-2xl lg:text-3xl">
+            {text}
+          </span>
+        ))}
+        <span className="mx-auto my-2 font-body text-4xl font-bold lg:mb-6 lg:text-5xl">{file.split("/").pop()}</span>
+        <ClockLoader
+          speedMultiplier={loadingSpeed}
+          color={loaderColor}
+          size={loaderSize}
+          className="mx-auto scale-75 border-2 lg:scale-100"
+        />
+      </div>
+      <div className="flex items-center justify-center" ref={iframeWrapperRef}>
+        {startNotebook ? (
+          <iframe
+            src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
+            width="100%"
+            ref={jupyterIFrameRef}
+          />
+        ) : (
+          <button
+            className="px-4 py-2 font-handwriting text-3xl font-bold"
+            onClick={() => {
+              document
+                .querySelectorAll(".notebook-spacer")
+                .forEach((spacer) => spacer.classList.replace("w-1/2", "w-full"));
+              setStartNotebook(!startNotebook);
+            }}
+          >
+            Load {file.split("/").pop()}
+          </button>
+        )}
+      </div>
+      <div className="mx-auto mt-4 w-1/2 border-[1px] border-dashed opacity-25 notebook-spacer" />
+    </div>
   );
 };
 
