@@ -1,0 +1,29 @@
+---
+interface Props {
+  blocks: {
+    html: string;
+    js: string;
+    css: string;
+  };
+  options: {
+    [key: string]: string;
+  };
+};
+
+const { blocks, options } = Astro.props;
+const codepenId = `codepenEmbed-${options.id ? options.id : (new Date).getSeconds()}`;
+
+const { html, js, css }  = blocks;
+---
+<section
+  id={codepenId}
+>
+  <div
+    class="codepen"
+    data-prefill
+  >
+    <pre data-lang="html">{html}</pre>
+    <pre data-lang="css">{css}</pre>
+    <pre data-lang="js">{js}</pre>
+  </div>
+</section>

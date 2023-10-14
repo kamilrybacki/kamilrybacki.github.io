@@ -8,11 +8,16 @@ image:
   hero: ""
   alt: "Astro logo"
 ---
-import JupyterLiteEmbed from '@components/markdown/JupyterLiteEmbed'
 
-<JupyterLiteEmbed
-  size='50rem'
-  file='lorenz/Lorenz.ipynb'
-  kernel='python'
-  client:load
+<CodePenEmbed
+  blocks={{
+    "html": "<p>hello world</p>",
+    "css": "p { color: red; }",
+    "js": "console.log('hello world')"
+  }}
+  options={{
+    "theme": "dark",
+    "height": "300",
+    "defaultTab": "html,result"
+  }}
 />
