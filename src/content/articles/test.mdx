@@ -10,14 +10,27 @@ image:
 ---
 
 <CodePenEmbed
+  title="Test"
+  description="Test CodePenEmbed"
   blocks={{
-    "html": "<p>hello world</p>",
-    "css": "p { color: red; }",
-    "js": "console.log('hello world')"
+    "html": `
+      <div>
+        <h1>Hello World</h1>
+        <p>lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+      </div>
+    `,
+    "css": `
+      p { color: red; }
+    `,
+    "js": `
+      console.log('message');
+    `
   }}
   options={{
-    "theme": "dark",
+    "themeId": "dark",
+    "editable": true,
     "height": "300",
     "defaultTab": "html,result"
   }}
+  size={500}
 />

@@ -1,29 +1,128 @@
 ---
 interface Props {
+  title?: string;
+  description?: string;
   blocks: {
-    html: string;
-    js: string;
-    css: string;
+    head?: string;
+    html?: string;
+    js?: string;
+    css?: string;
   };
-  options: {
+  size: number;
+  options?: {
     [key: string]: string;
   };
 };
 
-const { blocks, options } = Astro.props;
-const codepenId = `codepenEmbed-${options.id ? options.id : (new Date).getSeconds()}`;
+const { title, description, blocks, size, options } = Astro.props;
 
-const { html, js, css }  = blocks;
+const consolePatch = `
+  window.console = {
+    log: function(message) {
+      window.top.postMessage({ 
+        from: "${title}",
+        message: message
+      }, '*');
+    }
+  }
+`.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+
+const dataOptions = Object
+  .entries({
+    ...options,
+    title: title || "",
+    description: description || "",
+  })
+  .reduce((acc, [key, value]) => {
+    const kebabCaseKey = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    acc[`data-${kebabCaseKey}`] = value;
+    return acc;
+  }, {} as { [key: string]: string });
+
+
+const removeIndentation = (code: string): string => {
+  const lines = code.split('\n');
+  const indentation = lines[1].match(/^\s+/)?.[0] || '      ';
+  return lines
+    .map(line => line.replace(indentation, ''))
+    .join('\n');
+}
+
+const formattedBlocks = Object
+  .entries(blocks)
+  .map(([blockType, code]) => {
+    const unindentedCode = removeIndentation(code);
+    if (blockType === 'js' && !blocks.html) {
+      code = `
+        // --- Automatic console patch ---
+        ${consolePatch}
+        // -------------------------------
+        ${unindentedCode}
+      `;
+    }
+    if (blockType === 'html') {
+      code = `
+        <!-- --- Automatic console patch --- -->
+        <script>
+          ${consolePatch}
+        </script>
+        <!-- ------------------------------- -->
+        ${unindentedCode}
+      `;
+    }
+    console.log(blockType, code)
+    return [blockType, removeIndentation(code)];
+  })
+
+const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
 ---
-<section
-  id={codepenId}
->
-  <div
-    class="codepen"
-    data-prefill
+<script define:vars={{codepenId, title}}>
+  const consoleElement = document.createElement('p')
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById(`run-${codepenId}`).addEventListener('click', () => {
+      const spacers = document.querySelectorAll('.codepen-spacer');
+      spacers.forEach(spacer => spacer.classList.replace('w-1/2', 'w-full'));
+      const codepenWrapper = document.getElementById(codepenId);
+      window.__CPEmbed(".codepen-later");
+      codepenWrapper.classList.remove('hidden');
+      document.getElementById(`run-${codepenId}`).classList.add('hidden');
+
+      consoleElement.innerHTML = '<b>Console output:</b>'
+      consoleElement.classList.add(...['font-code', 'text-sm', 'mt-4', 'px-2']);
+      consoleElement.style.maxHeight = '20rem';
+      codepenWrapper.appendChild(consoleElement)
+    });
+    window.__CodePenIFrameAddedToPage = (event) => {
+      window.addEventListener('message', function(event){
+        const currentTime = new Date().toLocaleTimeString();
+        consoleElement.innerHTML += `<br>[LOG: ${currentTime}] ${event.data.message}`
+    }, false);
+    }
+  });
+</script>
+
+<section class="flex flex-col">
+  <div class="mx-auto mb-6 w-1/2 border-[1px] border-dashed opacity-25 codepen-spacer" />
+  <button
+    class="px-4 py-2 font-handwriting mx-auto text-3xl font-bold"
+    id={`run-${codepenId}`}
   >
-    <pre data-lang="html">{html}</pre>
-    <pre data-lang="css">{css}</pre>
-    <pre data-lang="js">{js}</pre>
-  </div>
+    Load codepen "{title}"
+  </button>
+  <main id={codepenId} class="hidden">
+    <div
+      class="codepen-later"
+      data-prefill
+      {...dataOptions}
+      data-border="none"
+      data-height={size}
+    >
+      {
+        formattedBlocks.map(([blockType, code]) => (
+          <pre data-lang={blockType}>{code}</pre>
+        ))
+      }
+    </div>
+  </main>
+  <div class="mx-auto mt-6 w-1/2 border-[1px] border-dashed opacity-25 codepen-spacer" />
 </section>
