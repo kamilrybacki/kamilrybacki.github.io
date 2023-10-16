@@ -101,7 +101,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.3b9104c7b194dfc9177e.js",
+        "load": "static/remoteEntry.2a0ebdf2913c93f2383d.js",
         "name": "notebook-content-load-notify",
         "style": "./style"
       }
