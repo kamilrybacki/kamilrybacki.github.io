@@ -34,7 +34,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
 
 <script define:vars={{tree, mainSectionId, annotations, links, folderSymbol, fileSymbol, linkSymbol}}>
 
-  const linksMap = links
+  const linksMap = links ? links
     .split('\n')
     .filter((link) => link.trim().length > 0)
     .reduce((acc, link) => {
@@ -43,7 +43,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
       const linkUrl = splitLinkInfo.slice(1).join(':');
       acc[fileName] = linkUrl;
       return acc;
-    }, {});
+    }, {}) : {};
   
   const traverseTreeBranch = (branch) => {
     const treeRoot = document.createElement('ol');
@@ -94,7 +94,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
     </div>
     <section 
       id={mainSectionId}
-      class="flex flex-col pb-4 border-[1px] border-glow rounded-b-md mx-auto"
+      class="flex flex-col pt-2 pb-4 border-[1px] border-glow rounded-b-md mx-auto"
     >
       {
         links &&

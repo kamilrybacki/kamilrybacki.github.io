@@ -10,9 +10,9 @@ interface Props {
 const { word } = Astro.props;
 const [prefix, censoredWord, suffix] = word.split(':');
 
-const wordBeginning = censoredWord.slice(0, prefix);
-const wordEnding = censoredWord.slice(-suffix);
-const censoredPortion = censoredWord.slice(prefix, -suffix).replace(/./g, 'x');
+const wordBeginning = censoredWord.slice(0, parseInt(prefix));
+const wordEnding = censoredWord.slice(-parseInt(suffix));
+const censoredPortion = censoredWord.slice(parseInt(prefix), -parseInt(suffix)).replace(/./g, 'x');
 ---
 <style define:vars={{semiTransparentGlow}}>
   span > p {

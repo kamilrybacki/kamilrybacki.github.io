@@ -9,6 +9,42 @@ image:
   alt: "Astro logo"
 ---
 import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+import ScribbleGraph from "@components/markdown/ScribbleGraph"
+
+<CurseWord word="2:fucking:2"/>
+
+<FileTree
+  root="home"
+  tree={[
+    "file1",
+    {
+      "dir1": [
+        "file2",
+        "file3"
+      ]
+    }
+  ]}
+  annotations="
+    file1:This is my file
+  "
+  links="
+    file2:https://gist.github.com/jwilber/d02e4381d776fb9a7bcb126d3b32c85b
+  "
+/>
+
+<ScribbleGraph
+  type="scatter"
+  data={{
+    x: [1, 2, 3, 4],
+    y: [10, 15, 13, 17],
+  }}
+  height={500}
+  width={500}
+  title="Test"
+  caption="Test"
+  options={{}}
+  client:load
+/>
 
 <JupyterLiteEmbed
   size="500px"

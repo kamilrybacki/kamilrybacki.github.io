@@ -1,6 +1,5 @@
 ---
 import StyledSVG from "@components/StyledSVG.astro";
-import { parse } from 'node-html-parser';
 import { Code } from "astro:components";
 
 interface Props {
@@ -11,6 +10,16 @@ interface Props {
 }
 
 const {code, language, filename, annotations} = Astro.props;
+
+const removeIndentation = (code: string): string => {
+  const lines = code.split('\n');
+  const indentation = lines[1].match(/^\s+/)?.[0] || '      ';
+  return lines
+    .map(line => line.replace(indentation, ''))
+    .join('\n');
+}
+
+const unindentedCode = removeIndentation(code);
 ---
 <style>
   .astro-code-content {
@@ -27,7 +36,7 @@ const {code, language, filename, annotations} = Astro.props;
   }
 </style>
 
-<script define:vars={{ code, filename, annotations }}>
+<script define:vars={{ unindentedCode, filename, annotations }}>
   const copyContent = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -125,7 +134,7 @@ const {code, language, filename, annotations} = Astro.props;
     const copyButtons = document.getElementById(`copy-${filename}`);
     copyButtons.addEventListener('click', () => {
       copyContent(
-        code
+        unindentedCode
           .split('\n')
           .map((line) => line.slice(4))
           .join('\n')
@@ -138,7 +147,7 @@ const {code, language, filename, annotations} = Astro.props;
     let foundLinesIndex = 1;
     [...codeLines].forEach((line) => {
       const numberSpan = document.createElement('span');
-      numberSpan.classList.add(...['text-glow', 'opacity-50']);
+      numberSpan.classList.add(...['text-glow', 'opacity-50', 'mr-4']);
       numberSpan.innerText = `${foundLinesIndex.toString().padStart(4, ' ')}`;
       line.insertBefore(
         numberSpan,
@@ -179,7 +188,7 @@ const {code, language, filename, annotations} = Astro.props;
     </span> : null
   }
   <Code 
-    code={code}
+    code={unindentedCode}
     lang={language}
     theme="github-dark"
   />
