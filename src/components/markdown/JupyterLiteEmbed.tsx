@@ -132,6 +132,11 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
             <iframe
               src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
               width="100%"
+              style={{
+                // Because JupyterLite is adamant to keep the top position of the iframe header at 70px,
+                // this hack moves the content up by 70px to make it look like it's at the top of the page.
+                marginTop: "-70px",
+              }}
               ref={jupyterIFrameRef}
             />
           </React.Fragment>

@@ -4,6 +4,7 @@
       "appName": "Kamil Rybacki's JupyterLite",
       "disabledExtensions": [
         "@jupyterlab/drawio-extension",
+        "@jupyterlab/cell-toolbar-extension",
         "jupyterlab-kernel-spy",
         "jupyterlab-tour"
       ],
