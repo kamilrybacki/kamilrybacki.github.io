@@ -57,6 +57,7 @@ const formattedBlocks = Object
     if (blockType === 'js' && !blocks.html) {
       code = `
         // --- Automatic console patch ---
+        // --- Do not modify this code! --
         ${consolePatch}
         // -------------------------------
         ${unindentedCode}
@@ -65,6 +66,7 @@ const formattedBlocks = Object
     if (blockType === 'html') {
       code = `
         <!-- --- Automatic console patch --- -->
+        <!-- --- Do not modify this code! -- -->
         <script>
           ${consolePatch}
         </script>
@@ -88,15 +90,28 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
       codepenWrapper.classList.remove('hidden');
       document.getElementById(`run-${codepenId}`).classList.add('hidden');
 
-      consoleElement.innerHTML = '<b>Console output:</b>'
-      consoleElement.classList.add(...['font-code', 'text-sm', 'mt-4', 'px-2']);
-      consoleElement.style.maxHeight = '20rem';
-      codepenWrapper.appendChild(consoleElement)
+      const consoleElementHeader = document.createElement('span');
+
+      consoleElementHeader.classList.add(...['w-fit', 'font-display', 'my-2', 'text-base', 'border-2', 'border-glow', 'border-opacity-50', 'py-2', 'px-4']);
+      consoleElementHeader.innerHTML = '<b>Console output</b>'
+
+      consoleElement.classList.add(...['font-code', 'text-sm', 'py-1', 'px-2']);
+      consoleElement.style.maxHeight = '10rem';
+      consoleElement.style.overflowY = 'scroll';
+
+      const consoleWrapper = document.createElement('div');
+      consoleWrapper.classList.add(...['flex', 'flex-col', 'gap-2'])
+
+      consoleWrapper.appendChild(consoleElementHeader);
+      consoleWrapper.appendChild(consoleElement);
+
+      codepenWrapper.appendChild(consoleWrapper);
     });
-    window.__CodePenIFrameAddedToPage = (event) => {
+    window.__CodePenIFrameAddedToPage = () => {
       window.addEventListener('message', function(event){
-        const currentTime = new Date().toLocaleTimeString();
-        consoleElement.innerHTML += `<br>[LOG: ${currentTime}] ${event.data.message}`
+        const currentTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        if (consoleElement.innerHTML === '') consoleElement.innerHTML = `[${currentTime}] ${event.data.message}`;
+        else consoleElement.innerHTML += `<br>[${currentTime}] ${event.data.message}`
     }, false);
     }
   });
@@ -105,12 +120,12 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
 <section class="flex flex-col">
   <div class="mx-auto mb-6 w-1/2 border-[1px] border-dashed opacity-25 codepen-spacer" />
   <button
-    class="px-4 py-2 font-handwriting mx-auto text-3xl font-bold"
+    class="px-2 lg:px-4 py-1 lg:py-2 font-handwriting text-xl lg:text-3xl font-bold w-fit mx-auto"
     id={`run-${codepenId}`}
   >
     Load codepen "{title}"
   </button>
-  <main id={codepenId} class="hidden">
+  <main id={codepenId} class="flex flex-col gap-4 hidden border-2 border-glow border-opacity-50 rounded-sm p-4">
     <div
       class="codepen-later"
       data-prefill={JSON.stringify({
@@ -122,7 +137,7 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
       {...dataOptions}
       data-border="none"
       data-height={size}
-      style={`height: ${size}px; width: 100%;`}
+      style={`height: ${size}px; width: 100%`}
     >
       {
         formattedBlocks.map(([blockType, code]) => (

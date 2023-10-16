@@ -31,7 +31,9 @@ import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
       p { color: red; }
     `,
     "js": `
-      console.log('message');
+      for (let i = 0; i < 100; i++) {
+        console.log(i);
+      }
     `
   }}
   options={{

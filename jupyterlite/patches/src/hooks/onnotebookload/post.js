@@ -45,6 +45,7 @@ async function applyBaseSiteTheme() {
       rootElement.style.setProperty('--jp-cell-editor-background', colors.background);
       rootElement.style.setProperty('--jp-cell-editor-border-color', colors.foreground);
       rootElement.style.setProperty('--jp-cell-editor-active-border-color', colors.foreground);
+      rootElement.style.setProperty('--jp-private-title-panel-height', '0px');
     });
 };
 

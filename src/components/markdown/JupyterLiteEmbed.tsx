@@ -1,7 +1,7 @@
+/* eslint-disable tailwindcss/no-custom-classname */
+import { theme } from "@root/tailwind.config";
 import * as React from "react";
 import { ClockLoader } from "react-spinners";
-
-import { theme } from "@root/tailwind.config";
 
 const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app";
 
@@ -104,15 +104,15 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
   }, [isLoaded]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative my-6 w-full">
       <div className="notebook-spacer mx-auto mb-4 w-1/2 border-[1px] border-dashed opacity-25" />
       <div className="pointer-events-none absolute z-10 m-auto hidden" ref={loadingSpinnerRef}>
         {loadingText.map((text, index) => (
-          <span key={index} className="mx-auto mb-1 font-body text-2xl lg:text-3xl">
+          <span key={index} className="mx-auto mb-1 text-center font-body text-base lg:text-3xl">
             {text}
           </span>
         ))}
-        <span className="mx-auto my-2 font-body text-4xl font-bold lg:mb-6 lg:text-5xl">{file.split("/").pop()}</span>
+        <span className="mx-auto my-2 font-body text-2xl font-bold lg:mb-6 lg:text-4xl">{file.split("/").pop()}</span>
         <ClockLoader
           speedMultiplier={loadingSpeed}
           color={loaderColor}
@@ -123,7 +123,7 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
       <div className="flex items-center justify-center" ref={iframeWrapperRef}>
         {startNotebook ? (
           <React.Fragment>
-            <span className="absolute left-2 top-4 opacity-25 text-xs hover:opacity-50">
+            <span className="absolute left-2 top-4 text-xs opacity-25 hover:opacity-50">
               Powered by{" "}
               <a className="font-bold underline" href="https://github.com/jupyterlite/jupyterlite">
                 JupyterLite
@@ -137,7 +137,7 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
           </React.Fragment>
         ) : (
           <button
-            className="px-4 py-2 font-handwriting text-3xl font-bold"
+            className="px-2 py-1 font-handwriting text-xl font-bold lg:px-4 lg:py-2 lg:text-3xl"
             onClick={() => {
               document
                 .querySelectorAll(".notebook-spacer")
@@ -149,7 +149,7 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
           </button>
         )}
       </div>
-      <div className="mx-auto mt-4 w-1/2 border-[1px] border-dashed opacity-25 notebook-spacer" />
+      <div className="notebook-spacer mx-auto mt-4 w-1/2 border-[1px] border-dashed opacity-25" />
     </div>
   );
 };
