@@ -1,4 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable tailwindcss/no-custom-classname */
+import "keyboard-css";
+
 import { theme } from "@root/tailwind.config";
 import * as React from "react";
 import { ClockLoader } from "react-spinners";
@@ -106,7 +109,7 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
   return (
     <div className="relative my-6 w-full">
       <div className="notebook-spacer mx-auto mb-4 w-1/2 border-[1px] border-dashed opacity-25" />
-      <div className="pointer-events-none absolute z-10 m-auto hidden" ref={loadingSpinnerRef}>
+      <div className="pointer-events-none absolute z-10 m-auto mt-10 hidden lg:mt-0" ref={loadingSpinnerRef}>
         {loadingText.map((text, index) => (
           <span key={index} className="mx-auto mb-1 text-center font-body text-base lg:text-3xl">
             {text}
@@ -120,23 +123,37 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
           className="mx-auto scale-75 border-2 lg:scale-100"
         />
       </div>
-      <div className="flex items-center justify-center" ref={iframeWrapperRef}>
+      <div className="flex flex-col items-center justify-center" ref={iframeWrapperRef}>
         {startNotebook ? (
           <React.Fragment>
-            <span className="absolute left-2 top-4 text-xs opacity-25 hover:opacity-50">
-              Powered by{" "}
-              <a className="font-bold underline" href="https://github.com/jupyterlite/jupyterlite">
-                JupyterLite
-              </a>
-            </span>
+            <div className="mb-[-20px] flex w-full flex-col-reverse items-center justify-between px-2 lg:mb-[-70px] lg:flex-row">
+              <div className="mt-6 flex flex-row-reverse lg:mt-0 lg:flex-col lg:gap-4">
+                <span className="text-right text-xs opacity-25 hover:opacity-50 lg:text-left">
+                  Powered by{" "}
+                  <a className="font-bold underline" href="https://github.com/jupyterlite/jupyterlite">
+                    JupyterLite
+                  </a>
+                </span>
+                <span className="text-xs opacity-50 lg:text-sm">
+                  <span className="text-[0px] lg:text-sm">⮦ </span>
+                  Use the <b>menu</b> to operate the notebook
+                  <span className="text-xs lg:text-[0px]"> ↴</span>
+                </span>
+              </div>
+              <div className="items-right flex flex-col justify-end gap-1">
+                <p className="text-right text-xs opacity-75">
+                  <kbd className="kbc-button kbc-button-xxs">Shift</kbd> +{" "}
+                  <kbd className="kbc-button kbc-button-xxs">Enter</kbd> : Run and move to the next cell
+                </p>
+                <p className="text-right text-xs opacity-75">
+                  <kbd className="kbc-button kbc-button-xxs">Ctrl</kbd> +{" "}
+                  <kbd className="kbc-button kbc-button-xxs">Enter</kbd> : Run and stay on the same cell
+                </p>
+              </div>
+            </div>
             <iframe
               src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
               width="100%"
-              style={{
-                // Because JupyterLite is adamant to keep the top position of the iframe header at 70px,
-                // this hack moves the content up by 70px to make it look like it's at the top of the page.
-                marginTop: "-70px",
-              }}
               ref={jupyterIFrameRef}
             />
           </React.Fragment>
