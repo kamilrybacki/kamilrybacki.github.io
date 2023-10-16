@@ -2,6 +2,7 @@
 interface Props {
   title?: string;
   description?: string;
+  tags?: string[];
   blocks: {
     head?: string;
     html?: string;
@@ -14,7 +15,7 @@ interface Props {
   };
 };
 
-const { title, description, blocks, size, options } = Astro.props;
+const { title, description, tags, blocks, size, options } = Astro.props;
 
 const consolePatch = `
   window.console = {
@@ -32,12 +33,13 @@ const dataOptions = Object
     ...options,
     title: title || "",
     description: description || "",
+    tags: tags || [],
   })
   .reduce((acc, [key, value]) => {
     const kebabCaseKey = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     acc[`data-${kebabCaseKey}`] = value;
     return acc;
-  }, {} as { [key: string]: string });
+  }, {} as { [key: string]: string | string[] });
 
 
 const removeIndentation = (code: string): string => {
@@ -112,10 +114,16 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
   <main id={codepenId} class="hidden">
     <div
       class="codepen-later"
-      data-prefill
+      data-prefill={JSON.stringify({
+        title: dataOptions.title,
+        description: dataOptions.description,
+        tags: dataOptions.tags,
+        stylesheets: [],
+      })}
       {...dataOptions}
       data-border="none"
       data-height={size}
+      style={`height: ${size}px; width: 100%;`}
     >
       {
         formattedBlocks.map(([blockType, code]) => (

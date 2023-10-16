@@ -8,6 +8,14 @@ image:
   hero: ""
   alt: "Astro logo"
 ---
+import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+
+<JupyterLiteEmbed
+  size="500px"
+  file="lorenz/Lorenz.ipynb"
+  kernel="python"
+  client:load
+/>
 
 <CodePenEmbed
   title="Test"
@@ -29,7 +37,7 @@ image:
   options={{
     "themeId": "dark",
     "editable": true,
-    "height": "300",
+    "height": "500",
     "defaultTab": "html,result"
   }}
   size={500}

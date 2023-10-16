@@ -72,10 +72,14 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
       iframeWrapperRef.current!.style.height = convertCssUnit(size) + "px";
       loadingSpinnerRef.current!.style.height = convertCssUnit(size) + "px";
       jupyterIFrameRef.current!.style.height = convertCssUnit(size) + "px";
-      window.addEventListener("message", ({ data }) => setIsLoaded(data.notebookContentLoaded));
+      window.addEventListener("message", ({ data }) => {
+        if (data.notebookContentLoaded && !isLoaded) {
+          setIsLoaded(true);
+        }
+      });
       loadingSpinnerRef.current!.classList.replace("hidden", "flex");
       loadingSpinnerRef.current!.classList.add("flex-col");
-      if (loaderSize === 0) {
+      if (!isLoaded) {
         const calculatedLoaderSize = convertCssUnit(targetLoaderSize);
         setLoaderSize(calculatedLoaderSize);
         setTimeout(() => {
@@ -100,8 +104,8 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
   }, [isLoaded]);
 
   return (
-    <div className="w-full">
-      <div className="mx-auto mb-4 w-1/2 border-[1px] border-dashed opacity-25 notebook-spacer" />
+    <div className="relative w-full">
+      <div className="notebook-spacer mx-auto mb-4 w-1/2 border-[1px] border-dashed opacity-25" />
       <div className="pointer-events-none absolute z-10 m-auto hidden" ref={loadingSpinnerRef}>
         {loadingText.map((text, index) => (
           <span key={index} className="mx-auto mb-1 font-body text-2xl lg:text-3xl">
@@ -118,11 +122,19 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
       </div>
       <div className="flex items-center justify-center" ref={iframeWrapperRef}>
         {startNotebook ? (
-          <iframe
-            src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
-            width="100%"
-            ref={jupyterIFrameRef}
-          />
+          <React.Fragment>
+            <span className="absolute left-2 top-4 opacity-25 text-xs hover:opacity-50">
+              Powered by{" "}
+              <a className="font-bold underline" href="https://github.com/jupyterlite/jupyterlite">
+                JupyterLite
+              </a>
+            </span>
+            <iframe
+              src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
+              width="100%"
+              ref={jupyterIFrameRef}
+            />
+          </React.Fragment>
         ) : (
           <button
             className="px-4 py-2 font-handwriting text-3xl font-bold"
