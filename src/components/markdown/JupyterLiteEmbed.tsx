@@ -4,8 +4,7 @@ import "keyboard-css";
 
 import { theme } from "@root/tailwind.config";
 import * as React from "react";
-import * as Spinners from "react-spinners";
-const { ClockLoader } = Spinners;
+import { ClockLoader } from "react-spinners";
 
 const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app";
 
