@@ -1,7 +1,8 @@
-import * as React from "react";
-import roughViz from "rough-viz";
 import { theme } from "@root/tailwind.config.js";
 import invert from "invert-color";
+import * as React from "react";
+// @ts-ignore
+import roughViz from "rough-viz";
 
 type PossibleGraphType =
   | roughViz.Bar
@@ -79,7 +80,7 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
         window.localStorage.setItem("lastGraphId", "1");
       } else {
         setGraphCounter(parseInt(window.localStorage.getItem("lastGraphId") || "1") + 1);
-      };
+      }
     }
   }, [data, options]);
 
