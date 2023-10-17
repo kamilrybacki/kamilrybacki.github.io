@@ -5,6 +5,8 @@ on:
     paths:
       - jupyterlite/**
       - tailwind.config.js
+  pull_request:
+    types: [closed]
 
 jobs:
   build:
