@@ -2,9 +2,7 @@
 /* eslint-disable tailwindcss/no-custom-classname */
 import "keyboard-css";
 
-import { theme } from "@root/tailwind.config";
 import * as React from "react";
-import ClockLoader from "react-spinners/ClockLoader";
 
 const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app";
 
@@ -52,15 +50,11 @@ const convertCssUnit = function (cssvalue: string) {
 };
 
 const loadingTimeout = 5000;
-const targetLoaderSize = "7.5rem";
-const loaderColor = theme.colors.glow;
 
 const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
   const [startNotebook, setStartNotebook] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(false);
-  const [loaderSize, setLoaderSize] = React.useState(0);
   const [loadingText, setLoadingText] = React.useState(["Loading notebook"]);
-  const [loadingSpeed, setLoadingSpeed] = React.useState(0.5);
   const loadingSpinnerRef = React.useRef<HTMLDivElement>(null);
   const iframeWrapperRef = React.useRef<HTMLDivElement>(null);
   const jupyterIFrameRef = React.useRef<HTMLIFrameElement>(null);
@@ -83,14 +77,10 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
       loadingSpinnerRef.current!.classList.replace("hidden", "flex");
       loadingSpinnerRef.current!.classList.add("flex-col");
       if (!isLoaded) {
-        const calculatedLoaderSize = convertCssUnit(targetLoaderSize);
-        setLoaderSize(calculatedLoaderSize);
         setTimeout(() => {
           setLoadingText(["Still loading notebook..."]);
-          setLoadingSpeed(0.25);
           setTimeout(() => {
             setLoadingText(["Still loading notebook...", "(maybe come back here in a while)"]);
-            setLoadingSpeed(0.1);
           }, loadingTimeout);
         }, loadingTimeout);
       }
@@ -116,12 +106,6 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
           </span>
         ))}
         <span className="mx-auto my-2 font-body text-2xl font-bold lg:mb-6 lg:text-4xl">{file.split("/").pop()}</span>
-        <ClockLoader
-          speedMultiplier={loadingSpeed}
-          color={loaderColor}
-          size={loaderSize}
-          className="mx-auto scale-75 border-2 lg:scale-100"
-        />
       </div>
       <div className="flex flex-col items-center justify-center" ref={iframeWrapperRef}>
         {startNotebook ? (
