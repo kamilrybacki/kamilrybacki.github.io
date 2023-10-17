@@ -82,13 +82,19 @@ const formattedBlocks = Object
   const consoleElement = document.createElement('p')
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(`run-${codepenId}`).addEventListener('click', () => {
-      const spacers = document.querySelectorAll('.codepen-spacer');
-      spacers.forEach(spacer => spacer.classList.replace('w-1/2', 'w-full'));
-      const codepenWrapper = document.getElementById(codepenId);
+      document
+        .querySelectorAll('.codepen-spacer')
+        .forEach(spacer => spacer.classList.replace('w-1/2', 'w-full'));
+
       window.__CPEmbed(".codepen-later");
+
+      const codepenWrapper = document.getElementById(codepenId);
       codepenWrapper.classList.remove('hidden');
+      codepenWrapper.classList.add(...['flex', 'flex-col', 'gap-4'])
+      
       document.getElementById(`run-${codepenId}`).classList.add('hidden');
 
+      const consoleWrapper = document.createElement('div');
       const consoleElementHeader = document.createElement('span');
 
       consoleElementHeader.classList.add(...['w-fit', 'font-display', 'my-2', 'text-base', 'border-2', 'border-glow', 'border-opacity-50', 'py-2', 'px-4']);
@@ -98,7 +104,6 @@ const formattedBlocks = Object
       consoleElement.style.maxHeight = '10rem';
       consoleElement.style.overflowY = 'scroll';
 
-      const consoleWrapper = document.createElement('div');
       consoleWrapper.classList.add(...['flex', 'flex-col', 'gap-2'])
 
       consoleWrapper.appendChild(consoleElementHeader);
@@ -125,7 +130,7 @@ const formattedBlocks = Object
   >
     Load codepen "{title}"
   </button>
-  <main id={codepenId} class="flex flex-col gap-4 hidden p-4">
+  <main id={codepenId} class="hidden p-4">
     <div
       class="codepen-later"
       data-prefill={JSON.stringify({

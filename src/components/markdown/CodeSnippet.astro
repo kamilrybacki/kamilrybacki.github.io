@@ -15,7 +15,12 @@ const preProcessCode = (inputCode: string): string => {
   const splitCode = inputCode.split('\n');
   let tab = 0;
 
-  splitCode[0].trim().length === 0 ? splitCode.shift() : tab = 4;
+  if (splitCode[0].trim().length === 0) {
+    splitCode.shift()
+  }
+  else {
+    tab = 4;
+  }
 
   let preProcessedCodeLines: string[] = splitCode
     .map((line) => ' '.repeat(tab) + line);
