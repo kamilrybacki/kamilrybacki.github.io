@@ -3,7 +3,7 @@ name: Code linting and typing check
 on: [push]
 
 jobs:
-  typescript:
+  lint-typescript:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out
@@ -12,7 +12,7 @@ jobs:
         run: npm i
       - name: Running TypeScript linter
         uses: icrawl/action-tsc@v1
-  eslint:
+  lint-eslint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

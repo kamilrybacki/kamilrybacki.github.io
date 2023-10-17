@@ -24,9 +24,10 @@ const ProjectsViewer = ({ projects }: ProjectsViewerProps) => {
                   onClick={() => {
                       window.location.href = `/projects/${project.slug}` || "/";
                   }}
+                  key={project.slug}
                 >
                   <h1 className='mx-auto mb-4 mt-2 text-center font-handwriting text-2xl font-bold lg:mb-4 lg:mt-2 lg:text-5xl'>{project.data.title}</h1>
-                  <p className='lg:text-md mt-4 text-justify font-body text-sm lg:mt-2'>{project.data.description}</p>
+                  <p className='lg:text-base mt-4 text-justify font-body text-sm lg:mt-2'>{project.data.description}</p>
                 </article>
             )
           })

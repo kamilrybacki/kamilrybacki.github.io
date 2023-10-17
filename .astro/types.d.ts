@@ -22,7 +22,12 @@ declare module 'astro:content' {
 	export { z } from 'astro/zod';
 
 	type Flatten<T> = T extends { [K: string]: infer U } ? U : never;
-	export type CollectionEntry<C extends keyof AnyEntryMap> = Flatten<AnyEntryMap[C]>;
+
+	export type CollectionKey = keyof AnyEntryMap;
+	export type CollectionEntry<C extends CollectionKey> = Flatten<AnyEntryMap[C]>;
+
+	export type ContentCollectionKey = keyof ContentEntryMap;
+	export type DataCollectionKey = keyof DataEntryMap;
 
 	// This needs to be in sync with ImageMetadata
 	export type ImageFunction = () => import('astro/zod').ZodObject<{
@@ -38,6 +43,7 @@ declare module 'astro:content' {
 				import('astro/zod').ZodLiteral<'webp'>,
 				import('astro/zod').ZodLiteral<'gif'>,
 				import('astro/zod').ZodLiteral<'svg'>,
+				import('astro/zod').ZodLiteral<'avif'>,
 			]
 		>;
 	}>;
@@ -179,6 +185,13 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"articles": {
+"cheatsheet.mdx": {
+	id: "cheatsheet.mdx";
+  slug: "cheatsheet";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 "migration.mdx": {
 	id: "migration.mdx";
   slug: "migration";
@@ -223,7 +236,9 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		
+		"_jupyter": {
+};
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

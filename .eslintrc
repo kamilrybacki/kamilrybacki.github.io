@@ -3,7 +3,7 @@
   // Configuration for JavaScript files
   "extends": ["plugin:prettier/recommended", "plugin:import/recommended"],
   "rules": {
-    "prettier/prettier": ["error", { "tabWidth": 4, "printWidth": 120 }]
+    "prettier/prettier": ["error", { "tabWidth": 2, "printWidth": 120 }]
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -109,7 +109,7 @@
         "import/no-unresolved": [
           "error",
           {
-            "ignore": ["@/*"]
+            "ignore": ["@/*","^astro:.+"]
           }
         ], // Disable no-unresolved rule for .astro files
         "react/jsx-filename-extension": [1, { "extensions": [".astro"] }], // Accept jsx in astro files

@@ -1,44 +1,13 @@
 ---
+import '@styles/neon.css';
+import '@styles/markdown.css';
+
 import StyledSVG from "@components/StyledSVG.astro";
 
 import BasicPageLayout from "./BasicPageLayout.astro";
 
-import '@styles/neon.css';
-
 const { frontmatter } = Astro.props;
 ---
-<script>
-  const contentStyling = {
-    'h2': 'text-3xl lg:text-5xl font-handwriting mb-2 mt-4',
-    'h3': 'text-2xl lg:text-4xl font-handwriting mb-2 mt-4',
-    'h4': 'text-xl lg:text-3xl font-handwriting mb-2 mt-4',
-    'h5': 'text-md lg:text-2xl font-handwriting mb-2 mt-4',
-    'p': 'text-xl lg:text-md py-1 lg:py-2',
-    '.astro-code': 'text-md p-6 mx-auto my-4',
-    'code': 'text-md p-2 mx-auto my-4',
-    'ul': 'list-disc list-inside my-2',
-    'ol': 'list-decimal list-inside my-2',
-    'a': 'underline decoration-1 underline-offset-4 decoration-dotted hover:font-bold',
-  }
-
-  const postContent = document.getElementById("post-content");
-  if (!postContent) {
-    throw new Error("No post content found");
-  }
-  Object.entries(contentStyling).forEach(([tag, style]) => {
-    const styleClasses = style.split(" ");
-    const elements = postContent.querySelectorAll(tag);
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.add(...styleClasses);
-    }
-  });
-
-  const heroImage = document.getElementById("hero-image");
-  if (heroImage) {
-    heroImage.style.animation = "flicker 5s ease-in-out infinite alternate";
-  }
-</script>
-
 <BasicPageLayout
   title={frontmatter.title}
   style="flex flex-col items-center"
@@ -51,19 +20,18 @@ const { frontmatter } = Astro.props;
       <span class="ml-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
       <hr class="mt-4">
       {
-        frontmatter.image ?
+        frontmatter.image.hero ?
         <>
           <StyledSVG
             src={`hero/${frontmatter.image.hero}`}
             alt={frontmatter.image.alt}
-            class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10"
-            id="hero-image"
+            class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10 flickering"
           />
           <hr>
         </> : null
       }
     </div>
-    <main class="mb-6 px-4 font-body" id="post-content">
+    <main class="mb-6 font-body overflow-x-hidden" id="post-content">
       <slot/>
     </main>
   </article>

@@ -1,7 +1,4 @@
 import { theme } from "@root/tailwind.config.js";
-// @ts-ignore
-import pkg from "tailwindcss/lib/util/color.js"; // eslint-disable-line import/extensions
-const { parseColor } = pkg;
 
 export const glowAnimationName = "neon-accent";
 export const glowAnimationMinimumIntensity = 50;
@@ -13,11 +10,22 @@ export const glowAnimationMaximumOpacity = 100;
 export const glowAnimationMinimumSize = 10; // rems * 100
 export const glowAnimationMaximumSize = 30; // rems * 100
 
-export const toRGB = (value: string) => parseColor(value).color.join(" ");
+export const parseColor = (value: string) => {
+    const hex = value.replace("#", "");
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { color: [r, g, b], hex };
+}
 
-export const colorsRGB = Object.fromEntries(Object.entries(theme.colors).map(([key, value]) => [key, toRGB(value)]));
+export const hexToRGB = (value: string): string => parseColor(value).color.join(" ");
 
-export const colorMixer = (rgbA: number[], rgbB: number[], amountToMix: number) => {
+export const colorsRGB: {
+  [key: string]: string
+} = Object.fromEntries(Object.entries(theme.colors).map(([key, value]) => [key, hexToRGB(value)]));
+
+export const colorMixer = (rgbA: number[], rgbB: number[], amountToMix: number): string => {
     return rgbA
         .map((channelA, index) => {
             const channelB = rgbB[index];

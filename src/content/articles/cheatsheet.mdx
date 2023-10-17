@@ -1,0 +1,387 @@
+---
+title: "Custom MDX cheatsheet"
+date: "2023-09-27"
+description: "Cheatsheet of my custom markdown components"
+tags: ["astro", "mdx", "react", "cheatsheet", "secret"]
+image:
+  thumbnail: ""
+  hero: ""
+  alt: ""
+---
+
+## Congratulations!
+
+You've found a hidden page! 🎉
+
+This hidden page codeword is: **`seven stormy mornings`**. 
+
+If You mention it to other cool people, they will know that You are cool too. 😎
+
+## Introduction
+
+This is a cheatsheet of my custom markdown components, which are used to render custom elements in Markdown files. A similar document is also located [at this site's repo] i.e. in the Markdown components README.
+
+All of them are located under the `src/components/markdown` directory of this site's source code. Feel free to use them in your own projects and / or modify them to your liking.
+
+**Note**: Whenever a **multiline string** is to be passed as a prop, the string **must be enclosed in curly brackets and backticks** to avoid issues with the MDX parser. This also prevents problems with indentations and newlines. So, two birds with one stone.
+
+## Components
+
+### CurseWord
+
+A component that renders a curse word with a "spoiler-like" effect. There is also a censorship run on the content, meaning that even if You copy the text from the page, the curse word will be censored.
+
+#### Props
+
+- `word` (`string`): The curse word to render.
+
+The format of `word` is `n:word:m` where `n` is the number of starting characters to show, `word` is the curse word, and `m` is the number of ending characters to show.
+
+#### Example
+
+<CodeSnippet
+  code={`<CurseWord word="2:gardening:4"/>`}
+  language="jsx"
+  filename="CurseWord.jsx"
+/>
+
+#### Result
+
+<CurseWord word="2:gardening:4"/>
+
+### FileTree
+
+A component that renders a file tree, using a mock up terminal window, with annotations shown beside and ability to add external links to chosen files.
+
+#### Props
+
+- `root` (`string`): The root directory of the file tree.
+- `tree` (`Array<string | FileTreeEntry>`): The file tree to render.
+- (*optional*) `annotations` (`string`): The annotations to show beside the file tree. (default: `""`)
+- (*optional*) `links` (`string`): The external links to show beside the file tree. (default: `""`)
+
+The `tree` parameter is an array of strings and / or `FileTreeEntry` type objects:
+
+<CodeSnippet
+  code={`
+    type FileTreeEntry = string | {
+      [key: string]: Array<FileTreeEntry>
+    }
+  `}
+  language="typescript"
+  filename="FileTreeEntry.ts"
+/>
+
+Strings represent files, and objects represent directories. The keys of the objects are the names of the directories, and the values are arrays of strings and objects, representing the files and subdirectories of the directory.
+
+The `annotations` and `links` parameters are multiline strings, where each line is of the format `file:annotation` or `file:URL`, respectively.
+
+#### Example
+
+<CodeSnippet
+  code={`
+    <FileTree
+      root="home"
+      tree={[
+        "file1",
+        {
+          "dir1": [
+            "file2",
+            "file3"
+          ]
+        }
+      ]}
+      annotations={\`
+        file1:This is my file
+      \`}
+      links={\`
+        file2:https://gist.github.com/jwilber/d02e4381d776fb9a7bcb126d3b32c85b
+      \`}
+    />
+  `}
+  language="jsx"
+  filename="FileTree.jsx"
+/>
+
+#### Result
+
+<FileTree
+  root="home"
+  tree={[
+    "file1",
+    {
+      "dir1": [
+        "file2",
+        "file3"
+      ]
+    }
+  ]}
+  annotations={`
+    file1:This is my file
+  `}
+  links={`
+    file2:https://gist.github.com/jwilber/d02e4381d776fb9a7bcb126d3b32c85b
+  `}
+/>
+
+### ScribbleGraph
+
+A component that renders a graph using the [`roughViz`] library, which is bascially a wrapper / factory-like component, that produces different types of graphs using the same set of props.
+
+#### Props
+
+- `type` (`string`): The type of graph to render.
+- `data` (`Object`): The data to render, corresponding to the type of graph from `roughViz` library.
+- `height` (`number`): The height of the graph.
+- `title` (`string`): The title of the graph.
+- `caption` (`string`): The caption of the graph.
+- `options` (`Object`): The options of the graph, corresponding to parameters specific to the type of graph from `roughViz` library.
+- (*optional*) `width` (`number`): The width of the graph (default: 100% of viewport width).
+
+For explainations of different types of graphs, see the `roughViz` [README] for appropiate combinations of `type`, `data`, and `options` parameters.
+
+#### Example
+
+For this component, the appropiate `import` statement and `client:load` prop is required to be added to the component.
+
+<CodeSnippet
+  code={`
+    import ScribbleGraph from "@components/markdown/ScribbleGraph"
+
+    <ScribbleGraph
+      type="scatter"
+      data={{
+        x: [1, 2, 3, 4],
+        y: [10, 15, 13, 17],
+      }}
+      height={300}
+      title="Test"
+      caption="Test"
+      options={{}}
+      width={500}
+      client:load
+    />
+  `}
+  language="jsx"
+  filename="ScribbleGraph.jsx"
+/>
+
+#### Result
+
+import ScribbleGraph from "@components/markdown/ScribbleGraph"
+
+<ScribbleGraph
+  type="scatter"
+  data={{
+    x: [1, 2, 3, 4],
+    y: [10, 15, 13, 17],
+  }}
+  height={300}
+  title="Test"
+  caption="Test"
+  options={{}}
+  width={500}
+  client:load
+/>
+
+### CodeSnippet
+
+A wrapper component that renders a code snippet, using the `Code` component from `astro:components` library, with possibility to add single- or multiline comments.
+
+#### Props
+
+- `code` (`string`): The code to render, passed as a multiline string. Special characters (e.g. backticks) **must** be escaped.
+- `language` (`string`): The language of the code to render, corresponding to one of language-tags used normally within Markdown code blocks.
+- `filename` (`string`): The filename of the code to render.
+- (*optional*) `annotations` (`string`): Multiline string containing single- and multiline comments to render. (default: `""`)
+
+The `annotations` parameter is a multiline string, where each line is of the either `n-m:comment` or `n:comment` format, where `n` is the starting line number (or just a line number for single-line comments), `m` is the ending line number, and `comment` is the comment text to render.
+
+**Note**: Regardless whether beginning or ending empty lines are put already by user in the code, the component will automatically:
+
+* remove the first line of code if it is an empty line,
+* end the code snippet with an empty line.
+
+#### Example
+
+<CodeSnippet
+  code={`
+    <CodeSnippet
+      code={\`
+        import locale
+        from functools import cmp_to_key
+
+        def sort_list(list):
+          list.sort() 
+          return sorted(my_list, key=len)
+
+        my_list = ['blue', 'red', 'green']
+        print(sort_list)
+      \`}
+      language="python"
+      filename="script.py"
+      annotations={\`
+        5-7:Sorting function
+        9:Test list
+      \`}
+    />
+  `}
+  language="jsx"
+  filename="CodeSnippet.jsx"
+/>
+
+#### Result
+
+<CodeSnippet
+  code={`
+    import locale
+    from functools import cmp_to_key
+
+    def sort_list(list):
+      list.sort() 
+      return sorted(my_list, key=len)
+
+    my_list = ['blue', 'red', 'green']
+    print(sort_list)
+  `}
+  language="python"
+  filename="script.py"
+  annotations={`
+    5-7:Sorting function
+    9:Test list
+  `}
+/>
+
+### JupyterLiteEmbed
+
+A component that embeds a rendered Jupyter notebook via externally hosted JupyterLite instance on Vercel.
+
+#### Props
+
+- `size` (`string`): The size of the embedded notebook.
+- `file` (`string`): The file path of the notebook to render (relative to the `src/content/_jupyter` directory).
+- `kernel` (`string`): The kernel to use to render the notebook.
+
+#### Example
+
+For this component, the appropiate `import` statement and `client:load` prop is required to be added to the component.
+
+import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+
+<JupyterLiteEmbed
+  size="500px"
+  file="lorenz/Lorenz.ipynb"
+  kernel="python"
+  client:load
+/>
+
+### CodePenEmbed
+
+A component that embeds a CodePen snippet with additional console capturing hook, using the `postMessage` API for communication between the CodePen IFrame embed and the host page.
+
+To utilize this hook, either `html` or `js` code blocks (if both are present, `html` takes precedence) is automatically prepended with the following code (either as a `script` tag or a fenced code block):
+
+<CodeSnippet
+  code={`
+    window.console = {
+      log: function(message) {
+        window.top.postMessage({ 
+          from: ..., // Here the title of the CodePen ID is used
+          message: message
+        }, '*');
+      }
+    }
+`}
+  language="javascript"
+  filename="CaptureConsolePatch.js"
+/>
+
+It is important to **not** modify this code.
+
+#### Props
+
+- `blocks` (`Object`): The code blocks of the CodePen snippet, corresponding to the [source code types (types of `pre` tags) of the CodePen snippets]. Each block must be passed as a multiline string.
+- `size` (`number`): The height of the CodePen snippet.
+- (*optional*) `options` (`Object`): The options of the CodePen snippet, corresponding to the [options of the CodePen embed]. (default: `{}`)
+- (*optional*) `title` (`string`): The title of the CodePen snippet. (default: `""`)
+- (*optional*) `description` (`string`): The description of the CodePen snippet. (default: `""`)
+- (*optional*) `tags` (`Array<string>`): The tags of the CodePen snippet. (default: `[]`)
+
+#### Example
+
+For this component, the appropiate `import` statement and `client:load` prop is required to be added to the component.
+
+<CodeSnippet
+  code={`
+    <CodePenEmbed
+      blocks={{
+        'html': \`
+          <div>
+            <h1>Hello World</h1>
+            <p>
+              lorem ipsum dolor sit amet, consectetur adipiscing elit,
+              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        \`,
+        'css': \`
+          p { color: red; }
+        \`,
+        'js': \`
+          for (let i = 0; i < 100; i++) {
+            console.log(i);
+          }
+        \`
+      }}
+      options={{
+        'themeId': 'dark',
+        'editable': true,
+        'height': '500',
+        'defaultTab': 'html,result'
+      }}
+      size={500}
+      title="Test"
+      description="Test CodePenEmbed"
+      tags={["cool"]}
+    />
+`}
+  language='jsx'
+  filename='CodePenEmbed.jsx'
+/>
+
+#### Result
+
+<CodePenEmbed
+  blocks={{
+    "html": `
+      <div>
+        <h1>Hello World</h1>
+        <p>lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+      </div>
+    `,
+    "css": `
+      p { color: red; }
+    `,
+    "js": `
+      for (let i = 0; i < 100; i++) {
+        console.log(i);
+      }
+    `
+  }}
+  options={{
+    "themeId": "dark",
+    "editable": true,
+    "height": "500",
+    "defaultTab": "html,result"
+  }}
+  size={500}
+  title="Test"
+  description="Test CodePenEmbed"
+  tags={["cool"]}
+/>
+
+[at this site's repo]: https://github.com/kamilrybacki/kamilrybacki.github.io
+[`roughViz`]: https://github.com/jwilber/roughViz
+[README]: https://github.com/jwilber/roughViz/blob/master/README.md
+[source code types (types of `pre` tags) of the CodePen snippets]: https://blog.codepen.io/documentation/prefill-embeds/
+[options of the CodePen embed]: https://blog.codepen.io/documentation/prefill-embeds/#what-goes-on-the-wrapper-element

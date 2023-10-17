@@ -1,3 +1,7 @@
+.flickering {
+  animation: flicker 5s ease-in-out infinite alternate;
+}
+
 @keyframes flicker {
   0% {
     opacity:0.1;
