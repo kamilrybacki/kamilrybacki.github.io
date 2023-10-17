@@ -11,19 +11,28 @@ interface Props {
 
 const {code, language, filename, annotations} = Astro.props;
 
-const removeIndentation = (code: string): string => {
-  const lines = code.split('\n');
-  const indentation = lines[1].match(/^\s+/)?.[0] || '      ';
-  return lines
-    .map(line => line.replace(indentation, ''))
-    .join('\n');
+const preProcessCode = (inputCode: string): string => {
+  const splitCode = inputCode.split('\n');
+  let tab = 0;
+
+  splitCode[0].trim().length === 0 ? splitCode.shift() : tab = 4;
+
+  let preProcessedCodeLines: string[] = splitCode
+    .map((line) => ' '.repeat(tab) + line);
+
+  const lastPreprocessedCodeLine = preProcessedCodeLines[preProcessedCodeLines.length - 1];
+  if (lastPreprocessedCodeLine.trim().length > 0) {
+    preProcessedCodeLines.push('');
+  }
+
+  return preProcessedCodeLines.join('\n');
 }
 
-const unindentedCode = removeIndentation(code);
+const preProcessedRawCode = preProcessCode(code);
 ---
 <style>
   .astro-code-content {
-    @apply my-4;
+    @apply my-4 mx-auto lg:w-3/4;
     .astro-code-filename {
       @apply text-sm font-bold text-background mx-auto;
       @apply flex flex-row gap-1 items-center w-full;
@@ -36,7 +45,7 @@ const unindentedCode = removeIndentation(code);
   }
 </style>
 
-<script define:vars={{ unindentedCode, filename, annotations }}>
+<script define:vars={{ code, filename, annotations }}>
   const copyContent = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -113,7 +122,7 @@ const unindentedCode = removeIndentation(code);
         );
 
       matchingLines.forEach((line, index) => {
-        line.firstChild.classList.add(...['font-bold', 'border-r-[1px]', 'pr-1', '-mr-1']);
+        line.firstChild.classList.add(...['font-bold', '-mr-1']);
         if (index == 0) {
           line.firstChild.innerText = `{${line.firstChild.innerText.trim().padStart(3, ' ')}`;
         }
@@ -134,7 +143,7 @@ const unindentedCode = removeIndentation(code);
     const copyButtons = document.getElementById(`copy-${filename}`);
     copyButtons.addEventListener('click', () => {
       copyContent(
-        unindentedCode
+        code
           .split('\n')
           .map((line) => line.slice(4))
           .join('\n')
@@ -145,14 +154,17 @@ const unindentedCode = removeIndentation(code);
       .filter((span) => span.classList.contains('line'));
 
     let foundLinesIndex = 1;
-    [...codeLines].forEach((line) => {
+    codeLines.forEach((line, index) => {
       const numberSpan = document.createElement('span');
-      numberSpan.classList.add(...['text-glow', 'opacity-50', 'mr-4']);
+      numberSpan.classList.add(...['text-glow', 'opacity-50']);
       numberSpan.innerText = `${foundLinesIndex.toString().padStart(4, ' ')}`;
       line.insertBefore(
         numberSpan,
         line.firstChild
       );
+      if (index === codeLines.length - 1) {
+        line.classList.add('opacity-25')
+      }
       foundLinesIndex++;
     });
 
@@ -188,7 +200,7 @@ const unindentedCode = removeIndentation(code);
     </span> : null
   }
   <Code 
-    code={unindentedCode}
+    code={preProcessedRawCode}
     lang={language}
     theme="github-dark"
   />

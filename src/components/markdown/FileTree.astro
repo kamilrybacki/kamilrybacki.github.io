@@ -1,8 +1,10 @@
 ---
+type FileTreeEntry = string | {
+  [key: string]: Array<FileTreeEntry>
+}
+
 interface Props {
-  tree: Array<string | {
-    [key: string]: Array
-  }>
+  tree: Array<FileTreeEntry>
   root: string
   annotations?: string
   links?: string

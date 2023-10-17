@@ -32,7 +32,7 @@ interface ScribbleGraphProps {
       }
     | string;
   height: number;
-  width: number;
+  width?: number;
   title: string;
   caption: string;
   options: {
@@ -109,14 +109,14 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
           ref={graphRef}
           id={graphContainerId}
           className="mx-auto my-4 text-background invert"
-          style={{ 
-            width: width,
-            height: height,
+          style={{
             gridArea: "graph",
+            width: width ?? "100vw",
+            height: height,
           }}
         />
         {xLabel && (
-          <span 
+          <span
             className="mx-auto -mt-2 mb-3 font-handwriting text-xl font-bold"
             style={{
               gridArea: "xLabel",

@@ -22,15 +22,15 @@
         white-space: normal;
         word-wrap: break-word;
       }
+      & > a {
+        @apply underline decoration-1 underline-offset-4 decoration-dotted hover:font-bold;
+      }
     }
     & > ul {
       @apply list-disc list-inside my-2;
     }
     & > ol {
       @apply list-decimal list-inside my-2;
-    }
-    & > a {
-      @apply underline decoration-1 underline-offset-4 decoration-dotted hover:font-bold;
     }
   }
 };

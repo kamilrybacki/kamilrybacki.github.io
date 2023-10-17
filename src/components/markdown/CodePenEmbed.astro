@@ -4,7 +4,6 @@ interface Props {
   description?: string;
   tags?: string[];
   blocks: {
-    head?: string;
     html?: string;
     js?: string;
     css?: string;
@@ -16,12 +15,13 @@ interface Props {
 };
 
 const { title, description, tags, blocks, size, options } = Astro.props;
+const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
 
 const consolePatch = `
   window.console = {
     log: function(message) {
       window.top.postMessage({ 
-        from: "${title}",
+        from: "${codepenId}",
         message: message
       }, '*');
     }
@@ -77,7 +77,6 @@ const formattedBlocks = Object
     return [blockType, removeIndentation(code)];
   })
 
-const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
 ---
 <script define:vars={{codepenId, title}}>
   const consoleElement = document.createElement('p')
@@ -109,6 +108,7 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
     });
     window.__CodePenIFrameAddedToPage = () => {
       window.addEventListener('message', function(event){
+        if (event.data.from !== codepenId) return;
         const currentTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         if (consoleElement.innerHTML === '') consoleElement.innerHTML = `[${currentTime}] ${event.data.message}`;
         else consoleElement.innerHTML += `<br>[${currentTime}] ${event.data.message}`
@@ -117,7 +117,7 @@ const codepenId = `codepen-${title?.toLowerCase() || (new Date).getSeconds()}`;
   });
 </script>
 
-<section class="flex flex-col">
+<section class="flex flex-col my-4">
   <div class="mx-auto mb-6 w-1/2 border-[1px] border-dashed opacity-25 codepen-spacer" />
   <button
     class="px-2 lg:px-4 py-1 lg:py-2 font-handwriting text-xl lg:text-3xl font-bold w-fit mx-auto"
