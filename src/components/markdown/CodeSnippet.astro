@@ -1,6 +1,7 @@
 ---
 import StyledSVG from "@components/StyledSVG.astro";
 import { Code } from "astro:components";
+import type { Lang } from "shiki";
 
 interface Props {
   code: string,
@@ -206,7 +207,7 @@ const preProcessedRawCode = preProcessCode(code);
   }
   <Code 
     code={preProcessedRawCode}
-    lang={language}
+    lang={language as Lang}
     theme="github-dark"
   />
   <div
