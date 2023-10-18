@@ -1,5 +1,7 @@
 ---
 import '@styles/glitch.css';
+import { SEO } from "astro-seo";
+import { getImage } from 'astro:assets';
 
 import Menu from '@components/Menu.astro';
 import SplashDecoration from '@components/SplashDecoration.astro';
@@ -26,6 +28,17 @@ const indexOptions = {
 }
 
 export const prerender = true;
+
+let imageURL = "";
+const relativeURL = '/public/assets/images/index.png'
+const initialImport = await import.meta.glob<string>(
+  '/public/assets/images/*',
+  { eager: true }
+)[relativeURL].default;
+const imageImport = await getImage({
+  src: initialImport
+});
+imageURL = new URL(imageImport.src, Astro.site).toString();
 ---
 <style>
   @keyframes fadeout {
@@ -85,42 +98,75 @@ export const prerender = true;
   });
 </script>
 
-<BasicPageLayout 
-  title="Kamil Rybacki"
-  style="flex flex-col justify-center items-center overflow-hidden"
->
-  <div class="my-auto flex flex-col-reverse items-center justify-center lg:w-full lg:flex-row lg:justify-around lg:py-12">
-    <SplashDecoration
-      className="grayscale invert"
+<html lang="en">
+  <head>
+    <SEO
+      title="Kamil Rybacki's personal website"
+      description="My personal website where I write about my projects and other things I find interesting."
+      openGraph={{
+        basic: {
+          title: "Kamil Rybacki's personal website",
+          type: "website",
+          image: "",
+        },
+        optional: {
+          description: "My personal website where I write about my projects and other things I find interesting.",
+        },
+      }}
+      twitter={{
+        card: "summary_large_image",
+        site: "@rybacki_kamil",
+        creator: "@rybacki_kamil",
+      }}
+      extend={{
+        link: [{ rel: "icon", href: "/favicon.svg" }],
+        meta: [{
+          name: "charset",
+          content: "utf-8",
+        }]
+      }},
+      charset='utf-8'
     />
-    <div class="z-1 m-auto mt-4 flex w-fit flex-col items-center justify-end gap-1 lg:mr-auto lg:gap-3" id="menu-wrapper">
-      <div class="flex flex-row lg:mt-12">
-        <div class="relative flex w-16 text-accent lg:w-40 lg:justify-end">
-          <SVG src="images/logo" alt="Logo"/>
+  </head>
+  <body>
+    <BasicPageLayout 
+      title="Kamil Rybacki"
+      style="flex flex-col justify-center items-center overflow-hidden"
+    >
+      <div class="my-auto flex flex-col-reverse items-center justify-center lg:w-full lg:flex-row lg:justify-around lg:py-12">
+        <SplashDecoration
+          className="grayscale invert"
+        />
+        <div class="z-1 m-auto mt-4 flex w-fit flex-col items-center justify-end gap-1 lg:mr-auto lg:gap-3" id="menu-wrapper">
+          <div class="flex flex-row lg:mt-12">
+            <div class="relative flex w-16 text-accent lg:w-40 lg:justify-end">
+              <SVG src="images/logo" alt="Logo"/>
+            </div>
+            <h1 class="relative top-2 font-body text-[2.25rem] font-bold lg:top-12 lg:text-8xl">
+              amil Rybacki
+            </h1>
+          </div>
+          <div class="my-3 w-[105%] border-[1px] border-accent opacity-50 lg:mb-4 lg:mt-6"/>
+          <h2 class="relative mx-auto flex flex-row items-center gap-3 font-body text-xl font-medium text-accent lg:ml-0 lg:mr-auto lg:mt-2 lg:gap-4 lg:text-4xl">
+            <span class="py-auto my-auto">
+              Figuring out
+            </span>
+            <span
+              class="px-auto py-auto my-auto flex tracking-widest lg:w-64"
+              data-text="undefineds"
+              id="glitch-text"
+            >
+              undefineds
+            </span>
+          </h2>
+          <Menu
+            options={indexOptions}
+            style='lg:h-36 relative flex flex-row-reverse gap-8 lg:gap-12 text-3xl lg:text-6xl font-bold mt-6 lg:mt-10 items-center justify-center'
+            globalListStyle="relative bg-background my-auto z-99 transition-all duration-[500ms] ease-in-out hover:-translate-y-2 lg:hover:-translate-y-5 hover:cursor-pointer"
+            id="index-menu"
+          />
         </div>
-        <h1 class="relative top-2 font-body text-[2.25rem] font-bold lg:top-12 lg:text-8xl">
-          amil Rybacki
-        </h1>
       </div>
-      <div class="my-3 w-[105%] border-[1px] border-accent opacity-50 lg:mb-4 lg:mt-6"/>
-      <h2 class="relative mx-auto flex flex-row items-center gap-3 font-body text-xl font-medium text-accent lg:ml-0 lg:mr-auto lg:mt-2 lg:gap-4 lg:text-4xl">
-        <span class="py-auto my-auto">
-          Figuring out
-        </span>
-        <span
-          class="px-auto py-auto my-auto flex tracking-widest lg:w-64"
-          data-text="undefineds"
-          id="glitch-text"
-        >
-          undefineds
-        </span>
-      </h2>
-      <Menu
-        options={indexOptions}
-        style='lg:h-36 relative flex flex-row-reverse gap-8 lg:gap-12 text-3xl lg:text-6xl font-bold mt-6 lg:mt-10 items-center justify-center'
-        globalListStyle="relative bg-background my-auto z-99 transition-all duration-[500ms] ease-in-out hover:-translate-y-2 lg:hover:-translate-y-5 hover:cursor-pointer"
-        id="index-menu"
-      />
-    </div>
-  </div>
-</BasicPageLayout>
+    </body>
+  </BasicPageLayout>
+</html>
