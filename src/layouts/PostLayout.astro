@@ -11,7 +11,7 @@ const { frontmatter } = Astro.props;
 
 let imageURL = "";
 if (frontmatter.image && frontmatter.image.thumbnail) {
-  const imageImport = await import(`/public/assets/thumbnails/${frontmatter.image.thumbnail}.svg`);
+  const imageImport = await import('/public/assets/thumbnails/' + frontmatter.image.thumbnail + '.svg')
   const image = await getImage({
     src: imageImport.default,
     format: "svg"
