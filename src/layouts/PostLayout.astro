@@ -11,8 +11,16 @@ const { frontmatter } = Astro.props;
 
 let imageURL = "";
 if (frontmatter.image && frontmatter.image.thumbnail) {
-  const relativeURL = '/public/assets/thumbnails/' + frontmatter.image.thumbnail + '.svg'
-  imageURL = new URL(`${relativeURL}`, Astro.site).toString();
+  const thumbnailsDirectory = '/public/assets/thumbnails/'
+  const relativeURL = thumbnailsDirectory + frontmatter.image.thumbnail + '.svg'
+  const initialImport = await import.meta.glob<string>(
+    '/public/assets/thumbnails/*.svg',
+    { eager: true }
+  )[relativeURL].default;
+  const imageImport = await getImage({
+    src: initialImport
+  });
+  imageURL = new URL(imageImport.src, Astro.site).toString();
 }
 ---
 <html lang="en">
