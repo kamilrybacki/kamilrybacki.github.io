@@ -1,11 +1,12 @@
 ---
+import {getImage} from 'astro:assets'
+import { SEO } from "astro-seo";
 import '@styles/neon.css';
 import '@styles/markdown.css';
 import {SEO} from "a"
 import { getImage } from 'astro:assets';
 
 import StyledSVG from "@components/StyledSVG.astro";
-
 import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
