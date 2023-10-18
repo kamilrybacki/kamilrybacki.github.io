@@ -4,8 +4,9 @@ import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 import remarkCodeTitles from "remark-code-titles";
 import robotsTxt from "astro-robots-txt";
-
 import compress from "astro-compress";
+
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,5 +17,5 @@ export default defineConfig({
     config: {
       applyBaseStyles: false
     }
-  }), react(), robotsTxt(), compress()]
+  }), react(), robotsTxt(), compress(), sitemap()]
 });

@@ -1,45 +1,84 @@
 ---
+import {getImage} from 'astro:assets'
+import { SEO } from "astro-seo";
 import '@styles/neon.css';
 import '@styles/markdown.css';
 
 import StyledSVG from "@components/StyledSVG.astro";
-
 import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
+const imageImport = await import(`/public/assets/thumbnails/${frontmatter.image.thumbnail}.svg`);
+
+const image = await getImage({
+  src: imageImport.default,
+  format: "svg"
+});
+const imageURL = new URL(image.src, Astro.site).toString();
 ---
-<BasicPageLayout
-  title={frontmatter.title}
-  style="flex flex-col items-center"
->
-  <article class="w-[95%] lg:w-[66%]">
-    <div class="mx-auto mb-6 w-full pb-2">
-      <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
-        {frontmatter.title} 
-      </h1>
-      <div>
-        <span class="mr-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
-      </div>
-      <hr class="mt-4">
-      {
-        frontmatter.image && frontmatter.image.hero ?
-        <>
-          <StyledSVG
-            src={`hero/${frontmatter.image.hero}`}
-            alt={frontmatter.image.alt}
-            class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10 flickering"
-          />
-          <hr>
-        </> : null
-      }
-    </div>
-    <main class="mb-6 font-body overflow-x-hidden" id="post-content">
-      <slot/>
-    </main>
-  </article>
-  <button class="left-8 mr-auto mt-2 hover:-translate-x-2 lg:mt-4">
-    <a href="/blog" class="mt-10 font-handwriting text-2xl">
-      Go back
-    </a>
-  </button>
-</BasicPageLayout>
+<html lang="en">
+  <head>
+    <SEO
+      title={frontmatter.title}
+      description={frontmatter.description}
+      openGraph={{
+        basic: {
+          title: frontmatter.title,
+          type: "article",
+          image: imageURL,
+        },
+        optional: {
+          description: frontmatter.description,
+        },
+        article: {
+          publishedTime: frontmatter.date,
+          modifiedTime: new Date().toISOString(),
+          authors: ["Kamil Rybacki"],
+          tags: frontmatter.tags,
+        },
+      }}
+      twitter={{
+        card: "summary_large_image",
+        site: "@rybacki_kamil",
+        creator: "@rybacki_kamil",
+      }}
+    />
+  </head>
+  <body>
+    <BasicPageLayout
+      title={frontmatter.title}
+      style="flex flex-col items-center"
+    >
+      <article class="w-[95%] lg:w-[66%]">
+        <div class="mx-auto mb-6 w-full pb-2">
+          <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
+            {frontmatter.title} 
+          </h1>
+          <div>
+            <span class="mr-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
+          </div>
+          <hr class="mt-4">
+          {
+            frontmatter.image && frontmatter.image.hero ?
+            <>
+              <StyledSVG
+                src={`hero/${frontmatter.image.hero}`}
+                alt={frontmatter.image.alt}
+                class="mx-auto my-6 max-h-[50vh] w-full grayscale invert lg:my-10 flickering"
+              />
+              <hr>
+            </> : null
+          }
+        </div>
+        <main class="mb-6 font-body overflow-x-hidden" id="post-content">
+          <slot/>
+        </main>
+      </article>
+      <button class="left-8 mr-auto mt-2 hover:-translate-x-2 lg:mt-4">
+        <a href="/blog" class="mt-10 font-handwriting text-2xl">
+          Go back
+        </a>
+      </button>
+    </BasicPageLayout>
+  </body>
+</html>
