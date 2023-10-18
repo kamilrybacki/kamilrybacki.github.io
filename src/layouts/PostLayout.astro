@@ -11,7 +11,7 @@ import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
 
-let imageURL = null;
+let imageURL = "";
 if (frontmatter.image && frontmatter.image.thumbnail) {
   const imageImport = await import(`/public/assets/thumbnails/${frontmatter.image.thumbnail}.svg`);
   const image = await getImage({
@@ -30,7 +30,7 @@ if (frontmatter.image && frontmatter.image.thumbnail) {
         basic: {
           title: frontmatter.title,
           type: "article",
-          ...(imageURL && {image: imageURL})
+          image: imageURL,
         },
         optional: {
           description: frontmatter.description,
