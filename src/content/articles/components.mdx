@@ -346,7 +346,7 @@ So what's up with that URL inside the `iframe` definition? If You visit it manua
 
 These worker processes can only utilize resources of the client machine available to the browser itself (like RAM memory), without connecting to the private storage of the user. This allows for isolation of the code execution process, so it is safe to run arbitrary code in the browser (even when the code wants to allocate too many resources, the kernel will be stopped thanks to the JupyterLab OOM killer).
 
-{false && <iframe
+<iframe
   src="https://jupyterlite.github.io/demo/lab/index.html"
   width="100%"
   height="500px"
@@ -354,7 +354,7 @@ These worker processes can only utilize resources of the client machine availabl
     marginTop: '1rem',
     marginBottom: '1rem',
   }}
-/>}
+/>
 
 You can see that it is possible to create new notebooks, interact with existing ones and set up a project directory containing additional assets. JupyterLite also allows for interaction with its kernels via dedicated CLIs (the "Consoles" section on the homepage). So a full-blown IDE inside Your browser 🤯
 
@@ -508,8 +508,7 @@ As You could see, when You straight up embed JupyterLite deployment on a website
 
 There is an answer to that problem - `RetroLab`, a version of JupyterLab that resembles the old way in which Jupyter notebooks were served. It is a stripped-down version of JupyterLab, that only shows the notebook itself, without any additional options.
 
-{
-  false && <iframe
+<iframe
   src="https://jupyterlite.github.io/demo/retro/notebooks/?path=javascript.ipynb"
   width="100%"
   height="500px"
@@ -518,7 +517,6 @@ There is an answer to that problem - `RetroLab`, a version of JupyterLab that re
     marginBottom: '1rem',
   }}
 />
-}
 
 So we are getting pretty close. What I want to do is to disable **completely** the top portion of the frame i.e. header bar and the main menu bar (with the "File", "Edit" and other options). Then I also want to remove some of the notebook toolbar buttons - mainly those that are connected with changing the notebook's layout or execution.
 
