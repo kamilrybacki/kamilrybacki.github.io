@@ -51,7 +51,7 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
   options,
 }: ScribbleGraphProps) => {
   const [graph, setGraph] = React.useState<PossibleGraphType | null>(null);
-  const [graphCounter, setGraphCounter] = React.useState<number>(1);
+  const [graphCounter, setGraphCounter] = React.useState<number | null>(null);
   const graphRef = React.useRef<HTMLDivElement>(null);
   const graphContainerId = `graph-${title.replace(/\s/g, "").toLowerCase()}`;
   const { color, stroke, xLabel, yLabel, ...rest } = options;
@@ -76,10 +76,12 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
         margin: { top: 0, right: 0, bottom: 25, left: 25 },
       });
       setGraph(newGraph);
-      if (!window.localStorage.getItem("lastGraphId")) {
-        window.localStorage.setItem("lastGraphId", "1");
-      } else {
-        setGraphCounter(parseInt(window.localStorage.getItem("lastGraphId") || "1") + 1);
+      if (!graphCounter) {
+        document.querySelectorAll(".scribble-graph").forEach((graph, index) => {
+          if (graph.id === graphContainerId) {
+            setGraphCounter(index + 1);
+          }
+        });
       }
     }
   }, [data, options]);
@@ -109,7 +111,7 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
         <div
           ref={graphRef}
           id={graphContainerId}
-          className="mx-auto my-4 text-background invert"
+          className="scribble-graph mx-auto my-4 text-background invert"
           style={{
             gridArea: "graph",
             width: width ?? "100vw",

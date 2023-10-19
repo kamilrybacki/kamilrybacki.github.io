@@ -56,7 +56,10 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
         const branchLeaves = Object.values(leaf)[0];
 
         const branchElement = document.createElement('li');
-        branchElement.innerHTML = `${folderSymbol} ${branchName}`;
+
+        const branchLink = linksMap[branchName] || linksMap[branchName.slice(0,-1)];
+        branchElement.innerHTML = branchLink ? 
+          `<a href=${branchLink} target="_blank" class="hover:font-bold">${folderSymbol} ${branchName} <span class="text-xs my-auto py-auto">${linkSymbol}</span></a>` : `${folderSymbol} ${branchName}`;
         const branchContent = traverseTreeBranch(branchLeaves);
 
         branchContent.insertBefore(
@@ -70,7 +73,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
 
         leafElement.innerHTML = linksMap[leaf] ? 
            `<a href=${linksMap[leaf]} target="_blank" class="hover:font-bold">${leafPrefix} ${fileSymbol} ${leaf} <span class="text-xs my-auto py-auto">${linkSymbol}</span></a>` :
-          `${leafPrefix} ${fileSymbol} ${leaf}`;
+          `${leafPrefix} ${leaf !== "..." ? fileSymbol : ''} ${leaf}`;
         leafElement.classList.add('pl-4');
 
         treeRoot.appendChild(leafElement);
@@ -111,7 +114,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
     annotations &&
     <section 
       id={annotationsId}
-      class="w-full lg:w-fit h-full my-auto"
+      class="w-full lg:w-1/2 h-full my-auto"
     >
       <span class='font-bold text-2xl underline decoration-dotted'>Comments:</span>
       <div class='h-1 lg:h-2'/>
@@ -122,7 +125,7 @@ const annotationsId = `astro-tree-annotations-${root}-${Date.now()}`
           .map((annotation) => {
               const [fileName, annotationText] = annotation.split(':');
               return (
-                <div class="flex flex-row gap-1">
+                <div class="w-fit flex flex-row gap-1 my-1">
                   <span class="font-bold">{fileName}:</span>
                   <span>{annotationText}</span>
                 </div>

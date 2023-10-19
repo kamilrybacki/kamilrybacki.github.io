@@ -16,9 +16,11 @@ const censoredPortion = censoredWord.slice(parseInt(prefix), -parseInt(suffix)).
 ---
 <style define:vars={{semiTransparentGlow}}>
   span > p {
+    display: inline;
     position: relative;
     white-space: pre;
     &:after {
+      display: inline;
       background: theme('colors.glow');
       border-radius: 0.1em;
       box-shadow: 0 0 1px var(--semiTransparentGlow);
@@ -32,7 +34,7 @@ const censoredPortion = censoredWord.slice(parseInt(prefix), -parseInt(suffix)).
 }
 </style>
 
-<span class="flex flex-row gap-0">
+<span class="inline-block">
   {wordBeginning}
   <p class="mr-[1px] ml-[2px]">
     {censoredPortion}

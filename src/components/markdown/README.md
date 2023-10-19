@@ -2,7 +2,7 @@
 
 This directory contains custom components for Markdown (MDX) files.
 
-**Note**: Whenever a **multiline string** is to be passed as a prop, the string **must be enclosed in curly brackets and backticks** to avoid issues with the MDX parser. This prevents problems with indentations and newlines.
+**Note**: Whenever a **multiline string** is to be passed as a prop, the string **must be enclosed in curly brackets and backticks** to avoid issues with the MDX parser. This prevents problems with indentations and newlines. Also, any backticks and dollar signs within the string must be escaped with a backslash (`\`).
 
 ## Components
 

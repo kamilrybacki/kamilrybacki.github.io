@@ -1,5 +1,3 @@
-import main from './main.js';
-
 function waitForElementToExist(selector) {
   return new Promise(resolve => {
     if (document.querySelector(selector)) {
@@ -20,7 +18,6 @@ function waitForElementToExist(selector) {
   });
 }
 
-const mainPanelId = '#main-panel';
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
 

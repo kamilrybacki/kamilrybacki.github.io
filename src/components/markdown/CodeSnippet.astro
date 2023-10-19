@@ -82,6 +82,7 @@ const preProcessedRawCode = preProcessCode(code);
       lineElement.firstChild.classList.add(toggle ? 'opacity-100' : 'opacity-50');
     };
     const appendCommentTooltip = (lineElement, text, prefix) => {
+      if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
         const annotationOverlay = document.createElement('div');
         annotationOverlay.classList.add(...[
           'absolute', 'flex', 'flex-wrap', 'rounded-md', 'p-2', 'w-fit',
@@ -93,7 +94,6 @@ const preProcessedRawCode = preProcessCode(code);
           .split(' ')
           .map((word) => `<span>${word} </span>`)
           .join('');
-        if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
           lineElement.appendChild(annotationOverlay);
           lineElement.onmouseenter = (e) => {
             updateCommentState(e, annotationOverlay, '1')

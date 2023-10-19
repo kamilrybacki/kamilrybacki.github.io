@@ -25,12 +25,21 @@
       & > a {
         @apply underline decoration-1 underline-offset-4 decoration-dotted hover:font-bold;
       }
+      & > img {
+        @apply scale-110 lg:scale-100;
+      }
     }
     & > ul {
       @apply list-disc list-inside my-2;
+      & > li {
+        @apply my-2 pl-4
+      }
     }
     & > ol {
       @apply list-decimal list-inside my-2;
+      & > li {
+        @apply my-2 pl-4
+      }
     }
   }
 };

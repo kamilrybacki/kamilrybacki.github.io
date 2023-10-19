@@ -117,7 +117,7 @@ const formattedBlocks = Object
         const currentTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         if (consoleElement.innerHTML === '') consoleElement.innerHTML = `[${currentTime}] ${event.data.message}`;
         else consoleElement.innerHTML += `<br>[${currentTime}] ${event.data.message}`
-    }, false);
+      }, false);
     }
   });
 </script>
