@@ -3,16 +3,12 @@ import { SEO } from "astro-seo";
 import '@styles/neon.css';
 import '@styles/markdown.css';
 import { getImage } from 'astro:assets';
-import FacebookShareButton from "react-share/lib/FacebookShareButton";
-import TwitterShareButton from "react-share/lib/TwitterShareButton";
-import LinkedinShareButton from "react-share/lib/LinkedinShareButton";
-import RedditShareButton from "react-share/lib/RedditShareButton";
 
 import StyledSVG from "@components/StyledSVG.astro";
 import BasicPageLayout from "./BasicPageLayout.astro";
+import SocialShareBar from "@components/SocialShareBar.astro";
 
 const { frontmatter } = Astro.props;
-const myURL = new URL(Astro.site || '', Astro.url).toString();
 
 let imageURL = "";
 if (frontmatter.image && frontmatter.image.thumbnail) {
@@ -70,36 +66,9 @@ if (frontmatter.image && frontmatter.image.thumbnail) {
           <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
             {frontmatter.title} 
           </h1>
-          <div class="flex flex-row gap-4 mb-4 items-center">
-            <span class="font-handwriting text-xl"><b>Share</b> on Your socials:</span>
-            <FacebookShareButton url={myURL} client:load>
-              <StyledSVG
-                src="badges/facebook"
-                alt="facebook"
-                class="w-10 h-10"
-              />
-            </FacebookShareButton>
-            <TwitterShareButton url={myURL} client:load>
-              <StyledSVG
-                src="badges/twitter-x"
-                alt="Twitter"
-                class="w-10 h-10"
-              />
-            </TwitterShareButton>
-            <LinkedinShareButton url={myURL} client:load>
-              <StyledSVG
-                src="badges/linkedin"
-                alt="LinkedIn"
-                class="w-10 h-10"
-              />
-            </LinkedinShareButton>
-            <RedditShareButton url={myURL} client:load>
-              <StyledSVG
-                src="badges/reddit-icon"
-                alt="Reddit"
-                class="w-10 h-10"
-              />
-            </RedditShareButton>
+          <div class="flex flex-row gap-2 lg:gap-4 mb-4 items-center">
+            <span class="font-handwriting text-xl font-bold mr-1 my-auto">Share:</span>
+            <SocialShareBar title={frontmatter.title} description={frontmatter.description}/>
           </div>
           <div>
             <span class="mr-auto w-full font-body text-sm opacity-75">Published: {frontmatter.date}</span>
