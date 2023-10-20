@@ -3,12 +3,10 @@ import { SEO } from "astro-seo";
 import '@styles/neon.css';
 import '@styles/markdown.css';
 import { getImage } from 'astro:assets';
-import {
-  FacebookShareButton,
-  LinkedinShareButton,
-  RedditShareButton,
-  TwitterShareButton,
-} from "react-share";
+import FacebookShareButton from "react-share/lib/FacebookShareButton";
+import TwitterShareButton from "react-share/lib/TwitterShareButton";
+import LinkedinShareButton from "react-share/lib/LinkedinShareButton";
+import RedditShareButton from "react-share/lib/RedditShareButton";
 
 import StyledSVG from "@components/StyledSVG.astro";
 import BasicPageLayout from "./BasicPageLayout.astro";

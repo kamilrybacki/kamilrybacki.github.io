@@ -77,8 +77,8 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
       });
       setGraph(newGraph);
       if (!graphCounter) {
-        document.querySelectorAll(".scribble-graph").forEach((graph, index) => {
-          if (graph.id === graphContainerId) {
+        document.querySelectorAll(".scribble-graph").forEach((currentGraph, index) => {
+          if (currentGraph.id === graphContainerId) {
             setGraphCounter(index + 1);
           }
         });
