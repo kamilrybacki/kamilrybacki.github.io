@@ -1,6 +1,6 @@
 ---
 title: "Sow with words, reap with interactivity"
-date: "2023-09-27"
+date: "2023-10-20"
 description: "An article about enhancing softdev-oriented blog posts with interactive widgets."
 tags: ["astro", "codepen", "jupyter", "jupyterlite"]
 image:
@@ -24,6 +24,12 @@ not getting obliterated by a mammoth or any notion of technology.
 
 ### A case of a rolling stone
 
+<StyledSVG
+  src='images/rolling_stone'
+  alt='Rolling stone'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
+
 Suppose that one of them has found something rather interesting. When he picks up a very angular, edgy rock
 and tries to roll it on the ground, it stops noticeably faster than a round rock would. He fiddles with small pebbles,
 medium-sized chunks and even some heavy chonkers, but the result is always the same. So, the shape is the key.
@@ -46,6 +52,12 @@ Those that are delegated to shelves or boring PowerPoint presentations are doome
 a shame because they could have been used to build something great 😞.
 
 ### From cavemen to software engineers
+
+<StyledSVG
+  src='images/cavedev'
+  alt='Prehistoric code'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
 
 So, what out rock-bashing friends have in common with people who dabble with code in the 21st century?
 
@@ -128,7 +140,13 @@ the bytes from one pointer to another in the background 🧚🧮.
 In terms of **results presentation**, I want to show cool-looking, readable charts and tables.
 That's it 🎉. Let's get to work. From now on, the article will get more technical, so *hang in there* 🐈.
 
-## Whaddaya buyin' - whaddama sellin'?
+## Evolving the ecosystem
+
+<StyledSVG
+  src='images/jupyter'
+  alt='Jupyter'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
 
 ### Code organization - `FileTree` component
 
@@ -316,7 +334,10 @@ The other one is more of a *declarative* nature, where You want to show the resu
 
 This will be a good one. If You've ever encountered topics connected with Python and data science, there is a very good chance You've heard about a thing called Jupyter notebooks. They are a way to share code in an interactive manner, where each computational step is represented by a code cell, which can be executed independently, but still within an overall context of the current program execution.
 
-![Jupyter Notebook real-time modification](/assets/images/jupyter.png)
+<CaptionedImage
+  src="/assets/images/jupyter_real_time.png"
+  alt="Jupyter Notebook real-time modification"
+/>
 
 As You can see, I've changed the state of the `a` variable between two subsequent runs of the second and third code cells, **but** I haven't touched the source in any other places. This resulted in two different prints at the end of this notebook. Speaking more generally, I've modified the **input data**, with **no modifications** to the **protocol**, which is the key here. This is a very powerful concept, that allows for a very quick and interactive way of experimenting with code.
 
@@ -350,6 +371,7 @@ These worker processes can only utilize resources of the client machine availabl
   src="https://jupyterlite.github.io/demo/lab/index.html"
   width="100%"
   height="500px"
+  loading="lazy"
   style={{
     marginTop: '1rem',
     marginBottom: '1rem',
@@ -504,7 +526,7 @@ This allows for easy separation of my JupyterLite source and distribution from m
 
 ##### Boxing the sandbox
 
-As You could see, when You straight up embed JupyterLite deployment on a website, You get the whole "Lab" experience, with the file browser, dozens of options and so on. And here is the controversial part - I don't like it. I want to be a more "atomic" experience, meaning that if I showcase a specific notebook (or code in general), the attention must be focused on it, to prevent the user from either getting lost, distracted, overwhelmed or prone to some kind of error that will ruin the execution of the code. The sandbox without boundaries is a caricature 💩 desert. And You can still get lost in it.
+As You can see, when You straight up embed JupyterLite deployment on a website, You get the whole "Lab" experience, with the file browser, dozens of options and so on. And here is the controversial part - I don't like it. I want to be a more "atomic" experience, meaning that if I showcase a specific notebook (or code in general), the attention must be focused on it, to prevent the user from either getting lost, distracted, overwhelmed or prone to some kind of error that will ruin the execution of the code. The sandbox without boundaries is a caricature 💩 desert. And You can still get lost in it.
 
 There is an answer to that problem - `RetroLab`, a version of JupyterLab that resembles the old way in which Jupyter notebooks were served. It is a stripped-down version of JupyterLab, that only shows the notebook itself, without any additional options.
 
@@ -512,6 +534,7 @@ There is an answer to that problem - `RetroLab`, a version of JupyterLab that re
   src="https://jupyterlite.github.io/demo/retro/notebooks/?path=javascript.ipynb"
   width="100%"
   height="500px"
+  loading="lazy"
   style={{
     marginTop: '1rem',
     marginBottom: '1rem',
@@ -520,11 +543,14 @@ There is an answer to that problem - `RetroLab`, a version of JupyterLab that re
 
 So we are getting pretty close. What I want to do is to disable **completely** the top portion of the frame i.e. header bar and the main menu bar (with the "File", "Edit" and other options). Then I also want to remove some of the notebook toolbar buttons - mainly those that are connected with changing the notebook's layout or execution.
 
-![The plan](/assets/images/jupyterlite_plan.jpg)
+<CaptionedImage
+  src="/assets/images/jupyterlite_plan.jpg"
+  alt="RetroLab customization plan"
+/>
 
 After some digging, I've noticed that after building JupyterLite, the whole distribution is separated into apps (basically different routes) that can be used by the user. So normally there would be (among many other directories) a folder named `retro`, which contained this stripped-down version of JL. There were also other directories, that housed other "versions" the user could use e.g. `lab` (the full IDE one) or `repl` (the read-eval-print loop). So, first of all, I've deleted every other app except RetroLab. If You try to access those routes on my Vercel deployment, You will get a 404 error ❌.
 
-Next, inside this `retro` directory, there was a `notebooks` one, that contains a HTML file that is used to display chosen notebooks.
+Next, inside this `retro` directory, there was a `notebooks` one, that contained an HTML file that is used to display chosen notebooks.
 
 <CodeSnippet
   code={`
@@ -631,7 +657,10 @@ This however left a nasty gap at the top of the page, that was resilient to modi
 But, when life gives You lemons, You make lemonade 🍋. I've decided to use this gap to overlay a small help section (in the `.astro` component), 
 that will guide the user through the process of using the notebook (and let me credit the amazing JupyterLite authors!).
 
-![JupyterLite help section](/assets/images/retrolab_help.png)
+<CaptionedImage
+  src="/assets/images/retrolab_help.png"
+  alt="My custom JupyterLite help section"
+/>
 
 In the same script, I've also changed the values of CSS variables used internally by JupyterLite to change the look of the notebook. Their names
 were also easy to find by studying the generated markup using the browser's dev tools.
@@ -719,6 +748,7 @@ this endeavor (the greyed-out portion is done differently, as mentioned above).
   src="https://myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app/retro/notebooks/?path=lorenz%2FLorenz.ipynb"
   width="100%"
   height="500px"
+  loading="lazy"
   style={{
     marginTop: '1rem',
     marginBottom: '1rem',
@@ -1058,19 +1088,57 @@ import ScribbleGraph from "@components/markdown/ScribbleGraph"
     x: [1, 2, 3, 4],
     y: [10, 15, 13, 17],
   }}
-  height={300}
+  width={200}
+  height={200}
   title="Test"
-  caption="Test"
-  options={{}}
-  width={500}
+  caption="Here is a scatter graph"
+  options={{
+    xLabel: 'X',
+    yLabel: 'Y',
+  }}
   client:load
 />
 
-## Geared up and ready to roll 🛠️
+And if we insert another graph, it will be automatically numbered as "Figure 2".
 
-I really hope that this presentation of more and more complicated concepts with gradually evolving "helping hands" in the form of my custom components planted this crazy idea in Your head 🪴 to use more visual and interactive measures of showing off catchy ideas in a more digestible manner. Also, I guess there is some practical knowledge about e.g. how `iframe`s can communicate with their host "embedder" or how to chisel out Your cool modifications in the JupyterLite monolith via kind-of code injection or actual Jupyterlab extensions. With these gadgets, I tend to present my technological ramblings unbound by the limitations of spoken word. Prepare to be amazed, I guess 🤷‍♀️.
+<ScribbleGraph
+  type="line"
+  data='https://raw.githubusercontent.com/jwilber/random_data/master/profits.csv'
+  height={200}
+  width={250}
+  title="Another test"
+  caption="Here is a line graph"
+  options={{
+    y1: 'revenue',
+    y2: 'cost',
+    y3: 'profit',
+    colors: ['#f44336', '#2196f3', '#4caf50'],
+    xLabel: 'Month',
+    yLabel: 'USD',
+  }}
+  client:load
+/>
 
-![tada](/assets/images/office_magic.gif)
+## ️After rollin' the milestone
+
+<StyledSVG
+  src='images/finish'
+  alt='Finish line'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
+
+So, that's it. I've presented the main components that I've created for this blog. I've also shown how I've used them to create more interactive and visually appealing content.
+I hope that this presentation of more and more complicated concepts with gradually evolving "helping hands" in the form of my custom components planted this crazy idea in Your head 🪴 to use more engaging measures of showing off catchy ideas. 
+
+Also, I guess there is some practical knowledge about e.g. how `iframe`s can communicate with their host "embedder" or how to chisel out Your cool modifications in the JupyterLite monolith via kind-of code injection or actual Jupyterlab extensions. With these gadgets, I tend to present my technological ramblings unbound by the limitations of spoken word.
+
+<CaptionedImage
+  src="/assets/images/office_magic.gif"
+  alt="My blog content being rendered on Your screen"
+  height="400"
+/>
+
+Prepare to be amazed, I guess 🤷‍♀️.
 
 [knowledge]: https://tenor.com/pl/view/knowledge-tai-lopez-lamborghini-gif-19251888
 [GitHub Octokit]: https://github.com/octokit

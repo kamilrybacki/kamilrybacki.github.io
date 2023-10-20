@@ -90,17 +90,18 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
     <section className="my-4 flex flex-col justify-center">
       <span className="mx-auto mb-2 font-handwriting text-3xl font-bold">{title}</span>
       <main
-        className="mx-auto w-fit"
+        className="mx-auto w-full relative"
         style={{
           display: "grid",
           gridTemplateAreas: `"yLabel graph" "blank xLabel"`,
-          gridTemplateColumns: "auto auto",
-          gridTemplateRows: "auto auto",
+          gridTemplateColumns: "min-content auto",
+          gridTemplateRows: "auto min-content",
+          width: "fit-content"
         }}
       >
         {yLabel && (
           <span
-            className="my-auto -rotate-90 font-handwriting text-xl"
+            className="my-auto -rotate-90 font-handwriting text-xl h-fit"
             style={{
               gridArea: "yLabel",
             }}
@@ -114,7 +115,7 @@ const ScribbleGraph: React.FC<ScribbleGraphProps> = ({
           className="scribble-graph mx-auto my-4 text-background invert"
           style={{
             gridArea: "graph",
-            width: width ?? "100vw",
+            width: width || "100%",
             height: height,
           }}
         />

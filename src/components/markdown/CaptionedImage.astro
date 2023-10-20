@@ -1,0 +1,51 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  rest?: Record<string, unknown>;
+}
+
+const { src, alt, width, height, ...rest } = Astro.props;
+
+const imageId = `astro-captioned-image-${src.replace(/\//g, "-")}`
+const imageImport = await import.meta.glob<string>(
+  '/public/assets/images/*',
+  { eager: true }
+)[`/public${src}`].default;
+---
+<script define:vars={{imageId}}>
+  document.addEventListener("DOMContentLoaded", () => {
+    let currentImageNumber = 1 
+    document
+      .querySelectorAll(".astro-captioned-image")
+      .forEach((image, index) => {
+        if (image.id === imageId) {
+          currentImageNumber = index + 1;
+        }
+      });
+    document
+      .getElementById(`${imageId}`)
+      .getElementsByClassName('caption').item(0)
+      .getElementsByClassName('caption-number').item(0)
+      .innerHTML = `Picture ${currentImageNumber}: `;
+  })
+</script>
+
+<div id={imageId} class="astro-captioned-image my-4 w-full">
+  <Image 
+    class="mx-auto"
+    src={imageImport}
+    alt={alt}
+    (width && width={width})
+    (height && height={height})
+    {...rest}
+  />
+  <div class="caption flex flex-row justify-center items-center my-4 w-full">
+    <span class="caption-number font-bold font-body mr-1 text-sm"/>
+    <span class="text-sm font-body">{alt}</span>
+  </div>
+</div>

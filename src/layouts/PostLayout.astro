@@ -3,11 +3,18 @@ import { SEO } from "astro-seo";
 import '@styles/neon.css';
 import '@styles/markdown.css';
 import { getImage } from 'astro:assets';
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+} from "react-share";
 
 import StyledSVG from "@components/StyledSVG.astro";
 import BasicPageLayout from "./BasicPageLayout.astro";
 
 const { frontmatter } = Astro.props;
+const myURL = new URL(Astro.site || '', Astro.url).toString();
 
 let imageURL = "";
 if (frontmatter.image && frontmatter.image.thumbnail) {
@@ -65,8 +72,39 @@ if (frontmatter.image && frontmatter.image.thumbnail) {
           <h1 class="mb-6 flex w-full font-handwriting text-4xl lg:text-7xl">
             {frontmatter.title} 
           </h1>
+          <div class="flex flex-row gap-4 mb-4 items-center">
+            <span class="font-handwriting text-xl"><b>Share</b> on Your socials:</span>
+            <FacebookShareButton url={myURL} client:load>
+              <StyledSVG
+                src="badges/facebook"
+                alt="facebook"
+                class="w-10 h-10"
+              />
+            </FacebookShareButton>
+            <TwitterShareButton url={myURL} client:load>
+              <StyledSVG
+                src="badges/twitter-x"
+                alt="Twitter"
+                class="w-10 h-10"
+              />
+            </TwitterShareButton>
+            <LinkedinShareButton url={myURL} client:load>
+              <StyledSVG
+                src="badges/linkedin"
+                alt="LinkedIn"
+                class="w-10 h-10"
+              />
+            </LinkedinShareButton>
+            <RedditShareButton url={myURL} client:load>
+              <StyledSVG
+                src="badges/reddit-icon"
+                alt="Reddit"
+                class="w-10 h-10"
+              />
+            </RedditShareButton>
+          </div>
           <div>
-            <span class="mr-auto w-full font-body text-lg opacity-75">Published: {frontmatter.date}</span>
+            <span class="mr-auto w-full font-body text-sm opacity-75">Published: {frontmatter.date}</span>
           </div>
           <hr class="mt-4">
           {
