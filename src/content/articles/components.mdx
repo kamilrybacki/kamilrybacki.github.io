@@ -595,7 +595,7 @@ Next, inside this `retro` directory, there was a `notebooks` one, that contained
   filename="index.html"
 />
 
-Do You see that `import` in the last `script` tag 👀? That's our way in 🏃‍♀️. Basically, it loads a `config-utils.js` file that is responsible for loading the whole RetroLab app. So, I've extended this to now load three separate scripts: `pre.js`, `main.js` and `post.js`. 
+Do You see that `import` in the last `script` tag 👀? That's our way in 🏃. Basically, it loads a `config-utils.js` file that is responsible for loading the whole RetroLab app. So, I've extended this to now load three separate scripts: `pre.js`, `main.js` and `post.js`. 
 
 <CodeSnippet
   code={`
@@ -741,7 +741,7 @@ located under `jupyterlite/patches` directory. The script is run as a part of th
 and uses `operations.json` file that describes each operation i.e. which file to modify and what
 to do with it. The script is pretty straightforward, so I won't include it here, but [You can
 check it out on my repo]. This monkey-patched version is then pushed to the `jupyterlite` branch
-and deployed via Vercel, finishing the whole process 🥲. Below, You can see the final result of
+and deployed via Vercel, finishing the whole process. Below, You can see the final result of
 this endeavor (the greyed-out portion is done differently, as mentioned above).
 
 <iframe
@@ -829,7 +829,7 @@ This is a small part of the boilerplate mini-project located in the aforemention
 there are some caveats to successfully building it. One unintuitive thing is to include a `yarn.lock`
 file inside the extension root directory if it is a part of a larger repo (like mine) because `jupyter` CLI
 will try to install dependencies from the root directory, not the extension one. Also, I had to do
-a light version mangling of some dependencies in `package.json` to make it work with both `jupyterlite`.
+a light version mangling of some dependencies in `package.json` to make it work with `jupyterlite`.
 
 <CodeSnippet
   code={`
