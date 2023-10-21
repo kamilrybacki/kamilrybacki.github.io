@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2023-10-21T11:47:34.801593Z",
+      "created": "2023-10-21T11:51:53.016711Z",
       "format": null,
-      "last_modified": "2023-10-21T11:46:06.389325Z",
+      "last_modified": "2023-10-21T11:50:26.996104Z",
       "mimetype": "text/x-python",
       "name": "lorenz.py",
       "path": "lorenz/lorenz.py",
@@ -14,20 +14,20 @@
     },
     {
       "content": null,
-      "created": "2023-10-21T11:47:34.801593Z",
+      "created": "2023-10-21T11:51:53.016711Z",
       "format": null,
-      "last_modified": "2023-10-21T11:46:06.389325Z",
+      "last_modified": "2023-10-21T11:50:26.996104Z",
       "mimetype": null,
       "name": "Lorenz.ipynb",
       "path": "lorenz/Lorenz.ipynb",
-      "size": 3934,
+      "size": 3977,
       "type": "notebook",
       "writable": true
     }
   ],
-  "created": "2023-10-21T11:47:34.801593Z",
+  "created": "2023-10-21T11:51:53.016711Z",
   "format": "json",
-  "last_modified": "2023-10-21T11:47:34.801593Z",
+  "last_modified": "2023-10-21T11:51:53.016711Z",
   "mimetype": null,
   "name": "lorenz",
   "path": "lorenz",
