@@ -18,6 +18,7 @@ interface Props {
 const { title, style } = Astro.props;
 ---
 <script>
+  window.scrollTo = function () {};
   const resizeContentElement = () => {
     const html = document.querySelector('html');
     const htmlPadding = parseInt(window.getComputedStyle(html as HTMLElement).getPropertyValue('padding').replace('px', ''));
