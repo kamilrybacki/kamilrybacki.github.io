@@ -192,6 +192,13 @@ declare module 'astro:content' {
   collection: "articles";
   data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
+"ciandcompose.mdx": {
+	id: "ciandcompose.mdx";
+  slug: "ciandcompose";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 "components.mdx": {
 	id: "components.mdx";
   slug: "components";
