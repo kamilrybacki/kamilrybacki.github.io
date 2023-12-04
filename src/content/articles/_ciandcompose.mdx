@@ -27,7 +27,7 @@ This is, of course, done with good intent, so that the developers don't accident
 set the production database to be the target of their unit tests, pushing around
 valuable data about somebody's World of Warcraft character on the private server
 run by a group of "real chill dudes", where You've recently managed to down
-that one annoying boss with Your guild, **and** got the highest roll on Crystalheart Pulse-Staff 😌,
+that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff] 😌,
 to the dismay of Your fellow restoration druids 🌲.
 
 Those are the real casualties that would have been made without that one reasonable sysadmin
@@ -96,7 +96,13 @@ Take a look at the following example:
   `}
 />
 
-So, we expect to be greeted by two messages, one from the host and one from the nested container.
+A quick side note - if You see me using the `\` operator in the code snippets, it is just a way to
+break the line in the `.gitlab-ci.yml` file (or other manifests/shell scripts), so that it is more readable. 
+I like to separate the flags and arguments of the commands into separate lines, with indentations added to, for example,
+flag values to see which keyword belongs to which flag. It is not necessary, but I find it
+more readable than a single line with a bunch of flags and arguments, separated by spaces.
+
+So, coming back to CI, we expect to be greeted by two messages, one from the host and one from the nested container.
 However, when we run this job, we will only see the first message executed at the main container level,
 but the second one will not be executed at all:
 
@@ -175,6 +181,8 @@ In most cases, kind of runners are already present as a CI/CD tool for software 
 because, for example, building Docker images is a very common task among them, so we can already capitalize on that.
 However, if there is no such runner available, we can always create one ourselves. There is a [plethora] [of] [tutorials] 
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
+
+### To test and to serve 🚨
 
 So the game plan now is like so:
 
@@ -285,6 +293,8 @@ named `some-random-cache`. This can be done with the following `.gitlab-ci.yml` 
   height="700"
 />
 
+### Snake-in-a-box 🐍📦 (but not that hypercube one)
+
 Cool! So now we can spawn whatever we want inside our CI runner and make it communicate with each other,
 but what about the actual integration tests? Well, we can use the same approach, but just changing the
 type of image used by the nested container to the one containing our tests. Let's say we have a Python project
@@ -293,28 +303,497 @@ with some integration tests that require a Redis database to be present. The fil
 <FileTree
   root="project/"
   tree={[
-    "...",
-    {
-      "src/": [
-          "connector.py",
-          "..."
-        ]
-    },
-    {
-      "tests/": [
-          "test_connector.py",
-          "..."
-        ]
-    },
-    "..."
+    ".env",
+    "connector.py",
+    "test_connector.py",
+    "requirements.txt"
   ]}
   annotations={`
-    src/connector.py:Code with primitive adapter to Redis database.
-    tests/test_connector.py:Integration tests for the connector.py module.
+    .env:A way to introduce env variables to the nested container (for now).
+    connector.py:Code with primitive adapter to Redis database.
+    test_connector.py:Integration tests for the connector.py module.
+    requirements.txt:Python dependencies for the connector.py module.
   `}
 />
 
+The `connector.py` module will use the `redis` library to connect to the database 
+and the `test_connector.py` module will contain tests for our new class. 
+The `requirements.txt` file will contain the `redis` library as a dependency
+to ensure that the runner container will have all of the required modules installed. So what does
+the `connector.py` module has to offer? A janky 🍑 wrapper around the basic `redis.StricRedis` methods
+that will allow us to connect to the database and set/get some values from it:
+
+<CodeSnippet
+  code={`
+    import dataclasses
+    import logging
+    import typing
+
+    import redis
+
+    @dataclasses.dataclass
+    class RedisConnector:
+        host: str = "localhost"
+        port: int = 6379
+        db: int = 0
+        _session: redis.StrictRedis = dataclasses.field(init=False, default_factory=redis.StrictRedis)
+
+        def __post_init__(
+            self,
+        ) -> redis.StrictRedis:
+            try:
+                self._session = redis.StrictRedis(
+                    host=self.host,
+                    port=self.port,
+                    db=self.db
+                )
+                logging.info("Redis connection established")
+                return self._session
+            except Exception as connection_failed:
+                logging.error("Redis connection failed")
+                logging.error(connection_failed)
+                raise connection_failed
+
+        def __del__(self) -> None:
+            self.disconnect()
+
+        def disconnect(self) -> None:
+            if self._session:
+                self._session.close()
+                logging.info("Redis connection closed")
+
+        def __getitem__(self, key) -> typing.Any:
+            return self._session.get(key)
+
+        def __setitem__(self, key: str, value: typing.Any) -> None:
+            self._session.set(key, value)
+  `}
+  language="python"
+  filename="connector.py"
+  annotations={`
+    7:We will use dataclasses to simplify the initialization of the class
+    12:This field will store the already established connection to the Redis database
+    14-28:Here we try to connect to the Redis database and log the result
+    30:Here we define the destructor for the class, which will close the connection
+    33:Here we define the method for closing the connection
+    38-42:Here we define the setter and getter for the Redis database
+  `}
+/>
+
+This may not be the apex of the Pythonic design, but it will do for our purposes. The `test_connector.py` module
+is just a basic implementation of the `ping-pong` test, that utilizes the `.ping()` method of the `redis.StrictRedis`
+class:
+
+<CodeSnippet
+  code={`
+    import os
+
+    import connector
+
+
+    def test_redis_connection():
+        target_host = os.environ.get("REDIS_HOST")
+        target_port = os.environ.get("REDIS_PORT")
+        target_db = os.environ.get("REDIS_DB")
+        redis_instance = connector.RedisConnector(
+            host=target_host,
+            port=target_port,
+            db=target_db
+        )
+        assert redis_instance._session.ping()
+  `}
+  language="python"
+  filename="test_connector.py"
+  annotations={`
+    7-9:We retrieve the environment variables from the nested container
+    15:We reach to the underlying redis.StricRedis class and use its .ping() method
+  `}
+/>
+
+Here we can see the purpose of `.env` file - itwill contain the two environment variables 
+that are to be used by the connector class to, well, ... connect to the Redis database: 
+`REDIS_HOST`, `REDIS_PORT` and `REDIS_DB`. So we want to do the following things:
+
+1. Set up a temporary Redis database.
+2. Mount the repository with out code to a `pytest` runner container.
+3. Install the required dependencies to carry out the unit tests.
+4. Run `pytest` and (as previously) - hope for the best. 🤞
+
+The main goal of these tests will be to check if our interface is compatible with the one
+offered by the `redis` library. So we will not be testing the actual data retrieval, but rather
+the ability to retrieve the data at all. A simple case, that we will, of course, complicate in a bit.
+So, the `.gitlab-ci.yml`:
+
+<CodeSnippet
+  code={`
+      test-job:
+      image: docker:latest
+      tags:
+        - "docker"
+        - "dind"
+      services:
+        - name: docker:dind
+          alias: my-docker-service
+        - name: redis:latest
+          alias: some-random-cache
+      variables:
+        DOCKER_HOST: "tcp://my-docker-service:2375"
+        DOCKER_TLS_CERTDIR: ""
+        FF_NETWORK_PER_BUILD: "true"
+      script: |
+        echo "I am running!"
+        docker \\
+          run \\
+            --network=host \\
+            --volume $PWD:/app \\
+            --workdir /app \\
+            --env-file .env \\
+            python:3.10 \\
+            sh -c "pip install -r requirements.txt pytest && pytest"
+  `}
+  language="yaml"
+  filename=".gitlab-ci.yml (testing connector)"
+  annotations={`
+    20:We mount the WHOLE repo to some path in the container
+    21:We set the working directory to the mounted repo
+    22:We set the environment variables from the mounted .env file
+    24:We install the required dependencies and run the tests
+  `}
+/>
+
+The value for the `REDIS_HOST` environment variable will be `some-random-cache` and the value for the `REDIS_PORT`
+environment variable will be `6379`. The `REDIS_DB` environment variable will be set to `0` by default.
+As it can be seen in the log snippet below, the tests have passed (I've omitted the initial setup logs,
+since it they are almost identical to previous ones - only this time the `python:3.10` image is pulled 🤷):
+
+<CaptionedImage
+  src="/assets/images/nested_container_pytest_pong.png"
+  alt="The ping has been ponged again, programmatically 🐍🏓"
+  height="700"
+/>
+
+### Matryoshka of problems 🪆
+
+So we have successfully created a mock test environment for our integration tests.
+It is self-contained and somewhat "invisible" (or dead 💀) to the outside architecture of the organization,
+but we can see it is alive and kicking from the inside 😸. However, some things about it may (and in practice - often will) 
+create some practical issues. 😿
+
+The first one is the fact that we have stored our environment variables in a file that is mounted to the container. 
+This is not a good practice, because we are basically storing our secrets in plain text and totally negating the existence of any
+sensitive data protection measures that we may have in place e.g. Vault or some other secrets management tool.
+Also, GitLab can use environment variables defined in CI/CD settings of the repo, so we can use that
+to our advantage.
+
+The second one is that if we want to spawn more than one container via `docker` command, we will have to
+create long `script` sections in our `.gitlab-ci.yml` file, which will be hard to maintain and read.
+Moreover, if we would like to pass the aforementioned environment variables to the nested containers,
+we would have to do it manually for each of them, using the `--env` flag. This is not a good practice either,
+because we are basically repeating ourselves and we are not really using the full potential of the containerization.
+Also - container dependencies. If we want to spawn a container that depends on another container, we would have to
+create a script that will wait for the first container to be ready and then spawn the second one, manually.
+And how do we define that the first container is ready? Well, we would have to create a healthcheck script.
+And mount it to the container, under a predefined path for Docker daemon to use.
+
+The third issue that may pop up from time to time - network management. Sometimes, we want to be able to
+use raw IP addresses of the containers, instead of their DNS-resolved names. In some cases, it may even speed up the
+tests execution because the DNS lookups are not being performed constantly.
+
+And the fourth one - observability. We want to be able to see what is going on inside the containers,
+especially the ones defined as services, since we will be sending various requests to them and we want to be sure
+that they are being processed correctly.
+
+So, we have three issues connected to the configuration of **compositions** made up from **Docker** containers.
+I think You know where I'm going with this. 🤔
+
+## Compose Yourself, before You test Yourself 🐋🛠️
+
+So yeah, let's pack up our happy family of containers into a single YAML, that can be nicely stored in our repo
+and reviewed by our fellow developers. We can do that by using the `docker-compose` tool, which is a part of the
+Docker ecosystem. It allows us to define a set of containers that will be spawned together and may share a network.
+
+I will try to include all of the aforementioned aspects into this new setup, but bear in mind that for this
+simple case of a single container, it may be a bit of an overkill 🙈. But it will easily scale to a more complex
+and appropriate problem shortly. Without further ado, let's take a look at the `docker-compose.yml` file:
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      redis:
+        image: redis:6.2.6-alpine
+        ports:
+          - 6379:6379
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: ["CMD", "redis-cli", "ping", '-h', 'localhost', '-p', '6379']
+          interval: 5s
+          timeout: 5s
+          retries: 5
+
+      pytest-runner:
+        image: python:3.10
+        depends_on:
+          - redis
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        volumes:
+          - \$\{CI_PROJECT_DIR\}:/app
+        working_dir: /app
+        environment:
+          - REDIS_HOST
+          - REDIS_PORT
+          - REDIS_DB
+        command:
+          - sh
+          - -c
+          - |
+            pip \\
+              install \\
+                -r requirements.txt \\
+                pytest
+            pytest
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml"
+  annotations={`
+    8-10:Redis service networking configuration
+    12-15:Redis healthcheck
+    21-23:Pytest runner networking configuration
+    24:Mounting the code
+    26:Setting the working directory to cloned repo
+    27-30:Environment variables pulled from parent CI container
+    32-39:Multiline command syntax I tend to use
+    46-48:Setting manually the subnet and gateway for the test network
+  `}
+/>
+
+Since it is a lot to take in at once due to some caveats present, I will go through the most
+juicy parts 🥝🍋🍎 of this file.
+
+### Decomposing the composition ✂️
+
+The general goal of this file is to create a network called `test-network` and spawn two containers
+inside it - one with a Redis database and one with our `pytest` runner. So, I will divide this section
+into two aspects: container general setup and container interconnectivity (i.e. networking).
+
+#### Container general setup 👩‍🏭📦
+
+The first thing that we can see is that we have two services defined under the `services` keyword:
+
+* the Redis database, which is defined as a service with the `redis` name,
+* the `pytest` runner, which is defined as a service with the `pytest-runner` name.
+
+For the first one, since we're focused here on setting up **JUST** the Redis database,
+without any additional services in its container, the `alpine` version of Redis Docker image is used.
+
+For the `pytest` runner, we use the `python:3.10` image, which is the same as the previously used tag
+in our last version of `.gitlab-ci.yml` file. The logical thing here is to sping up that container
+**only** if the Redis service has not only started, but is also ready to accept connections i.e. healthy.
+This can be achieved by using the [`depends_on` Docker Compose keyword], which will make the `pytest` runner container
+wait for the Redis container to be ready.
+
+To ensure that the `redis` container is ready, we will
+manually define a [healthcheck] for it, which will be performed by the Docker daemon. This healthcheck
+will be performed every 5 seconds, 5 times, with a timeout of 5 seconds. The gist of it is the
+`redis-cli ping` command, that You have seen at the beginning of this article.
+
+<CodeSnippet
+  code={`
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping", '-h', 'localhost', '-p', '6379']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  `}
+  language="yaml"
+  filename="docker-compose.yml (healthcheck)"
+  annotations={`
+    2:We define the command that will be executed by the Docker daemon
+    3:We define the interval between the healthchecks
+    4:We define the timeout for the healthcheck
+    5:We define the number of retries for the healthcheck
+  `}
+/>
+
+We also need to configure the `pytest` to contain necessary environment variables, that will be used
+by the `connector.py` module to connect to the Redis database. This can be done by using the `environment`
+keyword, which will set the environment variables in the container. Here, we can just list the names
+of the variables, without their values, because they will be pulled from the parent CI container
+(the one that is actually spawned by the GitLab runner). However, nothing stops us from setting
+the values here, if we want to override the values from the parent container, using the
+`[VARIABLE_NAME]: [VARIABLE_VALUE]` syntax.
+
+And of course, since we are testing our Python module,
+we need to mount the repository with our code to the container via `volumes` keyword and set the
+working directory to the mounted repo via `working_dir` keyword. The last step is optional,
+but I prefer to do it because it makes it more natural to issue commands in the container
+as if we were in the repo root directory on our local machine.
+
+When it comes to the `pytest-runner` commands, we can see that we are using the multiline syntax
+to install the dependencies and run the tests. This is because we want to avoid the use of
+the `&&` operator, which is used to chain target commands in a single line or some other line-breaking
+maneuvers (due to the underlying `sh` command), which are not really readable. So as You can see,
+I just pack the actual directives into a single string and use the `|` operator to tell the shell
+to treat it as a multiline command:
+
+<CodeSnippet
+  code={`
+    command:
+      - sh
+      - -c
+      - |
+        pip \\
+          install \\
+            -r requirements.txt \\
+            pytest
+        pytest
+  `}
+  language="yaml"
+  filename="docker-compose.yml (multiline command)"
+  annotations={`
+    4:The | operator tells the shell to treat the following lines as a multiline command
+  `}
+/>
+
+And that's it for the general setup of the containers. Now let's take a look at the networking.
+
+#### Container interconnectivity 📦🔗📦
+
+First, we will start from the bottom of our `docker-compose.yml` file, where we define the `test-network`.
+Here, just to be 💯% sure, I explicitly set its name to `test-network`. It's not really necessary,
+since it will be automatically named after the directory in which the `docker-compose.yml` file is located,
+if it suits Your case.
+
+<CodeSnippet
+  code={`
+      networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (network)"
+  annotations={`
+    3:We define the name of the network
+    4:We do the manual IP address management (IPAM)
+    7:Creating the subnet (group of IP addresses) for the network
+    8:Setting the gateway for the network
+  `}
+/>
+
+Then, we move onto the IP address management (IPAM) part. Here, we define the subnet for the network
+where out containers will be located, by explicitly assigning them adresses from the range
+from `10.5.0.0` to `10.5.255.254` (where 65534 possible hosts is ofc an overshot, but it's just an example).
+To get this kind of IP address range, we must define the subnet as `10.5.0.0/16`, where the `/16` part
+is the CIDR notation for the subnet mask. The `gateway` keyword is used to define the IP address
+of the gateway for the network, which is the address of the host machine on which the containers
+will be spawned i.e. the parent CI container. The rule of thumb here is that **the gateway address
+must be the first address in the subnet range**, so in our case, it would be `10.5.0.1`.
+
+As for the network configuration of the services, we must simply specify for each service the
+network to which it belongs and the IP address that it will be assigned to. This can be done
+by using the `networks` keyword, which will contain the name of the network and the `ipv4_address`
+field with the desired IP address:
+
+<CodeSnippet
+  code={`
+    services:
+      redis:
+        ...
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        ...
+
+      pytest-runner:
+        ...
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        ...
+  `}
+  language="yaml"
+  filename="docker-compose.yml (services networking snippets)"
+  annotations={`
+    4-6:Redis service networking configuration
+    11-13:Pytest runner networking configuration
+  `}
+/>
+
+So now in our configuration of unit tests, we can be sure that whenever we make any calls like
+API calls or database queries, we will be able to use the IP addresses of the containers instead
+of their DNS-resolved names.
+
+Finally, after running our modified mock stack setup, we should see that the Docker daemon
+successfully spins up a new network with two containers inside it, performs the tests defined
+in the `test_connector.py` module and then destroys the network along with the containers.
+Let's see if that is the case 🙈.
+
+<CaptionedImage
+  src="/assets/images/compose_first_stack.png"
+  alt="The composed pinger has received its service-oriented pong 🐋🏓"
+  height="400"
+/>
+
+We see not only that the mock environment has been successfully created and executed its workload,
+**but** we have now access to nicely separated logs of the services that are spawned by the `docker-compose` tool,
+due to their lines being prepended with the container's name. These logs can be even scrapped by some other
+tool (if we're talking about a setup oriented towards CD) for further analysis. The possibilities are there❕
+
+But, we have reached our goal of testing integration of our connector with the Redis database,
+but the thing is that we have used the `redis` library that, by the design, already accomplishes
+that. So now it is time to move to some raw and dirty HTTP requests and barebones JSON responses.
+We're talking about REST API here. 4️⃣0️⃣4️⃣☠️
+
+## C’mon homie, we JSON 🎤🐻
+
+We will go wild on this one, but it actually references one of the cases I've encountered in my work.
+The main goal here is to provide a middle-man application, **an agent** 🕵️, that requests metrics
+from one database and then pushes it into some other remote endpoint. This is kind of similar to
+[how Prometheus works in remote-write mode] - it scrapes the metrics from the targets
+and passes them forward to some other place.
+
+For demonstration purposes, the agent will be a simple Python application that will be
+sending HTTP requests using `requests` library. To produce some metrics, we will use
+the awesome [`fake-metrics-generator`] project by Grafana team, which already has a Docker image available
+to quickly spin up containers spitting out random metrics. The target endpoint for this data
+will be a simple [MongoDB] instance with a database named `metrics` and a collection named `fake`.
+
+This setup may look out of touch with reality, but imagine substituting the `fake-metrics-generator`
+with Prometheus or Grafana instance and MongoDB with some other database or application
+that analyzes the metrics. Or just "don't-imagine" projects like [prometheus-kafka-adapter],
+these things need implementation all over the place due to different data flows present in the organizations.
+
+This also gives us a chance to do some HTTP calls to the `fake-metrics-generator` container
+and communicate with MongoDB via `pymongo` library. So, two distinct ways of communication -
+via REST API and a programmatic interface, which is cool for our tutorial here.
+
+[Crystalheart Pulse-Staff]: https://www.wowhead.com/tbc/item=28782/crystalheart-pulse-staff
 [`services` keyword in the `.gitlab-ci.yml` file]: https://docs.gitlab.com/ee/ci/services/
 [plethora]: https://medium.com/@oachuy/gitlab-runner-with-docker-dind-3e0e1862662f
 [of]: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
 [tutorials]: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
+[`depends_on` Docker Compose keyword]: https://docs.docker.com/compose/compose-file/05-services/#depends_on
+[healthcheck]: https://docs.docker.com/engine/reference/builder/#healthcheck
+[how Prometheus works in remote-write mode]: https://prometheus.io/docs/concepts/remote_write_spec/
+[`fake-metrics-generator`]: https://github.com/grafana/fake-metrics-generator
+[MongoDB]: https://www.mongodb.com/
+[prometheus-kafka-adapter]: https://github.com/Telefonica/prometheus-kafka-adapter
