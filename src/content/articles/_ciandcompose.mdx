@@ -431,7 +431,7 @@ So, the `.gitlab-ci.yml`:
 
 <CodeSnippet
   code={`
-      test-job:
+    test-job:
       image: docker:latest
       tags:
         - "docker"
@@ -528,6 +528,7 @@ and appropriate problem shortly. Without further ado, let's take a look at the `
 
     services:
       redis:
+        container_name: redis
         image: redis:6.2.6-alpine
         ports:
           - 6379:6379
@@ -541,6 +542,7 @@ and appropriate problem shortly. Without further ado, let's take a look at the `
           retries: 5
 
       pytest-runner:
+        container_name: pytest-runner
         image: python:3.10
         depends_on:
           - redis
@@ -576,14 +578,14 @@ and appropriate problem shortly. Without further ado, let's take a look at the `
   language="yaml"
   filename="docker-compose.yml"
   annotations={`
-    8-10:Redis service networking configuration
-    12-15:Redis healthcheck
-    21-23:Pytest runner networking configuration
+    9-11:Redis service networking configuration
+    12-16:Redis healthcheck
+    23-25:Pytest runner networking configuration
     24:Mounting the code
-    26:Setting the working directory to cloned repo
-    27-30:Environment variables pulled from parent CI container
-    32-39:Multiline command syntax I tend to use
-    46-48:Setting manually the subnet and gateway for the test network
+    28:Setting the working directory to cloned repo
+    29-32:Environment variables pulled from parent CI container
+    34-41:Multiline command syntax I tend to use
+    48-50:Setting manually the subnet and gateway for the test network
   `}
 />
 
@@ -600,8 +602,12 @@ into two aspects: container general setup and container interconnectivity (i.e. 
 
 The first thing that we can see is that we have two services defined under the `services` keyword:
 
-* the Redis database, which is defined as a service with the `redis` name,
-* the `pytest` runner, which is defined as a service with the `pytest-runner` name.
+* the Redis database, which is defined as a service with the `redis` container name,
+* the `pytest` runner, which is defined as a service with the `pytest-runner` container name.
+
+**NOTE**: I am explicitly setting the container names (via `container_name` field), because I want to be able to 
+refer to them by invariant, hardcoded aliases, instead of the [automatically generated ones], that may contain names 
+of directories where the manifests are located (if You decide to copy them and place in some folder). Better safe than sorry.
 
 For the first one, since we're focused here on setting up **JUST** the Redis database,
 without any additional services in its container, the `alpine` version of Redis Docker image is used.
@@ -645,8 +651,9 @@ the values here, if we want to override the values from the parent container, us
 
 And of course, since we are testing our Python module,
 we need to mount the repository with our code to the container via `volumes` keyword and set the
-working directory to the mounted repo via `working_dir` keyword. The last step is optional,
-but I prefer to do it because it makes it more natural to issue commands in the container
+working directory to the mounted repo via `working_dir` keyword. We can utilize the `CI_PROJECT_DIR`
+variable, which is set by the GitLab runner and points to the root directory of the cloned repo.
+The last step is optional, but I prefer to do it because it makes it more natural to issue commands in the container
 as if we were in the repo root directory on our local machine.
 
 When it comes to the `pytest-runner` commands, we can see that we are using the multiline syntax
@@ -775,22 +782,840 @@ We will go wild on this one, but it actually references one of the cases I've en
 The main goal here is to provide a middle-man application, **an agent** 🕵️, that requests metrics
 from one database and then pushes it into some other remote endpoint. This is kind of similar to
 [how Prometheus works in remote-write mode] - it scrapes the metrics from the targets
-and passes them forward to some other place.
+and passes them forward to some other place. We will implement a very crude version of that
+as a miniature Python module (a script, really) that will be imported into some other
+source code.
 
-For demonstration purposes, the agent will be a simple Python application that will be
+For demonstration purposes, the agent library will be a simple Python module that will be
 sending HTTP requests using `requests` library. To produce some metrics, we will use
 the awesome [`fake-metrics-generator`] project by Grafana team, which already has a Docker image available
-to quickly spin up containers spitting out random metrics. The target endpoint for this data
-will be a simple [MongoDB] instance with a database named `metrics` and a collection named `fake`.
+to quickly spin up containers spitting out random metrics. This service will be scraped by Prometheus
+to which we will send PromQL queries via the agent for the metrics that we want to retrieve.
+The target endpoint for this data will be a simple [MongoDB] instance with a database named 
+`metrics`.
 
 This setup may look out of touch with reality, but imagine substituting the `fake-metrics-generator`
-with Prometheus or Grafana instance and MongoDB with some other database or application
-that analyzes the metrics. Or just "don't-imagine" projects like [prometheus-kafka-adapter],
-these things need implementation all over the place due to different data flows present in the organizations.
+with real application that produces metrics or Grafana instance collecting cluster-wide data or 
+MongoDB with some other database or application that analyzes the metrics.
+Or just "don't-imagine" projects like [prometheus-kafka-adapter],
+these things need implementation all over the place due to the different data flows present in the organizations.
 
 This also gives us a chance to do some HTTP calls to the `fake-metrics-generator` container
 and communicate with MongoDB via `pymongo` library. So, two distinct ways of communication -
 via REST API and a programmatic interface, which is cool for our tutorial here.
+
+Test will be performed by the `pytest` runner, which will use the module to transfer the aforementioned
+mock data from Prometheus to MongoDB.
+
+### Pre-mission briefing 📋
+
+We have learned how to glue together containers into a single composition with Docker Compose,
+so it is now a matter of defining three aspects of our test stack:
+
+1. Dependency between containers - which container needs another service running to start performing its job
+2. Healthchecks - how to define that a container is ready to accept requests or, in general, is healthy
+3. Static and dynamic configuration - what can be set in stone via environment variables and what needs templating
+
+These things will help us write a correct Compose YAML and sometimes further organize file structure of our project.
+
+#### No. 1 and 2: Together we start, divided we fail 🏳️
+
+Due to the intertwinement of the aforementioned aspects, I will cover them together in this section.
+
+This part should be rather simple, but requires some knowledge about the services that we want to use.
+At the beginning, let's focus on the input data i.e. mock metrics to be pushed further to the database.
+Our main source of information mined via the agent app will be a Prometheus instance. This service
+will need to constantly scrape metrics from our `fake-metrics-generator` service, so it will be
+dependent on it. 
+
+This means that before we start the Prometheus service, we need to make sure that the `fake-metrics-generator`
+service is up and running. This can be achieved by using the `depends_on` keyword, which will make
+the Prometheus service wait for the `fake-metrics-generator` service to be ready.
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (depends_on)"
+  annotations={`
+    6-7:Generator is a NodeJS app that is built here from source during CI
+    9:This port config comes from the project GitHub README
+    17-19:We say that this service should wait until the generator is healthy
+    21:Default Prometheus port mapping
+  `}
+/>
+
+Sweet, now the Prometheus will wait until the `fake-metrics-generator` service is healthy,
+so all should be good. Well... 🤷‍♂️. What does it mean that our generator is healthy?
+Normally, popular services like Redis or MongoDB have some kind of healthcheck mechanism
+built-in, so we can just use that. But what about our `fake-metrics-generator` service?
+To be honest, its just a random app that publishes some API endpoint and spits out data
+like there is no tomorrow. In this case, **WE** have to define what it means for this service
+to be healthy. What we know about this application is that, after booting up, it will
+expose the '/metrics' endpoint, so we can continuously send `GET` HTTP requests via `curl` to it
+and check if it responds with a `200` status code. To do that, we can use the `--fail` flag,
+which will make `curl` return a non-zero exit code if the response status code is not `200`.
+This procedure can be defined for `mock-metrics-generator` by using the `healthcheck` keyword:
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: curl --fail http://10.5.0.2:5000/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (depends_on remastered)"
+  annotations={`
+    14-17:Just hit that endpoint
+  `}
+/>
+
+Another healthcheck that we need to define is the one for the Prometheus service. This one
+is a bit more tricky, because we need to make sure that the Prometheus service is ready to accept
+PromQL queries i.e. have its API open to the outside world. This can be achieved by using the
+`wget` tool (for variety sake here), but this time we will use it to hit the root endpoint under `9090` port:
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: curl --fail http://10.5.0.2:5000/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        healthcheck:
+          test: ["CMD", "wget", "http://localhost:9090"]
+          interval: 10s
+          timeout: 15s
+          retries: 10
+          start_period: 40s
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (Prom healthcheck)"
+  annotations={`
+    31-35:Just hit that endpoint, Part 2
+  `}
+/>
+
+On the other side of our data flow pipeline is the MongoDB database. This service will be
+responsible for storing the metrics that we will be sending to it via the agent app.
+So, we need to make sure that the database is up and running before we start the agent.
+Again, we will use `depends_on` keyword and (just to be 100% sure) define a very simple
+healthcheck for it:
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: curl --fail http://10.5.0.2:5000/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        healthcheck:
+          test: ["CMD", "wget", "http://localhost:9090"]
+          interval: 10s
+          timeout: 15s
+          retries: 10
+          start_period: 40s
+
+      mongo:
+        container_name: mongo
+        image: mongo:5.0.3
+        ports:
+          - 21017:27017
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.4
+        healthcheck:
+          test: echo 'db.runCommand("ping").ok' | mongo --quiet
+          interval: 5s
+          timeout: 3s
+          retries: 5
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (Mongo No. 5, bby)"
+  annotations={`
+    35:Again, the default for MongoDB instances
+    40:We can use the mongo client command to check if the database is up and running
+  `}
+/>
+
+If You want to check out how You can set more complicated healthchecks for MongoDB, check out
+the official documentation on the [`mongo` commands] (there are like a billion of them 😵).
+
+Now, the *creme de la creme* 🤌 of this section - tests runner with our module installed
+and ready to throw some bogus metrics around. Those tests will require our whole stack to be
+up and running, so the `depends_on` keyword will be used again, but with a little more robust
+set of conditions:
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: curl --fail http://10.5.0.2:5000/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        healthcheck:
+          test: ["CMD", "wget", "http://localhost:9090"]
+          interval: 10s
+          timeout: 15s
+          retries: 10
+          start_period: 40s
+
+      mongo:
+        container_name: mongo
+        image: mongo:5.0.3
+        ports:
+          - 21017:27017
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.4
+        healthcheck:
+          test: echo 'db.runCommand("ping").ok' | mongo --quiet
+          interval: 5s
+          timeout: 3s
+          retries: 5
+
+    pytest-runner:
+      container_name: pytest-runner
+      image: python:3.10-alpine
+      depends_on:
+        mongo:
+          condition: service_healthy
+        prometheus:
+          condition: service_healthy
+      networks:
+        test-network:
+          ipv4_address: 10.5.0.5
+      volumes:
+        - \${CI_PROJECT_DIR}:/app
+      working_dir: /app
+      command:
+        - sh
+        - -c
+        - |
+          pip \\
+            install \\
+              pytest
+          pytest \\
+            test_agent.py
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (team assembled)"
+  annotations={`
+    48-52:We wait for both MongoDB and Prometheus to be healthy
+    59-67:We install the dependencies and run the tests
+  `}
+/>
+
+Right now, we have our stack ready to be tested, but we have to remember that we have to
+configure Prometheus to scrape the mock data-generating service. Also, as set in out requirements
+for the test environment, the MongoDB instance must have a database named `metrics` created, before
+we will attempt our tests.
+
+#### No. 3: Knobs and dials 🔧
+
+In terms of configuration, we have to solve the following problems in our environment setup:
+
+1. Add a new [scraping target] to Prometheus configuration via `prometheus.yml` file
+2. Create a database named `metrics` in MongoDB
+
+These tasks will be classified by me here as the "dynamic" part of the configuration, because
+they require some kind of templating to be done at the time of the CI job execution. Next ones
+are connected with hardcoded values that can be set via environment variables or, in other words,
+typed by us in the `docker-compose.yml` or `.gitlab-ci.yml` files:
+
+3. Move the IP addresses and ports of the services to one place in GitLab CI pipeline as environment variables
+4. Set the IP addresses and ports of the services in the `docker-compose.yml` file via environment variables
+
+Configuring Prometheus will be a two-step process, because we have to add a new scraping target
+to the `prometheus.yml` file from template using CI commands and then mount it to the container
+via `volumes` keyword. The `prometheus.yml` file will be mounted to the container under the path
+`/etc/prometheus/prometheus.yml`. First, the YAML part:
+
+<CodeSnippet
+  code={`
+    scrape_configs:
+      - job_name: 'mock_metrics'
+        metrics_path: /metrics
+        scrape_interval: 5s
+        static_configs:
+  `}
+  language="yaml"
+  filename="prometheus.yml (scrape_configs)"
+  annotations={`
+    2:This is exposed by the fake-metrics-generator
+  `}
+/>
+
+Now, if You are in any way familiar with Prometheus, You know that this is not enough to make it
+due to one line missing from this file. And that is exactly the line that we will be adding
+via CI commands. The magic ingredient is the `- targets: ['10.5.0.3:5000']` with the IP address
+and port of generator service. This can be done by simply `echo`'ing the line to the file,
+being careful to use the `>>` operator, which will append the line to the file, instead of
+overwriting it. Plus, we need to account for the indentation of the line:
+
+<CodeSnippet
+  code={`
+    test-job:
+      image: docker:latest
+      tags:
+        - "docker"
+        - "dind"
+      services:
+        - name: docker:dind
+          alias: my-docker-service
+      variables:
+        DOCKER_HOST: "tcp://my-docker-service:2375"
+        DOCKER_TLS_CERTDIR: ""
+        FF_NETWORK_PER_BUILD: "true"
+      script:
+        ...
+        - |
+          echo \\
+            "    - targets: [10.5.0.3:5000]" \\
+            >> prometheus.yml
+        ...
+  `}
+  language="yaml"
+  filename=".gitlab-ci.yml (finishing prometheus.yml)"
+  annotations={`
+    16:We echo the line with targets definition
+    18:We append the line to the file
+  `}
+/>
+
+Now, we have to mount the `prometheus.yml` file to the container. This can be done by using
+the `volumes` keyword, which will mount the file from the host machine to the container
+under the path `/etc/prometheus/prometheus.yml`:
+
+<CodeSnippet
+  code={`
+    ...
+    prometheus:
+      ...
+      volumes:
+        - \${CI_PROJECT_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml
+      ...
+  `}
+  language="yaml"
+  filename="docker-compose.yml (prometheus.yml mount)"
+  annotations={`
+    1:I've omitted the rest of the compose for brevity
+  `}
+/>
+
+Next, we have to create the `metrics` database in MongoDB. The `mongo` image used by us has an easy way
+to run initialization scripts on the container boot. We just have to mount a JavaScript (or shell) script
+to the container under the `/docker-entrypoint-initdb.d/` directory and it will be executed by the `mongo` client
+automagically 🪄. The script is rather simple because it adds a user for the `metrics` database,
+ensuring its existence at the time of the agent module tests:
+
+<CodeSnippet
+  code={`
+    db.createUser({
+      user: "metrics",
+      pwd: "metrics",
+      roles: [
+        {
+          role: "readWrite",
+          db: "metrics"
+        }
+      ]
+    })
+  `}
+  language="javascript"
+  filename="mongo-init.js"
+  annotations={`
+    2-3:Some toy credentials
+    4-9:Predefined MongoDB role assignment
+  `}
+/>
+
+To be even more raunchy, I will just `cat` the contents of this file to the `mongo-init.js` file from the
+`.gitlab-ci.yml` file - I will use this fact in a second.
+
+<CodeSnippet
+  code={`
+    test-job:
+      image: docker:latest
+      tags:
+        - "docker"
+        - "dind"
+      services:
+        - name: docker:dind
+          alias: my-docker-service
+      variables:
+        DOCKER_HOST: "tcp://my-docker-service:2375"
+        DOCKER_TLS_CERTDIR: ""
+        FF_NETWORK_PER_BUILD: "true"
+      script:
+        ...
+        - |
+          cat <<EOT >> mongo-init.js
+          db.createUser({
+            user: "metrics",
+            pwd: "metrics",
+            roles: [
+              {
+                role: "readWrite",
+                db: "metrics"
+              }
+            ]
+          })
+          EOT
+        ...
+  `}
+  language="yaml"
+  filename=".gitlab-ci.yml (mongo-init.js)"
+  annotations={`
+    16:We echo the contents of the file
+    18:We append the contents to the file
+  `}
+/>
+
+Then we plop (mount) that bad boi 🦹 into the `docker-entrypoint-initdb.d` directory and we're good to go.
+Moreover, we will set the credentials for the MongoDB database via environment variables, since
+we're already using tricks made available by this Docker image.
+
+<CodeSnippet
+  code={`
+    ...
+    mongo:
+      ...
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: root
+        MONGO_INITDB_ROOT_PASSWORD: root
+        MONGO_INITDB_DATABASE: metrics
+      volumes:
+        - \${CI_PROJECT_DIR}/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      ...
+  `}
+  language="yaml"
+  filename="docker-compose.yml (mongo-init.js mount)"
+  annotations={``}
+/>
+
+Cool, we've got our metrics scraping ready and our database is up and running. If we check out our
+full `docker-compose.yml` file, we can see that we have a lot of hardcoded values there. I've marked
+the more important lines with single-line comments. We can move those values to the environment variables
+defined in the `.gitlab-ci.yml` file, so that we can easily change them in one place. This is possible because
+Docker Compose, as shown previously, **can use the environment variables of its host*. So, we will be able to
+configure the whole CI setup from the `.gitlab-ci.yml` file, which is nice.
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:16-alpine
+        command: ['node', '/app/main.node.js']
+        ports:
+          - 5000:5000
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.2
+        healthcheck:
+          test: curl --fail http://10.5.0.2:5000/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        volumes:
+          - \${CI_PROJECT_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+          - 9090:9090
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.3
+        healthcheck:
+          test: ["CMD", "wget", "http://localhost:9090"]
+          interval: 10s
+          timeout: 15s
+          retries: 10
+          start_period: 40s
+
+      mongo:
+        container_name: mongo
+        image: mongo:5.0.3
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root
+          MONGO_INITDB_DATABASE: metrics
+        volumes:
+          - \${CI_PROJECT_DIR}/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+        ports:
+          - 21017:27017
+        networks:
+          test-network:
+            ipv4_address: 10.5.0.4
+        healthcheck:
+          test: echo 'db.runCommand("ping").ok' | mongo --quiet
+          interval: 5s
+          timeout: 3s
+          retries: 5
+
+    pytest-runner:
+      container_name: pytest-runner
+      image: python:3.10-alpine
+      depends_on:
+        mongo:
+          condition: service_healthy
+        prometheus:
+          condition: service_healthy
+      networks:
+        test-network:
+          ipv4_address: 10.5.0.5
+      volumes:
+        - \${CI_PROJECT_DIR}:/app
+      working_dir: /app
+      command:
+        - sh
+        - -c
+        - |
+          pip \\
+            install \\
+              pytest
+          pytest \\
+            test_agent.py
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  annotations={`
+    9:Generator port -> GENERATOR_PORT
+    12:Generator address -> GENERATOR_IP_ADDRESS
+    14:Here we can substitute for the GENERATOR_* variables
+    28:Prometheus port -> PROMETHEUS_PORT
+    31:Prometheus address -> PROMETHEUS_IP_ADDRESS
+    33:Here we can substitute the port
+    43:MongoDB root username -> MONGO_ROOT_USERNAME
+    44:MongoDB root password -> MONGO_ROOT_PASSWORD
+    45:MongoDB database name -> MONGO_TEST_DATABASE
+    49:MongoDB port -> MONGO_PORT
+    52:MongoDB address -> MONGO_IP_ADDRESS
+    69:Here we can omit the IP address - we 100% won't be using it 🤷
+  `}
+/>
+
+Now, we can create the desired variables to the `.gitlab-ci.yml`, as global variables so that
+they are nicely separated from the rest of the file as a sort of configuration section:
+
+<CodeSnippet
+  code={`
+    variables:
+      MOCK_GENERATOR_HOST: "10.5.0.3"
+      MOCK_GENERATOR_PORT: "5000"
+      MONGODB_HOST: "10.5.0.2"
+      MONGODB_PORT: "27017"
+      PROMETHEUS_HOST: "10.5.0.4"
+      PROMETHEUS_PORT: "9090"
+      PYTEST_HOST: "10.5.0.5"
+      MONGODB_ROOT_USERNAME: "root"
+      MONGODB_ROOT_PASSWORD: "r00t"
+      MONGODB_TEST_DATABASE: "metrics"
+
+    test-job:
+      image: docker:latest
+      ...
+  `}
+  language="yaml"
+  filename=".gitlab-ci.yml (global variables)"
+  annotations={`
+    10:They will never know 🤫
+    15:The rest is as it was
+  `}
+/>
+
+Returning to our `docker-compose.yml` file, we can now substitute the hardcoded values with the
+environment variables (and actually pass the envvars to the `pytest-runner` container):
+
+<CodeSnippet
+  code={`
+    version: '3'
+
+    services:
+      mock-metrics-generator:
+        container_name: mock-metrics-generator
+        image: node:latest
+        volumes:
+          - \${CI_PROJECT_DIR}/fake-metrics-generator/dist:/app
+          - \${CI_PROJECT_DIR}/mock.json:/app/config/data.json
+        ports:
+          - \${MOCK_GENERATOR_PORT}:5000
+        command: \['node', '/app/main.node.js'\]
+        networks:
+          test-network:
+            ipv4_address: \${MOCK_GENERATOR_HOST}
+        healthcheck:
+          test: curl --fail http://\${MOCK_GENERATOR_HOST}:\${MOCK_GENERATOR_PORT}/metrics
+          interval: 5s
+          timeout: 3s
+          retries: 5
+        
+      prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        depends_on:
+          mock-metrics-generator:
+            condition: service_healthy
+        volumes:
+          - \${CI_PROJECT_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+          - \${PROMETHEUS_PORT}:9090
+        networks:
+          test-network:
+            ipv4_address: \${PROMETHEUS_HOST}
+        healthcheck:
+          test: \["CMD", "wget", "http://localhost:9090"\]
+          interval: 10s
+          timeout: 15s
+          retries: 10
+          start_period: 40s
+
+      mongo:
+        container_name: mongo
+        image: mongo:5.0.3
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=\${MONGODB_ROOT_USERNAME}
+          - MONGO_INITDB_ROOT_PASSWORD=\${MONGODB_ROOT_PASSWORD}
+          - MONGO_INITDB_DATABASE=\${MONGODB_TEST_DATABASE}
+        volumes:
+          - \${CI_PROJECT_DIR}/metrics.db-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+        ports:
+          - \${MONGODB_PORT}:27017
+        networks:
+          test-network:
+            ipv4_address: \${MONGODB_HOST}
+        healthcheck:
+          test: echo 'db.runCommand("ping").ok' | mongo --quiet
+          interval: 5s
+          timeout: 3s
+          retries: 5
+
+      pytest-runner:
+        container_name: pytest-runner
+        image: python:3.10-alpine
+        depends_on:
+          mongo:
+            condition: service_healthy
+          prometheus:
+            condition: service_healthy
+        environment:
+          - MONGODB_HOST
+          - MONGODB_PORT
+          - MONGODB_USERNAME
+          - MONGODB_PASSWORD
+          - MOCK_GENERATOR_HOST
+          - MOCK_GENERATOR_PORT
+        volumes:
+          - \${CI_PROJECT_DIR}:/app
+        working_dir: /app
+        command:
+          - sh
+          - -c
+          - |
+            pip \\
+              install \\
+                pytest
+            pytest \\
+              test_agent.py
+
+    networks:
+      test-network:
+        name: test-network
+        ipam:
+          driver: default
+          config:
+            - subnet: 10.5.0.0/16
+              gateway: 10.5.0.1
+  `}
+  language="yaml"
+  filename="docker-compose.yml (FINAL)"
+  annotations={`
+    71-76:These variables will be useful during the tests
+  `}
+/>
 
 [Crystalheart Pulse-Staff]: https://www.wowhead.com/tbc/item=28782/crystalheart-pulse-staff
 [`services` keyword in the `.gitlab-ci.yml` file]: https://docs.gitlab.com/ee/ci/services/
@@ -798,8 +1623,11 @@ via REST API and a programmatic interface, which is cool for our tutorial here.
 [of]: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
 [tutorials]: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
 [`depends_on` Docker Compose keyword]: https://docs.docker.com/compose/compose-file/05-services/#depends_on
+[automatically generated ones]: https://github.com/docker/compose/issues/6316
 [healthcheck]: https://docs.docker.com/engine/reference/builder/#healthcheck
 [how Prometheus works in remote-write mode]: https://prometheus.io/docs/concepts/remote_write_spec/
 [`fake-metrics-generator`]: https://github.com/grafana/fake-metrics-generator
 [MongoDB]: https://www.mongodb.com/
 [prometheus-kafka-adapter]: https://github.com/Telefonica/prometheus-kafka-adapter
+[`mongo` commands]: https://docs.mongodb.com/manual/reference/command/ping/
+[scraping target]: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
