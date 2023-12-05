@@ -77,14 +77,15 @@ Take a look at the following example:
   code={`
     test-job:
       image: docker:latest 
-      script: |
-        echo "I am running!"
-        docker \\
-          run \\
-            alpine:latest \\
-            sh \\
-              -c \\
-                "echo 'I am running inside the container!'"
+      script:
+        - echo "I am running!"
+        - |
+          docker \\
+            run \\
+              alpine:latest \\
+              sh \\
+                -c \\
+                  "echo 'I am running inside the container!'"
   `}
   language="yaml"
   filename=".gitlab-ci.yml"
@@ -136,16 +137,18 @@ and setting the `DOCKER_HOST` envvar to some bogus value like `tcp://docker-serv
       variables:
         DOCKER_HOST: "tcp://docker-service:2375"
       script: |
-        echo "I am running!"
-        ls \\
-          -la \\
-          /var/run/
-        docker \\
-          run \\
-            alpine:latest \\
-            sh \\
-              -c \\
-                "echo 'I am running inside the container!'"
+        - echo "I am running!"
+        - |
+          ls \\
+            -la \\
+            /var/run/
+        - |
+          docker \\
+            run \\
+              alpine:latest \\
+              sh \\
+                -c \\
+                  "echo 'I am running inside the container!'"
   `}
   language="yaml"
   filename=".gitlab-ci.yml (checking behaviour)"
@@ -216,14 +219,15 @@ All of these steps can be performed by modifying the `.gitlab-ci.yml` file like 
         DOCKER_TLS_CERTDIR: ""
         FF_NETWORK_PER_BUILD: "true"
       script: |
-        echo "I am running!"
-        docker \\
-          run \\
-            --network=host \\
-            alpine:latest \\
-            sh \\
-              -c \\
-                "echo 'I am running inside the container!'"
+        - echo "I am running!"
+        - |
+          docker \\
+            run \\
+              --network=host \\
+              alpine:latest \\
+              sh \\
+                -c \\
+                  "echo 'I am running inside the container!'"
   `}
   language="yaml"
   filename=".gitlab-ci.yml (working)"
@@ -270,14 +274,15 @@ named `some-random-cache`. This can be done with the following `.gitlab-ci.yml` 
         DOCKER_TLS_CERTDIR: ""
         FF_NETWORK_PER_BUILD: "true"
       script: |
-        echo "I am running!"
-        docker \\
-          run \\
-            --network=host \\
-            redis:latest \\
-            sh \\
-              -c \\
-                "redis-cli -h some-random-cache -p 6379 PING"
+        - echo "I am running!"
+        - |
+          docker \\
+            run \\
+              --network=host \\
+              redis:latest \\
+              sh \\
+                -c \\
+                  "redis-cli -h some-random-cache -p 6379 PING"
   `}
   language="yaml"
   filename=".gitlab-ci.yml (Redis test)"
@@ -441,15 +446,16 @@ So, the `.gitlab-ci.yml`:
         DOCKER_TLS_CERTDIR: ""
         FF_NETWORK_PER_BUILD: "true"
       script: |
-        echo "I am running!"
-        docker \\
-          run \\
-            --network=host \\
-            --volume $PWD:/app \\
-            --workdir /app \\
-            --env-file .env \\
-            python:3.10 \\
-            sh -c "pip install -r requirements.txt pytest && pytest"
+        - echo "I am running!"
+        - |
+          docker \\
+            run \\
+              --network=host \\
+              --volume $PWD:/app \\
+              --workdir /app \\
+              --env-file .env \\
+              python:3.10 \\
+              sh -c "pip install -r requirements.txt pytest && pytest"
   `}
   language="yaml"
   filename=".gitlab-ci.yml (testing connector)"
@@ -763,7 +769,7 @@ but the thing is that we have used the `redis` library that, by the design, alre
 that. So now it is time to move to some raw and dirty HTTP requests and barebones JSON responses.
 We're talking about REST API here. 4️⃣0️⃣4️⃣☠️
 
-## C’mon homie, we JSON 🎤🐻
+## Covert DevOps 🕵️📦
 
 We will go wild on this one, but it actually references one of the cases I've encountered in my work.
 The main goal here is to provide a middle-man application, **an agent** 🕵️, that requests metrics
