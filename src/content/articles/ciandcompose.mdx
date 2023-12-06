@@ -4,8 +4,8 @@ date: "2023-11-30"
 description: "How to easily spin up a mock environment for integration testing"
 tags: ["gitlab", "ci", "tests", "docker", "containers", "integration"]
 image:
-  thumbnail: "components"
-  hero: "components"
+  thumbnail: "cihero"
+  hero: "cihero"
   alt: "Lab in a box"
 ---
 
@@ -23,6 +23,12 @@ of the enterprise-ish hierarchy. It's more often than not a convoluted web of ru
 that separate this connectivity from one environment to another - be it different teams of developers,
 different services (often at their different stages) or in general the intra/internet gatekeeping conundrum.
 
+<StyledSVG
+  src='images/vpn9000'
+  alt='VPN9000'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
+
 This is, of course, done with good intent, so that the developers don't accidentally
 set the production database to be the target of their unit tests, pushing around
 valuable data about somebody's World of Warcraft character on the private server
@@ -34,6 +40,12 @@ Those are the real casualties that would have been made without that one reasona
 at Your software house, who's set up e.g. that VPN so all GitLab CI workers can't reach the K8s cluster,
 where the actual services may be running. Additionally, he will also (rightfully) hunt You down
 if You try to copy any credentials to those temporary nodes, to "cleverly" bypass those security measures.
+
+<StyledSVG
+  src='images/staff'
+  alt='Crystalheart Pulse-Staff'
+  class='invert grayscale w-3/4 mx-auto my-8 h-auto'
+/>
 
 I would like to stress here that I am not talking about any continuous deployment (CD) pipelines,
 where the code is automatically deployed to the production environment and it mutates its state, in real time.
@@ -188,7 +200,13 @@ because, for example, building Docker images is a very common task among them, s
 However, if there is no such runner available, we can always create one ourselves. There is a [plethora] [of] [tutorials] 
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
 
-### Whaleception 🐳🐳
+### Whale nesting 🐳🐳
+
+<StyledSVG
+  src='images/nesting'
+  alt='docker whale in a nest'
+  class='invert grayscale w-1/3 mx-auto my-8 h-auto'
+/>
 
 So the game plan now is like so:
 
@@ -679,7 +697,7 @@ to treat it as a multiline command:
         pytest
   `}
   language="yaml"
-  filename="docker-compose.yml (multiline command)"
+  filename="docker-compose.yml (multiline)"
   annotations={`
     4:The | operator tells the shell to treat the following lines as a multiline command
   `}
@@ -706,7 +724,7 @@ if it suits Your case.
               gateway: 10.5.0.1
   `}
   language="yaml"
-  filename="docker-compose.yml (network)"
+  filename="docker-compose.yml (subnet)"
   annotations={`
     3:We define the name of the network
     4:We do the manual IP address management (IPAM)
@@ -747,7 +765,7 @@ field with the desired IP address:
         ...
   `}
   language="yaml"
-  filename="docker-compose.yml (services networking snippets)"
+  filename="docker-compose.yml (networking)"
   annotations={`
     4-6:Redis service networking configuration
     11-13:Pytest runner networking configuration
@@ -780,6 +798,12 @@ that. So now it is time to move to some raw and dirty HTTP requests and barebone
 We're talking about REST API here. 4️⃣0️⃣4️⃣☠️
 
 ## Covert DevOps 🕵️📦
+
+<StyledSVG
+  src='images/ciops'
+  alt='Top secret CI/CD operations'
+  class='invert grayscale w-2/3 mx-auto my-8 h-auto'
+/>
 
 We will go wild on this one, but it actually references one of the cases I've encountered in my work.
 The main goal here is to provide a middle-man application, **an agent** 🕵️, that requests metrics
@@ -1181,7 +1205,7 @@ configure Prometheus to scrape the mock data-generating service. Also, as set in
 for the test environment, the MongoDB instance must have a database named `metrics` created, before
 we will attempt our tests.
 
-#### No. 3: Knobs and dials 🔧
+#### No. 3: Levers and dials 🔧
 
 In terms of configuration, we have to solve the following problems in our environment setup:
 
@@ -2338,7 +2362,14 @@ as seen in the yellow-boxed portion of the logs. The data flows, the environment
 need any access to external Prometheus and MongoDB instances to check if our module is simply compliant
 with protocols set up by those tools or at least third-party libraries offering such functionality.
 
-<img src="/assets/images/independent.png" alt="Independent" height="500" />
+<img src="/assets/images/independent.png" alt="Independent" style="margin-top:2rem;" height="500" />
+
+<StyledSVG
+  src="images/independence"
+  alt="An independent Docker Compose stack"
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+  height="500"
+/>
 
 ## Containerization of independence 📦🇺🇸🎆
 
