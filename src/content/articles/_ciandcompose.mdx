@@ -13,7 +13,7 @@ image:
 
 There is a certain kind of dread that comes with the acknowledgment that You can't always cross the cap
 between Your local pythonic incantations and the desired environment, where those enchantments are to be
-set to be roaming free, setting and getting those `os.environ`'s. "Being part of the Machine" is not only
+set to be roaming free, setting and getting those `os.environ`s. "Being part of the Machine" is not only
 a figurative thing that a societal contrarian might say, but - in terms of software development - it is
 also a very literal thing. You design cogs of various sizes and shapes, that are to be put in the overarching
 conglomerate of multi-lingual, multi-paradigm and multi-purpose mechanisms.
@@ -60,6 +60,9 @@ using GitLab CI Services and Docker, with additional tips for unit testing Pytho
 **IMPORTANT NOTE**: This article assumes that there is a GitLab CI runner available in Your organization,
 that is capable of Docker-in-Docker (DinD) builds. I've included some links to tutorials on how to set up
 such a runner, but I will not go into details on how to do that, as it is not the main focus of this article.
+That is why I am including the 99% of code snippets here in this article and no repo to go with it,
+because cloning it and running will simply not do. Maybe in the future, I will make an article about
+setting such workers on Your home/private cluster, but that's a topic for another time 😛 (SOON™).
 
 ## Alive in a box - dead to the outside world 🐈‍⬛📦
 
@@ -185,7 +188,7 @@ because, for example, building Docker images is a very common task among them, s
 However, if there is no such runner available, we can always create one ourselves. There is a [plethora] [of] [tutorials] 
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
 
-### To test and to serve 🚨
+### Whaleception 🐳🐳
 
 So the game plan now is like so:
 
@@ -512,7 +515,7 @@ that they are being processed correctly.
 So, we have three issues connected to the configuration of **compositions** made up from **Docker** containers.
 I think You know where I'm going with this. 🤔
 
-## Compose Yourself, before You test Yourself 🐋🛠️
+## Compose Yourself 📿
 
 So yeah, let's pack up our happy family of containers into a single YAML, that can be nicely stored in our repo
 and reviewed by our fellow developers. We can do that by using the `docker-compose` tool, which is a part of the
@@ -934,7 +937,7 @@ This procedure can be defined for `mock-metrics-generator` by using the `healthc
   language="yaml"
   filename="docker-compose.yml (depends_on remastered)"
   annotations={`
-    14-17:Just hit that endpoint
+    14-17:Just hit that endpoint 👊
   `}
 />
 
@@ -1588,6 +1591,8 @@ environment variables (and actually pass the envvars to the `pytest-runner` cont
           - MONGODB_PASSWORD
           - MOCK_GENERATOR_HOST
           - MOCK_GENERATOR_PORT
+        networks:
+          - test-network
         volumes:
           - \${CI_PROJECT_DIR}:/app
         working_dir: /app
@@ -1614,8 +1619,756 @@ environment variables (and actually pass the envvars to the `pytest-runner` cont
   filename="docker-compose.yml (FINAL)"
   annotations={`
     71-76:These variables will be useful during the tests
+    78:We still need on the test network!
   `}
 />
+
+If we run this behemoth in our CI, we should see a couple of logs that reassure us that
+we're on the right track and our test environment is ready to be dissected, poked,
+prodded and analyzed with some botched-together Python code. In the first (1) section,
+we can see that all components have started. The second part (2) is a shout-out from `mongo`
+service that our bogus database user has been created. The third part (3) is a log from
+Prometheus which has successfully parsed out templated `prometheus.yml` file and started
+its rule manager. And finally, the last part (4) is a log from the `pytest-runner` service
+which has successfully installed the `pytest` library and ran the tests. At this moment those
+tests are some two `assert True` placeholder functions, hence the two passes from the `test_agent.py`
+suite (those two little dots at the end of the log).
+
+<CaptionedImage
+  src="/assets/images/compose_second_stack.png"
+  alt="It's alive 🧟‍♂️"
+  height="700"
+/>
+
+Again, note the fact that we can actually **see and analyze** the logs of the services,
+which starts to become **really** helpful in the context of managing this test environment.
+The only part left now is to write a very minimal agent for pushing metrics from Prometheus to
+MongoDB.
+
+## A pythonic sidequest 🐍🗺️
+
+`request` and `mongoengine`. Those will be the two building blocks of our agent. The first one
+will be used to send HTTP requests to the Prometheus service and the second one will be used
+to communicate with the MongoDB database i.e. create documents in the `metrics` collection.
+It is not important how we will organize the data, because it is not the focus of this article.
+We only case that the trash from point A is transferred to point B. Our agent must be able to
+perform these three basic tasks:
+
+1. Get configuration about MongoDB and Prometheus instances from environment variables
+2. Send HTTP request to Prometheus to retrieve metrics for our fake job
+3. Send the metrics to MongoDB as simple documents.
+
+For connection with MongoDB we can use the [`mongoengine` library], which is a nice wrapper
+around the `pymongo` library. It allows us to define the structure of the documents that we
+want to store in the database and then use the `save()` method to push them to the database.
+Communication with Prometheus will be realized strictly via [HTTP GET requests, that will
+contain a PromQL query as a parameter]. The response will be a plain text with the metrics,
+but we won't delve into parsing it into JSON entries.
+
+So a basic scaffolding of our agent will look like this:
+
+<CodeSnippet
+  code={`
+    import dataclasses
+
+    import mongoengine
+    import pymongo
+    import requests
+
+
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: dict = dataclasses.field(default_factory=dict)
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+
+        def __post_init__(self) -> None:
+            ...
+
+        def get(self) -> str:
+            ...
+
+        def push(self, metrics: str) -> None:
+            ...
+  `}
+  language="python"
+  filename="agent.py (boilerplate)"
+  annotations={`
+    4:This import is for typing purposes really
+    8:I have an undying love for dataclasses, sorry 🤷
+    10:We will store the configuration in a dictionary with some known schema
+    11-12:We will use these two objects to communicate with the databases
+    14-15:We will initialize them in the __post_init__ method
+    17:We will use this method to get the metrics from Prometheus
+    20:We will use this method to push the metrics to MongoDB
+  `}
+/>
+
+Let's move on onto the most basic task - configuration dictionary of our agent,
+since we can explicitly define the schema of the configuration dictionary via simple
+`typing.TypedDict` object:
+
+<CodeSnippet
+  code={`
+    import dataclasses
+    import typing
+
+    import mongoengine
+    import pymongo
+    import requests
+
+
+    class AgentConfig(typing.TypedDict):
+        mongo_host: str
+        mongo_port: int
+        mongo_user: str
+        mongo_db: str
+        mongo_password: str
+        prometheus_host: str
+        prometheus_port: int
+        prometheus_job: str
+
+
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        ...
+  `}
+  language="python"
+  filename="agent.py (config)"
+  annotations={`
+    17:This field corresponds to the job name set in the prometheus.yml file
+  `}
+/>
+
+This results in a small QoL improvement, because now we can use the `config` field
+as a dictionary with the known schema. This means that our IDE will be able to
+suggest the keys of the dictionary. Also, this enforces the schema of the configuration
+dictionary, so we can be sure that we won't be passing some random garbage to the agent.
+After this small change, we can move to initialize the `pymongo` and `requests` objects.
+
+### Turning over new leaves 🍃🍁
+
+Checking out the documentation of the [`mongoengine` library for connecting to MongoDB instances],
+we can see that we can use `mongoengine.connect` function to connect to the database, that will
+return an authorized `mongo` session, which will be stored in the `_mongo` field of our agent.
+
+<CodeSnippet
+  code={`
+    import dataclasses
+    import typing
+
+    import mongoengine
+    import pymongo
+    import requests
+
+
+    class AgentConfig(typing.TypedDict):
+        mongo_host: str
+        mongo_port: int
+        mongo_user: str
+        mongo_db: str
+        mongo_password: str
+        prometheus_host: str
+        prometheus_port: int
+        prometheus_job: str
+
+
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+        _prometheus_full_url: str = dataclasses.field(init=False, default='')
+        _logger: logging.Logger = dataclasses.field(init=False, default_factory=logging.getLogger)
+
+        def __post_init__(self) -> None:
+          logging.basicConfig(level=logging.INFO)
+          self._logger.setLevel(logging.INFO)
+          self._logger.addHandler(logging.StreamHandler())
+
+          self._mongo = mongoengine.connect(
+              host=self.config['mongo_host'],
+              port=self.config['mongo_port'],
+              username=self.config['mongo_user'],
+              password=self.config['mongo_password'],
+              db=self.config['mongo_db'],
+              alias='default'
+          )
+          self._logger.info(
+              'Connected to MongoDB instance: %s:%s',
+              self.config['mongo_host'], self.config['mongo_port']
+          )
+
+          self._prometheus = requests.Session()
+          self._prometheus_full_url = f'http://{self.config["prometheus_host"]}:{self.config["prometheus_port"]}'
+          self._logger.info(
+              'Connected to Prometheus instance: %s',
+              self._prometheus_full_url
+          )
+
+        self._logger.info('Agent ready!')
+      ...
+  `}
+  language="python"
+  filename="agent.py (initialization)"
+  annotations={`
+    26:Loggers are always useful 🪵🪓
+    29-31:This ensures that out log entries show up in pytest summaries
+    34-35:These variables point to our MongoDB instance from Docker Compose
+    36-37:Authorization data set in CI environment variables
+    38:This sets the default database for the session to our metrics one
+    39:We set the alias to 'default' so that we can use it in the data models
+    47:This variable is for readability purposes
+  `}
+/>
+
+When it comes to the `mongoengine` library we have to remember that it is an ODM (Object Document Mapper),
+which means that we **must** define the structure of the documents that we want to store in the database.
+This is done via classes that inherit from the [`mongoengine.Document`] class. So, we will define a simple
+data model for our metrics, nested in the `MetricsPushingAgent` class and put at the top of its code to
+somewhat group it visually with the rest of the agent fields.
+
+To define the structure of the document, we will use the `mongoengine.fields` classes, which are
+the equivalent of the `pymongo` fields. We will use the `timestamp` of `mongoengine.fields.DateTimeField` type to store
+the timestamp of the metrics, the `metrics` and `job` fields of `mongoengine.fields.StringField` kind to store the job name 
+and the metrics themselves. We will also construct the `meta` dictionary, which will be used to specify
+the database and collection that we want to store our documents in. The `prometheus` value for our collection name
+will signify that these metrics come from Prometheus instance. You can imagine creating different collections
+for different sources of metrics, like `grafana`, `datadog`, `newrelic`, etc. via this simple syntax.
+
+<CodeSnippet
+  code={`
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+        _prometheus_full_url: str = dataclasses.field(init=False, default='')
+        _logger: logging.Logger = dataclasses.field(init=False, default_factory=logging.getLogger)
+
+        class MetricsMongoEntry(mongoengine.Document):
+            timestamp = mongoengine.fields.DateTimeField()
+            job = mongoengine.fields.StringField()
+            metrics = mongoengine.fields.StringField()
+
+            meta: dict = {
+                'db_alias': 'default',
+                'collection': 'prometheus'
+            }
+  `}
+  language="python"
+  filename="agent.py (data model)"
+  annotations={`
+    9:Setting the right inheritance
+    10-12:Defining the fields of the document using mongoengine.fields classes
+    14-17:This metadata is needed to specify the target database and collection
+  `}
+/>
+
+This class possesses two attributes that are of the upmost importance for us, that come from underlying
+`mongoengine.Document` class. The first one is the `save()` method, which will be used to push the
+documents to the database i.e. register a POST transaction to MongoDB. The second one is the `objects`
+attribute, which is a `mongoengine.queryset.QuerySet` object, which will be used to query the database
+for the documents, which will come in handy when we will be writing the tests for our agent.
+
+Since we are on the topic of MongoDB, we will define the `push` method of our agent, which will be used
+to push the metrics to the database. This method will be very simple, because we will just create a new
+document, populate it with the data and then save it to the database. We will also log the fact that
+we have pushed the metrics to the database. For readiblity, the actual creation of `mongoengine` entry
+will be done in a separate method called `create_mongo_document`.
+
+<CodeSnippet
+  code={`
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+        _prometheus_full_url: str = dataclasses.field(init=False, default='')
+        _logger: logging.Logger = dataclasses.field(init=False, default_factory=logging.getLogger)
+
+        class MetricsMongoEntry(mongoengine.Document):
+            timestamp = mongoengine.fields.DateTimeField()
+            job = mongoengine.fields.StringField()
+            metrics = mongoengine.fields.StringField()
+
+            meta: dict = {
+                'db_alias': 'default',
+                'collection': 'prometheus'
+            }
+        
+        def __post_init__(self) -> None:
+          ...
+
+        def push(self, metrics: str) -> None:
+          self._logger.info(
+              'Pushing metrics to MongoDB instance: %s',
+              self.config['mongo_host'] + ':' + str(self.config['mongo_port'])
+          )
+          try:
+              self.create_mongo_document(metrics)
+              self._logger.info('Metrics pushed')
+          except Exception:  # pylint: disable=broad-except
+              self._logger.exception('Could not push metrics to MongoDB instance')
+
+        def create_mongo_document(self, metrics: str) -> None:
+            entry = self.MetricsMongoEntry(
+                timestamp=datetime.datetime.now(),
+                job=self.config['prometheus_job'],
+                metrics=metrics
+            )
+            entry.save()
+  `}
+  language="python"
+  filename="agent.py (push)"
+  annotations={`
+    20:Same as previously
+    22:Metrics will be fetched from Prometheus shortly
+    30:A basic 'try-except' block to catch any errors (we silence pylint here to not annoy us with warnings)
+    34-38:We populate a new entry with current time, mock job name and serialized metrics from Prometheus
+    39:Posting the new document
+  `}
+/>
+
+Mongo support is now done for our agent and the only thing left is fetching data from Prometheus
+with a very simple `get` method. This method will be used to send a GET request to the Prometheus
+service, which will return a plain text with the metrics. The endpoint we are aiming for is
+[`/api/v1/query`], which is used to query the Prometheus database with PromQL queries.
+What is rather weird is that this endpoint accepts `query` parameter, which is string containing the
+desired query, resulting in a funny-looking `/query?query=...` call. But whatever, `requests` library
+will take care of that for us. But what will be the query? Since the overall theme of this section is
+"whatever, just give me something 🤷", we will use the following query: `{job=job_name}`. This
+will return all the metrics from the job, which is the one defined in the `config`.
+This is a very simple query, but it will be enough for our purposes:
+
+<CodeSnippet
+  code={`
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+        _prometheus_full_url: str = dataclasses.field(init=False, default='')
+        _logger: logging.Logger = dataclasses.field(init=False, default_factory=logging.getLogger)
+
+        class MetricsMongoEntry(mongoengine.Document):
+            timestamp = mongoengine.fields.DateTimeField()
+            job = mongoengine.fields.StringField()
+            metrics = mongoengine.fields.StringField()
+
+            meta: dict = {
+                'db_alias': 'default',
+                'collection': 'prometheus'
+            }
+
+        def __post_init__(self) -> None:
+            ...
+
+        def get(self) -> str:
+            self._logger.info(
+                'Getting metrics from Prometheus instance at %s',
+                self._prometheus_full_url
+            )
+            job_name = self.config['prometheus_job']
+            response = self._prometheus.get(
+                url=self._prometheus_full_url + '/api/v1/query',
+                params={
+                    'query': f'{{job="{job_name}"}}'
+                },
+                timeout=5
+            )
+            if response.status_code != 200:
+                raise RuntimeError(
+                    'Could not get metrics from Prometheus instance:',
+                    response.text
+                )
+            return response.text
+
+        def push(self, metrics: str) -> None:
+            ...
+
+        def create_mongo_document(self, metrics: str) -> None:
+            ...
+  `}
+  language="python"
+  filename="agent.py (get)"
+  annotations={`
+    27:Quickly snag the job name from our config
+    29:This is the endpoint URL
+    31:The query parameter
+    40:We return a raw text response to store inside a string field in the Mongo document
+  `}
+/>
+
+And that's it! Our agent is ready to be tested. Below the whole code for this small module is presented,
+so that You can see how it all fits together:
+
+<CodeSnippet
+  code={`
+    import dataclasses
+    import datetime
+    import logging
+    import typing
+
+    import mongoengine
+    import mongoengine.fields
+    import pymongo
+    import requests
+
+
+    class AgentConfig(typing.TypedDict):
+        mongo_host: str
+        mongo_port: int
+        mongo_user: str
+        mongo_db: str
+        mongo_password: str
+        prometheus_host: str
+        prometheus_port: int
+        prometheus_job: str
+
+
+    @dataclasses.dataclass()
+    class MetricsPushingAgent:
+        config: AgentConfig = dataclasses.field(default_factory=dict)  # type: ignore
+        _mongo: pymongo.MongoClient = dataclasses.field(init=False, default_factory=pymongo.MongoClient)
+        _prometheus: requests.Session = dataclasses.field(init=False, default_factory=requests.Session)
+        _prometheus_full_url: str = dataclasses.field(init=False, default='')
+        _logger: logging.Logger = dataclasses.field(init=False, default_factory=logging.getLogger)
+
+        class MetricsMongoEntry(mongoengine.Document):
+            timestamp = mongoengine.fields.DateTimeField()
+            job = mongoengine.fields.StringField()
+            metrics = mongoengine.fields.StringField()
+
+            meta: dict = {
+                'db_alias': 'default',
+                'collection': 'prometheus'
+            }
+
+        def __post_init__(self) -> None:
+            logging.basicConfig(level=logging.INFO)
+            self._logger.setLevel(logging.INFO)
+            self._logger.addHandler(logging.StreamHandler())
+
+            self._mongo = mongoengine.connect(
+                host=self.config['mongo_host'],
+                port=self.config['mongo_port'],
+                username=self.config['mongo_user'],
+                password=self.config['mongo_password'],
+                db=self.config['mongo_db'],
+                alias='default'
+            )
+            self._logger.info(
+                'Connected to MongoDB instance: %s:%s',
+                self.config['mongo_host'], self.config['mongo_port']
+            )
+
+            self._prometheus = requests.Session()
+            self._prometheus_full_url = f'http://{self.config["prometheus_host"]}:{self.config["prometheus_port"]}'
+            self._logger.info(
+                'Connected to Prometheus instance: %s',
+                self._prometheus_full_url
+            )
+
+            self._logger.info('Agent ready!')
+
+        def get(self) -> str:
+            self._logger.info(
+                'Getting metrics from Prometheus instance at %s',
+                self._prometheus_full_url
+            )
+            job_name = self.config['prometheus_job']
+            response = self._prometheus.get(
+                url=self._prometheus_full_url + '/api/v1/query',
+                params={
+                    'query': f'{{job="{job_name}"}}'
+                },
+                timeout=5
+            )
+            if response.status_code != 200:
+                raise RuntimeError(
+                    'Could not get metrics from Prometheus instance:',
+                    response.text
+                )
+            return response.text
+
+        def push(self, metrics: str) -> None:
+            self._logger.info(
+                'Pushing metrics to MongoDB instance: %s',
+                self.config['mongo_host'] + ':' + str(self.config['mongo_port'])
+            )
+            try:
+                self.create_mongo_document(metrics)
+                self._logger.info('Metrics pushed')
+            except Exception:  # pylint: disable=broad-except
+                self._logger.exception('Could not push metrics to MongoDB instance')
+
+        def create_mongo_document(self, metrics: str) -> None:
+            entry = self.MetricsMongoEntry(
+                timestamp=datetime.datetime.now(),
+                job=self.config['prometheus_job'],
+                metrics=metrics
+            )
+            entry.save()
+  `}
+  language="python"
+  filename="agent.py (full)"
+  annotations={``}
+/>
+
+## The final stretch 🏁
+
+Now, we can finally write the tests for our agent. We will use the `pytest` library for this task and
+its plugin called `pytest-order` to strictly enforce the order of the tests 👮‍♀️. This is needed because
+we want to save some time if, for example, the MongoDB instance is not up and running. Then, performing
+any tests on the agent will be pointless, because it will fail anyway and it wouldn't be our code's fault.
+
+First, we will specify any requirements in a `requirements.txt` file do all necessary dependencies
+of the agent module are present during the tests (plus the aforementioned plugin). Note that the
+form of this file is consistent with the approach of "kind-of done is slightly better than perfect", used for the
+demonstration purposes of this article. In a real-world scenario, these packages should be tagged with
+appropriate versions for which the package has been tested and is known to work. But whatever.
+
+<CodeSnippet
+  code={`
+    mongoengine
+    requests
+    pytest-order
+  `}
+  language="text"
+  filename="requirements.txt"
+  annotations={``}
+/>
+
+Then, we will start out tests definition (in the `test_agent.py` file) with a simple fixture
+that will be used to initialize the agent with the configuration from the environment variables.
+
+<CodeSnippet
+  code={`
+    # pylint: disable=protected-access, redefined-outer-name
+    import os
+    import requests
+
+    import pytest
+
+    import agent
+
+
+    @pytest.fixture(scope="module")
+    def initialized_agent() -> agent.MetricsPushingAgent:
+        with open('prometheus.yml', 'r', encoding='utf-8') as prometheus_config_file:
+            prometheus_config = prometheus_config_file.read()
+            mock_job_name = prometheus_config.split('job_name: ')[1].split('\\n')[0]
+            return agent.MetricsPushingAgent({
+                'mongo_host': os.environ['MONGODB_HOST'],
+                'mongo_port': int(os.environ['MONGODB_PORT']),
+                'mongo_user': os.environ['MONGODB_ROOT_USERNAME'],
+                'mongo_db': os.environ['MONGODB_TEST_DATABASE'],
+                'mongo_password': os.environ['MONGODB_ROOT_PASSWORD'],
+                'prometheus_host': os.environ['PROMETHEUS_HOST'],
+                'prometheus_port': int(os.environ['PROMETHEUS_PORT']),
+                'prometheus_job': mock_job_name.replace("'", '')
+            })
+  `}
+  language="python"
+  filename="test_agent.py (fixture)"
+  annotations={`
+    1:We WILL break those two rules by using fixtures and nested fields of the agent
+    7:Here he is! 👀
+    10:Will work without the scope as well, but this is a good practice
+    11:Sweet typing using the import from the agent module (IDE will remember that)
+    13-14:We read the job name from the prometheus.yml file (knowing its structure)
+    16-22:Those variables correspond to those set in CI/Docker Compose
+    23:We pass the job name to the agent config
+  `}
+/>
+
+With this approach, we initialize the agent **ONCE** ☝️ and just pass it to the tests that need it.
+As for out first test we want to check if Prometheus instance is even up and ready to accept out test GETs.
+We can do that by listing the active targets of the Prometheus instance and checking if the scrape job
+for out `mock-metrics-generator` is present. This is done via the `/api/v1/targets` endpoint, which
+returns a JSON with the active targets. We will use the `requests` library to send a raw GET request to
+this endpoint and then check if the response code is 200 and if the job name is present in the response text.
+Note the `@pytest.mark.order(1)` decorator, which will ensure that this test will be run first, before
+any other tests. For other complicated dependencies between tests, check out the [plugin documentation]!
+
+<CodeSnippet
+  code={`
+    @pytest.mark.order(1)
+    def test_if_prometheus_job_is_active(initialized_agent: agent.MetricsPushingAgent) -> None:
+        response = requests.get(
+            url=f'{initialized_agent._prometheus_full_url}/api/v1/targets',
+            timeout=5
+        )
+        assert response.status_code == 200
+        assert initialized_agent.config['prometheus_job'] in response.text
+  `}
+  language="python"
+  filename="test_agent.py (prometheus up)"
+  annotations={`
+    1:Mark as the first test 1️⃣
+    3:We send a GET request to the Prometheus instance /targets endpoint
+    7:We assert that the response code is 200
+    8:We assert that the job name is present in the response text among some active jobs 
+  `}
+/>
+
+If this test is successful, we can move on to the next one, which will check if our agent can send a GET
+request for the metrics to the Prometheus instance. We will use the `get` method of the agent to do that
+and check if the response contains a hardcoded prefix for each metric of `fake__` (which comes from the
+`fake-metrics-generator` default setup):
+
+<CodeSnippet
+  code={`
+    @pytest.mark.order(2)
+    def test_prometheus_call(initialized_agent: agent.MetricsPushingAgent) -> None:
+        test_metrics = initialized_agent.get()
+        assert test_metrics is not None
+        assert 'fake__' in test_metrics
+  `}
+  language="python"
+  filename="test_agent.py (Prometheus get via agent)"
+  annotations={`
+    1:Mark as the second test 2️⃣
+    2:We can just put the initialized adapter fixture as an argument to pass it here 😃
+    5:That is the check for the metrics prefix
+  `}
+/>
+
+After our agent passes those first two tests, we can move to checking MongoDB readiness to accept new data,
+by manually creating some random entry in the `metrics` database and then checking if it is present
+via `objects` attribute of the `MetricsMongoEntry` class. We will use the `create_mongo_document` method
+to glue together that "sub-mock" entry like so:
+
+<CodeSnippet
+  code={`
+    @pytest.mark.order(3)
+    def test_mongo_call(initialized_agent: agent.MetricsPushingAgent) -> None:
+        test_metrics = 'happines 100%'
+        initialized_agent.create_mongo_document(test_metrics)
+        job_name = initialized_agent.config['prometheus_job']
+        fetched_entry = initialized_agent.MetricsMongoEntry.objects(  # type: ignore
+            job=job_name
+        ).first()
+        assert fetched_entry is not None
+        assert fetched_entry.job == job_name
+        assert fetched_entry.metrics == test_metrics
+  `}
+  language="python"
+  filename="test_agent.py (MongoDB get via agent)"
+  annotations={`
+    1:Mark as the third test 3️⃣
+    3:The random metric content, we don't care about it, just a string value
+    4.We create a new document in the database, by passing the string "metric"
+    6-8:We fetch the document from the database, by querying for the job name
+    10:The job name is set automagically by the create_mongo_document method 🪄
+    11:We check if the metrics are the same as the ones we have created like 0.5s ago
+  `}
+/>
+
+Those three tests ensure that before moving to our final test, all components are up and running,
+the data flow **should** work and the agent is ready to be tested. The final test will be subsequent combinations
+of `get` and `push` agent methods, which are called here "an event loop". This loop will contain 10 of such steps,
+where we will fetch the metrics from Prometheus and then push them to MongoDB. After each push, the resulting
+document will be fetched from the database and checked if it is present and if the metrics are the same as
+the ones we have pushed. This will be done in a loop, so that we can check if the agent is able to perform
+this task multiple times in a row. Note the `@pytest.mark.order(4)` decorator, which will ensure that this
+test will be run last, after all other tests.
+
+<CodeSnippet
+  code={`
+    @pytest.mark.order(4)
+    def test_basic_event_loop(initialized_agent: agent.MetricsPushingAgent) -> None:
+        target_database = initialized_agent.config['mongo_db']
+        number_of_documents_to_create = 10
+
+        for _ in range(number_of_documents_to_create):
+            initialized_agent.push(
+                metrics=initialized_agent.get()
+            )
+            metrics_from_mongo = initialized_agent._mongo[target_database].prometheus.find_one(
+                {
+                    'job': initialized_agent.config['prometheus_job']
+                }
+            )
+
+            assert metrics_from_mongo is not None
+            initialized_agent._logger.info(
+                'Metrics found in MongoDB: %s',
+                metrics_from_mongo['metrics']
+            )
+
+            assert metrics_from_mongo['metrics']
+            assert metrics_from_mongo['timestamp']
+
+        documents_count = initialized_agent._mongo[target_database].prometheus.count_documents(
+            {
+                'job': initialized_agent.config['prometheus_job']
+            }
+        )
+        assert documents_count == number_of_documents_to_create
+        initialized_agent._logger.info('Event loop test finished successfully')
+  `}
+  language="python"
+  filename="test_agent.py (event loop)"
+  annotations={`
+    1:Mark as the fourth test 4️⃣
+    4:We will perform 10 iterations of the event loop
+    7-9:We push what we fetch
+    10-14:We fetch the document from the database
+    16:We check if the document is present
+    25-30:We check if the number of documents in the database is equal to the number of iterations
+  `}
+/>
+
+And this concludes our tests for the agent. Running them on out containerized stack within the CI
+should result in four little dots in the `pytest` summary, which means that all tests have passed,
+the environment **works** and the agent is ready to be used in the "production" environment.
+So, fingers crossed 🤞!
+
+<CaptionedImage
+  src="/assets/images/compose_final_stack.png"
+  alt="Holy s#*%! All tests passed 🎉"
+  height="700"
+/>
+
+An astounding success. We can even see (if You zoom in a lil bit), that MongoDB accepted new entries,
+as seen in the yellow-boxed portion of the logs. The data flows, the environment works and we didn't
+need any access to external Prometheus and MongoDB instances to check if our module is simply compliant
+with protocols set up by those tools or at least third-party libraries offering such functionality.
+
+<img src="/assets/images/independent.png" alt="Independent" height="500" />
+
+## Containerization of independence 📦🇺🇸🎆
+
+I know it has been a long journey, so let's recap what we have managed to learn and achieve:
+
+- how GitLab sets up its containers and what are services (so, Docker stuff)
+- using Docker Compose to create a containerized environment for our tests inside GitLab CI 🦊
+- how to make the configuration and networking a little more readable and adjustable via environment variables
+- a fun tool to generate mock metrics (thanks Grafana Labs team! 🙏)
+- how to setup Prometheus and MongoDB instances in Docker Compose (that's a bonus! 💲)
+- a quick look at interfacing with those services from Python (via libraries and raw HTTP requests)
+
+You can similarly organize your tests but with different tools and services. The important
+thing is that you can do it **independently** from the rest of the world, gluing everything together with
+Docker Compose manifests stored in some CI-dedicated directory. This way, you can be sure that
+the environment will be the same for everyone, no matter if they are using Windows, Linux or macOS.
+It is all in nicely defined, idempotent and reproducible Docker images.
+
+I hope that You will see the value and possible applications of this approach. I know that
+it may not be perfect, but it also opens up a way to solve other problems, like mounting secret data
+to custom Docker images. Docker Compose gives us the flexibility to shape our little experimental world
+inside other miniature worlds, which I think is a very awesome concept. Just think about it - what are
+people if not such worlds on our beautiful planet Earth? 🌍
+
+See, I've even managed to sneak in some philosophic ramble at the end. I hope that You have enjoyed
+this article and that You have learned something new. If You have any questions, suggestions or
+criticism, please contact me via social media - I suspect that this Containerized Integration™ thought
+experiment can be further improved and I would love to hear Your ideas on how to do that. Peace ✌️
+
+<img src="/assets/images/peace-out.gif" alt="Bye" style="height:300px" />
 
 [Crystalheart Pulse-Staff]: https://www.wowhead.com/tbc/item=28782/crystalheart-pulse-staff
 [`services` keyword in the `.gitlab-ci.yml` file]: https://docs.gitlab.com/ee/ci/services/
@@ -1631,3 +2384,9 @@ environment variables (and actually pass the envvars to the `pytest-runner` cont
 [prometheus-kafka-adapter]: https://github.com/Telefonica/prometheus-kafka-adapter
 [`mongo` commands]: https://docs.mongodb.com/manual/reference/command/ping/
 [scraping target]: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+[`mongoengine` library]: https://mongoengine-odm.readthedocs.io/
+[HTTP GET requests, that will contain a PromQL query as a parameter]: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries
+[`mongoengine` library for connecting to MongoDB instances]: https://mongoengine-odm.readthedocs.io/guide/connecting.html
+[`mongoengine.Document`]: https://docs.mongoengine.org/guide/defining-documents.html
+[`/api/v1/query`]: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries
+[plugin documentation]: https://pytest-order.readthedocs.io/en/stable/

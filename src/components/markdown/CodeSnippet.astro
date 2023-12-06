@@ -38,7 +38,7 @@ const preProcessedRawCode = preProcessCode(code);
 ---
 <style>
   .astro-code-content {
-    @apply my-4 mx-auto lg:w-11/12;
+    @apply my-4 mx-auto lg:w-[95%];
     .astro-code-filename {
       @apply text-sm font-bold text-background mx-auto;
       @apply flex flex-row gap-1 items-center w-full;
@@ -128,7 +128,7 @@ const preProcessedRawCode = preProcessCode(code);
         );
 
       matchingLines.forEach((line, index) => {
-        line.firstChild.classList.add(...['font-bold', '-mr-1']);
+        line.firstChild.classList.add(...['font-bold']);
         if (index == 0) {
           line.firstChild.innerText = `{${line.firstChild.innerText.trim().padStart(3, ' ')}`;
         }
