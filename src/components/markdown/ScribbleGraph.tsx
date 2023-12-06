@@ -2,7 +2,7 @@ import { theme } from "@root/tailwind.config.js";
 import invert from "invert-color";
 import * as React from "react";
 // @ts-ignore
-import roughViz from "node_modules/rough-viz/dist/rough-viz.min.js";
+import roughViz from "rough-viz";
 
 type PossibleGraphType =
   | roughViz.Bar
