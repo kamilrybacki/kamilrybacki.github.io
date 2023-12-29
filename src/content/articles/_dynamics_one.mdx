@@ -1,0 +1,91 @@
+---
+title: "Particles of Rust - The Box"
+date: "2023-12-06"
+description: "Constructing a simulation box for molecular dynamics integrator in Rust"
+tags: ["rust", "molecular dynamics", "simulation", "particles", "box"]
+image:
+  thumbnail: "cihero"
+  hero: "cihero"
+  alt: "Simulation box"
+---
+
+## Absolute and relative positioning
+
+The primary coordinate system is composed of basis vectors: $a_i$ where $i$ is the dimension index: $i \in {1,2,3}$. Within this space, a triclinic box
+is located that will function as a system where the particles will be simulated.
+
+From now on, all quantities defined relative to the simulation will be denoted by Greek letters. Thus, this system is composed of basis vectors: $\alpha_i$ where $i$ has the same meaning as in the primary coordinate system. The origin of the
+simulation box will be located at the origin point of $O=(a_{10}, a_{20}, a_{30})$
+
+Inside this box, $n$ particles are located at positions $\overrightarrow{r_j}$ where $j \in {1,2,3,...,n}$. The position of each particle is defined in the primary coordinate system as $\overrightarrow{r_j} = (a_{1i}, a_{2i}, a_{3i})$.
+This position can be also defined as a vector relative to the origin of the simulation box: $\overrightarrow{\rho_j}$. Thus, the position of the $j$-th particle in the simulation box is defined as:
+
+$
+\overrightarrow{\rho_j} = (a_{j1} - a_{01}, a_{j2} - a_{02}, a_{j3} - a_{03})
+$.
+
+To assess whether an $j$-th particle is inside the system boundaries after EoM integration, projections of $\overrightarrow{\rho_j}$ onto the basis vectors $\alpha_i$ of the simulation box are needed. Their magnitudes can be defined as:
+
+$
+\rho_j^{\alpha_i} = \overrightarrow{\rho_j} \cdot \alpha_i = \sum_{k=1}^3 \rho_{jk} \alpha_{ik},
+$
+
+where $k$ is the index of the particle coordinate.
+
+## Periodic boundary conditions
+
+In this example, the most general case will be assumed i.e. the box is periodic (endless) along all three of its basis vectors. This means that if a particle leaves the box along one of the basis vectors, it will reappear on the opposite side of the box, similar to how the level boundaries of the classic game Asteroids (or Pacman) work.
+
+Before enforcing these rules, the relative position of the particle along each basis vector needs to be calculated. This ratio, denoted as $R_{ji}$, can be defined for each $i$-th vector as:
+
+$
+R_{ji} = \dfrac{\rho_j^{\alpha_i}}{\parallel\overrightarrow{\alpha_i}\parallel}.
+$
+
+The value of $R_{ji}$ can lie in one of three, distinct ranges that signify whether the particle is inside the box **and** on which side of the box it is located. To express this in terms of a coefficient, a sign parameter $s_{ji}$ can be used:
+
+$
+s_{ji} = \begin{cases}
+    1, & \text{if } R_{ji} < 0 \\
+    0, & \text{if } R_{ji} \in (0,1) \\
+    -1, & \text{if } R_{ji} > 1
+\end{cases},
+$
+
+which can be then used to apply the so-called **periodic boundary conditions** (PBCs) to the particle's relative position components that will be later used to calculate the absolute position of the particle in the primary coordinate system:
+
+$
+\rho_j^{\alpha_i} = \rho_j^{\alpha_i} + s_{ji} \parallel\overrightarrow{\alpha_i}\parallel.
+$
+
+## Reverting the translation
+
+After the PBCs are applied, the shifted (final) relative position components of the particle is known. These positions can be expressed as vectors that are multiples of the simulation box **versors** i.e. vectors running along the box basis vectors, but are normalized to unit length. These versors can be defined as:
+
+$
+\hat{\alpha_i} = \dfrac{\overrightarrow{\alpha_i}}{\parallel\overrightarrow{\alpha_i}\parallel}.
+$
+
+Then, the component vectors of particle relative position can be expressed as:
+
+$
+\overrightarrow{\rho_j^{\alpha_i}} = \rho_j^{\alpha_i} \hat{\alpha_i},
+$
+
+which can be further decomposed with respect to the primary coordinate system as:
+
+$
+\rho_j^{\alpha_i a_k} = \overrightarrow{\rho_j^{\alpha_i}} \cdot \overrightarrow{a_k} = \rho_j^{\alpha_i} \hat{\alpha_i} \cdot \overrightarrow{a_k},
+$
+
+where $k$ is the index of the primary coordinate system basis vector.
+
+Finally, the absolute position of the particle in the primary coordinate system can be calculated as a vector composed of three components, taken from the expression above that are characterized by the largest, absolute value amongst all combinations of $i$ and $k$ indices.
+
+In other words, always **the largest projection** of the *shifted, relative position* $\rho^{\alpha_i}_j$ component (in terms of its absolute magnitude) is taken as a final component $r_j^k$ of the *absolute position* vector $r_j = (r_j^1, r_j^2, r_j^3)$ of the particle:
+
+$
+r_j^k = \exists!_{\max{\lvert\rho_j^{\alpha_i a_k}\rvert}} \rho_j^{\alpha_ia_k},
+$
+
+where $\exists!$ denotes the existence of a single, unique value and $\max$ denotes the maximum value of the expression inside the brackets (here, the absolute value of the $\rho_j^{\alpha_i a_k}$ component).
