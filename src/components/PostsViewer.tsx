@@ -43,7 +43,11 @@ const PostsViewer = ({ articles, poems }: PostsViewerProps) => {
           if (post.slug[0] !== "_" && !hiddenPosts.includes(post.slug)) {
             return (
               <article
-                className="doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 duration-500 hover:-translate-y-2 lg:h-[400px] lg:w-[500px]"
+                className={
+                  selectedPosts === articles
+                    ? "doodle-border mb-4 w-[300px] cursor-pointer bg-background px-6 py-4 duration-500 hover:-translate-y-2 lg:h-[400px] lg:w-[500px]"
+                    : "doodle-border mb-4 h-fit w-[300px] cursor-pointer bg-background px-6 py-4 duration-500 hover:-translate-y-2 lg:w-[500px]"
+                }
                 key={post.slug}
                 onClick={() => {
                   window.location.href = `/posts/${post.slug}` || "/";

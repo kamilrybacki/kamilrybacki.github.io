@@ -3,8 +3,16 @@ import PostsViewer from "@components/PostsViewer.tsx";
 import BasicPageLayout from "@layouts/BasicPageLayout.astro";
 import { getCollection } from 'astro:content';  // eslint-disable-line import/no-unresolved
 
-const articles = await getCollection('articles');
-const poems = await getCollection('poems');
+const articles = await getCollection('articles').then((articles) => articles.sort((a, b) => {
+  const parsed_date_a = new Date(a.data.date).getTime();
+  const parsed_date_b = new Date(b.data.date).getTime();
+  return parsed_date_b - parsed_date_a;
+}));
+const poems = await getCollection('poems').then((poems) => poems.sort((a, b) => {
+  const parsed_date_a = new Date(a.data.date).getTime();
+  const parsed_date_b = new Date(b.data.date).getTime();
+  return parsed_date_b - parsed_date_a;
+}));;
 ---
 
 <BasicPageLayout

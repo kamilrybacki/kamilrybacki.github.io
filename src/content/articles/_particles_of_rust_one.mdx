@@ -1,0 +1,313 @@
+---
+title: "Particles of Rust - The Box"
+date: "2024-01-11"
+description: "Constructing a simulation box for molecular dynamics integrator in Rust"
+tags: ["rust", "molecular dynamics", "simulation", "particles", "box"]
+image:
+  thumbnail: "cihero"
+  hero: "cihero"
+  alt: "Simulation box"
+---
+
+## The driving force 🧲
+
+Combining the new with the familiar can be a rather hard field of mental gymnastics,
+especially when dealing with abstract forms of describing our surroundings.
+Have You ever seen the molecules floating around Your glass of freshly poured milk,
+all entangled in the chaos of Brownian motion? What about the bytes that are pushed
+through gold traces of number-crunching, silicon brains of our electronics? The existence
+of these things is undeniable, but how we describe them is often conventional.
+Those descriptions can be then grouped into models, that approximate the reality
+while letting our minds partially wrap around the universal truths like
+f!@%*ng magnets, how do they work?
+
+So, during my years as a PhD candidate, I've been working with molecular dynamics
+that are mainly based on a plethora of mathematical hallucinations, that resemble
+a runic language and stick indices to every variable possible. 
+
+I mean, just take a look at this 👇:
+
+$$E_i = F_i(\overline{\rho}_{i}) + \frac{1}{2}\sum_{j\neq i} \phi_{ij}(\overline{r}_{ij})$$
+
+To those not acquainted with the arcane arts, this shows the energy of an atom
+interacting with its colleagues, that happens to be submerged in the cloud of electronic charge.
+And that's softcore knowledge, but expressions such as this help us express the nature of
+interactions of tiny weeny dots of matter that make up literally everything. History knows
+dozens of models that let us calculate various properties and behavior of matter, but
+the common denominator between them is that they can be boiled down to equations that
+are solved numerically. These solutions can be then visualized and analyzed to basically
+give us a way to peer into the world of the nanoscopic.
+
+So, why am I rambling about this?
+
+### Old times sake 🧑‍🔬
+
+I stopped doing my PhD a while ago because over time I've leaned more toward the
+the software engineering side of things and started working as a developer, but I still
+have a soft spot for this field of physics. Moreover, even the simplest simulations of
+molecular dynamics can be a good project for learning a new language, due to the combination of
+rational memory management, I/O operations (due to the need to read and write data)
+and tricks of higher-order functions e.g. performing a reduction of a given property on a collection of
+particles. This often leads to discovering some useful libraries that can be used
+in other projects like linear algebra libraries and plotting tools.
+Also, if You are feeling adventurous, You can try to parallelize the code
+to speed up the calculations. 🚅 Everything checks out. ✔️
+
+So, that is the **familiar** thing I have decided to latch onto, no matter how exotic
+it may sound. I mean, normally You would find a simpler project to start with
+like some CLI tool or even the **legendary** calculator app. But I've got approximately
+four years of experience in this field, so I thought it would be a good idea to
+combine it with the **new** thing I'm learning, which is Rust 🦀.
+
+(Also, it's a good excuse to write about the topic I'm passionate about 🤷)
+
+### Extending the animal farm 🐫🐍🦀
+
+In my current job, I'm working with Python and I've been doing it for a while now.
+What I like about it is that it's a very expressive language i.e. has a very
+low barrier to entry due to its English-like syntax and way of abstracting away
+the low-level aspects of programming. There is no discussion about allocating
+memory or heap/stack differences when diving into the Python language because it's all
+handled by the **interpreter**. This is a double-edged sword because it makes
+the language very easy to learn, but it also makes it very easy to write
+inefficient code. Combine this with the fact that Python is dynamically typed
+(meaning that You can ignore naming the types of data You are passing around)
+and You can also wind up in a position where You have no idea what is going on
+under Your program's hood.
+
+This may sound like fear-mongering, but I've personally
+written code that took forever to debug because I was writing to the same places in memory
+in two, separate steps without noticing it, **especially** when working with
+(honestly, pretty cool) [Python bindings for MPI], which I was using to parallelize
+my calculations. Later I just decided to rewrite the code in C++. It worked like a charm.
+And it was faster. Yeah, that is unfortunately the trade-off You have to make
+when working with Python. It's a great language for prototyping, but when it comes
+to performance, there are better options. When I was running calculations for systems
+that were composed of like 2000 objects - it was fine, the CPU and RAM usage was
+fine and dandy. But throwing millions of atoms into my numerical grinder,
+stopped it dead in its tracks. One time I was even notified by the administrator
+of the supercomputer I was using that my job was taking too much memory and
+was promptly terminated. 😅 With C++, the problem was gone, because I could
+declaratively say to the compiler that I wanted to allocate a certain amount of memory,
+do some magic tricks on it and then set it free.
+
+As I said, Python is really competent when it comes to building software not-so-concerned
+with squeezing every last clock cycle out of the CPU and when You want to run Your
+tested application fast like immediately after making new changes. C++ (and Rust) are
+compiled languages, so the development experience is significantly different.
+The testing itself requires a bit more effort due to compilation time being added to
+each run. Also - and that is a very opinionated statement - I think that Python
+is king when it comes to data science **in practice** due to its ecosystem of libraries
+and solutions like Jupyter Notebooks. So, I am not ditching Python - it is good.
+
+But I want to learn something new and Rust is a language that I've been eyeing for
+a while now. It's compiled and has a very strong type system, which means that
+the compiler will not let You do stupid things like unsafe memory access.
+The borrowing system is also a very interesting concept to me and it seems to resonate
+with me. And, from looking at the open-source projects written in Rust, it seemed
+to have a very expressive syntax. So, I decided to give it a try.
+The atoms will speak in crab tongue today. 🦀
+
+## Playing safe
+
+The molecular simulation engine is nothing more than a numerical integrator that enforces
+some additional conditions like the conservation of energy.
+The amount of equations and descriptions of interactions between atoms with
+aforementioned constraints is **huge**, literally dozens of monstrous textbooks have been written on the subject.
+
+So, a Minimal Viable Product (MVP) for this project would be a simulation of a system
+composed of single-type atoms that interact with each other via a model described
+by simple mathematical function dependent **only** on the distance between them.
+
+Simulations will be configured via scripts that will have pre-defined syntax and will be
+parsed by the program. The output of the simulations will contain quantities chosen by the user
+like the energy of the system, the temperature, the pressure, etc. and could be written to
+either a file or the standard output.
+
+I will start with a simple pair of atoms and then see how it works for a known atomic structure.
+In both cases, geometry will be defined by two objects: the simulation box (the space occupied by the entire system)
+and a unit cell - a repeating pattern of atoms that will be used to construct the simulation box.
+
+So, a user will define the shape of a unit cell and the number of repetitions in each direction.
+The simulation box will be constructed by repeating the unit cell in each direction.
+
+So the general simulation workflow will look like this:
+
+1. Read the configuration file
+2. Construct the simulation box with atoms
+3. Calculate the forces between atoms
+4. Integrate the equations of motion
+5. Write the output
+6. Repeat steps 3-5
+
+And so on, until a certain condition is met - for example, the simulation time is up.
+
+In this article, I will focus mainly on the first two steps, since the actual physics
+of such atomic systems deserves a separate blog post due to the complexity of the subject.
+Moreover, this part is a good introduction to the very basics of Rust such as
+simple data structures, file I/O and error handling.
+
+## Defining the minuscule
+
+Before we begin to define each setting of the simulation, a general format has to be chosen.
+Here, we can try to reinvent the wheel and cook up some arbitrary syntax that will require an
+additional parser (on top of methods that will spawn new entities from the settings) or
+choose one of the standards that have stood the test of time.
+
+So, I've chosen YAML as my base for simulation configs, due to its simplicity and
+the fact that I don't expect a lot of nesting to be happening in the settings.
+Also, Rust has a very good YAML crate (library) called `rust_yaml`, so it's a win-win.
+
+The simulation script will be divided into thematic sections, each containing
+a list of settings:
+
+<CodeSnippet
+  code={`
+    system:
+      ...
+    neighbours:
+      ...
+    potential:
+      ...
+    dynamics:
+      ...
+    thermodynamics:
+      ...
+    logger:
+      ...
+  `}
+  language="yaml"
+  filename="input.yaml"
+  annotations={`
+    1: Definition of the geometry of the system.
+    3: Settings for constructing the list of atoms that are close enough to interact with each other.
+    5: Definition of the parameters for functions that describe interactions between atoms.
+    7: Settings for the equations of motion integration.
+    9: Thermodynamic description of the system i.e. if it should be kept at a constant temperature or pressure.
+    11: Simulation output settings - what and where should be written.
+  `}
+/>
+
+To utilize this script we will need some kind of parser that will read the file and
+spawn the appropriate objects. Here we can see the first functionality that can be
+isolated into a sort of submodule - the one concerned with loading and saving data.
+
+### Isolated systems
+
+So, a first lesson in Rust - how to structure the code. From what I've gathered, there are
+two ways to ship code in Rust - either as a library or as a binary. The library is for
+latching Your code onto other projects, while binary acts as a standalone application.
+These shipments are called **crates** and they are defined by a `Cargo.toml` file, which name
+comes from the CLI tool that is a standard way to manage dependencies in Rust - `cargo`.
+In our case this file will be very, very simple:
+
+<CodeSnippet
+  code={`
+    [package]
+    name = "rustomics"
+    version = "0.1.0"
+    edition = "2024"
+
+    [dependencies]
+    yaml-rust = "0.4.5"
+  `}
+  language="toml"
+  filename="Cargo.toml"
+  annotations={`
+    1: Basic information about the crate.
+    2: Cute portmanteau of Rust and molecular dynamics. ⚛️🦀
+    7: Look, our first dependency!
+  `}
+/>
+
+Having this file in the root directory of our project, we can now create a directory
+that contains the source code of our crate. It will be called `src` and will contain
+a file called `main.rs` that will be the entry point of our application. The name
+of this file is dependent on the type of crate we are building - if it's a library,
+it will be called `lib.rs`.
+
+Inside this wile, just like in C/C++, a main routine called `main` will be defined:
+
+<CodeSnippet
+  code={`
+    // Here we will import the main submodules
+
+    fn main() {
+      ...
+      // Here we will load the configuration file
+      // and start the simulation
+    }
+  `}
+  language="rust"
+  filename="main.rs"
+  annotations={`
+    3: The entrypoint of our binary
+  `}
+/>
+
+As said previously, I want my file-parsing functionality to be isolated from the rest
+of the code, so I will create an `io` directory, that will contain a file called `mod.rs`.
+This file also serves as an entrypoint for the other parts of the code, that can group
+several `.rs` files into a single **namespace**. We will then be able to use any elements
+from this namespace by using the `io` prefix, e.g. `io::load_config()` or something like that.
+For now, I will separate the input from the output, so I will create two files named just like that:
+`input.rs` and `output.rs`. The `mod.rs` file will look like this:
+
+<CodeSnippet
+  code={`
+    pub mod input;
+    pub mod output;
+  `}
+  language="rust"
+  filename="io/mod.rs"
+  annotations={`
+    1: Importing the input submodule
+    2: Importing the output submodule
+  `}
+/>
+
+The `pub` keyword is used to make the module public, so it can be used outside of the `io` namespace.
+There is some usability to functions that can be only accessed in the scope of a single namespace,
+like operations that don't have a practical meaning outside of the context of a given submodule.
+
+An example of that would be a function that reads a single line from a file - it's not really
+useful outside of the context of parsing a file, so it can be private. This function then can be
+used by some other function within that same namespace e.g. called `load_file` that will be public and
+iterate over freshly read lines. This way we can hide the implementation details of the function or
+a group of functions and expose only the ones that are useful to the user.
+
+In the beginning, we will make everything public and then think if any information hiding is necessary -
+it is the least of our concerns right now. The `input.rs` file will contain the code that opens and
+reads our YAML configuration and contains some helpers to deserialize the data into the appropriate
+data structures. We will ignore `output.rs` for now - it will return to us when we define our logging logic later.
+
+<CodeSnippet
+  code={`
+    use std::fs::read_to_string;
+    use yaml_rust::Yaml;
+
+    pub fn parse_yaml(filepath: &str) -> yaml_rust::Yaml {
+        let script_file = read_to_string(&filepath).expect("Failed to read script file");
+        let script_yaml =
+            yaml_rust::YamlLoader::load_from_str(&script_file).expect("Failed to parse script file");
+        script_yaml[0].clone()
+    }
+  `}
+  language="rust"
+  filename="io/input.rs"
+  annotations={`
+    2
+  `}
+/>
+
+### Building with rods and spheres
+
+### Boxing the infinite
+
+### Nanometric cul-de-sac
+
+## The "kind-of" big picture
+
+## What's next?
+
+[Python bindings for MPI]: https://mpi4py.readthedocs.io/en/stable/
