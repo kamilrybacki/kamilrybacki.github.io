@@ -1,11 +1,11 @@
 ---
-title: "Particles of Rust - The Box"
+title: "Particles of Rust I: The Box"
 date: "2024-01-11"
 description: "Constructing a simulation box for molecular dynamics integrator in Rust"
 tags: ["rust", "molecular dynamics", "simulation", "particles", "box"]
 image:
-  thumbnail: "cihero"
-  hero: "cihero"
+  thumbnail: "por1"
+  hero: "por1"
   alt: "Simulation box"
 ---
 
@@ -41,6 +41,12 @@ give us a way to peer into the world of the nanoscopic.
 So, why am I rambling about this?
 
 ### Old times sake 🧑‍🔬
+
+<StyledSVG
+  src='images/oldtimes'
+  alt='PhD memories'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
 
 I stopped doing my PhD a while ago because over time I've leaned more toward the
 the software engineering side of things and started working as a developer, but I still
@@ -86,10 +92,16 @@ to performance, there are better options. When I was running calculations for sy
 that were composed of like 2000 objects - it was fine, the CPU and RAM usage was
 fine and dandy. But throwing millions of atoms into my numerical grinder,
 stopped it dead in its tracks. One time I was even notified by the administrator
-of the supercomputer I was using that my job was taking too much memory and
-was promptly terminated. 😅 With C++, the problem was gone, because I could
+of the supercomputer I was using that my cool Python tools were taking too much memory and
+my computational job was promptly terminated. 😅 With C++, the problem was gone, because I could
 declaratively say to the compiler that I wanted to allocate a certain amount of memory,
 do some magic tricks on it and then set it free.
+
+<StyledSVG
+  src='images/missingram'
+  alt='Lost RAM'
+  class='invert grayscale w-11/12 mx-auto my-2 h-42 lg:h-72'
+/>
 
 As I said, Python is really competent when it comes to building software not-so-concerned
 with squeezing every last clock cycle out of the CPU and when You want to run Your
@@ -140,6 +152,12 @@ So the general simulation workflow will look like this:
 5. Write the output
 6. Repeat steps 3-5
 
+<StyledSVG
+  src='images/loop'
+  alt='Loop diagram'
+  class='invert grayscale w-11/12 mx-auto -my-28 lg:my-4 h-38 lg:h-42'
+/>
+
 And so on, until a certain condition is met - for example, the simulation time is up.
 
 In this article, I will focus mainly on the first two steps, since the actual physics
@@ -149,7 +167,7 @@ simple data structures, file I/O and error handling.
 
 Moreover, I will try to point out specific aspects of Rust
 I've learned along the way and explain them in a way that will be understandable
-to people that are not familiar with the language.
+to people who not familiar with the language.
 
 So, let's get to it!
 
@@ -461,6 +479,12 @@ is returned.
 
 #### Particle No. 3 - Wait, what's &? 🤔
 
+<StyledSVG
+  src='images/reference'
+  alt='Pointing to data'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-96'
+/>
+
 If You are observant enough, You may have noticed that the `parse_yaml` function takes
 one argument, that has a type prepended with an ampersand (`&`). In this context,
 it is a reference to an array of characters in our computer's memory, so a pointer to
@@ -573,6 +597,12 @@ since it has **contextually** no use in further execution of the program.
 
 **So, passing by value is akin to situational jokes and borrowing is like a meme - it can be referenced in multiple places
 and it will still (hopefully) be understood.** Take it or leave it. 🤷
+
+<StyledSVG
+  src='images/joke'
+  alt='Yikes'
+  class='invert grayscale w-11/12 mx-auto lg:my-8 h-52 lg:h-60'
+/>
 
 So cool, we can pass data around, but what about modifying it? Well, we can't do that either without
 stating it **explicitly** to Rust. This is done by using the `mut` keyword, which is short for **mutable**.
@@ -787,6 +817,12 @@ enclosing them in the simulation box.
 
 ### Building with rods and spheres
 
+<StyledSVG
+  src='images/ballsandsticks'
+  alt='Balls and sticks'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-72'
+/>
+
 Similar to our previous considerations, it is useful to establish some sort of model
 that we will base our new structure in code upon. We know that the simulated system
 will be composed of singular atoms occupying a 3D space, defined by a simulation box.
@@ -854,8 +890,9 @@ A slight surprise is the `PreviousState` and `CurrentState` fields. Physics like
 especially when it comes to numerical models and calculating properties of matter. So, we will need
 to keep track of the previous state of the atom, so we can calculate the difference between the current
 and the previous state. As You will see in later articles, it will have a very practical use during
-solving the equations of motion. They both will have the same fields i.e. they will only differ
-in name:
+solving the equations of motion. 
+
+They both will have the same fields i.e. they will only differ in name:
 
 <CodeSnippet
   code={`
@@ -969,7 +1006,7 @@ operations of vectors and matrices, so we can use them in our code, but under th
 or inverting matrices are already implemented for us **efficiently** and one of the things I have learned
 during my PhD is this:
 
-<img src="/assets/images/dontneedalgebra.png" alt="Independent" style="margin-top:1rem;margin-bottom:1rem;" height="500" />
+<img src="/assets/images/dontneedalgebra.png" alt="No algebra lib needed" style="margin-top:1rem;margin-bottom:1rem;" height="500" />
 
 The only exceptions are when **there is no linear algebra library for the language** or
 **the library is a slow-as-heck abandonware**. In other cases, just **use established tools**.
@@ -1468,6 +1505,12 @@ creating their microscopic home - the simulation box.
 
 ### Boxing the infinite ♾️ 👉 📦
 
+<StyledSVG
+  src='images/boxinginf'
+  alt='The simulation box'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-72'
+/>
+
 Going back to the general idea of the simulation box, it should be composed of
 **unit cells** (tiles) that are repeated along **their** dimensions to form
 a three-dimensional grid (pattern). The space occupied by this grid will be
@@ -1716,7 +1759,7 @@ dimensions of the constructed box, after we tile the cells together.
 
 The most important methods here are `calculate_box_vectors` and `calculate_mapping_matrix`.
 They are connected to a very important aspect of defining how our atoms are located in the system
-during a specific moment in time and if they will reside inside out simulation box or not.
+during a specific moment in time and if they will reside inside our simulation box or not.
 
 #### A matter of coordination 🤝
 
@@ -1728,8 +1771,6 @@ Basically, we are now working in two, separate coordination systems:
 - **Box** - the system of coordinates that is used to define the position of atoms in the simulation box
   based on the **unit cell** vectors, so the edges of the unit cell and each vector component are a number
   between 0 and 1 meaning **how many of each unit cell vector** is needed to reach the atom from the origin
-
-// Tutaj obrazek z dwoma układami współrzędnych
 
 The difference between them is **significant** because there is no restriction made on the box coordinates
 when it comes to the angles between each axis - the simulation box can be skewed. We will see later,
@@ -1970,7 +2011,13 @@ But, what is this `rayon` thing?
 
 #### Particle No. 9 - Everything, everywhere, all at once 👁️
 
-Imagine there is, like, thousands of atoms in our system. We want to modify their positions
+<StyledSVG
+  src='images/rustmpi'
+  alt='Multiple threads of the program running in parallel'
+  class='invert grayscale w-11/12 mx-auto my-8 h-52 lg:h-72'
+/>
+
+Imagine there are, like, thousands of atoms in our system. We want to modify their positions
 in the simulation box. We can do it sequentially, one by one, but that would be very slow.
 Now imagine we have more than one CPU thread in our computers that are specifically designed
 to carry out independent operations, that can be performed in parallel. Sike, there is nothing
@@ -2063,16 +2110,73 @@ that replicates the atoms along the dimensions of the simulation box:
   language="rust"
   filename="system/lattice.rs (generate_lattice function)"
   annotations={`
+    8-23: I guess I will shorten it in the future, but for now - it works 🤷
     53-56: Here we relabel the atoms, so they have unique IDs
+    55: Enumerate returns a tuple with index AND element
   `}
 />
 
 For the part of the code with triple-nested loop, I recommend checking out the definition of
-[Bravais Lattice], which is used to generate the crystal lattice mathematically.
+[Bravais Lattice], which is used to generate the crystal lattice mathematically. It should
+clarify why I am adding whole vectors to the position of each atom. The `continue` statement
+is used to skip the first iteration of the loop, since we don't want to replicate the original
+copies of each atom. After this operation, we finally end up with a 3D grid of atoms, that
+occupy a repeatable shape in space and this pattern can be repeated indefinitely along the
+dimensions of the simulation box. This is the **crystal lattice**, used to model
+the behavior of atoms in a solid-state system.
 
-## The "kind-of" big picture
+What if we wanted to model something that is not a crystal? For example, a liquid or a gas?
+We can use the same approach, but instead of replicating the atoms in a regular, ordered way,
+we could generate them randomly within the simulation box. Or just manually specify their
+positions and tell `rustomics` to skip their replication across the 3D space. For now,
+I will test my software on simple, ordered systems but later I will expand on this topic
+when adding features specific to simulating fluids (and that's a very distant future 😅).
+
+## Sealing the package 📦✅
+
+This is a good place to stop, for now. We have our system constructed and can proceed to
+implement the **main loop** of our simulation, controlled by the simulation engine to
+perform subsequent steps of the simulation i.e. integration of the equations of motion **I.E**
+actual molecular dynamics.
+
+As You can see, we have a lot of code already, where we've touched upon a lot of aspects of
+programming in Rust. The basic understanding of those concepts really opens up our minds to the
+main advantages of Rust. It reinvents some of the tropes seen in other languages, but in a way
+that is not that **intrusive**. I have encountered a lot of videos and articles that explain
+how people are "fighting with the borrow checker" in an antagonistic way, even though they
+recognize the benefits of the language and may even be experienced programmers. **BUT**,
+I think it's the matter of how imperative is Your approach to a language. 
+
+More freedom in forcing the language to do **exactly** what and where You want carries a lot of unforseen
+responsibility and risk. I mean, look at C - it literally lets You carve out explicit
+portions of memory and do whatever You want with it - **you don't even have to clean up after
+Yourself** (you should ofc, but there are no mechanisms to force You to do so). Rust is
+a language that is **very** strict about what You can and cannot do, but has that **sweet spot**
+of performance and low-level control over the code. It is a language that is close
+to the metal, but also *close to the programmer. And I think a portion of freedom is a small price
+to pay for the benefits of the Cult of Crab. 🦀
+
+Is the code shown 100% optimized and following the best Rust practices? I mean, let's be real.
+My experience with Rust is not to be measured in years, sadly tbh because I can see I
+**really vibe** with it. In the future, the refactoring of the code will be inevitable, but for now,
+we stick to the MVP goal and the "done is better than perfect" approach.
 
 ## What's next?
+
+In the next article, I will implement other components of the aforementioned `Simulation` class,
+mainly ones that are responsible for the integration of the equations of motion - so we will
+have more physics and maths there, with some juicy implementation of numerical methods along the way.
+
+All of the code presented in this article can be found in the [`rustomics` repository], but be aware
+that it is in a very early stage of development. If You have any suggestions or questions, feel free
+to contact me via e-mail or social media. Also, If You want to contribute to the project, I will
+be more than happy to review Your pull requests (please for the love of God implement MEAM potential
+for me, thank You 🙏).
+
+I hope that You enjoyed this article, I've tried to mix the technical aspects of programming in Rust
+with a practical example of how to use it to implement a piece of semi-scientific software. I will try to keep
+this balance in the future, so stay tuned for more articles. And who knows - maybe `rustomics` will become
+a legit simulation engine in the future - that would be dope. For now, see you in the next one! 👋
 
 [Python bindings for MPI]: https://mpi4py.readthedocs.io/en/stable/
 [they are still arrays with sizes known at compile time]: https://nalgebra.org/docs/user_guide/vectors_and_matrices/
@@ -2084,3 +2188,4 @@ For the part of the code with triple-nested loop, I recommend checking out the d
 [simulating aluminum and copper alloys]: https://mostwiedzy.pl/pl/publication/improvements-to-the-two-phase-sandwich-method-for-calculating-the-melting-points-of-pure-metals,149990-1
 [parallel iterator]: https://docs.rs/rayon/latest/rayon/iter/trait.ParallelIterator.html
 [Bravais Lattice]: https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
+[rustomics repository]: https://github.com/kamilrybacki/rustomics

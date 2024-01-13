@@ -82,34 +82,35 @@ const preProcessedRawCode = preProcessCode(code);
       lineElement.firstChild.classList.add(toggle ? 'opacity-100' : 'opacity-50');
     };
     const appendCommentTooltip = (lineElement, text, prefix) => {
-      if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
-        const annotationOverlay = document.createElement('div');
-        annotationOverlay.classList.add(...[
-          'absolute', 'flex', 'flex-wrap', 'rounded-md', 'p-2', 'w-fit',
-          'transition-opacity', 'duration-200', 'ease-in-out',
-          'bg-background', 'bg-opacity-75', 'opacity-0',
-        ]);
-        annotationOverlay.setAttribute('role', 'tooltip')
-        annotationOverlay.innerHTML = `${prefix}: ${text}`
-          .split(' ')
-          .map((word) => `<span>${word} </span>`)
-          .join('');
-          lineElement.appendChild(annotationOverlay);
-          lineElement.onmouseenter = (e) => {
-            updateCommentState(e, annotationOverlay, '1')
-            toggleLineNumbersHighlight(lineElement, true);
-          };
-          lineElement.onfocus = (e) => {
-            updateCommentState(e, annotationOverlay, '1');
-            toggleLineNumbersHighlight(lineElement, true);
-          };
-          lineElement.onmousemove = (e) => {
-            updateCommentState(e, annotationOverlay, '1');
-          };
-          lineElement.onmouseleave = () => {
-            updateCommentState(null, annotationOverlay, '0');
-            toggleLineNumbersHighlight(lineElement, false);
-          };
+      if (lineElement.lastChild.getAttribute('role') === 'tooltip') {
+        lineElement.removeChild(lineElement.lastChild);
+      }
+      const annotationOverlay = document.createElement('div');
+      annotationOverlay.classList.add(...[
+        'absolute', 'flex', 'flex-wrap', 'rounded-md', 'p-2', 'w-fit',
+        'transition-opacity', 'duration-200', 'ease-in-out',
+        'bg-background', 'bg-opacity-75', 'opacity-0',
+      ]);
+      annotationOverlay.setAttribute('role', 'tooltip')
+      annotationOverlay.innerHTML = `${prefix}: ${text}`
+        .split(' ')
+        .map((word) => `<span>${word} </span>`)
+        .join('');
+        lineElement.appendChild(annotationOverlay);
+        lineElement.onmouseenter = (e) => {
+          updateCommentState(e, annotationOverlay, '1')
+          toggleLineNumbersHighlight(lineElement, true);
+        };
+        lineElement.onfocus = (e) => {
+          updateCommentState(e, annotationOverlay, '1');
+          toggleLineNumbersHighlight(lineElement, true);
+        };
+        lineElement.onmousemove = (e) => {
+          updateCommentState(e, annotationOverlay, '1');
+        };
+        lineElement.onmouseleave = () => {
+          updateCommentState(null, annotationOverlay, '0');
+          toggleLineNumbersHighlight(lineElement, false);
         };
     };
 
