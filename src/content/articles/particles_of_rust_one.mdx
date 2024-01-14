@@ -363,7 +363,7 @@ cover all possibilities i.e. branches of our operation.
     }
   `}
   language="rust"
-  filename="Example of a match statement in Rust"
+  filename="Example of a match"
   annotations={`
     1: We define a variable
     3: If the value is equal to 1, we print "One"
@@ -387,7 +387,7 @@ is that it can also be used to conditionally assign values to variables:
     }
   `}
   language="rust"
-  filename="Assigning match to a variable"
+  filename="Match as variable"
   annotations={`
     1: We define a variable
     2: We define another variable and assign it a value based on the value of the first variable
@@ -419,7 +419,7 @@ statement to handle these conditions:
     }
   `}
   language="rust"
-  filename="Matching an Option type"
+  filename="Matching an Option"
   annotations={`
     1: We define a function that takes an integer and returns an Option type
     2: We match the value of the integer
@@ -448,7 +448,7 @@ Here it should be noted that multiple patterns can be matched to a single value:
     }
   `}
   language="rust"
-  filename="Matching multiple patterns"
+  filename="Multiple matches"
   annotations={`
     1: We define a variable
     3: If the value is equal to 1 or 2, we print "One or two"
@@ -517,7 +517,7 @@ enclosed between curly brace - simple as that:
     }
   `}
   language="rust"
-  filename="Variable lifetimes in Rust"
+  filename="Variable lifetimes"
   annotations={`
     2: We define a variable
     3: We enter a new context
@@ -624,7 +624,7 @@ we have to do it like this:
     }
   `}
   language="rust"
-  filename="Passing by mutable reference"
+  filename="Passing a mutable"
   annotations={`
     8: Here we point to the location of "a" in memory and say its okay to modify it
     9: We modify the value of the variable
@@ -1797,7 +1797,7 @@ is implemented in the `box.rs` file like so:
     }
   `}
   language="rust"
-  filename="system/box.rs (calculate_mapping_matrix method)"
+  filename="calculate_mapping_matrix method"
   annotations={`
     2: We normalize the vectors of the simulation box, so they are of unit length
     3: We try to invert the matrix, if it is invertible, we store it in the structure
@@ -1845,7 +1845,7 @@ feature of the `nalgebra` library. 👍
     } 
   `}
   language="rust"
-  filename="system/box.rs (calculate_box_vectors method)"
+  filename="calculate_box_vectors method"
   annotations={`
     2: We clone the unit cell vectors, so we can modify them
     3-5: We multiply each vector by the number of replicas in each dimension
@@ -1998,7 +1998,7 @@ the basic vectors of the cell:
     }    
   `}
   language="rust"
-  filename="system/lattice.rs (scale_cell_basis function)"
+  filename="scale_cell_basis function"
   annotations={`
     1: Umm... rayon? What is that?
     10: par_iter_mut?
@@ -2108,7 +2108,7 @@ that replicates the atoms along the dimensions of the simulation box:
       }
   `}
   language="rust"
-  filename="system/lattice.rs (generate_lattice function)"
+  filename="generate_lattice function"
   annotations={`
     8-23: I guess I will shorten it in the future, but for now - it works 🤷
     53-56: Here we relabel the atoms, so they have unique IDs
@@ -2132,8 +2132,8 @@ positions and tell `rustomics` to skip their replication across the 3D space. Fo
 I will test my software on simple, ordered systems but later I will expand on this topic
 when adding features specific to simulating fluids (and that's a very distant future 😅).
 
-Here is the final result of our implementation. It is a structure composed of a face-centered
-cubic lattice of aluminum atoms. The simulation box consists of 10 repetitions along each dimension
+Here is the final result of our implementation. It is a structure composed of a [face-centered
+cubic lattice of aluminum atoms]. The simulation box consists of 10 repetitions along each dimension
 and the unit cell vectors are defined in Angstroms. I have used a software called VMD to visualize
 the structure, but there are many other options available, like Ovito or Avogadro (it may take a while to load)
 
@@ -2170,6 +2170,12 @@ of the simulation script YAML file:
   language="yaml"
   filename="Configuration of our system"
   annotations={`
+    4-6: The unit cell vectors are defined in Angstroms
+    7: This unit cell has a 4 atom basis
+    8-15: The atoms are defined in fractional coordinates
+    16: The system is infinite in all directions
+    17: We will come back to unit systems in the next article
+    18: We want to replicate the unit cell in all directions, 10 times
   `}
 />
 
@@ -2229,4 +2235,5 @@ a legit simulation engine in the future - that would be dope. For now, see you i
 [simulating aluminum and copper alloys]: https://mostwiedzy.pl/pl/publication/improvements-to-the-two-phase-sandwich-method-for-calculating-the-melting-points-of-pure-metals,149990-1
 [parallel iterator]: https://docs.rs/rayon/latest/rayon/iter/trait.ParallelIterator.html
 [Bravais Lattice]: https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
-[rustomics repository]: https://github.com/kamilrybacki/rustomics
+[face-centered cubic lattice of aluminum atoms]: https://arxiv.org/ftp/arxiv/papers/2002/2002.01562.pdf
+[`rustomics` repository]: https://github.com/kamilrybacki/rustomics
