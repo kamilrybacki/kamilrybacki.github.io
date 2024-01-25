@@ -199,6 +199,13 @@ declare module 'astro:content' {
   collection: "articles";
   data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
+"comfortable_rustification.mdx": {
+	id: "comfortable_rustification.mdx";
+  slug: "comfortable_rustification";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 "components.mdx": {
 	id: "components.mdx";
   slug: "components";
