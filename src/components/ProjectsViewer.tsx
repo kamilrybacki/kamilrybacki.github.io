@@ -10,7 +10,7 @@ const ProjectsViewer = ({ projects }: ProjectsViewerProps) => {
       <nav className="mt-2 flex w-full flex-row justify-between">
         <p className="mb-2 font-handwriting text-4xl lg:text-9xl">Projects</p>
         <button className="mt-auto h-fit p-1 hover:translate-y-2 lg:p-2 lg:hover:translate-x-2">
-          <a href="/blog" className="font-handwriting font-bold">
+          <a href="/posts" className="font-handwriting font-bold">
             Go to blog
           </a>
         </button>
