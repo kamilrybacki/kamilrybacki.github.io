@@ -16,7 +16,7 @@ We often try to distance the image of human nature from dependence on external r
 defending it from the whims of subconscious instincts using notions of self-determination and free will.
 The thing is - some of our mental building blocks are made of those simple mechanisms, programmed eons ago
 to ensure that we carry on perfecting our civilization, autopiloting our survival through the everyday grind.
-And just as those single-cell organisms, we conserve as much energy as possible, whenever we can i.e. **we are lazy
+And just like those single-cell organisms, we conserve as much energy as possible, whenever we can i.e. **we are lazy
 by default** *(speaking from the point of view of efficiency in managing our resources)* **and that is a good thing**.
 
 Accepting this fact, we should cherish this trait of ours and use it to our advantage, whenever we can and whenever
@@ -25,7 +25,7 @@ the VSCode window if there is a way to migrate some of the tasks I do to the edi
 
 Lately, after my first adventures with my [Rust particle simulator],
 I've been polishing up my Rust skill by doing LeetCode problems, starting from the easy ones and slowly climbing
-up its algorithmic ladder. Normally, I would use the LeetCode website to do that, but there are couple of things that
+up its algorithmic ladder. Normally, I would use the LeetCode website to do that, but there are a couple of things that
 bother me about it:
 
 1. I start to miss my extensions such as CodeLens, GitLens, etc.
@@ -47,12 +47,12 @@ between the browser and the editor is a waste of time and energy, both of which 
 ## Chinese doodads to the rescue 🇨🇳
 
 There is a very popular [extension in VSCode marketplace called simply LeetCode] which tries to streamline the process
-of solving LeetCode problems in the editor, made by (from what I understood after a squick Google investigation)
-Chinese branch of LeetCode. Even though it is in alpha stage, it is quite usable and it has some nice features, such as:
+of solving LeetCode problems in the editor, made by (from what I understood after a quick Google investigation)
+Chinese branch of LeetCode. Even though it is in the alpha stage, it is quite usable and it has some nice features, such as:
 
 - **Problem list** - a list of all problems available on LeetCode, with a search bar and a filter by difficulty.
 - **Problem description** - a window with a problem description, which can be opened in a separate tab.
-- **UI enchancements** - a couple of buttons that allow you to submit your solution, run tests, etc.
+- **UI enhancements** - a couple of buttons that allow you to submit your solution, run tests, etc.
 
 <CaptionedImage
   src="/assets/images/leetcode_ext.png"
@@ -60,8 +60,8 @@ Chinese branch of LeetCode. Even though it is in alpha stage, it is quite usable
   height="400"
 />
 
-However, it has one problem right now, that makes it slightly harder to login to the LeetCode website, because it
-rejects third party authentication methods (such as Google or GitHub). Also, the login via LeetCode credentials
+However, it has one problem right now, which makes it slightly harder to login to the LeetCode website because it
+rejects third-party authentication methods (such as Google or GitHub). Also, the login via LeetCode credentials
 using VSCode UI is not working for me, so there is **one final option** left - using the browser to login and
 then copy-pasting the session cookie to the extension dialog box. 🍪
 
@@ -101,19 +101,19 @@ its headers. We are looking for a header named `Cookie`, which should be present
 The value of this header is our session cookie, which we can copy and paste into the VSCode extension dialog box.
 After that, we should be able to view our progress and solve problems in the editor, without having to leave it. 🎉
 However, there is a catch. We will be able to click on problems, view their descriptions and open them in separate
-windows using the `Code Now` button, but Rust syntax analyzer **won't** recognize the code as a valid Rust code,
+windows using the `Code Now` button, but the Rust syntax analyzer **won't** recognize the code as a valid Rust code,
 because it is not a part of a Cargo project. 😢
 
 <CaptionedImage
   src="/assets/images/leetcode_initial_env.png"
-  alt="As You can see, no autocomplete shows up, even though Rust should know it its an `Option` variable"
+  alt="As You can see, no autocomplete shows up, even though Rust should know it is an `Option` variable"
   height="700"
 />
 
 So we've got our environment set up, but we are still missing some of the features that we would normally have
-in a Cargo project. To fix that, we need to dress up out LeetCode problems codebase as a sudo-Cargo project,
-where each problem is a separate **public module** and the main file is a **binary** that imports those modules.
-There is of course no need to compile this mystical binary, since we are only interested in the syntax analyzer
+in a Cargo project. To fix that, we need to dress up our LeetCode problems codebase as a sudo-Cargo project,
+where each problem is a separate **public module** and the main file is a **binary** entrypoint that imports those modules.
+There is of course no need to compile this mystical binary source since we are only interested in the syntax analyzer
 and the autocomplete features. 🧙
 
 ## One binary to rule them all 💍🦀
@@ -172,7 +172,7 @@ but to be honest - You can leave it as it is since it will still be visible in t
 open workspace. 🤷
 
 The second question is a bit more tricky, but it can be solved by using the `#[path = "..."]` attribute, which
-allows us to specify the path to the file that we want to import. This is how the `main.rs` looks like:
+allows us to specify the path to the file that we want to import. This is what the `main.rs` looks like:
 
 <CodeSnippet
   code={`
@@ -198,7 +198,7 @@ So the whole procedure is as follows:
 2. The extension downloads the problem description and the code stub and saves it in the pre-defined directory.
 3. I move the code stub to the appropriate directory, according to the problem difficulty e.g. `1.two-sum.rs` goes to `easy/1.two-sum.rs`.
 4. I add a new module to the `main.rs` file, which imports the code stub using the `#[path = "..."]` attribute.
-5. I enjoy the Rust syntax analyzer and autocomplete features, while solving the problem in the editor.
+5. I enjoy the Rust syntax analyzer and autocomplete features while solving the problem in the editor.
 
 <CaptionedImage
   src="/assets/images/leetcode_final.png"
