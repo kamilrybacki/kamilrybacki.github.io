@@ -1,0 +1,109 @@
+---
+title: "Particles of Rust II: Balls and sticks"
+date: "2024-01-11"
+description: "Fill our simulation box with particles and simulate their interactions"
+tags: ["rust", "molecular dynamics", "simulation", "particles", "potential"]
+image:
+  thumbnail: "por2"
+  hero: "por2"
+  alt: "Bond between atoms"
+---
+
+## Keep it cool ❄️
+
+Right now, we have our first building blocks of molecular dynamics simulations ready - the definition of a bounding box
+that encompasses our system and the definition of a particle. By providing the information about their relative positions
+within a repeatable pattern (a unit cell of a crystal lattice) we can construct three-dimensional structures of any
+crystalline material. Of course, if we want this structure can also be of any kind - even the completely random one,
+since right now we are passing each particle's position manually in the simulation script.
+
+So, the box and balls of our atomistic machine are up and running. Now, it's time to connect the spheres modeling
+the atoms with "sticks", or in more scientific terms - with the **potential energy function**. Right now we will not
+concern ourselves about implementing their behavior over time i.e. the dynamics of the system but rather focus on
+the static picture of our simulation box.
+
+By correct construction of the energetics of the interactions between the
+particles, we will ensure that any mishaps we encounter during the integration of the equations of motion are not due to
+the incorrect modeling of the potential energy landscape in the simulated lattice. **And believe me**, there is a plethora
+of caveats that await us in the upcoming Newtonian puzzles, that are mostly related to the numerical precision of methods
+we will choose. But, let's not get ahead of ourselves and focus on the task at hand.
+
+This ignorance of dynamics is not uncommon and even has its own name - **molecular statics** (duh 🤷‍♂️). It is a
+computationally less demanding approach to molecular dynamics simulations, where we are not interested in the
+time evolution of the system but rather in the **equilibrium** state of the system. And as nature often has it,
+this equilibrium is the situation where the forces acting on the particles are balanced and the system is at rest, so
+**their overall energy is at minimum**. Funny enough, physicists identify such states as ones where, hypothetically,
+the temperature of the system is absolute zero - as in, there is totally no movement of any particles, they are at 0 Kelvin.
+So we're venturing into a very cold world, indeed. 🥶
+
+## First encounter with the moonspeak 🌌
+
+The potential energy function is a mathematical model that describes the interactions between particles in a system.
+Speaking 100% technically, it is a function of the relative positions of two particles and it returns the potential
+energy of interaction between them, expressed in the same units as any other type of energy (e.g. Joules). There
+is a **multitude** of potential energy models, that have been established over the years. Some of them try to
+expand upon the information required to correctly calculate interaction energy for a given pair of particles by
+introducing additional parameters that are connected to, for example, the closest neighborhood of each particle
+or the physical properties of the particles themselves (like their electronic structure). 
+
+Here, for the sake of simplicity, we will stick to the most trivial potential energy model - the **Lennard-Jones potential**.
+It is a model that describes the interaction between two neutral atoms or molecules. It is a sum of two terms - the first
+one is a repulsive term, that is dominant at short distances and the second one is an attractive term, that is dominant
+at long distances. This ensures that if particles start to get too close to each other, they will repel each other
+to prevent their overlap and if they are too far away, they will attract each other to form a stable bond. So, in a way,
+it is a model that describes the behavior of a pair of particles as if they were connected by a spring. You can
+try right now to get a spring and squish it a bit, then release it and observe its behavior. It will, very shortly,
+oscillate or do the ["boioioioing" thing], expanding and contracting until it reaches the equilibrium state - the state
+where its dimensions come back to normal. I have found a very nice animation (courtesy of [physics-animations.com]), which
+You can see below. The behaviour of those two bonded particles will be very similar to the explained behavior of the spring.
+Of course, we neglect here that there are any other phenomena that may lead to this movement being damped like friction of
+the air or the internal friction of the spring itself (You can imagine internal "layers" of the spring's material rubbing against
+each other on the microscopic scale, wild, right? 🤯).
+
+<img src="/assets/images/oscillation_lj.gif" alt="LJ oscillator" style="margin-top:1rem;margin-bottom:1rem;margin-left:auto;margin-right:auto;"/>
+
+So we need that dual nature of the potential energy function to model the interactions between our particles and this will
+translate into this oscillating motion when we integrate the equations of motion for our particles that will try to maintain
+their state around some equilibrium. But You may be a little bit confused right now - I keep talking about potential **energy**
+and **force** somewhat interchangeably. There is a simple explanation for that, that can be shown using simple, physical hieroglyphs.
+
+### Unleashing the force 🌪️
+
+Okay, so maybe You remember from Your high school physics classes that there is something as a **work**, in physical
+sense, of course. It is a measure of the energy transfer that occurs when an object is moved over a distance by an
+external force at a constant speed. This means, that over some **distance** (let's call it `d`) we apply some **force**
+(let's call it `F`) and the object effectively gains some **energy** (let's call it `W`, as work). This relationship
+can be briefly expressed as:
+
+$$W = F \cdot d$$
+
+A very graphical representation of this energy transfer would be a bullet that hits a wall. When the collision occurs, 
+the bullet starts instantly to act with great force upon a fragment of the wall it hits, transferring its kinetic energy to the wall.
+But this energy can also be thought of as a portion of work that the bullet has done on the wall, which forces the wall to adjust its position
+by a distance calculated from the equation above: $$d = \frac{W}{F}$$.
+
+However, we can also to another transformation of this equation, to express the force acting on the object in terms of the work done on it:
+
+$$F = \frac{W}{d}$$
+
+which tells us that if we somehow measure or calculate the amount of work done between two objects separated by a distance `d`, we can
+also calculate the force that was acting between them. But why? Well, we can imagine this force as trying to maintain the optimal distance
+between those bodies, such that they will not be too close to each other (which would result in a repulsive force) or too far away from each other
+(which would result in an attractive force). If they are not in this ideal state, each of them will have to perform some **work** to modify this
+distance and its amount will be dependent on how far they are from this hypothetical **equilibrium**.
+
+So, what if they are at this perfect distance from each other? Well, then the force acting between them will be zero, since they will not be trying to
+change their relative position. This means that the **work** needed to be done by them would also be equal to zero! Here we will introduce
+a new fact into our energetic side of simulations - **the work needed to be done when the system is at its optimal state is zero**. Let's
+express this for our pair of objects as some perfect (equilibrium) distance $r_0$ for which: $F(r_0) = 0$ i.e. nothing happens.
+**Any** deviation from this distance will result in a force acting between them, that will try to bring them back to this equilibrium.
+We can write this deviation as a change in distance $\Delta r = r - r_0$ and the force acting between them as $F(\Delta r)$. Going back to our
+equation for the force acting between them, we can express it as:
+
+$$F(\Delta r) = \frac{W(\Delta r)}{\Delta r}$$
+
+where $W(\Delta r)$ is the work that would be needed to compensate for this sudden change and enforce back the equilibrium state.
+So, here we will do a little switcheroo and say that this work will be some function dependent solely on distance between particles.
+
+["boioioioing" thing]: https://www.youtube.com/watch?v=LPaIS51XGC0
+[physics-animations.com]: https://www.physics-animations.com
