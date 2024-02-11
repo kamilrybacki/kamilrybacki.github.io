@@ -52,6 +52,7 @@ jobs:
 
           ## Build Jupyterlite
           cd ../
+          ls -l
           jupyter lite build --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
 
           ## Patch the build
