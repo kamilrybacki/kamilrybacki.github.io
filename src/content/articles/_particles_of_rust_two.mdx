@@ -82,7 +82,7 @@ the bullet starts instantly to act with great force upon a fragment of the wall 
 But this energy can also be thought of as a portion of work that the bullet has done on the wall, which forces the wall to adjust its position
 by a distance calculated from the equation above: $$d = \frac{W}{F}$$.
 
-However, we can also to another transformation of this equation, to express the force acting on the object in terms of the work done on it:
+However, we can also perform another transformation of this equation, to express the force acting on the object in terms of the work done on it:
 
 $$F = \frac{W}{d}$$
 
@@ -93,17 +93,91 @@ between those bodies, such that they will not be too close to each other (which 
 distance and its amount will be dependent on how far they are from this hypothetical **equilibrium**.
 
 So, what if they are at this perfect distance from each other? Well, then the force acting between them will be zero, since they will not be trying to
-change their relative position. This means that the **work** needed to be done by them would also be equal to zero! Here we will introduce
-a new fact into our energetic side of simulations - **the work needed to be done when the system is at its optimal state is zero**. Let's
-express this for our pair of objects as some perfect (equilibrium) distance $r_0$ for which: $F(r_0) = 0$ i.e. nothing happens.
+change their relative position. Let's express this for our pair of objects as some perfect (equilibrium) distance $r_0$ for which: $F(r_0) = 0$ i.e. nothing happens.
 **Any** deviation from this distance will result in a force acting between them, that will try to bring them back to this equilibrium.
 We can write this deviation as a change in distance $\Delta r = r - r_0$ and the force acting between them as $F(\Delta r)$. Going back to our
 equation for the force acting between them, we can express it as:
 
-$$F(\Delta r) = \frac{W(\Delta r)}{\Delta r}$$
+$$F(\Delta r) = -\frac{W(\Delta r)}{\Delta r}$$
 
 where $W(\Delta r)$ is the work that would be needed to compensate for this sudden change and enforce back the equilibrium state.
-So, here we will do a little switcheroo and say that this work will be some function dependent solely on distance between particles.
+
+Wait, why the minus? 🤔 Well, remember what is the role of the force $F$. It tries to revert the current state of the system to the
+original one, so it will be always antagonistic to the change that has occurred. So, the sign of $F$ must always be opposite to $\Delta r$
+and that's why we have this minus sign in the equation above.
+
+At this point, we must do a little switcheroo and say that this work will be some function dependent solely on the distance between particles.
+In physics, a function that returns a numerical (scalar) value, which can be used to express the magnitude of some directional quantity
+(like force, for example) is called a **potential**. In other words, this potential function will spit out a number that will tell us
+how strong the interaction between particles is at a given distance **and** can be directly used to calculate the measure of this
+interaction a.k.a force. We will denote this function as $U(\Delta r)$ and call it the **potential energy function**.
+
+The last mental gymnastic we can perform is by saying that if $\Delta r$ can be expressed as a difference between a current
+position of the object and some predefined constant (which is the equilibrium distance $r_0$) that will not change over time,
+then the real dependence of potential function $U$ is on position $r$ directly. Same with the force acting between particles ($F$).
+This may seem like we want to cheat a little bit and just substitute one thing for another, but mathematically speaking
+the $r_0$ is a constant and the real argument of the function is $r$ - the equilibrium distance is not a dynamic measure.
+Imagine back again a spring - its original, non-deformed length depends only on how it was manufactured and on the material
+from which it is made. Similarly, our system also has its equilibrium state which can be derived from its composition
+(like, which atoms constitute its makeup and what are their properties). So, our equation for the force acting between objects
+can be expressed as:
+
+$$F(r) = -\dfrac{U(r)}{\Delta r}$$
+
+This is true for a significant change in the position, so for $\Delta r >> 1$ (much bigger than one unit of distance).
+Now, let's go back to our cases of atoms connected by the aforementioned forces. We can imagine that any movement
+measured at their scale will be super **miniscule** or even **infinitesimal** (infinitely small). This means that
+our $\Delta r$ will be tending to zero, which allows us to use one of the magical tools of calculus - the derivative.
+We can express the force acting between particles as. If we prefix very small amounts of quantities in our equation
+with $d$ (like $dr$), we can express the force acting between particles as:
+
+$$F(r) = -\dfrac{dU(r)}{dr}$$
+
+Does that mean that we will have to measure those very small changes in distance? Well, no. The derivative allows us
+to take the function that describes the potential between particles ($U(r)$) and then transform it using a set
+of differentiation rules into a new function that will describe the force acting between particles ($F(r)$). This
+is **huge** for us, because we will be able to calculate those forces **directly** via a mathematical function
+implemented as a piece of code.
+
+This sets up a first set of goals for us:
+
+1. Find the mathematical expression for the Lennard-Jones potential energy function.
+2. Quickly calculate its derivative to obtain the equation for the force acting between particles.
+3. Implement a function that will take the distance between particles as an argument and return the force acting between them.
+4. Do the calculation for all pairs of particles in our system and sum up the forces acting on each particle to obtain the net force acting on it.
+
+Let's blitz through the mathematical part and then delve into more programming side of things.
+
+## Slippery slopes of Lennard-Jones 🏔️
+
+The Lennard-Jones potential is like a baby's first model to implement for the purposes of molecular dynamics simulations.
+Finding an expression for it takes [literally one minute] and has a rather simple form with two rational terms:
+
+$$U(r) = 4\varepsilon\left[\left(\dfrac{\sigma}{r}\right)^12-\left(\dfrac{\sigma}{r}\right)^6\right]$$
+
+To get a better hand on its inner workings, let's investigate it using some good ol' Python and the `matplotlib` library.
+
+import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+
+<JupyterLiteEmbed
+  size="500px"
+  file="por/lj.ipynb"
+  kernel="python"
+  client:load
+/>
+
+After our excursion, we got two major pieces of informations. The first one is the expression for the **force of interactions**
+between particles derived from Lennard-Jones potential:
+
+$$F(r) = 4 \epsilon \left(\frac{6 \sigma^{6}}{r^{7}} - \frac{12 \sigma^{12}}{r^{13}}\right)$$
+
+that can be visualized using the graph generated at the end of the Jupyter Notebook ran previously:
+
+<CaptionedImage
+  src="/assets/images/por_2_lj_graphs.png"
+  alt="Lennard-Jones potential (blue curve) and force (red curve)"
+/>
 
 ["boioioioing" thing]: https://www.youtube.com/watch?v=LPaIS51XGC0
 [physics-animations.com]: https://www.physics-animations.com
+[literally one minute]: https://www.ucl.ac.uk/~ucfbasc/Theory/lenjon.html
