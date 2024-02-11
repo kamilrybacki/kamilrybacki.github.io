@@ -6,6 +6,8 @@ on:
       - jupyterlite/**/*
       - src/content/_jupyter/**/*
       - tailwind.config.js
+  pull_request:
+    types: [closed]
 
 jobs:
   build:
