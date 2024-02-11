@@ -22,7 +22,8 @@ ipyleaflet
 
 # Python: plotting libraries
 plotly
-bqplot
+bqplotes
+j
 
 # Python: Data science libraries
 pandas
