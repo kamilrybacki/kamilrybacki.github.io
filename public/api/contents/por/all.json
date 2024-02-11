@@ -8,24 +8,10 @@
       "hash_algorithm": null,
       "last_modified": "2024-02-11T18:02:27.249220Z",
       "mimetype": null,
-      "name": "Lorenz.ipynb",
-      "path": "lorenz/Lorenz.ipynb",
-      "size": 3977,
+      "name": "lj.ipynb",
+      "path": "por/lj.ipynb",
+      "size": 47701,
       "type": "notebook",
-      "writable": true
-    },
-    {
-      "content": null,
-      "created": "2024-02-11T18:03:42.485239Z",
-      "format": null,
-      "hash": null,
-      "hash_algorithm": null,
-      "last_modified": "2024-02-11T18:02:27.249220Z",
-      "mimetype": "text/x-python",
-      "name": "lorenz.py",
-      "path": "lorenz/lorenz.py",
-      "size": 1357,
-      "type": "file",
       "writable": true
     }
   ],
@@ -35,8 +21,8 @@
   "hash_algorithm": null,
   "last_modified": "2024-02-11T18:03:42.485239Z",
   "mimetype": null,
-  "name": "lorenz",
-  "path": "lorenz",
+  "name": "por",
+  "path": "por",
   "size": null,
   "type": "directory",
   "writable": true

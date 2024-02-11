@@ -20,7 +20,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.a37e37c87d212fe85e13.js",
+        "load": "static/remoteEntry.9f387e5e108e458f62c3.js",
         "name": "@jupyter-widgets/jupyterlab-manager"
       },
       {
@@ -63,7 +63,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.edc72ee71d4ec67598f6.js",
+        "load": "static/remoteEntry.5e71a5e8dcb6330c0085.js",
         "name": "jupyter-leaflet"
       },
       {
@@ -81,28 +81,28 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.74a375733b4162d461a9.js",
+        "load": "static/remoteEntry.fa5a2a86b5496916c744.js",
         "name": "jupyterlab-open-url-parameter",
         "style": "./style"
       },
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.56bf4b5dc66a26bcd462.js",
+        "load": "static/remoteEntry.70a4f7e7a0383740860d.js",
         "mimeExtension": "./mimeExtension",
         "name": "jupyterlab-plotly"
       },
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.aa1060b2d1221f8e5688.js",
+        "load": "static/remoteEntry.5cbb9d2323598fbda535.js",
         "name": "jupyterlab_pygments",
         "style": "./style"
       },
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.2a0ebdf2913c93f2383d.js",
+        "load": "static/remoteEntry.f4d3b341c0a42cdcec56.js",
         "name": "notebook-content-load-notify",
         "style": "./style"
       }
