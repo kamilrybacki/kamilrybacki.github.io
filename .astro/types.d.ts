@@ -190,42 +190,49 @@ declare module 'astro:content' {
   slug: "cheatsheet";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 "ciandcompose.mdx": {
 	id: "ciandcompose.mdx";
   slug: "ciandcompose";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 "comfortable_rustification.mdx": {
 	id: "comfortable_rustification.mdx";
   slug: "comfortable_rustification";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 "components.mdx": {
 	id: "components.mdx";
   slug: "components";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 "migration.mdx": {
 	id: "migration.mdx";
   slug: "migration";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 "particles_of_rust_one.mdx": {
 	id: "particles_of_rust_one.mdx";
   slug: "particles_of_rust_one";
   body: string;
   collection: "articles";
-  data: any
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
+"particles_of_rust_two.mdx": {
+	id: "particles_of_rust_two.mdx";
+  slug: "particles_of_rust_two";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
 };
 "poems": {
@@ -234,21 +241,21 @@ declare module 'astro:content' {
   slug: "30";
   body: string;
   collection: "poems";
-  data: any
+  data: InferEntrySchema<"poems">
 } & { render(): Render[".mdx"] };
 "brawobardzoladnie.mdx": {
 	id: "brawobardzoladnie.mdx";
   slug: "brawobardzoladnie";
   body: string;
   collection: "poems";
-  data: any
+  data: InferEntrySchema<"poems">
 } & { render(): Render[".mdx"] };
 "mroz.mdx": {
 	id: "mroz.mdx";
   slug: "mroz";
   body: string;
   collection: "poems";
-  data: any
+  data: InferEntrySchema<"poems">
 } & { render(): Render[".mdx"] };
 };
 "projects": {
@@ -257,14 +264,14 @@ declare module 'astro:content' {
   slug: "diffcache";
   body: string;
   collection: "projects";
-  data: any
+  data: InferEntrySchema<"projects">
 } & { render(): Render[".mdx"] };
 "etmal.mdx": {
 	id: "etmal.mdx";
   slug: "etmal";
   body: string;
   collection: "projects";
-  data: any
+  data: InferEntrySchema<"projects">
 } & { render(): Render[".mdx"] };
 };
 
@@ -278,5 +285,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	type ContentConfig = never;
+	type ContentConfig = typeof import("../src/content/config");
 }
