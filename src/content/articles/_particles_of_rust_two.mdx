@@ -163,7 +163,7 @@ To get a better hand on its inner workings, let's investigate it using some good
 import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
 
 <JupyterLiteEmbed
-  size="500px"
+  size="750px"
   file="por/lj.ipynb"
   kernel="python"
   client:load
@@ -212,10 +212,10 @@ $$U(r_\textrm{min}) = 4\epsilon\left[\left(\dfrac{\sigma}{r_\textrm{min}}\right)
 
 $$ = 4\epsilon\left[\left(\dfrac{1}{2^{\frac{1}{6}}}\right)^{12}-\left(\dfrac{1}{2^{\frac{1}{6}}}\right)^6\right] = 4\varepsilon \left(\dfrac{1}{4} - \dfrac{1}{2}\right) = -\varepsilon$$
 
-## Limiting our horizons ✂️
+### Limiting our horizons ✂️
 
-Now it is obvious why changing the $\sigma$ parameter scaled our graphs vertically - **it is the depth of the potential well itself!$$.
-Even the minus doubles down on this fact since, as we saw on the plots, the minimum of energy is always below zero.
+Now it is obvious why changing the $epsilon$ parameter scaled our graphs vertically - **it is the depth of the potential well itself!**.
+Even the minus doubles down on this fact since, as we saw on the plots because the minimum of energy is always below zero.
 This means that the combination of those two Lennard-Jones parameters controls the location and depth of the potential minimum
 or, in more physical terms, **the strength of interatomic bonding**. In the graph above we can also see, that the potential
 tends to zero if we move along its right side, so up the potential well. In theory, the potential will be equal to zero
@@ -255,7 +255,7 @@ of particles, this operation will be very time-consuming and could be a bottlene
 
 Maybe we can use our newly introduced parameter to our advantage and limit the number of pairs we need to check? 🤔
 
-## The art of neighborliness 🏘️
+### The art of neighborliness 🏘️
 
 Be honest, do You care (or even know) about the neighbors one street over from Your house? Probably not, because they are
 **distant** from Your perspective and **there is no interaction**. The only list of people to keep track of is of those
@@ -271,15 +271,29 @@ are within the distance $r_\textrm{cut}$ from each other. This list will be upda
 will be used to calculate the forces acting between particles.  Each atom will keep track of IDs of its closest neighbors and 
 this will significantly reduce the number of pairs we need to check and will speed up our simulation.
 
-So, since we used Jupter Notebook to visualize the Lennard-Jones potential and force, we can also use it to
+So, since we used Jupyter Notebook to visualize the Lennard-Jones potential and force, we can also use it to
 implement the neighbor list and see how it will affect the number of pairs we need to check. Let's do it!
 
 <JupyterLiteEmbed
-  size="500px"
+  size="1000px"
   file="por/neighbor_list.ipynb"
   kernel="python"
   client:load
 />
+
+The near-100% speedup looks juicy, so we will definitely implement the lists in our simulation. But, as always, there is a catch.
+The neighbor list will need to be updated every couple of iterations and this will introduce some overhead to our simulation.
+This means that we will need to find a balance between the number of iterations after which we will update the neighbor list
+i.e. how fast we want our subsequent calculation of forces to be and how much precision we are willing to sacrifice
+and still deem our results to be physically meaningful. This is a very common trade-off in computational physics between
+speed and precision. ⚖️
+
+With the potential model and the neighbours list in our hands, we are ready to implement the force calculation in our simulation.
+It's time to get ...
+
+<img src="/assets/images/por_2_rusty.png" alt="Let's go!" style="margin-left:auto;margin-right:auto;height:200px;"/>
+
+
 
 ["boioioioing" thing]: https://www.youtube.com/watch?v=LPaIS51XGC0
 [physics-animations.com]: https://www.physics-animations.com
