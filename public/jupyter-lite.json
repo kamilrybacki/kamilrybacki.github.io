@@ -81,7 +81,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.fa5a2a86b5496916c744.js",
+        "load": "static/remoteEntry.c7a31b7a4c60a21a3aa0.js",
         "name": "jupyterlab-open-url-parameter",
         "style": "./style"
       },
@@ -102,7 +102,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.f4d3b341c0a42cdcec56.js",
+        "load": "static/remoteEntry.e2847f628a7bfd88bfdb.js",
         "name": "notebook-content-load-notify",
         "style": "./style"
       }

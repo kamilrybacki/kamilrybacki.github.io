@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-open-url-parameter",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "JupyterLab extension to open files passed via a URL parameter",
   "keywords": [
     "jupyter",
@@ -55,7 +55,11 @@
     "watch:src": "tsc -w --sourceMap"
   },
   "dependencies": {
-    "@jupyterlab/application": "^4.0.10"
+    "@jupyterlab/application": "^4.0.10",
+    "@jupyterlab/apputils": "^4.1.10",
+    "@jupyterlab/coreutils": "^6.0.10",
+    "@jupyterlab/filebrowser": "^4.0.10",
+    "@jupyterlab/translation": "^4.0.10"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0",
@@ -94,7 +98,7 @@
     "extension": true,
     "outputDir": "jupyterlab_open_url_parameter/labextension",
     "_build": {
-      "load": "static/remoteEntry.fa5a2a86b5496916c744.js",
+      "load": "static/remoteEntry.c7a31b7a4c60a21a3aa0.js",
       "extension": "./extension",
       "style": "./style"
     }
