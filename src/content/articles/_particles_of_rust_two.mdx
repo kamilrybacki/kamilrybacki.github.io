@@ -288,12 +288,52 @@ i.e. how fast we want our subsequent calculation of forces to be and how much pr
 and still deem our results to be physically meaningful. This is a very common trade-off in computational physics between
 speed and precision. ⚖️
 
-With the potential model and the neighbours list in our hands, we are ready to implement the force calculation in our simulation.
+With the potential model and the neighbors list in our hands, we are ready to implement the force calculation in our simulation.
 It's time to get ...
 
 <img src="/assets/images/por_2_rusty.png" alt="Let's go!" style="margin-left:auto;margin-right:auto;height:200px;"/>
 
+## Transcribing to crabspeak 🦀
 
+To kick things off, we will prepare a new submodule in out molecular dynamics source code, called `statics`, that will hold
+all functions related to interatomic interactions and their energetics. We will try to ensure loose coupling between the
+potential model interface and the rest of the simulation engine, to allow for easy swapping of potential models in the future.
+
+So, as a little reminder, here is our current project structure:
+
+<FileTree
+  root="src/"
+  tree={[
+    {
+      "data/": [
+        "mod.rs",
+        "input.rs",
+        "output.rs"
+      ],
+    },
+    {
+      "system/": [
+        "atom.rs",
+        "box.rs",
+        "cell.rs",
+        "system.rs",
+        "mod.rs",
+      ]
+    },
+    "main.rs"
+  ]}
+  annotations={`
+    data: module for handling input and output data
+    system: module for handling the system of particles
+  `}
+  links={``}
+/>
+
+The new `statics` directory will reside parallel to other submodules and be composed of the following parts:
+
+1. A module called `neighbours.rs` that will hold the implementation of the neighbor list.
+2. A subdirectory `models` that will hold all of the implementations of all potential models that we will use in our simulations,
+together with something that "glues" them together and redirects our simulation engine to the correct implementation.
 
 ["boioioioing" thing]: https://www.youtube.com/watch?v=LPaIS51XGC0
 [physics-animations.com]: https://www.physics-animations.com
