@@ -227,6 +227,13 @@ declare module 'astro:content' {
   collection: "articles";
   data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
+"particles_of_rust_two.mdx": {
+	id: "particles_of_rust_two.mdx";
+  slug: "particles_of_rust_two";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 };
 "poems": {
 "30$.mdx": {
