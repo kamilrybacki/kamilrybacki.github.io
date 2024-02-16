@@ -88,7 +88,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.70a4f7e7a0383740860d.js",
+        "load": "static/remoteEntry.c764a537ae4fed4fb4ca.js",
         "mimeExtension": "./mimeExtension",
         "name": "jupyterlab-plotly"
       },
@@ -102,7 +102,7 @@
       {
         "extension": "./extension",
         "liteExtension": false,
-        "load": "static/remoteEntry.e2847f628a7bfd88bfdb.js",
+        "load": "static/remoteEntry.b0ced073bab9b6d5682f.js",
         "name": "notebook-content-load-notify",
         "style": "./style"
       }
