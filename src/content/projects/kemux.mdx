@@ -1,0 +1,41 @@
+---
+title: Kemux
+date: "2023-08-23"
+tags: ["energy", "data mining", "data scraping", "API"]
+image: kemux.svg
+techs: python kafka docker faust
+description: "A Python middleware used to fetch and serve energy consumption data from Energa MójLicznik service"
+link: https://kemux.readthedocs.io/en/latest/
+---
+
+Kemux is a powerful Python library designed to simplify efficient message routing from Kafka topics.
+With Kemux, you can easily route messages from one topic to another based on a set of rules,
+making it one of the tools that can be used for efficient data processing.
+
+At its core, Kemux leverages Robinhood's Faust to process messages from one topic and
+route them to another topic based on a predefined set of rules.
+
+These rules are defined within a [`Stream` object], which specifies the input and output topics,
+message schemas, and a range of filters and transformations to be applied to the messages.
+
+By utilizing Kemux, you can streamline your data processing pipeline and ensure that messages are efficiently routed
+to their intended destinations.
+
+Whether you need to filter, transform, or aggregate data, Kemux provides a flexible and scalable solution.
+
+**Rule-based Routing**: Kemux allows you to define rules that determine how messages should be routed.
+  This enables you to easily handle complex routing scenarios and adapt to changing requirements.
+
+**Seamless Integration with Kafka**: Kemux seamlessly integrates with Kafka,
+a popular distributed streaming platform. This ensures that your message routing is performed efficiently and reliably.
+
+**Extensible and Customizable**: Kemux is built on top of Robinhood's Faust,
+which provides a powerful framework for building stream processing applications.
+You can leverage Faust's extensive features to customize and extend Kemux according to your specific needs.
+
+To get started with Kemux, visit the [official documentation].
+The documentation provides detailed instructions on installation, configuration,
+and usage, along with examples to help you quickly integrate Kemux into your projects.
+
+[`Stream` object]: https://github.com/kamilrybacki/Kemux/blob/main/tests/streams/primary.py
+[official documentation]: https://kemux.readthedocs.io/en/latest/

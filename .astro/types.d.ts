@@ -273,6 +273,13 @@ declare module 'astro:content' {
   collection: "projects";
   data: InferEntrySchema<"projects">
 } & { render(): Render[".mdx"] };
+"kemux.mdx": {
+	id: "kemux.mdx";
+  slug: "kemux";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
 "ppeagent.mdx": {
 	id: "ppeagent.mdx";
   slug: "ppeagent";
