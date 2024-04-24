@@ -1,0 +1,36 @@
+---
+title: PPEAgent
+date: "2024-04-24"
+tags: ["energy", "data mining", "data scraping", "API"]
+image: PPEAgent.svg
+techs: python fastapi uvicorn docker
+description: "A Python middleware used to fetch and serve energy consumption data from Energa MójLicznik service"
+link: https://github.com/KamilRybacki/ppeagent
+---
+
+This project deploys a small Python ASGI server that exposes
+a data-fetching API for energy consumption data scraped from
+[Energa Operator MójLicznik service]. Due to the scale of the project,
+I've chosen FastAPI since it provides a great performance and is easy to use.
+
+The data scraping part is done in a way that minimizes the amount of fetched data
+by avoiding naive scraping of the whole page. Instead, the server sends requests to
+endpoints used by the Energa web application to fetch the data.
+
+Authentication requires only data used normally while logging into the MójLicznik service,
+without additional information about the meter or the user. The server stores the session
+data in memory, so it is not persistent between server restarts and after the termination
+of the agent service - the session is explicitly closed. The whole process is done
+in a stateless manner to ensure the security of the user's data and to avoid any potential
+leaks of sensitive information.
+
+The server is run using Uvicorn, which is a lightning-fast ASGI server implementation.
+The API has several endpoints that offer basic information about the chosen subpaths,
+so it can be used simply by traversing from the root path.
+
+The server can be run in a Docker container, which makes it
+easy to deploy and manage. As for now, one meter per one access point is supported,
+but after initial tests, I plan to extend the project to support multiple meters.
+
+
+[Energa Operator MójLicznik service]: https://mojlicznik.energa-operator.pl/dp/UserLogin.do
