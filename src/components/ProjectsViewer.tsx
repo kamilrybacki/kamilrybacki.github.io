@@ -16,11 +16,11 @@ const ProjectsViewer = ({ projects }: ProjectsViewerProps) => {
         </button>
       </nav>
       <hr className="mb-4 mt-3 w-full opacity-25 lg:mb-10 lg:mt-6" />
-      <main className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row lg:gap-10">
+      <main className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row lg:gap-10 lg:flex-wrap">
         {projects.map((project) => {
           return (
             <article
-              className="project-card doodle-border flex w-[95%] cursor-pointer flex-col flex-wrap items-center justify-center p-2 duration-500 hover:-translate-y-2 lg:w-[40%] lg:p-4"
+              className="project-card doodle-border flex w-[95%] cursor-pointer flex-col items-center justify-center p-2 duration-500 hover:-translate-y-2 lg:w-[30%] lg:p-6 lg:h-60"
               onClick={() => {
                 window.location.href = `/projects/${project.slug}` || "/";
               }}
@@ -29,7 +29,7 @@ const ProjectsViewer = ({ projects }: ProjectsViewerProps) => {
               <h1 className="mx-auto mb-4 mt-2 text-center font-handwriting text-2xl font-bold lg:mb-4 lg:mt-2 lg:text-5xl">
                 {project.data.title}
               </h1>
-              <p className="mt-4 text-justify font-body text-sm lg:mt-2 lg:text-base">{project.data.description}</p>
+              <p className="mt-4 text-justify font-body text-sm lg:mt-2 lg:text-base text-elipsis">{project.data.description}</p>
             </article>
           );
         })}
