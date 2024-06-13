@@ -1,0 +1,38 @@
+---
+title: ServeMyKind
+date: "2024-06-12"
+tags: ["kubernetes", "kind", "ansible", "cilium", "dnginx", "dnsmasq", "metallb"]
+image: servemykind.svg
+techs: ansible cilium metallb dnsmasq nginx helm kubernetes
+description: "Batteries-Included Local Kubernetes Clusters with KinD"
+link: https://github.com/KamilRybacki/servemykind
+---
+
+The journey to ServeMyKind began with a simple need: to set up a test environment that mimics production,
+where services are accessible via DNS-resolvable addresses.
+I wanted to avoid the constant hassle of finding and remembering ports for each service.
+
+That's when I found KinD (Kubernetes in Docker), an excellent tool for running local Kubernetes clusters.
+But even with KinD, creating a smooth, production-like environment required too much manual setup.
+
+It automates the entire process, making it easy to access services with friendly URLs, without port confusion.
+This allows You to create a development setup that feels like your live environment,
+while still being lightweight and easy to manage via Ansible, letting You handle all the configurations effortlessly 🛠️
+
+With ServeMyKind, you can quickly set up a local Kubernetes cluster with:
+
+- [Cilium](https://cilium.io/) for network security and observability 🛡
+- [MetalLB](https://metallb.universe.tf/) for load balancing 🔄
+- [Dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) for DNS resolution 📡
+- [NGINX](https://www.nginx.com/) for ingress 🚪
+
+Any services you deploy to the cluster will be accessible via DNS names, just like in a real production environment
+e.g. `http://my-service.cluster.local`, where the domain (`cluster.local`) is configurable.
+
+For more technical details and installation instructions, check out the [ServeMyKind repository]
+
+[ServeMyKind repository]: https://github.com/KamilRybacki/servemykind
+[Cilium]: https://cilium.io/
+[MetalLB]: https://metallb.universe.tf/
+[Dnsmasq]: http://www.thekelleys.org.uk/dnsmasq/doc.html
+[NGINX]: https://kubernetes.github.io/ingress-nginx/

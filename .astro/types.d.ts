@@ -294,6 +294,13 @@ declare module 'astro:content' {
   collection: "projects";
   data: any
 } & { render(): Render[".mdx"] };
+"servemykind.mdx": {
+	id: "servemykind.mdx";
+  slug: "servemykind";
+  body: string;
+  collection: "projects";
+  data: any
+} & { render(): Render[".mdx"] };
 };
 
 	};
