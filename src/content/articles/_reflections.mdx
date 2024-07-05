@@ -1,0 +1,92 @@
+---
+title: "Snake building its tail - a go at reflections in Python"
+date: "2024-07-05"
+description: "A story of a project that tries to leverage the dynamic nature of runtime data in Python to create dynamic, self-modifying code."
+tags: ["jupyterlite", "python", "reflections", "introspection", "metaprogramming"]
+image:
+  thumbnail: "components"
+  hero: "components"
+  alt: "Python looking like Ourobouros but it builds itself instead of eating"
+---
+
+## More than one way to skin a snake 🐍
+
+Multi-paradigm programming languages can sometimes be thought of as funny social experiment that tests the boundaries
+of human tendencies to hack around problems that they have created themselves. Throw in also no static typing and you
+obtain a perfect whirlwind of chaos from which both masterpieces and disasters can emerge. Take a look at Python,
+which over time absorbed more and more features that allow us to approach a multitude of tasks in a multitude of ways.
+
+{/* <CodeSnippet
+  code={`
+    const appendCommentTooltip = (lineElement, text, prefix) => {
+      if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
+        const annotationOverlay = document.createElement('div');
+        annotationOverlay.classList.add(...[
+          'absolute', 'flex', 'flex-wrap', 'opacity-0',
+        ]);
+        annotationOverlay.setAttribute('role', 'tooltip')
+        annotationOverlay.innerHTML = \`\${prefix}: \${text}\`
+          .split(' ')
+          .map((word) => \`<span>\${word} </span>\`)
+          .join('');
+        lineElement.appendChild(annotationOverlay);
+        lineElement.onmouseenter = (e) => ... // Show tooltip;
+        lineElement.onfocus = (e) => ... // Show tooltip;
+        lineElement.onmousemove = (e) => ... // Move tooltip to mouse position ;
+        lineElement.onmouseleave = () => ... // Hide tooltip ;
+      };
+  `}
+  language="js"
+  filename="appendCommentTooltip.js"
+  annotations={`
+    2:If there is already a tooltip present, skip
+    4-6:Tailwind, bby 😎
+    8-11:Split words into spans for an auto wrap with flex
+  `}
+/>
+
+<FileTree
+  root="kamilrybacki.github.io"
+  tree={[
+    "...",
+    {
+      "jupyterlite/": [
+        "patch.py",
+        "jupyter-lite.json",
+        "overrides.json",
+        "requirements.txt",
+        "runtime.txt",
+        { "extensions/": [] },
+        { "patches/": [] },
+      ]
+    },
+    "...",
+    { "src/": [
+      "...",
+      { "content": [
+        "...",
+        { "_jupyter/": [] },
+        "...",
+      ]},
+      "..."
+    ]}
+  ]}
+  annotations={`
+    jupyterlite:Directory where all JL custom source is kept and the project is built
+    patch.py:Python script that patches the JL source code after it is built
+    jupyter-lite.json:Main JL configuration file that defines the project
+    overrides.json:JL configuration file that overrides the default configuration of various extensions
+    requirements.txt:Python dependencies for the JL project (additional libraries for the user)
+    runtime.txt:Python runtime version (for building the project)
+    src/content/_jupyter:Directory where all additional content is kept (e.g. notebooks)
+  `}
+/>
+
+import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+
+<JupyterLiteEmbed
+  size="500px"
+  file="lorenz/Lorenz.ipynb"
+  kernel="python"
+  client:load
+/> */}
