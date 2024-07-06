@@ -63,6 +63,15 @@ see which fields are required, which are optional, which have default values, wh
 are basically nested schemas themselves. Also, YAML has a couple of nice tricks up its sleeve such as **anchors** and
 **references** that can be used to define a schema in a more [DRY way].
 
+import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
+
+<JupyterLiteEmbed
+  size="500px"
+  file="reflections/pydantic_dump.ipynb"
+  kernel="python"
+  client:load
+/>
+
 {/* <CodeSnippet
   code={`
     const appendCommentTooltip = (lineElement, text, prefix) => {
@@ -128,14 +137,6 @@ are basically nested schemas themselves. Also, YAML has a couple of nice tricks 
     src/content/_jupyter:Directory where all additional content is kept (e.g. notebooks)
   `}
 />
-
-import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
-
-<JupyterLiteEmbed
-  size="500px"
-  file="lorenz/Lorenz.ipynb"
-  kernel="python"
-  client:load
-/> */}
+*/}
 
 [DRY way]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
