@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2024-07-06T15:37:12.935121Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2024-07-06T15:36:04.354090Z",
+      "mimetype": "image/jpeg",
+      "name": "pickle.jpg",
+      "path": "reflections/pickle.jpg",
+      "size": 106286,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2024-07-06T15:37:12.935121Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2024-07-06T15:36:04.354090Z",
+      "mimetype": null,
+      "name": "pydantic_dump.ipynb",
+      "path": "reflections/pydantic_dump.ipynb",
+      "size": 70379,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2024-07-06T15:37:12.935121Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2024-07-06T15:37:12.935121Z",
+  "mimetype": null,
+  "name": "reflections",
+  "path": "reflections",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
