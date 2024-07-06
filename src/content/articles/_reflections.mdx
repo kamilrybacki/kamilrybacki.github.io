@@ -13,8 +13,55 @@ image:
 
 Multi-paradigm programming languages can sometimes be thought of as funny social experiment that tests the boundaries
 of human tendencies to hack around problems that they have created themselves. Throw in also no static typing and you
-obtain a perfect whirlwind of chaos from which both masterpieces and disasters can emerge. Take a look at Python,
-which over time absorbed more and more features that allow us to approach a multitude of tasks in a multitude of ways.
+obtain a perfect whirlwind of chaos from which both masterpieces and disasters can emerge.
+
+The complete singularity of entropy happens when You can leverage aspects of metaprogramming
+due to the interpretative nature of the language. Not knowing for 100% the behavior of the code at runtime
+can be a little bit scary but when proper measures are taken - such as isolating the closures of dynamically
+compiled code - it can be a powerful tool to create flexible frameworks that can adapt to the data they are fed.
+
+Python checks all of those marks and, given the fact that it is my main language used during professional work,
+I have decided to take a stab at using reflections and introspection to create a dynamic, self-modifying code.
+This being said, for projects like this, You first need to come up with a problem, since You know the "tools"
+(or in this case techniques) that You want to use. So ...
+
+## Wild problem appears! 🦄
+
+Kubernetes. I know, seems random, but one of the main things that I like about how objects are
+defined and maintained within it is the declarative nature of the configuration files. You start with a **manifest**
+that says which resources are to be present in Your cluster in the form of YAML files and then You apply them.
+
+Today, a majority of technological stacks that are based on Kubernetes architecture are using Helm charts
+to manage the deployment of applications. In very short, it allows us to define dynamically spawned **objects** according to
+some **template** that is then populated by **values** that must adhere to the resource **schema**. These collections of templates
+can be then **versioned** as **charts** and maintained in a **repository** by developers.
+
+Here, the pattern that I want to shamelessly copy and advertise as a burning issue in my Python tooling is
+some kind of module/tool that allows to define **schemas** for data structures such as configurations files,
+data models, by use of **YAML manifests** (or any other format that can be easily parsed) that can be easily
+**versioned** and **maintained** in a **repository**. This hypothetical tool should be able to **generate** Python
+**classes** that can be used to create instances of those data structures and **validate** the input data against
+those pre-defined rules.
+
+### Which is Pydantic, right? 🤔
+
+Yes and no. Pydantic is a great library that allows You to define data models in Python and validate them against
+the input data. It also allows You to serialize and deserialize those models to and from JSON.
+
+However, these JSON schemas do not contain information about one of the most flexible aspects of data validation - the **custom validators**,
+which can be defined **programmatically** in the Python code. So that is one of the issues that I want to tackle.
+This can be easily seen in the following example:
+
+
+Also, while on the topic of allowing custom validators, I want their definitions to be as **flexible** as possible,
+while remembering that somebody can use a cheeky `eval` to inject some malicious code into the system or
+`shutil.rmtree` to delete the whole filesystem.
+
+Also, when You dump a Pydantic model to JSON, the schema is often not very human-readable and it is not easy to
+maintain it in a repository. I want to structure my schema definitions in such a way, that a maintainer can easily
+see which fields are required, which are optional, which have default values, which are of a specific type and which
+are basically nested schemas themselves. Also, YAML has a couple of nice tricks up its sleeve such as **anchors** and
+**references** that can be used to define a schema in a more [DRY way].
 
 {/* <CodeSnippet
   code={`
@@ -90,3 +137,5 @@ import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
   kernel="python"
   client:load
 /> */}
+
+[DRY way]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
