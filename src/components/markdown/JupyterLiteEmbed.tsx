@@ -4,7 +4,7 @@ import "keyboard-css";
 
 import * as React from "react";
 
-const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybacki.vercel.app";
+const JUPYTERLITE_URL = "myjupyterlite-git-jupyterlite-kamilrybackis-projects.vercel.app";
 
 interface JupyterLiteEmbedProps {
   size: string;
