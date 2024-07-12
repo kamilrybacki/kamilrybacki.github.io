@@ -7,7 +7,7 @@
   ],
   "copy": {
     "static/root.html": "index.html",
-    "static/notebook.html": "retro/notebooks/index.html",
+    "static/notebook.html": "notebooks/index.html",
     "static/vercel.json": "vercel.json",
     "src/hooks/onnotebookload/post.js": "post.js",
     "src/hooks/onnotebookload/pre.js": "pre.js",
