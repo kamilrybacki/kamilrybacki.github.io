@@ -136,7 +136,7 @@ const JupyterLiteEmbed = ({ size, file, kernel }: JupyterLiteEmbedProps) => {
               </div>
             </div>
             <iframe
-              src={`https://${JUPYTERLITE_URL}/retro/notebooks/?path=${file}&kernel=${kernel}`}
+              src={`https://${JUPYTERLITE_URL}/notebooks/?path=${file}&kernel=${kernel}`}
               width="100%"
               ref={jupyterIFrameRef}
             />
