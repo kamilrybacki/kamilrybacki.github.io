@@ -20,6 +20,7 @@ function waitForElementToExist(selector) {
 
 const topPanelId = '#top-panel-wrapper';
 const menuPanelId = '#menu-panel-wrapper';
+const jupyterLabButton = '[data-command="jupyter-notebook:open-lab"]'
 
 const hideElement = async (selector) => {
   await waitForElementToExist(selector)
@@ -50,6 +51,7 @@ async function post () {
   await applyBaseSiteTheme();
   await hideElement(topPanelId);
   await hideElement(menuPanelId);
+  await hideElement(jupyterLabButton);
   console.log('Finished post script');
 };
 
