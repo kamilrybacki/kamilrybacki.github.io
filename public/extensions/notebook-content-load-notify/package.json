@@ -92,7 +92,7 @@
     "extension": true,
     "outputDir": "notebook_content_load_notify/labextension",
     "_build": {
-      "load": "static/remoteEntry.6ff9deb2d23dbea07039.js",
+      "load": "static/remoteEntry.792823c03c10f4e4d2ab.js",
       "extension": "./extension",
       "style": "./style"
     }
