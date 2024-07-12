@@ -29,3 +29,4 @@ pandas
 numpy
 scipy
 sympy
+pydantic
