@@ -29,4 +29,3 @@ pandas
 numpy
 scipy
 sympy
-pydantic==2.7.0
