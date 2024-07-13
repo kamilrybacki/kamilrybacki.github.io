@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2024-07-13T07:39:46.170242Z",
+      "created": "2024-07-13T07:41:04.730139Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2024-07-13T07:38:40.650265Z",
+      "last_modified": "2024-07-13T07:39:58.885517Z",
       "mimetype": null,
       "name": "pydantic.ipynb",
       "path": "phaistos/pydantic.ipynb",
@@ -15,11 +15,11 @@
       "writable": true
     }
   ],
-  "created": "2024-07-13T07:39:46.170242Z",
+  "created": "2024-07-13T07:41:04.730139Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2024-07-13T07:39:46.170242Z",
+  "last_modified": "2024-07-13T07:41:04.730139Z",
   "mimetype": null,
   "name": "phaistos",
   "path": "phaistos",
