@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2024-07-14T13:23:48.622095Z",
+      "created": "2024-07-14T13:34:10.039526Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2024-07-14T13:22:43.309659Z",
+      "last_modified": "2024-07-14T13:33:03.899494Z",
       "mimetype": "text/x-python",
       "name": "lorenz.py",
       "path": "lorenz/lorenz.py",
@@ -16,11 +16,11 @@
     },
     {
       "content": null,
-      "created": "2024-07-14T13:23:48.622095Z",
+      "created": "2024-07-14T13:34:10.039526Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2024-07-14T13:22:43.309659Z",
+      "last_modified": "2024-07-14T13:33:03.899494Z",
       "mimetype": null,
       "name": "Lorenz.ipynb",
       "path": "lorenz/Lorenz.ipynb",
@@ -29,11 +29,11 @@
       "writable": true
     }
   ],
-  "created": "2024-07-14T13:23:48.622095Z",
+  "created": "2024-07-14T13:34:10.039526Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2024-07-14T13:23:48.622095Z",
+  "last_modified": "2024-07-14T13:34:10.039526Z",
   "mimetype": null,
   "name": "lorenz",
   "path": "lorenz",
