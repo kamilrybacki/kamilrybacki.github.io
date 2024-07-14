@@ -6,6 +6,7 @@ on:
       - jupyterlite/**/*
       - src/content/_jupyter/**/*
       - tailwind.config.js
+      - .github/workflows/build-jupyterlite.yaml
   pull_request:
     types: [closed]
 
@@ -63,9 +64,9 @@ jobs:
 
       - name: Migrate .whl files to Github LFS
         run: |
-          git \lfs migrate import \
-            --include="*.whl" \
-            --include-ref=refs/heads/${{ env.BUILD_BRANCH }}
+          git install lfs
+          git lfs migrate import \
+            --include="*.whl"
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
