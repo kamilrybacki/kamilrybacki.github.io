@@ -57,7 +57,7 @@ jobs:
             lite \
               build \
                 --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }} \
-                --pyodide="jupyterlite/static/pyodide-0.26.1.tar.bz2"
+                --pyodide="static/pyodide-0.26.1.tar.bz2"
 
           ## Patch the build
           python patch.py
