@@ -62,7 +62,10 @@ jobs:
           ## Patch the build
           python patch.py
 
-      - name: Push
+          ## Add .gitattributes to the build directory
+          echo "${{ env.BUILD_OUTPUT_DIRECTORY }}/**/*.whl filter=lfs diff=lfs merge=lfs -text" > .gitattributes
+
+      - name: Push JL build to JupyterLite branch
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
