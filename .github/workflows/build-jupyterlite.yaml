@@ -61,6 +61,11 @@ jobs:
           ## Patch the build
           python patch.py
 
+      - name: Migrate .whl files to Github LFS
+        run: |
+          git \lfs migrate import \
+            --include="*.whl" \
+            --include-ref=refs/heads/${{ env.BUILD_BRANCH }}
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
