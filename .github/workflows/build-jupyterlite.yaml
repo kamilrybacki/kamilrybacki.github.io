@@ -64,7 +64,6 @@ jobs:
 
       - name: Migrate .whl files to Github LFS
         run: |
-          git install lfs
           git lfs migrate import \
             --include="*.whl"
       - name: Push
