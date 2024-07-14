@@ -57,15 +57,11 @@ jobs:
             lite \
               build \
                 --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }} \
-                --pyodide="https://github.com/pyodide/pyodide/releases/download/0.26.1/pyodide-0.26.1.tar.bz2"
+                --pyodide="jupyterlite/static/pyodide-0.26.1.tar.bz2"
 
           ## Patch the build
           python patch.py
 
-      - name: Migrate .whl files to Github LFS
-        run: |
-          git lfs migrate import \
-            --include="*.whl"
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
