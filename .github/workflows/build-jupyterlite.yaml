@@ -56,14 +56,10 @@ jobs:
           jupyter \
             lite \
               build \
-                --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }} \
-                --pyodide="https://github.com/pyodide/pyodide/releases/download/0.26.1/pyodide-0.26.1.tar.bz2"
+                --output-dir ${{ env.BUILD_OUTPUT_DIRECTORY }}
 
           ## Patch the build
           python patch.py
-
-          ## Add .gitattributes to the build directory
-          echo "${{ env.BUILD_OUTPUT_DIRECTORY }}/**/*.whl filter=lfs diff=lfs merge=lfs -text" > .gitattributes
 
       - name: Push JL build to JupyterLite branch
         uses: s0/git-publish-subdir-action@develop
