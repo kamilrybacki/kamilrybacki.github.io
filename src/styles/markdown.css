@@ -38,7 +38,7 @@
     & > ol {
       @apply list-decimal list-inside my-2;
       & > li {
-        @apply my-2 pl-4
+        @apply my-2 pl-4;
       }
     }
   }
