@@ -62,43 +62,183 @@ see which fields are required, which are optional, which have default values, wh
 are basically nested schemas themselves. Also, YAML has a couple of nice tricks up its sleeve such as **anchors** and
 **references** that can be used to define a schema in a more [DRY way].
 
+### How it do? 🤔
+
+First, of all, we need to investigate for a moment how Pydantic models can be
+serialized and inspected during runtime. For a quick example, let's take a look at the following notebook:
+
 import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
 
 <JupyterLiteEmbed
-  size="500px"
+  size="700px"
   file="phaistos/pydantic.ipynb"
   kernel="python"
   client:load
 />
 
-{/* <CodeSnippet
+Here, we have used one trick that is very useful when planning to use Python for metaprogramming - **inspection**. It is a universal "tactic" that can be utilized
+to understand the structure of the objects that are being created by our code
+and, in turn, gain an insight into how we can mimic it later via some custom
+factories or builders.
+
+In the notebook above, we have defined a simple Pydantic model and then we have
+used the most basic inspection tool, which is the `__dict__` attribute of the
+class instance. This attribute contains all the fields that are defined in the
+created object and can be used to extract the information about the fields
+that are present in the model.
+
+One caveat is the fact that each class in Python is secretly a descendant of
+the `object` class and has a lot of attributes that are not directly related
+to the fields that are defined in the model. If You really want to check out
+attributes that are related only to the definition of the new class, You need
+to filter out fields present in the `object` type
+
+How? You can take the entries present in the `__dict__` attribute of the class
+and filter out the ones that are not present in the `object` class. This can be
+done by comparing the `__dict__` attribute of the class with the `__dict__`
+attribute of the `object` class and then extracting the fields that are present
+in the first one but not in the second one.
+
+The other thing that we have used is the `__annotations__` attribute of the
+class, which contains the type hints that are defined for the fields of the
+model, but in general applies to any class that has type hints defined
+for its attributes.
+
+One of the tricks connected with the `__annotations__` attribute is that if
+its value is empty we can be pretty sure that the module that contains the
+imported class is untyped (and probably the whole imported code). 👎🤮
+
+Also, one of the most popular ways to use inspection in Python code is
+to utilize statements or methods that are of "is A of B type?", such as
+`isinstance` or `issubclass`. These can also be in form of straight
+assertions like: `assert variable is None`.
+
+In short - inspection allows us to investigate the resulting form of
+data structures that are created during runtime due to application
+of various protocols - such as the Pydantic model creation or
+any set of functions, really.
+
+### Machines that build machines 🔧🤖
+
+This approach may lead us to further abstractions that try to encapsulate these
+processes in a more dynamic way that is dependent on the shape of data
+arriving to us at runtime.
+
+One of the ways in which we can look at this is the factory pattern, which
+is a design pattern that allows us to create objects of a pre-defined type
+according to some input data. This requires us to define, well, a factory -
+a pure function that takes the input data and returns a desired data structure.
+
+Normally, we declare these factories as static snippets of code inside our
+application, but what if we could generate them dynamically based on some
+rules? This is where the metaprogramming comes in. We effectively want to
+create the creators - all in response to the data that we are fed.
+
+But what do we know acts as a factory and is related to the topic of this article? 🤔
+
+That's right - Pydantic model classes. They are factories that create instances
+of data structures that are defined by the schema that we have provided to them.
+Moreover, Pydantic allows us to dynamically generate those classes by using
+the [`create_model`] function that is present in the `pydantic` module.
+
+<CodeSnippet
   code={`
-    const appendCommentTooltip = (lineElement, text, prefix) => {
-      if (lineElement.lastChild.getAttribute('role') !== 'tooltip') {
-        const annotationOverlay = document.createElement('div');
-        annotationOverlay.classList.add(...[
-          'absolute', 'flex', 'flex-wrap', 'opacity-0',
-        ]);
-        annotationOverlay.setAttribute('role', 'tooltip')
-        annotationOverlay.innerHTML = \`\${prefix}: \${text}\`
-          .split(' ')
-          .map((word) => \`<span>\${word} </span>\`)
-          .join('');
-        lineElement.appendChild(annotationOverlay);
-        lineElement.onmouseenter = (e) => ... // Show tooltip;
-        lineElement.onfocus = (e) => ... // Show tooltip;
-        lineElement.onmousemove = (e) => ... // Move tooltip to mouse position ;
-        lineElement.onmouseleave = () => ... // Hide tooltip ;
-      };
+      create_model(
+        model_name: str,
+        /,
+        *,
+        __config__: ConfigDict | None = None,
+        __doc__: str | None = None,
+        __base__: (
+            type[ModelT] | tuple[type[ModelT], ...] | None
+        ) = None,
+        __module__: str | None = None,
+        __validators__: (
+            dict[str, Callable[..., Any]] | None
+        ) = None,
+        __cls_kwargs__: dict[str, Any] | None = None,
+        __slots__: tuple[str, ...] | None = None,
+        **field_definitions: Any,
+      ) -> type[ModelT]
   `}
-  language="js"
-  filename="appendCommentTooltip.js"
+  language="python"
+  filename="create_model (from docs)"
   annotations={`
-    2:If there is already a tooltip present, skip
-    4-6:Tailwind, bby 😎
-    8-11:Split words into spans for an auto wrap with flex
+    2: The name of the model to be created
+    5: Configuration for the model
+    6: Docstring for the model
+    7: Base class for the model
+    10: Module in which the model is defined
+    11: Custom validators for the model
+    14: Additional keyword arguments for the model class
+    15: Slots for the model
+    16: Definitions of the fields for the model (as kwargs)
   `}
 />
+
+Distilling the above snippet from the Pydantic documentation, we can see that
+**the most important** arguments to the `create_model` function are:
+
+1. `model_name` - the name of the model that we want to create, because
+we would like to have a way to reference it later in our code.
+2. `field_definitions` - the definitions of the fields that are present in
+the model, which are passed as keyword arguments to the function, because...
+that is the schema that we want to validate against! 🤯
+3. `__validators__` - the custom validators that we want to apply to the
+fields of the model, because we want to have a way to define custom
+validation rules for the fields that are present in the model.
+4. `__base__` - this may come in handy if we prepare some custom base class
+for our models (spoilers: we will).
+
+So, our simplified factory function that creates Pydantic models based on
+the schema that we provide to it could look something like this:
+
+<CodeSnippet
+  code={`
+      def create_model_from_schema(schema: dict) -> type[Model]:
+          # some magic here
+          return create_model(
+              model_name=schema["name"],
+              **schema["fields"],
+              __validators__=schema.get("validators", {}),
+              __base__=schema.get("base", None),
+          )
+  `}
+  language="python"
+  filename="create_model_from_schema"
+  annotations={`
+    1: The schema that we want to use to create the model
+    4: The name of the model that we want to create
+    5: Definitions of the fields for the model (as kwargs)
+    6: Custom validators for the model
+    7: Base class for the model
+  `}
+/>
+
+And what do we mean by "some magic here"? Well, we need to transform the schema
+that we have defined in the YAML file into a format that can be passed as
+keyword arguments to the `create_model` function. In other word -
+we want to **transpile** YAML into appropriate Python objects.
+
+## Snakespeak 🔠🐍
+
+We need to treat our target schema as a **tree** that can be traversed and whose
+leaves can be transformed into the fields (and their properties) of the Pydantic
+model. This tree can be represented as a nested dictionary, where the keys are
+the names of the fields and the values are the properties of those fields.
+
+But it would be difficult to define the rules of such transformations without
+knowing the shape of building blocks we want to produce. We have already
+simplified the process of creating Pydantic models to a single function call,
+so it is time to look into the structure (i.e. types) of the arguments that
+we need to pass to this function.
+
+P.S. We will skip the `model_name`, because well ... it is a string. 🤷‍♂️
+
+### To protect and validate 💂🛡
+
+
+{/* 
 
 <FileTree
   root="kamilrybacki.github.io"
@@ -139,3 +279,4 @@ import JupyterLiteEmbed from "@components/markdown/JupyterLiteEmbed"
 */}
 
 [DRY way]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+[`create_model`]: https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation
