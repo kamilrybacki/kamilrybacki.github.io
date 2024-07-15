@@ -57,14 +57,14 @@ the input data. It also allows You to serialize and deserialize those models to 
 However, these JSON schemas do not contain information about one of the most flexible aspects of data validation - the **custom validators**,
 which can be defined **programmatically** in the Python code. So that is one of the issues that I want to tackle.
 
-Also, while on the topic of allowing custom validators, I want their definitions to be as **flexible** as possible,
+Being on the topic of allowing custom validators, I want their definitions to be as **flexible** as possible,
 while remembering that somebody can use a cheeky `eval` to inject some malicious code into the system or
 `shutil.rmtree` to delete the whole filesystem.
 
 Also, when You dump a Pydantic model to JSON, the schema is often not very human-readable and it is not easy to
 maintain it in a repository. I want to structure my schema definitions in such a way, that a maintainer can easily
 see which fields are required, which are optional, which have default values, which are of a specific type and which
-are basically nested schemas themselves. Also, YAML has a couple of nice tricks up its sleeve such as **anchors** and
+are basically nested schemas themselves. Additionally, YAML has a couple of nice tricks up its sleeve such as **anchors** and
 **references** that can be used to define a schema in a more [DRY way].
 
 ### How it do? 🤔
