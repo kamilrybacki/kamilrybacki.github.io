@@ -172,6 +172,7 @@ const preProcessedRawCode = preProcessCode(code);
       if (index === codeLines.length - 1) {
         line.classList.add('opacity-25')
       }
+      line.classList.add(...['lg:text-sm', 'text-xs']);
       foundLinesIndex++;
     });
 
