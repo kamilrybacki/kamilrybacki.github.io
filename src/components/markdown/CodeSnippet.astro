@@ -89,7 +89,7 @@ const preProcessedRawCode = preProcessCode(code);
       annotationOverlay.classList.add(...[
         'absolute', 'flex', 'flex-wrap', 'rounded-md', 'p-2', 'w-fit',
         'transition-opacity', 'duration-200', 'ease-in-out',
-        'bg-background', 'bg-opacity-75', 'opacity-0',
+        'bg-background', 'bg-opacity-75', 'opacity-0', 'pointer-events-none',
       ]);
       annotationOverlay.setAttribute('role', 'tooltip')
       annotationOverlay.innerHTML = `${prefix}: ${text}`
