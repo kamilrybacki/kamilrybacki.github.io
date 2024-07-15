@@ -266,7 +266,7 @@ In practice - You can achieve this by using the `@validator` or `@field_validato
 
           # This is Pydantic V2 validator
           @field_validator("field")
-          @class
+          @classmethod
           def validate_field(cls, value):
               if value != "valid":
                   raise ValueError("Field is not valid")
