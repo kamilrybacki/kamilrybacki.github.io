@@ -1,0 +1,112 @@
+---
+layout: base.njk
+title: Home
+---
+
+<div class="hero-section">
+  <div class="hero-content">
+    <div class="hero-image">
+      <img src="/public/images/kamil-profile.png" alt="Kamil Rybacki" class="profile-photo" />
+    </div>
+    <div class="hero-text">
+      <h1 class="hero-title">Kamil Rybacki</h1>
+      <h2 class="hero-subtitle">Python Backend Developer</h2>
+      <div class="hero-description">
+        <p>Python Backend Expert. FastAPI, Kubernetes, CI/CD. Building scalable microservices and impactful solutions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section articles-section">
+  <div class="section-header">
+    <div class="section-header-content">
+      <h2 class="section-title">
+        <span class="section-icon">◦</span>
+        Articles
+      </h2>
+      <p class="section-description">Thoughts, tutorials, and insights on technology, development, and more</p>
+    </div>
+  </div>
+  
+  <!-- Article Filter Buttons -->
+  <div class="article-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="IT">IT</button>
+    <button class="filter-btn" data-filter="Hobby">Hobby</button>
+    <button class="filter-btn" data-filter="Misc">Misc</button>
+  </div>
+  
+  <!-- Fixed height container to prevent layout jumps -->
+  <div class="articles-container">
+    <ul class="article-list">
+      {% for article in collections.articles | head(10) %}
+      <li class="article-item" data-category="{{ article.data.category or 'Misc' }}">
+        <h3 class="article-title">
+          <a href="{{ article.url }}">{{ article.data.title }}</a>
+        </h3>
+        <p class="article-date">{{ article.data.date | dateFormat }}</p>
+        {% if article.data.description %}
+        <p class="article-description">{{ article.data.description }}</p>
+        {% endif %}
+        {% if article.data.category %}
+        <span class="article-category">{{ article.data.category }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    
+    <!-- No results message -->
+    <div class="no-articles-message">
+      <p>No articles found in this category.</p>
+    </div>
+  </div>
+  
+  {% if collections.articles.length > 10 %}
+  <p><a href="/articles/">View all articles →</a></p>
+  {% endif %}
+</section>
+
+<section class="section projects-section">
+  <div class="section-header">
+    <div class="section-header-content">
+      <h2 class="section-title">
+        <span class="section-icon">▪</span>
+        Projects
+      </h2>
+      <p class="section-description">A collection of my work, experiments, and open-source contributions</p>
+    </div>
+  </div>
+  
+  <div class="project-table-container">
+    <table class="project-table">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Project</th>
+          <th style="width: 50%;">Description</th>
+          <th style="width: 20%;">Links</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in collections.projects %}
+        <tr>
+          <td>
+            <div class="project-name">{{ project.data.title }}</div>
+          </td>
+          <td>
+            <div class="project-description">{{ project.data.description }}</div>
+          </td>
+          <td>
+            {% if project.data.github %}
+            <a href="{{ project.data.github }}" target="_blank" rel="noopener noreferrer" class="project-link">GitHub</a>
+            {% endif %}
+            {% if project.data.demo %}
+            <br><a href="{{ project.data.demo }}" target="_blank" rel="noopener noreferrer" class="project-link">Demo</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>

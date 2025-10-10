@@ -1,0 +1,74 @@
+/* CSS Reset and Base Styles */
+
+/* Box Model Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+  font-family: var(--font-body);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  line-height: 1.4;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.5px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Base Links */
+a {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Base Lists */
+ul, ol {
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-lg);
+}
+
+li {
+  margin-bottom: var(--space-xs);
+}
+
+/* Base Code Styling */
+code {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  padding: 2px 4px;
+  border: var(--border-width-thin) solid var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+pre {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  padding: var(--space-md);
+  border: var(--border-width-thin) solid var(--text-primary);
+  overflow-x: auto;
+  margin-bottom: var(--space-md);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Base Blockquotes */
+blockquote {
+  border-left: var(--border-width-heavy) solid var(--text-primary);
+  padding-left: var(--space-md);
+  margin: var(--space-md) 0;
+  color: var(--text-light);
+  font-style: italic;
+}

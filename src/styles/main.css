@@ -1,0 +1,23 @@
+/* Main CSS - Modular Architecture */
+/* Import order matters: Variables → Reset → Base → Layout → Components → Responsive */
+
+/* 1. Design Tokens */
+@import url('./tokens/variables.css');
+
+/* 2. Base Styles */
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+
+/* 3. Layout */
+@import url('./layout/container.css');
+
+/* 4. Components */
+@import url('./components/header.css');
+@import url('./components/hero.css');
+@import url('./components/section-headers.css');
+@import url('./components/articles.css');
+@import url('./components/tables.css');
+@import url('./components/filters.css');
+
+/* 5. Responsive */
+@import url('./layout/responsive.css');

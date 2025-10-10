@@ -1,0 +1,60 @@
+/* Tables Component */
+
+/* Base Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-md);
+}
+
+th, td {
+  padding: var(--space-sm);
+  text-align: left;
+  border: var(--border-width-thin) solid var(--text-primary);
+}
+
+th {
+  font-weight: bold;
+}
+
+/* Project Table Specific */
+.project-table {
+  margin-bottom: var(--space-lg);
+  min-width: 100%;
+  table-layout: auto;
+}
+
+/* Responsive Table Container */
+.project-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.project-link {
+  font-weight: 500;
+}
+
+/* Enhanced Article Tables */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-lg) 0;
+  border: var(--border-width-thick) solid var(--text-primary);
+}
+
+.article-content th,
+.article-content td {
+  padding: var(--space-sm);
+  border: var(--border-width-thin) solid var(--text-primary);
+  text-align: left;
+}
+
+.article-content th {
+  background-color: var(--text-primary);
+  color: var(--background-primary);
+  font-weight: bold;
+}
+
+.article-content tr:nth-child(even) td {
+  background-color: #f5f5f5;
+}

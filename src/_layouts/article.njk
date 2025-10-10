@@ -1,0 +1,19 @@
+---
+layout: base.njk
+bodyClass: article-page
+---
+
+<article>
+  <header class="article-header">
+    <h1>{{ title }}</h1>
+    <p class="article-date">{{ date | dateFormat }}</p>
+  </header>
+  
+  <div class="article-content">
+    {{ content | safe }}
+  </div>
+  
+  <div class="article-navigation">
+    <a href="/" class="back-link">← Back</a>
+  </div>
+</article>
