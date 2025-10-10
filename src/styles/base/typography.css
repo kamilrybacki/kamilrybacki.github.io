@@ -1,0 +1,57 @@
+/* Typography Styles */
+
+/* Heading Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+
+h1 { font-size: var(--font-size-2xl); }
+h2 { font-size: var(--font-size-xl); }
+h3 { font-size: var(--font-size-lg); }
+h4 { font-size: var(--font-size-md); }
+
+/* Paragraph Spacing */
+p {
+  margin-bottom: var(--space-md);
+}
+
+/* Text Emphasis */
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+/* Footer Typography */
+.footer {
+  margin-top: auto;
+  padding-top: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  opacity: 0.6;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* Back Link Typography */
+.back-link {
+  display: block;
+  width: fit-content;
+  margin-bottom: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--border-width-thin) solid var(--text-primary);
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.back-link:hover {
+  background-color: var(--text-primary);
+  color: var(--background-primary);
+}

@@ -1,0 +1,55 @@
+/* Design Tokens - Typewriter Theme */
+/* Pure typewriter aesthetics */
+:root {
+  /* Colors - Strict Black and White */
+  --background-primary: #ffffff; /* pure white */
+  --text-primary: #000000; /* pure black */
+  --text-secondary: #000000; /* black instead of gray */
+  --text-muted: #666666; /* dark gray for very subtle text */
+  --text-light: #000000; /* black instead of gray */
+  --border-light: #000000; /* pure black borders */
+  --border-color: #000000; /* pure black borders */
+  --bg-primary: #ffffff; /* pure white background */
+  --bg-secondary: #ffffff; /* pure white background */
+  
+  /* Typography */
+  --font-body: 'Courier New', 'Monaco', 'Lucida Console', monospace;
+  --font-mono: 'Courier New', 'Monaco', 'Lucida Console', monospace;
+  --font-code: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Source Code Pro', 'Consolas', monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.8rem;
+  --font-size-sm: 0.9rem;
+  --font-size-base: 14px;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.2rem;
+  --font-size-xl: 1.4rem;
+  --font-size-2xl: 1.8rem;
+  --font-size-3xl: 2.2rem;
+  --font-size-4xl: 2.5rem;
+  
+  /* Spacing Scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 3rem;
+  --space-xl: 4rem;
+  
+  /* Layout - Responsive Widths */
+  --container-max-width: 90vw; /* 90% of viewport width */
+  --container-max-width-large: 1200px; /* Maximum width on very large screens */
+  --article-max-width: 85%; /* 85% of container width */
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  
+  /* Borders */
+  --border-width-thin: 1px;
+  --border-width-thick: 2px;
+  --border-width-heavy: 3px;
+  
+  /* Shadows */
+  --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-text: 2px 2px 0 rgba(0,0,0,0.2);
+}

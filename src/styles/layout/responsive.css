@@ -1,0 +1,262 @@
+/* Responsive Design */
+
+/* Extra Large Screens (1400px+) */
+@media (min-width: 1400px) {
+  .container {
+    width: 70vw; /* Use less width on very large screens */
+  }
+}
+
+/* Large Screens (1200px to 1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+/* Desktop Styles (768px to 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .container {
+    width: 85vw;
+    padding: var(--space-lg);
+    padding-top: var(--space-xl); /* Maintain generous top spacing on desktop */
+  }
+  
+  /* Desktop Hero Layout */
+  .hero-content {
+    grid-template-columns: 1fr 2fr; /* Reinforce horizontal layout with more text space */
+    align-items: center;
+    min-height: 300px;
+  }
+}
+
+/* Tablet Styles (481px to 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  body {
+    font-size: 13px;
+  }
+  
+  .container {
+    width: 92vw; /* Slightly wider on tablets */
+    padding: var(--space-md);
+    padding-top: var(--space-lg); /* Reduced top spacing on tablets */
+  }
+  
+  /* Tablet Hero Layout */
+  .hero-content {
+    grid-template-columns: 1fr 1.5fr; /* Slightly different proportions on tablet */
+    gap: var(--space-md);
+  }
+  
+  .hero-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .article-content {
+    padding: 0 var(--space-sm);
+  }
+  
+  .article-content pre {
+    font-size: var(--font-size-xs);
+  }
+  
+  .site-title::before,
+  .site-title::after {
+    display: none;
+  }
+}
+
+/* Mobile Styles (480px and below) */
+@media (max-width: 480px) {
+  /* Base Font Size Reduction */
+  body {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  
+  /* Typography Adjustments */
+  .hero-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .section-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  /* Container Spacing and Width */
+  .container {
+    width: 95vw; /* Maximum width on mobile for edge-to-edge feel */
+    padding: var(--space-sm);
+    padding-top: var(--space-md); /* Smaller top spacing on mobile */
+  }
+  
+  /* Mobile Hero Adjustments */
+  .hero-content {
+    grid-template-columns: 1fr; /* Stack vertically on mobile */
+    gap: var(--space-md);
+    min-height: auto;
+    text-align: center;
+  }
+  
+  .hero-title {
+    letter-spacing: 1px;
+  }
+  
+  .hero-title::after {
+    width: 40px;
+    height: 2px;
+  }
+  
+  .hero-subtitle {
+    font-size: var(--font-size-sm);
+    letter-spacing: 2px;
+  }
+  
+  .hero-subtitle::before {
+    content: '▬▬';
+    left: -25px;
+  }
+  
+  .hero-description {
+    padding: var(--space-sm);
+    transform: rotate(0deg);
+  }
+  
+  .hero-description p {
+    font-size: var(--font-size-sm);
+    transform: rotate(0deg);
+  }
+  
+  .hero-image {
+    min-height: 150px;
+    order: -1;
+  }
+  
+  .hero-image::before,
+  .hero-image::after {
+    display: none;
+  }
+  
+  .profile-photo {
+    max-width: 150px;
+    width: auto;
+    height: 150px;
+    transform: rotate(0deg);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+  
+  /* Mobile Header Adjustments */
+  .site-title {
+    font-size: var(--font-size-xl);
+    letter-spacing: 1px;
+  }
+  
+  .site-title::before,
+  .site-title::after {
+    display: none;
+  }
+  
+  .site-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+  
+  .site-subtitle::before,
+  .site-subtitle::after {
+    content: '─';
+  }
+  
+  /* Mobile Article Content */
+  .article-content {
+    padding: 0 var(--space-xs);
+  }
+  
+  .article-content h1 {
+    font-size: var(--font-size-lg);
+    margin: var(--space-md) 0 var(--space-sm) 0;
+  }
+  
+  .article-content h2 {
+    font-size: var(--font-size-md);
+    margin: var(--space-md) 0 var(--space-xs) 0;
+  }
+  
+  .article-content h3 {
+    font-size: var(--font-size-sm);
+    margin: var(--space-sm) 0 var(--space-xs) 0;
+  }
+  
+  .article-content p {
+    margin-bottom: var(--space-sm);
+    line-height: 1.5;
+  }
+  
+  /* Mobile Code Blocks */
+  .article-content pre {
+    padding: var(--space-xs);
+    margin: var(--space-sm) 0;
+    font-size: 0.7rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .article-content code {
+    font-size: 0.7rem;
+    padding: 1px 2px;
+  }
+  
+  /* Mobile Tables */
+  .article-content table {
+    font-size: 0.7rem;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+  
+  .article-content th,
+  .article-content td {
+    padding: 0.25rem;
+  }
+  
+  /* Mobile Back Link */
+  .back-link {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Mobile Article Header */
+  .article-header h1 {
+    font-size: var(--font-size-xl);
+  }
+  
+  .article-header {
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .article-header .article-date {
+    margin-left: 0;
+    margin-top: var(--space-xs);
+  }
+  
+  /* Mobile Article Content */
+  .article-content {
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-lg);
+  }
+}
+
+/* Extra Small Screens (320px and below) */
+@media (max-width: 320px) {
+  .container {
+    width: 98vw; /* Nearly full width on very small screens */
+    padding: var(--space-xs);
+    padding-top: var(--space-sm); /* Minimal top spacing on very small screens */
+  }
+  
+  body {
+    font-size: 11px;
+  }
+}
