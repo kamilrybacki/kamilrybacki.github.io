@@ -1,8 +1,17 @@
 /* Typography Styles */
 
+/* Base Typography */
+body {
+  font-family: var(--font-body);
+  font-weight: 400; /* Regular Raleway */
+  color: var(--text-primary);
+  background-color: var(--background-primary);
+}
+
 /* Heading Hierarchy */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: bold;
+  font-family: var(--font-heading);
+  font-weight: 700; /* Bold Raleway */
   line-height: 1.2;
   margin-bottom: var(--space-md);
   color: var(--text-primary);
@@ -16,11 +25,13 @@ h4 { font-size: var(--font-size-md); }
 /* Paragraph Spacing */
 p {
   margin-bottom: var(--space-md);
+  font-family: var(--font-body);
+  font-weight: 400; /* Regular Raleway */
 }
 
 /* Text Emphasis */
 strong {
-  font-weight: bold;
+  font-weight: 700; /* Bold Raleway */
 }
 
 em {
@@ -44,7 +55,7 @@ em {
   width: fit-content;
   margin-bottom: var(--space-xs);
   padding: var(--space-xs) var(--space-sm);
-  border: var(--border-width-thin) solid var(--text-primary);
+  border: var(--border-width-thin) dotted var(--text-primary);
   text-decoration: none;
   font-weight: bold;
   color: var(--text-primary);

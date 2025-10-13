@@ -3,7 +3,7 @@
 .header {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-lg);
-  border-bottom: var(--border-width-thick) solid var(--text-primary);
+  border-bottom: var(--border-width-thick) dotted var(--text-primary);
   text-align: center;
   position: relative;
 }
@@ -31,22 +31,6 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   position: relative;
-  transition: all var(--transition-fast);
-}
-
-.site-title:hover {
-  transform: translateY(-1px);
-  text-shadow: var(--shadow-text);
-}
-
-.site-title::before {
-  content: '▲';
-  position: absolute;
-  left: -30px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: var(--font-size-xs);
-  opacity: 0.7;
 }
 
 .site-title::after {

@@ -1,12 +1,11 @@
 /* Layout Container and Utilities */
 
-/* Main Container - Responsive Width */
+/* Main Container - Clean Modern Layout */
 .container {
-  width: var(--container-max-width);
-  max-width: var(--container-max-width-large);
+  width: 90%;
+  max-width: 800px;
   margin: 0 auto;
-  padding: var(--space-md);
-  padding-top: var(--space-xl); /* Add top margin for better visual spacing */
+  padding: 2rem 1rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

@@ -12,9 +12,10 @@
 @import url('./layout/container.css');
 
 /* 4. Components */
+@import url('./components/homepage.css');
 @import url('./components/header.css');
-@import url('./components/hero.css');
-@import url('./components/section-headers.css');
+/* @import url('./components/hero.css'); - Disabled for new clean design */
+/* @import url('./components/section-headers.css'); - Disabled for new clean design */
 @import url('./components/articles.css');
 @import url('./components/tables.css');
 @import url('./components/filters.css');

@@ -1,21 +1,21 @@
-/* Design Tokens - Typewriter Theme */
-/* Pure typewriter aesthetics */
+/* Design Tokens - Modern Clean Theme */
+/* Two-color palette: #1C1C1C and #F5F6F4 */
 :root {
-  /* Colors - Strict Black and White */
-  --background-primary: #ffffff; /* pure white */
-  --text-primary: #000000; /* pure black */
-  --text-secondary: #000000; /* black instead of gray */
-  --text-muted: #666666; /* dark gray for very subtle text */
-  --text-light: #000000; /* black instead of gray */
-  --border-light: #000000; /* pure black borders */
-  --border-color: #000000; /* pure black borders */
-  --bg-primary: #ffffff; /* pure white background */
-  --bg-secondary: #ffffff; /* pure white background */
+  /* Colors - Strict Two-Color Palette */
+  --background-primary: #F5F6F4; /* light cream background */
+  --text-primary: #1C1C1C; /* dark charcoal text */
+  --text-secondary: #1C1C1C; /* consistent dark text */
+  --text-muted: #1C1C1C; /* same dark color, opacity handled in components */
+  --text-light: #1C1C1C; /* consistent dark text */
+  --border-light: #1C1C1C; /* dark borders */
+  --border-color: #1C1C1C; /* dark borders */
+  --bg-primary: #F5F6F4; /* light cream background */
+  --bg-secondary: #F5F6F4; /* consistent light background */
   
   /* Typography */
-  --font-body: 'Courier New', 'Monaco', 'Lucida Console', monospace;
-  --font-mono: 'Courier New', 'Monaco', 'Lucida Console', monospace;
-  --font-code: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Source Code Pro', 'Consolas', monospace;
+  --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Source Code Pro', 'Consolas', monospace;
   
   /* Font Sizes */
   --font-size-xs: 0.8rem;

@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if title %}{{ title }} - {% endif %}Kamil Rybacki</title>
   <meta name="description" content="{{ description or 'Personal blog and projects of Kamil Rybacki - Software Engineer' }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles/main.css">
   <script src="/public/article-filters.js" defer></script>
 </head>
 <body{% if bodyClass %} class="{{ bodyClass }}"{% endif %}>
   <div class="container">
-    {% if title != "Home" %}
+    {% if title != "Home" and bodyClass != "article-page" %}
     <header class="header">
       <a href="/" class="site-title">Kamil Rybacki</a>
       <p class="site-subtitle">Software Engineer</p>
