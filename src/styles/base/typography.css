@@ -66,3 +66,12 @@ em {
   background-color: var(--text-primary);
   color: var(--background-primary);
 }
+
+/* Fixed Back Link on Article Pages */
+body.article-page .back-link {
+  position: fixed;
+  bottom: var(--space-sm);
+  left: var(--space-sm);
+  margin: 0; /* remove bottom margin so it doesn't create layout shift */
+  z-index: 1000;
+}
