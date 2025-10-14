@@ -10,14 +10,14 @@
 /* Large Screens (1200px to 1399px) */
 @media (min-width: 1200px) and (max-width: 1399px) {
   .container {
-    width: 80vw;
+    width: 90vw;
   }
 }
 
 /* Desktop Styles (768px to 1199px) */
 @media (min-width: 768px) and (max-width: 1199px) {
   .container {
-    width: 85vw;
+    width: 90vw;
     padding: var(--space-lg);
     padding-top: var(--space-xl); /* Maintain generous top spacing on desktop */
   }
@@ -234,11 +234,6 @@
     padding-bottom: var(--space-md);
     flex-direction: column;
     align-items: flex-start;
-  }
-  
-  .article-header .article-date {
-    margin-left: 0;
-    margin-top: var(--space-xs);
   }
   
   /* Mobile Article Content */

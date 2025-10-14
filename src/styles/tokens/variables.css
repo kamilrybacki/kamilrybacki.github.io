@@ -38,7 +38,7 @@
   /* Layout - Responsive Widths */
   --container-max-width: 90vw; /* 90% of viewport width */
   --container-max-width-large: 1200px; /* Maximum width on very large screens */
-  --article-max-width: 85%; /* 85% of container width */
+  --article-max-width: 92.5%; /* 92.5% of container width */
   
   /* Transitions */
   --transition-fast: 0.2s ease;
@@ -52,4 +52,9 @@
   /* Shadows */
   --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-text: 2px 2px 0 rgba(0,0,0,0.2);
+
+  /* Highlight Gradients */
+  --hl-yellow: linear-gradient(104deg, rgba(0,0,0,0) .9%, rgba(230,230,70,.9) 2.4%, rgba(220,220,40,.8) 5.8%, rgba(230,230,70,.9) 93%, rgba(0,0,0,0) 96%);
+  --hl-pink: linear-gradient(105deg, rgba(200,50,120,0) .9%, rgba(240,150,170,.95) 2.4%, rgba(250,170,180,.9) 5.8%, rgba(240,150,170,.95) 93%, rgba(200,50,120,0) 96%);
+  --hl-green: linear-gradient(107deg, rgba(50,180,50,0) .9%, rgba(120,200,120,.95) 2.4%, rgba(140,220,140,.9) 5.8%, rgba(120,200,120,.95) 93%, rgba(50,180,50,0) 96%);
 }

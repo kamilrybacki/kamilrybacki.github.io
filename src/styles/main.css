@@ -8,17 +8,8 @@
 @import url('./base/reset.css');
 @import url('./base/typography.css');
 
-/* 3. Layout */
-@import url('./layout/container.css');
+/* 3. Layouts */
+@import url('./layouts/base-layout.css');
+@import url('./layouts/article-layout.css');
 
-/* 4. Components */
-@import url('./components/homepage.css');
-@import url('./components/header.css');
-/* @import url('./components/hero.css'); - Disabled for new clean design */
-/* @import url('./components/section-headers.css'); - Disabled for new clean design */
-@import url('./components/articles.css');
-@import url('./components/tables.css');
-@import url('./components/filters.css');
-
-/* 5. Responsive */
-@import url('./layout/responsive.css');
+/* Legacy component & responsive files consolidated into layouts/ */

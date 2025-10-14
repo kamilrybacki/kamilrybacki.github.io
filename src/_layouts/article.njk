@@ -25,8 +25,8 @@ bodyClass: article-page
 <article>
   <header class="article-header">
     <h1>{{ title }}</h1>
-    <p class="article-date">{{ date | dateFormat }}</p>
   </header>
+  <p class="article-date article-date--below">{{ date | dateFormat }}</p>
   
   <div class="article-content">
     {{ content | safe }}
