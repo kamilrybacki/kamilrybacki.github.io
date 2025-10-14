@@ -37,6 +37,7 @@
   function filterArticles(filter) {
     const articleItems = document.querySelectorAll('.article-item');
     const noResultsMessage = document.querySelector('.no-articles-message');
+    const listContainer = document.querySelector('.articles-container');
     let visibleCount = 0;
 
     // Add filtering class for smooth transition
@@ -47,22 +48,23 @@
 
     articleItems.forEach(item => {
       const category = item.getAttribute('data-category');
-      
-      if (filter === 'all' || category === filter) {
+      const match = (filter === 'all') || (category === filter);
+      if (match) {
         item.classList.remove('filtered-out');
+        item.style.display = '';
         visibleCount++;
       } else {
         item.classList.add('filtered-out');
+        item.style.display = 'none';
       }
     });
 
     // Show/hide no results message
     if (noResultsMessage) {
-      if (visibleCount === 0 && filter !== 'all') {
-        noResultsMessage.classList.add('show');
-      } else {
-        noResultsMessage.classList.remove('show');
-      }
+      const showEmpty = (visibleCount === 0 && filter !== 'all');
+      noResultsMessage.classList.toggle('show', showEmpty);
+      // If showing empty state ensure message block is visible (fallback if CSS missing)
+      noResultsMessage.style.display = showEmpty ? 'block' : 'none';
     }
 
     // Update the view all articles link visibility

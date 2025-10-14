@@ -14,10 +14,12 @@ Ultra-lightweight personal blog built with [11ty (Eleventy)](https://www.11ty.de
 ## 🛠️ Development
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm
 
 ### Setup
+
 ```bash
 # Install dependencies
 npm install
@@ -30,7 +32,7 @@ npm run build
 
 # Clean build directory
 npm run clean
-```
+```text
 
 ## 📂 Project Structure
 
@@ -53,11 +55,13 @@ npm run clean
 This site automatically deploys to GitHub Pages when changes are pushed to the `main` branch.
 
 ### Manual Deployment
+
 1. Ensure you're on the `main` branch
 2. Push your changes: `git push origin main`
 3. GitHub Actions will automatically build and deploy
 
 ### GitHub Pages Setup
+
 1. Go to repository **Settings** → **Pages**
 2. Set **Source** to "GitHub Actions"
 3. The site will be available at `https://kamilrybacki.github.io`
@@ -74,11 +78,13 @@ The project uses a modular CSS architecture for better maintainability:
 ## 📝 Content Management
 
 ### Adding Articles
+
 1. Create a new `.md` file in `src/content/articles/`
 2. Add frontmatter with title, date, and description
 3. Write your content in Markdown
 
-### Adding Projects  
+### Adding Projects
+
 1. Create a new `.md` file in `src/content/projects/`
 2. Include GitHub and demo links in frontmatter
 3. Add project description
@@ -89,6 +95,10 @@ The project uses a modular CSS architecture for better maintainability:
 - **[Prism.js](https://prismjs.com/)** - Syntax highlighting
 - **CSS Grid & Flexbox** - Modern layout
 - **GitHub Actions** - CI/CD pipeline
+
+## 📄 Legacy MDX Snippet Migration
+
+Earlier MDX articles used custom components like `<CodeSnippet>`, `<FileTree>`, and embedded notebook widgets. Those sources are no longer in the repository; placeholders in the migrated Markdown (`reflections.md`, `containerized-integration.md`, `comfortable-rustification.md`) have been replaced with reconstructed, representative code blocks and ASCII file trees. If you later recover the original MDX, you can overwrite the reconstructed blocks with the authoritative code.
 
 ---
 
