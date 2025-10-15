@@ -337,14 +337,15 @@ compose-integration:
 
 ### Decomposing the composition
 
-Key ideas:
+<img src="/assets/images/boxinginf.svg" alt="! Boxing info">
+
+Looking at the compose file, some key points can be highlighted:
 
 1. `depends_on.condition: service_healthy` ensures tests wait for Redis.
 2. Healthcheck uses native `redis-cli ping` for a fast readiness probe.
 3. Read-only project mount prevents accidental writes from tests (`:ro`).
 4. Environment variables are centralized in the compose file instead of repeated `--env` flags.
 5. Single exit status is bubbled up via `--exit-code-from`.
-
 
 ### Hardening & scaling tips
 
@@ -357,8 +358,6 @@ Key ideas:
 ### When NOT to use DinD
 
 If build performance or layer caching matters, prefer the GitLab **Kaniko** or **BuildKit** executors instead of DinD, then run integration containers referencing built images by tag/digest.
-
----
 
 That wraps the full journey: ad‑hoc single container, service resolution, nested container strategy, direct CI orchestration, and finally Compose‑driven ephemeral integration environments.
 
