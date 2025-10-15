@@ -8,6 +8,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/styles");
   eleventyConfig.addPassthroughCopy("public/images");
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
+  // Ensure article images and other assets are copied
+  eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
   
   // Ignore template files and README
   eleventyConfig.ignores.add("src/content/**/_template.md");
@@ -25,54 +27,122 @@ module.exports = function(eleventyConfig) {
   // Render soft line breaks (single newline) as a single space so source-wrapped
   // Markdown doesn't generate <br> tags mid sentence.
   md.renderer.rules.softbreak = () => ' ';
+  // Path utility needed for thumbnail map lookups
+  const path = require('path');
 
-  // Auto number figure captions: detect pattern Image token followed by paragraph starting/ending with * ... *
-  md.core.ruler.after('inline', 'auto_figure_captions', function(state) {
-    let figureIndex = 0;
+  // Unified figure wrapper & auto-numbering rule.
+  // Pattern we match (Markdown or raw HTML image):
+  // paragraph_open, inline(image or <img>), paragraph_close,
+  // paragraph_open, inline("*caption*"), paragraph_close
+  // Additional consecutive italic paragraphs are merged into a single caption body.
+  md.core.ruler.after('inline', 'wrap_figures', function(state) {
     const tokens = state.tokens;
-    for (let i = 0; i < tokens.length - 1; i++) {
-      const t = tokens[i];
-      const next = tokens[i + 1];
-      if (t.type === 'inline' && t.children) {
-        // check if inline contains only image token
-        const imgChild = t.children.length === 1 && t.children[0].type === 'image' ? t.children[0] : null;
-        if (imgChild && next && next.type === 'paragraph_open') {
-          // paragraph text inline is two tokens ahead (paragraph_open -> inline -> paragraph_close)
-          const inline = tokens[i + 2];
-          const close = tokens[i + 3];
-          if (inline && inline.type === 'inline' && close && close.type === 'paragraph_close') {
-            const content = inline.content.trim();
-            if (/^\*Figure\s+\d+\./.test(content) || /^\*Figure\s+\d+/.test(content)) {
-              // already numbered, skip
-              continue;
-            }
-            if (/^\*Figure/.test(content) || /^\*.+\*$/.test(content)) {
-              // treat any italic line as caption to number
-              figureIndex += 1;
-              // ensure wrapped in *...*; inject number at start if not present
-              let raw = content;
-              const isItalic = raw.startsWith('*') && raw.endsWith('*');
-              if (isItalic) raw = raw.slice(1, -1).trim();
-              raw = `Figure ${figureIndex}. ${raw.replace(/^Figure\s+\d+\.\s*/, '')}`;
-              inline.content = `*${raw}*`;
-              // Also add a class to preceding image token via attrJoin
-              const attrIndex = imgChild.attrIndex('class');
-              if (attrIndex < 0) {
-                imgChild.attrPush(['class', 'figure-img']);
-              } else {
-                imgChild.attrs[attrIndex][1] += ' figure-img';
-              }
-            }
-          }
+    let thumbMap = {};
+    try {
+      thumbMap = require(path.join(process.cwd(),'public','assets','image-thumbs.json'));
+    } catch (_) {}
+    let figureCounter = 0;
+    for (let i = 0; i < tokens.length; i++) {
+      // Look for pattern: paragraph_open, inline(image or raw <img>), paragraph_close
+      if (tokens[i].type !== 'paragraph_open') continue;
+      const imgInline = tokens[i + 1];
+      const imgParaClose = tokens[i + 2];
+      if (!imgInline || !imgParaClose || imgParaClose.type !== 'paragraph_close') continue;
+      // Ensure we have an image
+      let isImage = false;
+      if (imgInline.type === 'inline') {
+        if (imgInline.children && imgInline.children.length === 1 && imgInline.children[0].type === 'image') {
+          isImage = true;
+        } else if (/^\s*<img\b/i.test(imgInline.content.trim())) {
+          const raw = imgInline.content.trim();
+          const srcMatch = raw.match(/src\s*=\s*"([^"]+)"/i);
+          const altMatch = raw.match(/alt\s*=\s*"([^"]*)"/i);
+          const synthetic = new state.Token('image','img',0);
+          synthetic.attrSet('src', srcMatch ? srcMatch[1] : '');
+          if (altMatch) synthetic.attrSet('alt', altMatch[1]);
+          imgInline.children = [synthetic];
+          isImage = true;
         }
       }
+      if (!isImage) continue;
+
+      // Optional caption paragraphs immediately following (italic *...*)
+      let captionParts = [];
+      let scan = i + 3;
+      while (scan < tokens.length - 2 && tokens[scan].type === 'paragraph_open') {
+        const maybeInline = tokens[scan + 1];
+        const maybeClose = tokens[scan + 2];
+        if (!(maybeInline && maybeInline.type === 'inline' && maybeClose && maybeClose.type === 'paragraph_close')) break;
+        const txt = maybeInline.content.trim();
+        if (!(txt.startsWith('*') && txt.endsWith('*'))) break;
+        captionParts.push(txt.slice(1,-1).trim());
+        scan += 3; // move past this caption paragraph
+      }
+
+      const imgTok = imgInline.children[0];
+      const altText = (imgTok.attrGet('alt') || '').trim();
+      // Determine final caption body: italic paragraphs override alt if present; else alt used; if neither, omit figure.
+      let body = '';
+      if (captionParts.length) {
+        body = captionParts.join(' ');
+      } else if (altText) {
+        body = altText;
+      } else {
+        // No caption text available, skip wrapping.
+        continue;
+      }
+
+      // Numbering: allow existing Figure N. prefix in first caption (if any) else assign new number.
+      let label;
+      const first = captionParts[0] || altText;
+      const numbered = /^Figure\s+(\d+)\.\s*(.*)$/.exec(first);
+      if (numbered) {
+        const existing = parseInt(numbered[1],10);
+        figureCounter = Math.max(figureCounter, existing);
+        label = `Figure ${existing}.`;
+        if (captionParts.length) {
+          // Replace first part with body without its number prefix
+          const strippedFirst = numbered[2];
+          captionParts[0] = strippedFirst;
+          body = captionParts.join(' ');
+        } else {
+          body = numbered[2];
+        }
+      } else {
+        label = `Figure ${++figureCounter}.`;
+      }
+
+      const src = imgTok.attrGet('src');
+      imgTok.attrSet('loading','lazy');
+      if (src && thumbMap[src]) {
+        imgTok.attrSet('src', thumbMap[src]);
+        imgTok.attrSet('srcset', `${thumbMap[src]} 1x, ${src} 2x`);
+        imgTok.attrSet('data-full', src);
+      }
+      if (src && /\.(png|jpe?g|webp|gif|svg)$/i.test(src)) {
+        imgTok.attrSet('width','800');
+        imgTok.attrSet('height','450');
+      }
+      const base = src ? path.basename(src).replace(/\.[^.]+$/,'') : `fig-${figureCounter}`;
+      const slug = base.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+      const figId = `fig-${slug || figureCounter}`;
+      imgTok.attrSet('aria-describedby', figId);
+
+      // Build replacement tokens
+      const figureOpen = new state.Token('figure_open','figure',1); figureOpen.attrSet('class','figure');
+      const figureClose = new state.Token('figure_close','figure',-1);
+      const capOpen = new state.Token('figcaption_open','figcaption',1); capOpen.attrSet('id', figId);
+      const capInlineToken = new state.Token('inline','',0); capInlineToken.children = []; capInlineToken.content = `<span class=\"figure-label\">${label}</span> ${body}`;
+      const capClose = new state.Token('figcaption_close','figcaption',-1);
+
+      // Remove image paragraph + any consumed caption paragraphs
+      const removeLen = 3 + captionParts.length * 3; // img para_open+inline+close plus caption triples
+      tokens.splice(i, removeLen, figureOpen, imgInline, capOpen, capInlineToken, capClose, figureClose);
+      i += 6; // Skip newly inserted figure
     }
   });
-  eleventyConfig.setLibrary("md", md);
 
-  // Remove paragraphs that consist solely of Eleventy raw demarcations left in the source
-  // when markdownTemplateEngine is disabled. This prevents literal '{% raw %}' markers from
-  // surfacing in the rendered HTML. We do this post-inline so tokens are available.
+  // Strip leftover raw demarcation paragraphs produced when markdownTemplateEngine is disabled.
   md.core.ruler.after('inline', 'strip_raw_markers', function(state) {
     const tokens = state.tokens;
     for (let i = 0; i < tokens.length; i++) {
@@ -81,15 +151,17 @@ module.exports = function(eleventyConfig) {
         const close = tokens[i + 2];
         if (inline && inline.type === 'inline' && close && close.type === 'paragraph_close') {
           const content = inline.content.trim();
-            if (content === '{% raw %}' || content === '{% endraw %}') {
-              // Remove the three tokens representing this paragraph
-              tokens.splice(i, 3);
-              i -= 1; // adjust index
-            }
+          if (content === '{% raw %}' || content === '{% endraw %}') {
+            tokens.splice(i, 3);
+            i -= 1;
+          }
         }
       }
     }
   });
+
+  // Register customized markdown-it instance with Eleventy
+  eleventyConfig.setLibrary('md', md);
   
   // Collections
   eleventyConfig.addCollection("articles", function(collectionApi) {
@@ -98,6 +170,19 @@ module.exports = function(eleventyConfig) {
       .sort((a, b) => {
         return new Date(b.data.date) - new Date(a.data.date);
       });
+  });
+
+  // Derive unique article categories (tags) from frontmatter 'category'
+  eleventyConfig.addCollection("articleCategories", function(collectionApi) {
+    const articles = collectionApi.getFilteredByGlob("src/content/articles/*.md")
+      .filter(item => !item.inputPath.includes('_template'));
+    const categories = new Set();
+    for (const a of articles) {
+      if (a.data && a.data.category) {
+        categories.add(String(a.data.category));
+      }
+    }
+    return Array.from(categories).sort((a,b) => a.localeCompare(b));
   });
   
   // Filters
