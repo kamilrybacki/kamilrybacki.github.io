@@ -47,8 +47,8 @@ body.article-page .container { padding-top:var(--space-lg); }
 .article-title { margin:0 0 .5rem; }
 .article-title a { text-decoration:underline; font-weight:400; font-size:1rem; }
 .article-title a:hover { opacity:.7; }
-.article-date { font-size:.9rem; opacity:.6; margin:0 0 .5rem; }
-.article-description { font-size:.9rem; opacity:.8; margin:0; }
+.article-date { font-size:.9rem; opacity:.6; margin:0 0 .5rem; color: var(--text-primary) !important; }
+.article-description { font-size:.9rem; opacity:.8; margin:0; color: var(--text-primary) !important; }
 .article-category { display:inline-block; background:var(--text-primary); color:var(--background-primary); font-size:.65rem; padding:.2rem .5rem; margin-top:0.5rem; margin-right: 0.5rem;}
 .no-articles-message { text-align:center; padding:2rem; display:none; }
 .no-articles-message p { opacity:.6; font-style:italic; }

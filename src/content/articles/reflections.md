@@ -6,7 +6,7 @@ category: Python
 description: "A story of a project that tries to leverage the dynamic nature of runtime data in Python to create dynamic, self-modifying code."
 ---
 
-## More than one way to skin a snake 🐍
+## More than one way to skin a snake
 
 Multi-paradigm programming languages can sometimes be thought of as funny social experiment that tests the boundaries
 of human tendencies to hack around problems that they have created themselves. Throw in also no static typing and you
@@ -22,10 +22,9 @@ I have decided to take a stab at using reflections and introspection to create a
 This being said, for projects like this, You first need to come up with a problem, since You know the "tools"
 (or in this case techniques) that You want to use. So ...
 
-## Wild problem appears! 🦄
+## Wild problem appears!
 
-![Confused snake (problem illustration)](/assets/images/snake_confused.webp)
-*Figure 1. Initial illustration – the "confused snake" motivating the problem.*
+<img src="/assets/images/pydantic.svg" alt="! Pydantic appears">
 
 Kubernetes. I know, seems random, but one of the main things that I like about how objects are
 defined and maintained within it is the declarative nature of the configuration files. You start with a **manifest**
@@ -43,7 +42,7 @@ data models, by use of **YAML manifests** (or any other format that can be easil
 **classes** that can be used to create instances of those data structures and **validate** the input data against
 those pre-defined rules.
 
-### Which is Pydantic, right? 🤔
+### Which is Pydantic, right?
 
 Yes and no. Pydantic is a great library that allows You to define data models in Python and validate them against
 the input data. It also allows You to serialize and deserialize those models to and from JSON.
@@ -61,7 +60,7 @@ see which fields are required, which are optional, which have default values, wh
 are basically nested schemas themselves. Additionally, YAML has a couple of nice tricks up its sleeve such as **anchors** and
 **references** that can be used to define a schema in a more [DRY way].
 
-### How it do? 🤔
+### How it do?
 
 First, of all, we need to investigate for a moment how Pydantic models can be
 serialized and inspected during runtime. For a quick example, let's take a look at the following notebook:
@@ -114,7 +113,7 @@ for its attributes.
 
 One of the tricks connected with the `__annotations__` attribute is that if
 its value is empty we can be pretty sure that the module that contains the
-imported class is untyped (and probably the whole imported code). 👎🤮
+imported class is untyped (and probably the whole imported code).
 
 Also, one of the most popular ways to use inspection in Python code is
 to utilize statements or methods that are of "is A of B type?", such as
@@ -126,7 +125,7 @@ data structures that are created during runtime due to application
 of various protocols - such as the Pydantic model creation or
 any set of functions, really.
 
-### Machines that build machines 🔧🤖
+### Machines that build machines
 
 This approach may lead us to further abstractions that try to encapsulate these
 processes in a more dynamic way that is dependent on the shape of data
@@ -142,8 +141,8 @@ application, but what if we could generate them dynamically based on some
 rules? This is where the metaprogramming comes in. We effectively want to
 create the creators - all in response to the data that we are fed.
 
-But what do we know acts as a factory and is related to the topic of this article? 🤔
-
+But what do we know acts as a factory and is related to the topic of this article?
+<img src="/assets/images/pydantic.svg" alt="Pydantic appears">
 That's right - Pydantic model classes. They are factories that create instances
 of data structures that are defined by the schema that we have provided to them.
 Moreover, Pydantic allows us to dynamically generate those classes by using
@@ -178,7 +177,7 @@ Distilling the above snippet from the Pydantic documentation, we can see that
 we would like to have a way to reference it later in our code.
 2. `field_definitions` - the definitions of the fields that are present in
 the model, which are passed as keyword arguments to the function, because...
-that is the schema that we want to validate against! 🤯
+that is the schema that we want to validate against!
 3. `__validators__` - the custom validators that we want to apply to the
 fields of the model, because we want to have a way to define custom
 validation rules for the fields that are present in the model.
@@ -222,7 +221,7 @@ that we have defined in the YAML file into a format that can be passed as
 keyword arguments to the `create_model` function. In other word -
 we want to **transpile** YAML into appropriate Python objects.
 
-## Snakespeak 🔠🐍
+## Snakespeak
 
 We need to treat our target schema as a **tree** that can be traversed and whose
 leaves can be transformed into the fields (and their properties) of the Pydantic
@@ -235,12 +234,11 @@ simplified the process of creating Pydantic models to a single function call,
 so it is time to look into the structure (i.e. types) of the arguments that
 we need to pass to this function.
 
-P.S. We will skip the `model_name`, because well ... it is a string. 🤷‍♂️
+P.S. We will skip the `model_name`, because well ... it is a string.
 
-### To protect and validate 💂🛡
+### To protect and validate
 
-![Validators illustration](/assets/images/validation.svg)
-*Figure 2. Conceptual diagram of validator generation.*
+<img src="/assets/images/validation.svg" alt="! Validators illustration">
 
 Why start with validators? Well, it is the most hardcore topic out of all
 the target properties, so it is better to get it out of the way first.
@@ -333,11 +331,11 @@ mainly because it allows us to execute arbitrary code during the
 runtime of the application. Luckily, Python has some built-in mechanisms that
 can be used to prevent the execution of malicious code.
 
-#### Reflect. Adapt. Overcome. 🦾
+#### Reflect. Adapt. Overcome
 
 If only there was a built-in Python module that could be used to compile
 source code of functions during runtime, preferably using only STL of the
-language. 🤔
+language.
 
 Well, there is one trick, but it uses a forbidden technique (which is even
 considered a linting error by some of the linters) - the `exec` function.
@@ -439,8 +437,7 @@ in the context of this article, but these are completely two different things.
 So, compilation here must have a different meaning than the one that is
 commonly used in the context of programming languages. Which is true.
 
-![GPT rendition of Python figuring out if its compiled or interpreted](/assets/images/snake_confused.webp)
-*Figure 3. Playful depiction of dynamic (interpreted) execution concept.*
+<img src="/assets/images/snake_confused.webp" alt="GPT rendition of Python figuring out if its compiled or interpreted">
 
 When I say that the validator functions are "compiled", what I really mean is that the functions are being **dynamically defined**, due to the fact that any statement that is being executed by the `exec`
 function is being **interpreted** by Python.
@@ -456,7 +453,7 @@ the technique that can be used to create flexible "function factories", but -
 as You can see by the need to shadow critical modules - is open to abuse.
 
 How this function can be transformed into a validator that can be attached to
-the Pydantic model? Well, we have to reflect (hehe 😏) on what **decorators**
+the Pydantic model? Well, we have to reflect (hehe) on what **decorators**
 really are in Python - they are just functions that take a function as an
 argument and return a function that is a modified version of the original one.
 
@@ -579,10 +576,9 @@ field_name:
           raise ValueError("Field is not valid")
 ```
 
-### Another "-ion" ⚛️
+### Another "-ion"
 
-![Recursion illustration](/assets/images/ions.svg)
-*Figure 4. Visualization hinting at recursive schema descent.*
+<img src="/assets/images/ions.svg" alt="! Recursion illustration">
 
 One possible case that 100% will happen during the use of such schemas is
 the need to define nested schemas. This can be done by defining a field
@@ -631,10 +627,9 @@ that can be decomposed into arguments of Pydantic `create_model` function
 
 This workflow can be represented by the following Mermaid diagram:
 
-![Phaistos workflow](/assets/images/mermaid_phaistos.png)
-*Figure 5. Mermaid workflow for transpilation / validation pipeline.*
+<img src="/assets/images/mermaid_phaistos.png" alt="Phaistos workflow">
 
-## Snake building its tail 🐍🔧
+## Snake building its tail
 
 Utilizing the presented ideas, I have created a Python library that allows
 to define Pydantic models using YAML files. The library is called [Phaistos]
@@ -680,7 +675,7 @@ available schemas from the directory that is passed as an argument. This method
 in practice will keep a map that will contain the names of the schemas as keys
 and the transpiled models' factories as values.
 
-### Encapsulation of transpilation 🧪🔧
+### Encapsulation of transpilation
 
 The [`Transpiler` class] is responsible for the transpilation of the schema and mainly uses the
 procedures and tricks presented in the previous sections. It is **a stateless interface**
@@ -712,7 +707,7 @@ class Transpiler:
 What is important here is the `make_schema` method, which is used to transpile the YAML file and then
 return an object of [`TranspiledSchema` type] that can be used to create the Pydantic model.
 
-### Preserving the scripture 📜
+### Preserving the scripture
 
 This transpiled class is based upon the `pydantic.BaseModel` class and contains additional class variables and
 private attributes that are used to hold all validation errors, while allowing both the global
@@ -811,8 +806,7 @@ This approach is very hacky, but it effectively allows us to collectively gather
 both individual fields and whole models, represented both by the root schema **AND** nested ones, as seen in the
 screenshot below:
 
-![Mock schema with invalid defaults and Phaistos errors taken from one of the CI tests' run](/assets/images/phaistos_errors.png)
-*Figure 6. Aggregated validation errors surfaced via custom schema class.*
+<img src="/assets/images/phaistos_errors.png" alt="Mock schema with invalid defaults and Phaistos errors taken from one of the CI tests' run">
 
 In the above screenshot, I've deliberately set the defaults of some fields to invalid values, so the Pydantic
 validators will raise an error. The errors are then collected by the Phaistos library and bubbled up to the root
@@ -822,7 +816,7 @@ Also, note that the logs are divided into three types, evident by the mark in th
 `(T)` is for anything related to **transpilation**, `(V)` is for **validation** errors and `(M)`'s are the `Manager`
 specific logs.
 
-## Doting the i's 📝
+## Doting the i's
 
 So, we have out compilation-transpilation mechanism ready, but how can we use it in practice?
 
@@ -891,8 +885,7 @@ def build_mockument_data(mockument_id: int) -> phaistos.schema.TranspiledSchema:
 Running the FastAPI example from the cloned repository will allow You to access the mockuments by their IDs
 using the `/mockuments/{mockument_id}` endpoint:
 
-![FastAPI application running the Mockuments example](/assets/images/fastapi_phaistos.png)
-*Figure 7. FastAPI example returning Phaistos-built model instance.*
+<img src="/assets/images/fastapi_phaistos.png" alt="FastAPI application running the Mockuments example">
 
 As of right now, I am happy with basic functionalities of Phaistos, but I am
 planning to add more thingymajigs to it, such as serialization of
@@ -911,7 +904,7 @@ I hope You have enjoyed this article and that You have learned something new
 from it. If You have any questions or comments, feel free to reach out to me
 on GitHub or LinkedIn.
 
-Thank You for reading and have a great day! 🚀
+Thank You for reading and have a great day!
 
 [DRY way]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 [`create_model`]: https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation

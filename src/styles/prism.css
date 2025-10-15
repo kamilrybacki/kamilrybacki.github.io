@@ -1,18 +1,21 @@
 /* Minimal two-tone inspired Prism theme using existing design tokens.
  * Keeps palette strict; uses opacity/weight for contrast.
  */
+
 :root {
-  --code-bg: #1C1C1C; /* invert for blocks */
-  --code-fg: #F5F6F4;
-  --code-accent: #F5F6F4; /* single accent color */
-  --code-faded: rgba(245,246,244,0.65);
-  --code-border: #1C1C1C;
+  --code-bg-light: #F3F5F7; /* lighter anti-flash white for comments */
+  --code-bg: #141414; /* night */
+  --code-fg: #EEF0F2; /* anti-flash white */
+  --code-accent: #0FA3B1; /* moonstone */
+  --code-faded: #EEC643; /* saffron */
+  --code-border: #0FA3B1; /* moonstone */
 }
 
+
 pre[class*="language-"], code[class*="language-"] {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono, 'Fira Mono', 'JetBrains Mono', monospace);
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
   direction: ltr;
   text-align: left;
   white-space: pre;
@@ -23,80 +26,117 @@ pre[class*="language-"], code[class*="language-"] {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(13,33,161,0.07);
 }
+
 
 /* Block code */
 pre[class*="language-"] {
-  padding: 1rem 1.25rem;
-  margin: 1.25rem 0;
+  padding: 1.1rem 1.5rem;
+  margin: 1.5rem 0;
   overflow: auto;
-  background: var(--code-bg);
   color: var(--code-fg);
-  border-radius: 6px;
-  border: 1px solid var(--code-bg);
+  border-radius: 8px;
+  border: 1px solid var(--code-border);
+  box-shadow: 0 2px 8px rgba(13,33,161,0.07);
 }
+
 
 /* Inline code */
 :not(pre) > code[class*="language-"] {
-  background: var(--code-bg);
   color: var(--code-fg);
-  padding: 0.15em 0.35em;
-  border-radius: 4px;
+  padding: 0.18em 0.45em;
+  border-radius: 5px;
   white-space: normal;
+  border: 1px solid var(--code-border);
 }
 
-/* Token colors (all variations of single accent for consistency) */
+
+/* Token colors - modern palette */
 .token.comment,
 .token.prolog,
 .token.doctype,
-.token.cdata { color: var(--code-faded); font-style: italic; }
-
-.token.punctuation { color: var(--code-faded); }
-
+.token.cdata {
+  color: var(--code-bg-light);
+  font-style: italic;
+}
+.token.punctuation {
+  color: var(--code-accent);
+  opacity: 0.7;
+}
 .token.property,
 .token.tag,
 .token.boolean,
 .token.number,
 .token.constant,
 .token.symbol,
-.token.deleted { color: var(--code-fg); }
-
+.token.deleted {
+  color: var(--code-faded);
+}
 .token.selector,
 .token.attr-name,
 .token.string,
 .token.char,
 .token.builtin,
-.token.inserted { color: var(--code-fg); text-decoration: underline dotted rgba(245,246,244,0.3); }
-
+.token.inserted {
+  color: #EEC643; /* saffron */
+}
 .token.operator,
 .token.entity,
 .token.url,
 .language-css .token.string,
 .style .token.string,
-.token.variable { color: var(--code-fg); }
-
+.token.variable {
+  color: #EEC643; /* saffron */
+}
 .token.atrule,
 .token.attr-value,
 .token.function,
-.token.class-name { color: var(--code-fg); font-weight: 600; }
-
-.token.keyword { color: var(--code-fg); text-shadow: 0 0 1px rgba(245,246,244,0.6); }
-
+.token.class-name {
+  color: #EEC643; /* saffron */
+  font-weight: 600;
+}
+.token.keyword {
+  color: #EEC643; /* saffron */
+  text-shadow: 0 0 2px rgba(238,198,67,0.12);
+}
 .token.regex,
-.token.important { color: var(--code-fg); }
-
+.token.important {
+  color: var(--code-border);
+}
 .token.important,
-.token.bold { font-weight: 700; }
-.token.italic { font-style: italic; }
+.token.bold {
+  font-weight: 700;
+}
+.token.italic {
+  font-style: italic;
+}
+.token.entity {
+  cursor: help;
+}
 
-.token.entity { cursor: help; }
 
-/* Line highlight plugin compatibility (future) */
-.line-highlight { background: rgba(255,255,255,0.05); }
-.line-numbers .line-numbers-rows { border-right: 1px solid rgba(255,255,255,0.15); }
+/* Line highlight plugin compatibility */
+.line-highlight {
+  background: rgba(13,33,161,0.07);
+}
+.line-numbers .line-numbers-rows {
+  border-right: 1px solid var(--code-border);
+}
 
-/* Scrollbar subtle theme inside code blocks */
-pre[class*="language-"]::-webkit-scrollbar { height: 10px; }
-pre[class*="language-"]::-webkit-scrollbar-track { background: var(--code-bg); }
-pre[class*="language-"]::-webkit-scrollbar-thumb { background: rgba(245,246,244,0.25); border-radius: 5px; }
-pre[class*="language-"]::-webkit-scrollbar-thumb:hover { background: rgba(245,246,244,0.4); }
+
+/* Scrollbar theme inside code blocks */
+pre[class*="language-"]::-webkit-scrollbar {
+  height: 10px;
+}
+pre[class*="language-"]::-webkit-scrollbar-track {
+  background: var(--code-bg);
+}
+pre[class*="language-"]::-webkit-scrollbar-thumb {
+  background: var(--code-fg);
+  border-radius: 5px;
+}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+  background: var(--code-accent);
+}

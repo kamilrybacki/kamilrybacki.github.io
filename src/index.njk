@@ -38,8 +38,9 @@ title: Home
   <!-- Article Filter Buttons -->
   <div class="article-filters">
     <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="IT">IT</button>
-    <button class="filter-btn" data-filter="Hobby">Hobby</button>
+    {% for cat in collections.articleCategories %}
+    <button class="filter-btn" data-filter="{{ cat }}">{{ cat }}</button>
+    {% endfor %}
   </div>
   
   <!-- Fixed height container to prevent layout jumps -->

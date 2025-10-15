@@ -10,7 +10,7 @@
 /* Large Screens (1200px to 1399px) */
 @media (min-width: 1200px) and (max-width: 1399px) {
   .container {
-    width: 90vw;
+    width: 95vw;
   }
 }
 
@@ -37,7 +37,7 @@
   }
   
   .container {
-    width: 92vw; /* Slightly wider on tablets */
+    width: 95vw; /* Slightly wider on tablets */
     padding: var(--space-md);
     padding-top: var(--space-lg); /* Reduced top spacing on tablets */
   }
@@ -135,14 +135,6 @@
   .hero-image::before,
   .hero-image::after {
     display: none;
-  }
-  
-  .profile-photo {
-    max-width: 150px;
-    width: auto;
-    height: 150px;
-    transform: rotate(0deg);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
   }
   
   /* Mobile Header Adjustments */

@@ -10,9 +10,17 @@
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-  "markdown-it": "^13.0.1"
+    "markdown-it": "^13.0.1",
+    "sharp": "^0.34.4"
   },
-  "keywords": ["blog", "eleventy", "markdown"],
+  "keywords": [
+    "blog",
+    "eleventy",
+    "markdown"
+  ],
   "author": "Kamil Rybacki",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "asciimoji": "github:jigglycrumb/ASCIImoji"
+  }
 }

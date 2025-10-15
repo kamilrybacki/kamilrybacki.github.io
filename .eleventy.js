@@ -27,6 +27,7 @@ module.exports = function(eleventyConfig) {
   // Render soft line breaks (single newline) as a single space so source-wrapped
   // Markdown doesn't generate <br> tags mid sentence.
   md.renderer.rules.softbreak = () => ' ';
+
   // Path utility needed for thumbnail map lookups
   const path = require('path');
 
@@ -37,10 +38,7 @@ module.exports = function(eleventyConfig) {
   // Additional consecutive italic paragraphs are merged into a single caption body.
   md.core.ruler.after('inline', 'wrap_figures', function(state) {
     const tokens = state.tokens;
-    let thumbMap = {};
-    try {
-      thumbMap = require(path.join(process.cwd(),'public','assets','image-thumbs.json'));
-    } catch (_) {}
+    // Thumbnail logic removed: always use original images only.
     let figureCounter = 0;
     for (let i = 0; i < tokens.length; i++) {
       // Skip if already a figure we inserted earlier
@@ -134,11 +132,7 @@ module.exports = function(eleventyConfig) {
 
       const src = imgTok.attrGet('src');
       imgTok.attrSet('loading','lazy');
-      if (src && thumbMap[src]) {
-        imgTok.attrSet('src', thumbMap[src]);
-        imgTok.attrSet('srcset', `${thumbMap[src]} 1x, ${src} 2x`);
-        imgTok.attrSet('data-full', src);
-      }
+      // Always use original image src, no thumbnail substitution.
       if (src && /\.(png|jpe?g|webp|gif|svg)$/i.test(src)) {
         imgTok.attrSet('width','800');
         imgTok.attrSet('height','450');
@@ -176,19 +170,14 @@ module.exports = function(eleventyConfig) {
 
         // If opt-out marker present, just enhance <img> and skip figure wrapping/numbering.
         if (skipFigure) {
-          let finalSrc = src;
-          let srcsetAttr = '';
-          if (src && thumbMap[src]) {
-            finalSrc = thumbMap[src];
-            srcsetAttr = ` srcset="${thumbMap[src]} 1x, ${src} 2x" data-full="${src}"`;
-          }
+          // Always use original image src, no thumbnail substitution.
           let sizeAttrs = '';
           if (src && /\.(png|jpe?g|webp|gif|svg)$/i.test(src)) {
             sizeAttrs = ' width="800" height="450"';
           }
           const loading = ' loading="lazy"';
           const altAttr = altText ? ` alt="${altText.replace(/"/g,'&quot;')}"` : ' alt=""';
-          const plainImgHtml = `<img src="${finalSrc}"${altAttr}${loading}${srcsetAttr}${sizeAttrs}>`;
+  const plainImgHtml = `<img src="${src}"${altAttr}${loading}${sizeAttrs}>`;
           const imgBlock = new state.Token('html_block','',0); imgBlock.content = plainImgHtml;
           tokens.splice(i, 1, imgBlock);
           continue;
@@ -219,12 +208,7 @@ module.exports = function(eleventyConfig) {
         } else {
           label = `Figure ${++figureCounter}.`;
         }
-        let finalSrc = src;
-        let srcsetAttr = '';
-        if (src && thumbMap[src]) {
-          finalSrc = thumbMap[src];
-          srcsetAttr = ` srcset="${thumbMap[src]} 1x, ${src} 2x" data-full="${src}"`;
-        }
+        // Always use original image src, no thumbnail substitution.
         let sizeAttrs = '';
         if (src && /\.(png|jpe?g|webp|gif|svg)$/i.test(src)) {
           sizeAttrs = ' width="800" height="450"';
@@ -236,7 +220,7 @@ module.exports = function(eleventyConfig) {
         const aria = ` aria-describedby="${figId}"`;
         const loading = ' loading="lazy"';
         const altAttr = ` alt="${altText.replace(/"/g,'&quot;')}"`;
-        const newImageHtml = `<img src="${finalSrc}"${altAttr}${aria}${loading}${srcsetAttr}${sizeAttrs}>`;
+  const newImageHtml = `<img src="${src}"${altAttr}${aria}${loading}${sizeAttrs}>`;
         const syntheticInline = new state.Token('inline','',0);
         syntheticInline.content = newImageHtml;
         const figureHtml = `<figure class="figure">${newImageHtml}<figcaption id="${figId}"><span class="figure-label">${label}</span> ${body}</figcaption></figure>`;

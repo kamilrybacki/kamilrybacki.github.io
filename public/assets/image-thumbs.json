@@ -1,0 +1,22 @@
+{
+  "/assets/images/awesome.png": "/assets/images/awesome_thumb.png",
+  "/assets/images/compose_final_stack.png": "/assets/images/compose_final_stack_thumb.png",
+  "/assets/images/compose_second_stack.png": "/assets/images/compose_second_stack_thumb.png",
+  "/assets/images/dontneedalgebra.png": "/assets/images/dontneedalgebra_thumb.png",
+  "/assets/images/fastapi_phaistos.png": "/assets/images/fastapi_phaistos_thumb.png",
+  "/assets/images/independent.png": "/assets/images/independent_thumb.png",
+  "/assets/images/leetcode_ext.png": "/assets/images/leetcode_ext_thumb.png",
+  "/assets/images/leetcode_final.png": "/assets/images/leetcode_final_thumb.png",
+  "/assets/images/leetcode_initial_env.png": "/assets/images/leetcode_initial_env_thumb.png",
+  "/assets/images/leetcode_login.png": "/assets/images/leetcode_login_thumb.png",
+  "/assets/images/nested_container_behavior.png": "/assets/images/nested_container_behavior_thumb.png",
+  "/assets/images/nested_container_dind.png": "/assets/images/nested_container_dind_thumb.png",
+  "/assets/images/nested_container_no_socket.png": "/assets/images/nested_container_no_socket_thumb.png",
+  "/assets/images/nested_container_ping_pong.png": "/assets/images/nested_container_ping_pong_thumb.png",
+  "/assets/images/nested_container_pytest_pong.png": "/assets/images/nested_container_pytest_pong_thumb.png",
+  "/assets/images/phaistos_errors.png": "/assets/images/phaistos_errors_thumb.png",
+  "/assets/images/por_2_rusty.png": "/assets/images/por_2_rusty_thumb.png",
+  "/assets/images/snake_confused.webp": "/assets/images/snake_confused_thumb.webp",
+  "/assets/images/test_job_gitlab.png": "/assets/images/test_job_gitlab_thumb.png",
+  "/assets/images/unitcell_notrait.png": "/assets/images/unitcell_notrait_thumb.png"
+}

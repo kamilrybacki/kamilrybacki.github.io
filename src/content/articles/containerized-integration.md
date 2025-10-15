@@ -6,7 +6,7 @@ category: CI
 description: "How to easily spin up a mock environment for integration testing"
 ---
 
-## I'm afraid I can't let you do that, Dev 🤖
+## I'm afraid I can't let you do that, Dev
 
 There is a certain kind of dread that comes with the acknowledgment that You can't always cross the gap
 between Your local pythonic incantations and the desired environment, where those enchantments are to be
@@ -24,8 +24,8 @@ This is, of course, done with good intent, so that the developers don't accident
 set the production database to be the target of their unit tests, pushing around
 valuable data about somebody's World of Warcraft character on the private server
 run by a group of "real chill dudes", where You've recently managed to down
-that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff] 😌,
-to the dismay of Your fellow restoration druids 🌲.
+that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff],
+to the dismay of Your fellow restoration druids.
 
 Those are the real casualties that would have been made without that one reasonable sysadmin
 at Your software house, who's set up e.g. that VPN so all GitLab CI workers can't reach the K8s cluster,
@@ -36,7 +36,7 @@ I would like to stress here that I am not talking about any continuous deploymen
 where the code is automatically deployed to the production environment and it mutates its state, in real time.
 CD naturally assumes successful CI (continuous integration) and by integration, it means that the code
 is already up to the security and coding standards of Your organization. In other words, it is **safe**.
-The CI part is what I am really focusing on in this article, so - I am not GitOps hater or something like that 😅.
+The CI part is what I am really focusing on in this article, so - I am not GitOps hater or something like that.
 
 The thing is, some tasks require a bit more than just simple code linting tests and they must
 touch upon another important aspect of integration with the existing environment - communication,
@@ -59,9 +59,9 @@ that is capable of Docker-in-Docker (DinD) builds. I've included some links to t
 such a runner, but I will not go into details on how to do that, as it is not the main focus of this article.
 That is why I am including the 99% of code snippets here in this article and no repo to go with it,
 because cloning it and running will simply not do. Maybe in the future, I will make an article about
-setting such workers on Your home/private cluster, but that's a topic for another time 😛 (SOON™).
+setting such workers on Your home/private cluster, but that's a topic for another time (SOON™).
 
-## Alive in a box - dead to the outside world 🐈‍⬛📦
+## Alive in a box - dead to the outside world
 
 To figure out how to create our pseudo-environment, we must first understand what goes on under the hood
 when our job is being executed on the GitLab CI runner. In very short terms, the runner
@@ -107,8 +107,7 @@ So, coming back to CI, we expect to be greeted by two messages, one from the hos
 However, when we run this job, we will only see the first message executed at the main container level,
 but the second one will not be executed at all:
 
-![Nested container behavior](/assets/images/nested_container_behavior.png)
-*Figure 1. Parent vs nested container output (missing nested run due to daemon access failure).*
+<img src="/assets/images/nested_container_behavior.png" alt="Nested container behavior">
 
 The main reason is the way in which the parent container attempts to communicate with the Docker daemon
 that is located on the host. The original Docker daemon is listening on a Unix socket, which is located at
@@ -141,8 +140,7 @@ Here we basically expect the overall effect to be the same as previously, but th
 that there is basically nothing mounted under `/var/run` path and the `TCP` lookup will be performed for
 the `docker-service` host, which will fail, as expected.
 
-![Nested container no docker socket](/assets/images/nested_container_no_socket.png)
-*Figure 2. No `/var/run/docker.sock` mount inside nested container; TCP lookup fails.*
+<img src="/assets/images/nested_container_no_socket.png" alt="Nested container no docker socket">
 
 And this is what we get, the `/var/run` directory is empty (red box in Pic. 2)
 and the `TCP` lookup fails (yellow underline in Pic. 2). So now we have to decide what is really open to us
@@ -161,7 +159,7 @@ because, for example, building Docker images is a very common task among them, s
 However, if there is no such runner available, we can always create one ourselves. There is a [plethora] [of] [tutorials]
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
 
-### Whale nesting 🐳🐳
+### Whale nesting
 
 So the game plan now is like so:
 
@@ -169,7 +167,7 @@ So the game plan now is like so:
 2. We create a Docker service that will be used by the nested container to communicate with the host's Docker daemon.
 We will name it `my-docker-service` and we will use the `docker:dind` image for that purpose.
 3. We will set the `DOCKER_HOST` environment variable to `tcp://my-docker-service:2375` in the CI container.
-4. We will run the command in the nested container and hope for the best. 🤞
+4. We will run the command in the nested container and hope for the best.
 
 One caveat is that if we want to use the 2375 port, we need to disable TLS verification, which can be done
 
@@ -215,7 +213,7 @@ redis-ping:
 
 Expected output includes `PONG`, proving DNS name resolution for the service.
 
-## Snake-in-a-box 🐍📦 (integration test scenario)
+## Snake-in-a-box (integration test scenario)
 
 Let’s extend the idea: run pytest against a temporary Redis. File layout for a minimal example:
 
@@ -283,7 +281,7 @@ integration-tests:
 
 This pattern keeps each service ephemeral: once the job finishes, the data disappears.
 
-## Compose Yourself 📿
+## Compose Yourself
 
 When orchestration logic (multiple services, healthchecks, environment fan‑out) gets verbose, introduce **Docker Compose** and run it inside the CI job. Example `docker-compose.yml` snippet tailored for the Redis + pytest case:
 
@@ -331,7 +329,7 @@ compose-integration:
     - docker-compose up --abort-on-container-exit --exit-code-from pytest-runner
 ```
 
-### Decomposing the composition ✂️
+### Decomposing the composition
 
 Key ideas:
 
@@ -360,7 +358,7 @@ That wraps the full journey: ad‑hoc single container, service resolution, nest
 
 **Takeaways**: Keep environments minimal, lean on healthchecks, centralize config, and graduate to Compose only when repetition starts to appear.
 
-Happy container spelunking! 🐳
+Happy container spelunking!
 
 [Crystalheart Pulse-Staff]: https://www.wowhead.com/item=45886/crystalheart-pulse-staff
 [`services` keyword in the `.gitlab-ci.yml` file]: https://docs.gitlab.com/ee/ci/services/
