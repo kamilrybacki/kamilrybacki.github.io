@@ -8,6 +8,8 @@ description: "How to easily spin up a mock environment for integration testing"
 
 ## I'm afraid I can't let you do that, Dev
 
+<img src="/assets/images/vpn9000.svg" alt="! Denied">
+
 There is a certain kind of dread that comes with the acknowledgment that You can't always cross the gap
 between Your local pythonic incantations and the desired environment, where those enchantments are to be
 set to be roaming free, setting and getting those `os.environ`s. "Being part of the Machine" is not only
@@ -26,6 +28,8 @@ valuable data about somebody's World of Warcraft character on the private server
 run by a group of "real chill dudes", where You've recently managed to down
 that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff],
 to the dismay of Your fellow restoration druids.
+
+<img src="/assets/images/staff.svg" alt="! Crystalheart Pulse-Staff">
 
 Those are the real casualties that would have been made without that one reasonable sysadmin
 at Your software house, who's set up e.g. that VPN so all GitLab CI workers can't reach the K8s cluster,
@@ -160,6 +164,8 @@ However, if there is no such runner available, we can always create one ourselve
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
 
 ### Whale nesting
+
+<img src="/assets/images/nesting.svg" alt="! Whale inside a nest">
 
 So the game plan now is like so:
 
