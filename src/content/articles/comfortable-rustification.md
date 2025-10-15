@@ -36,7 +36,7 @@ bother me about it:
 
 So, I want to minimize the amount of context switching between the LeetCode website and my editor, because it is
 distracting and it breaks my flow. **I want to be able to do everything in one place.** Because going back and forth
-between the browser and the editor is a waste of time and energy, both of which I want to conserve. 🔌
+between the browser and the editor is a waste of time and energy, both of which I want to conserve.
 
 ## Chinese doodads to the rescue 
 
@@ -88,6 +88,8 @@ There is of course no need to compile this mystical binary source since we are o
 and the autocomplete features.
 
 ## One binary to rule them all
+
+<img src="/assets/images/ring.svg" alt="! Ring of Power"> 
 
 My LeetCode problems are stored in a directory called `.leetcode` in my home directory, which is a Cargo project
 named also `leetcode` (yeah, don't expect any creativity from me when it comes to naming things in this case,
