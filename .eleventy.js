@@ -88,7 +88,10 @@ module.exports = function(eleventyConfig) {
       let scan = i + 3;
       while (scan < tokens.length - 2 && tokens[scan].type === 'paragraph_open') {
         const maybeInline = tokens[scan + 1];
-        const maybeClose = tokens[scan + 2];
+        const altRaw = (imgTok.attrGet('alt') || '').trim();
+        // Opt-out: alt starting with '!' means decorative/no figure
+        const skipFigure = altRaw.startsWith('!');
+        const altText = skipFigure ? altRaw.slice(1).trim() : altRaw; // retain text after '!'
         if (!(maybeInline && maybeInline.type === 'inline' && maybeClose && maybeClose.type === 'paragraph_close')) break;
         const txt = maybeInline.content.trim();
         if (!(txt.startsWith('*') && txt.endsWith('*'))) break;
@@ -167,7 +170,29 @@ module.exports = function(eleventyConfig) {
         const srcMatch = raw.match(/src\s*=\s*"([^\"]+)"/i);
         const altMatch = raw.match(/alt\s*=\s*"([^\"]*)"/i);
         const src = srcMatch ? srcMatch[1] : '';
-        const altText = (altMatch ? altMatch[1] : '').trim();
+        const altRaw = (altMatch ? altMatch[1] : '').trim();
+        const skipFigure = altRaw.startsWith('!');
+        const altText = skipFigure ? altRaw.slice(1).trim() : altRaw;
+
+        // If opt-out marker present, just enhance <img> and skip figure wrapping/numbering.
+        if (skipFigure) {
+          let finalSrc = src;
+          let srcsetAttr = '';
+          if (src && thumbMap[src]) {
+            finalSrc = thumbMap[src];
+            srcsetAttr = ` srcset="${thumbMap[src]} 1x, ${src} 2x" data-full="${src}"`;
+          }
+          let sizeAttrs = '';
+          if (src && /\.(png|jpe?g|webp|gif|svg)$/i.test(src)) {
+            sizeAttrs = ' width="800" height="450"';
+          }
+          const loading = ' loading="lazy"';
+          const altAttr = altText ? ` alt="${altText.replace(/"/g,'&quot;')}"` : ' alt=""';
+          const plainImgHtml = `<img src="${finalSrc}"${altAttr}${loading}${srcsetAttr}${sizeAttrs}>`;
+          const imgBlock = new state.Token('html_block','',0); imgBlock.content = plainImgHtml;
+          tokens.splice(i, 1, imgBlock);
+          continue;
+        }
 
         // Collect optional caption paragraphs after the image token
         let captionParts = [];
