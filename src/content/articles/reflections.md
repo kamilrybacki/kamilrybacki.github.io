@@ -142,7 +142,7 @@ rules? This is where the metaprogramming comes in. We effectively want to
 create the creators - all in response to the data that we are fed.
 
 But what do we know acts as a factory and is related to the topic of this article?
-<img src="/assets/images/pydantic.svg" alt="Pydantic appears">
+
 That's right - Pydantic model classes. They are factories that create instances
 of data structures that are defined by the schema that we have provided to them.
 Moreover, Pydantic allows us to dynamically generate those classes by using
