@@ -20,7 +20,7 @@
 /* Article content */
 .article-content { max-width:var(--article-max-width); margin:0 auto; line-height:1.8; font-size:var(--font-size-md); padding-bottom:var(--space-xl); }
 .article-content p { margin:0 0 var(--space-md); line-height:1.6; text-align:justify; text-justify:inter-word; hyphens:none; -webkit-hyphens:none; overflow-wrap:anywhere; }
-.article-content img { max-width:50vw; height:auto; max-height: 50vw; margin:var(--space-xl) 0; margin-left: auto; margin-right: auto; display: block;}
+.article-content img { max-width:90%; height:auto; margin:var(--space-xl) 0; margin-left: auto; margin-right: auto; display: block;}
 
 /* Figures */
 .article-content figure.figure { display:flex; flex-direction:column; align-items:center; margin:var(--space-xl) auto; max-width:100%; }
