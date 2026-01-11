@@ -38,7 +38,7 @@ One of the hints can be sourced directly from Mark Rosewater's article, [publish
 
 > When I started playing the game, I loved building decks, but I didn't build normal decks. My specialty included decks that won in untraditional ways. I wanted to beat you in a way you didn't see coming. Doing this said something about who I was. I was creative, clever, and untraditional. My friends would ask to borrow my decks because they were fun to play, and that brought me great joy. _Magic_ was a means to communicate my identity for all to see.
 >
-> - Mark Rosewater _The Three Magic Psychographics_
+> -- Mark Rosewater _The Three Magic Psychographics_
 
 A player who is focused on the art of self-expression and savviness in the field of mechanics, which can both be realized through **deck building**. By having the knowledge of best practices of building a good deck of cards (such as providing a nice [mana curve](https://magic.wizards.com/en/news/feature/how-build-mana-curve-2017-05-18)) and experience in using various mechanics specific for a given game expansion e.g. [warping from Edge of Eternities set](https://magic.wizards.com/en/news/feature/edge-of-eternities-mechanics), Johnny/Jenny can build novel solutions that combine selected subsets of cards from the game's rich library and come up with consistent strategies for winning games.
 
@@ -46,7 +46,7 @@ A player who is focused on the art of self-expression and savviness in the field
 
 > Spikes look at _Magic_ and see all these as opportunities to learn and improve. That's the joy for them: gaining knowledge, applying that knowledge against worthy opponents, adapting, gaining new insights, and evaluating how to change their behavior to do better next time. _Magic_ requires so many different skills, and different Spikes will focus on different ones. The one through line is that Spikes will set goals for themselves and then strive to meet those goals.
 >
-> - Mark Rosewater _The Three Magic Psychographics_
+> -- Mark Rosewater _The Three Magic Psychographics_
 
 This one hits to our IT home even closer than the previous psychological profile due to the fact that it is what software engineers **literally do every day** as little (compared to the scale of gigantic data centers we hack through), human optimization engines: we absorb hundreds of code snippet lines and documentation pages to adapt this wisdom to **vanquishing bugs** and/or creating **new high-power systems** (a counterpart for Spike's competitive-level MtG deck) that we **tinker with over time** to make it better, faster and stronger (not harder tho, it may be an anti-pattern).
 
