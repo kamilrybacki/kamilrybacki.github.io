@@ -48,7 +48,7 @@ A player who is focused on the art of self-expression and savviness in the field
 >
 > -- Mark Rosewater _The Three Magic Psychographics_
 
-This one hits to our IT home even closer than the previous psychological profile due to the fact that it is what software engineers **literally do every day** as little (compared to the scale of gigantic data centers we hack through), human optimization engines: we absorb hundreds of code snippet lines and documentation pages to adapt this wisdom to **vanquishing bugs** and/or creating **new high-power systems** (a counterpart for Spike's competitive-level MtG deck) that we **tinker with over time** to make it better, faster and stronger (not harder tho, it may be an anti-pattern).
+This one hits to our IT home even closer than the previous psychological profile due to the fact that it is what software engineers **literally do every day** as little (compared to the scale of gigantic data centers we hack through), human optimization engines: we absorb hundreds of code snippet lines and documentation pages to adapt this wisdom to **vanquishing bugs** and/or creating **new high-power systems** (a counterpart for Spike's competitive-level MTG deck) that we **tinker with over time** to make it better, faster and stronger (not harder tho, it may be an anti-pattern).
 
 I highly recommend the aforementioned article or episodes 1230 and 1232 of Mark's _Drive to Work_ podcast, which talk in-depth about these mental models, but as You can see, the usual IT engineer (or in a broader sense the majority of STEM field specialists) can be seen as different mixtures of J's and S's with some personality customizations baked in for a good measure.
 
@@ -60,7 +60,7 @@ But what if we also take a look at the subject of these model people's passion, 
 
 ## Code-cardstock isomorphism
 
-Okay, I will start with a banger: **Magic: The Gathering has been proven to be Turing complete**. It is literally the title of a 2019 article published by Churchill et al. ([_Magic: The Gathering is Turing Complete_](https://arxiv.org/abs/1904.09828)), inspired by previous work done by Chatterjee et al. in 2016, where it was suggested that [there is a significant computational complexity hiding within the MtG cardboard](https://research-explorer.ista.ac.at/download/478/4658/IST-2018-950-v1%2B1_2016_Chatterjee_The_complexity.pdf).
+Okay, I will start with a banger: **Magic: The Gathering has been proven to be Turing complete**. It is literally the title of a 2019 article published by Churchill et al. ([_Magic: The Gathering is Turing Complete_](https://arxiv.org/abs/1904.09828)), inspired by previous work done by Chatterjee et al. in 2016, where it was suggested that [there is a significant computational complexity hiding within the MTG cardboard](https://research-explorer.ista.ac.at/download/478/4658/IST-2018-950-v1%2B1_2016_Chatterjee_The_complexity.pdf).
 
 This article shows them creating a Turing machine using creature tokens (cards that represent creatures or other objects that are generated dynamically by game state effects like spooky zombies being raised from their graves) and other creatures (e.g., Rotlung Reanimator) or sorceries that effectively make the whole game board state a [read-and-write head](https://en.wikipedia.org/wiki/Disk_read-and-write_head).
 
@@ -72,7 +72,7 @@ Then the authors also tackled the hypothesis of their "cardstock-based" machine 
 >
 > -- GeeksForGeeks _Halting Problem in Theory of Computation_
 
-So, the trick was to recreate this undetermined state using the newly created MtG machine, in which the authors were successful and concluded in their report that:
+So, the trick was to recreate this undetermined state using the newly created MTG machine, in which the authors were successful and concluded in their report that:
 
 > This construction establishes that _Magic: The Gathering_ is the most computationally complex real-world game known in the literature. In addition to showing that optimal strategic play in Magic is non-computable, it also shows that merely evaluating the deterministic consequences of past moves in Magic is non-computable.
 >
