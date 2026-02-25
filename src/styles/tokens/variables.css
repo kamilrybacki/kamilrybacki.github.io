@@ -1,60 +1,57 @@
-/* Design Tokens - Modern Clean Theme */
-/* Two-color palette: #1C1C1C and #F5F6F4 */
+/* Design Tokens - Dungeon Synth Theme */
 :root {
-  /* Colors - Strict Two-Color Palette */
-  --background-primary: #EEF0F2; /* anti-flash white */
-  --text-primary: #141414; /* night */
-  --text-secondary: #141414; /* night */
-  --text-muted: #0FA3B1; /* moonstone */
-  --text-light: #EEC643; /* saffron */
-  --border-light: #EEC643; /* saffron */
-  --border-color: #0FA3B1; /* moonstone */
-  --bg-primary: #EEF0F2; /* anti-flash white */
-  --bg-secondary: #0FA3B1; /* moonstone */
-  
+  /* Colors - Dark dungeon palette */
+  --background-primary: hsl(0, 0%, 3%);
+  --text-primary: hsl(40, 20%, 85%);
+  --text-secondary: hsl(40, 20%, 75%);
+  --text-muted: hsl(40, 10%, 50%);
+  --text-light: hsl(43, 50%, 55%);
+  --border-light: hsl(0, 0%, 20%);
+  --border-color: hsl(0, 0%, 15%);
+  --bg-primary: hsl(0, 0%, 3%);
+  --bg-secondary: hsl(0, 0%, 6%);
+  --bg-card: hsl(0, 0%, 6%);
+  --primary: hsl(43, 50%, 55%);
+  --primary-foreground: hsl(0, 0%, 3%);
+
   /* Typography */
-  --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-heading: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Source Code Pro', 'Consolas', monospace;
-  
+  --font-body: 'Crimson Text', Georgia, serif;
+  --font-heading: 'Cinzel', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+
   /* Font Sizes */
   --font-size-xs: 0.8rem;
   --font-size-sm: 0.9rem;
-  --font-size-base: 14px;
+  --font-size-base: 18px;
   --font-size-md: 1rem;
   --font-size-lg: 1.2rem;
   --font-size-xl: 1.4rem;
   --font-size-2xl: 1.8rem;
   --font-size-3xl: 2.2rem;
   --font-size-4xl: 2.5rem;
-  
+
   /* Spacing Scale */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
   --space-lg: 3rem;
   --space-xl: 4rem;
-  
-  /* Layout - Responsive Widths */
-  --container-max-width: 90vw; /* 90% of viewport width */
-  --container-max-width-large: 1200px; /* Maximum width on very large screens */
-  --article-max-width: 100%; /* 100% of container width */
-  
+  --space-2xl: 5rem;
+
+  /* Layout */
+  --container-max-width: 48rem;
+
   /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-base: 0.3s ease;
-  
+
   /* Borders */
   --border-width-thin: 1px;
   --border-width-thick: 2px;
   --border-width-heavy: 3px;
-  
-  /* Shadows */
-  --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
-  --shadow-text: 2px 2px 0 rgba(0,0,0,0.2);
 
-  /* Highlight Gradients */
-  --hl-yellow: linear-gradient(104deg, rgba(0,0,0,0) .9%, rgba(230,230,70,.9) 2.4%, rgba(220,220,40,.8) 5.8%, rgba(230,230,70,.9) 93%, rgba(0,0,0,0) 96%);
-  --hl-pink: linear-gradient(105deg, rgba(200,50,120,0) .9%, rgba(240,150,170,.95) 2.4%, rgba(250,170,180,.9) 5.8%, rgba(240,150,170,.95) 93%, rgba(200,50,120,0) 96%);
-  --hl-green: linear-gradient(107deg, rgba(50,180,50,0) .9%, rgba(120,200,120,.95) 2.4%, rgba(140,220,140,.9) 5.8%, rgba(120,200,120,.95) 93%, rgba(50,180,50,0) 96%);
+  /* Shadows */
+  --shadow-light: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-text: 2px 2px 0 rgba(0,0,0,0.4);
+  --glow-gold: 0 0 20px hsl(43 50% 55% / 0.15);
 }

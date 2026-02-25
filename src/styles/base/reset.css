@@ -12,21 +12,28 @@ body {
   font-family: var(--font-body);
   background-color: var(--background-primary);
   color: var(--text-primary);
-  line-height: 1.4;
+  line-height: 1.7;
   font-size: var(--font-size-base);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   min-height: 100vh;
   margin: 0;
 }
 
+/* Selection */
+::selection {
+  background: hsl(43 50% 55% / 0.3);
+  color: hsl(40, 20%, 95%);
+}
+
 /* Base Links */
 a {
-  color: var(--text-primary);
-  text-decoration: underline;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-base);
 }
 
 a:hover {
-  text-decoration: none;
+  color: var(--text-primary);
 }
 
 /* Base Lists */
@@ -41,21 +48,22 @@ li {
 
 /* Base Code Styling */
 code {
-  background-color: var(--background-primary);
+  background-color: var(--bg-card);
   color: var(--text-primary);
-  padding: 2px 4px;
-  border: var(--border-width-thin) solid var(--text-primary);
+  padding: 2px 6px;
+  border: var(--border-width-thin) solid var(--border-color);
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
 }
 
 pre {
-  background-color: var(--background-primary);
+  background-color: var(--bg-card);
   color: var(--text-primary);
   padding: var(--space-md);
-  border: var(--border-width-thin) solid var(--text-primary);
+  border: var(--border-width-thin) solid var(--border-color);
   overflow-x: auto;
   margin-bottom: var(--space-md);
+  font-family: var(--font-mono);
 }
 
 pre code {
@@ -66,9 +74,9 @@ pre code {
 
 /* Base Blockquotes */
 blockquote {
-  border-left: var(--border-width-heavy) solid var(--text-primary);
+  border-left: var(--border-width-heavy) solid var(--primary);
   padding-left: var(--space-md);
   margin: var(--space-md) 0;
-  color: var(--text-light);
+  color: var(--text-secondary);
   font-style: italic;
 }

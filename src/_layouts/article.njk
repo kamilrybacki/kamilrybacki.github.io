@@ -7,7 +7,7 @@ bodyClass: article-page
 
 <header class="site-header">
   <div class="header-top">
-    <h1 class="site-title">Kamil Rybacki</h1>
+    <a href="/" class="site-title">Kamil Rybacki</a>
     <div class="social-links">
       <a href="https://www.linkedin.com/in/kamil-andrzej-rybacki/" class="social-link" aria-label="LinkedIn">
         <img src="https://s.magecdn.com/social/mb-linkedin.svg" alt="LinkedIn" width="20" height="20">
@@ -18,23 +18,31 @@ bodyClass: article-page
     </div>
   </div>
   <div class="site-description">
-    <div class="dotted-line"></div>
+    <span class="dotted-line"></span>
     <p>Turning complex backend puzzles into fast, reliable Python</p>
-    <div class="dotted-line"></div>
   </div>
 </header>
 
 <article>
+  <a href="/" class="back-link">&#8592; Back</a>
+
   <header class="article-header">
     <h1>{{ title }}</h1>
+    <hr class="dotted-separator">
+    <div class="article-meta">
+      <time class="article-date">{{ date | dateFormat }}</time>
+      {% if category %}
+      <span class="article-meta-dot">&middot;</span>
+      <span class="article-category">{{ category }}</span>
+      {% endif %}
+    </div>
   </header>
-  <p class="article-date article-date--below">{{ date | dateFormat }}</p>
-  
+
   <div class="article-content">
     {{ content | safe }}
   </div>
-  
+
   <div class="article-navigation">
-    <a href="/" class="back-link">← Back</a>
+    <a href="/" class="back-link">&#8592; Back</a>
   </div>
 </article>

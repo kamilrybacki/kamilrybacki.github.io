@@ -1,19 +1,22 @@
-/* Minimal two-tone inspired Prism theme using existing design tokens.
- * Keeps palette strict; uses opacity/weight for contrast.
+/* Dungeon Synth Prism Theme
+ * Dark palette with gold and warm tones.
  */
 
 :root {
-  --code-bg-light: #F3F5F7; /* lighter anti-flash white for comments */
-  --code-bg: #141414; /* night */
-  --code-fg: #EEF0F2; /* anti-flash white */
-  --code-accent: #0FA3B1; /* moonstone */
-  --code-faded: #EEC643; /* saffron */
-  --code-border: #0FA3B1; /* moonstone */
+  --code-bg: hsl(0, 0%, 6%);
+  --code-fg: hsl(40, 20%, 85%);
+  --code-comment: hsl(40, 10%, 40%);
+  --code-keyword: hsl(43, 50%, 55%);
+  --code-string: hsl(30, 50%, 65%);
+  --code-number: hsl(20, 60%, 60%);
+  --code-function: hsl(40, 30%, 75%);
+  --code-operator: hsl(40, 15%, 60%);
+  --code-punctuation: hsl(40, 10%, 50%);
+  --code-border: hsl(0, 0%, 15%);
 }
 
-
 pre[class*="language-"], code[class*="language-"] {
-  font-family: var(--font-mono, 'Fira Mono', 'JetBrains Mono', monospace);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 13px;
   line-height: 1.6;
   direction: ltr;
@@ -26,45 +29,44 @@ pre[class*="language-"], code[class*="language-"] {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(13,33,161,0.07);
+  color: var(--code-fg);
 }
-
 
 /* Block code */
 pre[class*="language-"] {
   padding: 1.1rem 1.5rem;
   margin: 1.5rem 0;
   overflow: auto;
-  color: var(--code-fg);
-  border-radius: 8px;
+  background: var(--code-bg);
   border: 1px solid var(--code-border);
-  box-shadow: 0 2px 8px rgba(13,33,161,0.07);
+  border-radius: 2px;
 }
-
 
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   color: var(--code-fg);
+  background: var(--code-bg);
   padding: 0.18em 0.45em;
-  border-radius: 5px;
-  white-space: normal;
   border: 1px solid var(--code-border);
+  border-radius: 2px;
+  white-space: normal;
 }
 
-
-/* Token colors - modern palette */
+/* Comments */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: var(--code-bg-light);
+  color: var(--code-comment);
   font-style: italic;
 }
+
+/* Punctuation */
 .token.punctuation {
-  color: var(--code-accent);
-  opacity: 0.7;
+  color: var(--code-punctuation);
 }
+
+/* Properties, tags, booleans, numbers */
 .token.property,
 .token.tag,
 .token.boolean,
@@ -72,71 +74,83 @@ pre[class*="language-"] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: var(--code-faded);
+  color: var(--code-number);
 }
+
+/* Strings, chars */
 .token.selector,
 .token.attr-name,
 .token.string,
 .token.char,
 .token.builtin,
 .token.inserted {
-  color: #EEC643; /* saffron */
+  color: var(--code-string);
 }
+
+/* Operators, URLs, variables */
 .token.operator,
 .token.entity,
 .token.url,
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-  color: #EEC643; /* saffron */
+  color: var(--code-operator);
 }
+
+/* Functions, class names, attr values */
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
-  color: #EEC643; /* saffron */
-  font-weight: 600;
+  color: var(--code-function);
+  font-weight: 500;
 }
+
+/* Keywords */
 .token.keyword {
-  color: #EEC643; /* saffron */
-  text-shadow: 0 0 2px rgba(238,198,67,0.12);
+  color: var(--code-keyword);
+  text-shadow: 0 0 4px hsl(43 50% 55% / 0.1);
 }
+
+/* Regex, important */
 .token.regex,
 .token.important {
-  color: var(--code-border);
+  color: var(--code-string);
 }
+
 .token.important,
 .token.bold {
   font-weight: 700;
 }
+
 .token.italic {
   font-style: italic;
 }
+
 .token.entity {
   cursor: help;
 }
 
-
-/* Line highlight plugin compatibility */
+/* Line highlight */
 .line-highlight {
-  background: rgba(13,33,161,0.07);
+  background: hsl(43 50% 55% / 0.06);
 }
+
 .line-numbers .line-numbers-rows {
   border-right: 1px solid var(--code-border);
 }
 
-
-/* Scrollbar theme inside code blocks */
+/* Scrollbar */
 pre[class*="language-"]::-webkit-scrollbar {
-  height: 10px;
+  height: 8px;
 }
 pre[class*="language-"]::-webkit-scrollbar-track {
   background: var(--code-bg);
 }
 pre[class*="language-"]::-webkit-scrollbar-thumb {
-  background: var(--code-fg);
-  border-radius: 5px;
+  background: var(--code-border);
+  border-radius: 4px;
 }
 pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
-  background: var(--code-accent);
+  background: var(--code-keyword);
 }

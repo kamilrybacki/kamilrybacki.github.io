@@ -1,9 +1,9 @@
-/* Typography Styles */
+/* Typography Styles - Dungeon Synth Theme */
 
 /* Base Typography */
 body {
   font-family: var(--font-body);
-  font-weight: 400; /* Regular Raleway */
+  font-weight: 400;
   color: var(--text-primary);
   background-color: var(--background-primary);
 }
@@ -11,13 +11,14 @@ body {
 /* Heading Hierarchy */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 700; /* Bold Raleway */
+  font-weight: 400;
   line-height: 1.2;
   margin-bottom: var(--space-md);
   color: var(--text-primary);
+  letter-spacing: 0.05em;
 }
 
-h1 { font-size: var(--font-size-2xl); }
+h1 { font-size: var(--font-size-3xl); }
 h2 { font-size: var(--font-size-xl); }
 h3 { font-size: var(--font-size-lg); }
 h4 { font-size: var(--font-size-md); }
@@ -26,45 +27,51 @@ h4 { font-size: var(--font-size-md); }
 p {
   margin-bottom: var(--space-md);
   font-family: var(--font-body);
-  font-weight: 400; /* Regular Raleway */
+  font-weight: 400;
 }
 
 /* Text Emphasis */
 strong {
-  font-weight: 700; /* Bold Raleway */
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 em {
   font-style: italic;
 }
 
+/* Code font */
+code, pre {
+  font-family: var(--font-mono);
+}
+
 /* Footer Typography */
 .footer {
   margin-top: auto;
-  padding-top: var(--space-xl);
-  margin-bottom: var(--space-lg);
+  padding: var(--space-lg) 0;
   text-align: center;
-  opacity: 0.6;
-  font-size: var(--font-size-xs);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
+  letter-spacing: 0.1em;
+  border-top: var(--border-width-thin) solid var(--border-color);
 }
 
 /* Back Link Typography */
 .back-link {
-  display: block;
-  width: fit-content;
-  margin-bottom: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  border: var(--border-width-thin) dotted var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--space-lg);
   text-decoration: none;
-  font-weight: bold;
-  color: var(--text-primary);
+  font-family: var(--font-mono);
   font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  transition: color var(--transition-base);
 }
 
 .back-link:hover {
-  background-color: var(--text-primary);
-  color: var(--background-primary);
+  color: var(--primary);
 }
 
 /* Fixed Back Link on Article Pages */
@@ -72,6 +79,9 @@ body.article-page .back-link {
   position: fixed;
   bottom: var(--space-sm);
   left: var(--space-sm);
-  margin: 0; /* remove bottom margin so it doesn't create layout shift */
+  margin: 0;
   z-index: 1000;
+  background: var(--background-primary);
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--border-width-thin) solid var(--border-color);
 }

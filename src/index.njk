@@ -5,9 +5,9 @@ title: Home
 
 <header class="site-header">
   <div class="header-top">
-    <h1 class="site-title">Kamil Rybacki</h1>
+    <a href="/" class="site-title">Kamil Rybacki</a>
     <div class="social-links">
-      <a href="https://linkedin.com/in/your-profile" class="social-link" aria-label="LinkedIn">
+      <a href="https://www.linkedin.com/in/kamil-andrzej-rybacki/" class="social-link" aria-label="LinkedIn">
         <img src="https://s.magecdn.com/social/mb-linkedin.svg" alt="LinkedIn" width="20" height="20">
       </a>
       <a href="https://github.com/kamilrybacki" class="social-link" aria-label="GitHub">
@@ -16,34 +16,45 @@ title: Home
     </div>
   </div>
   <div class="site-description">
-    <div class="dotted-line"></div>
+    <span class="dotted-line"></span>
     <p>Turning complex backend puzzles into fast, reliable Python</p>
-    <div class="dotted-line"></div>
   </div>
 </header>
 
-<section class="intro-blurb" aria-label="Introduction">
-  <p style="font-size: 2.0em; font-weight: bold; margin-bottom: 1em;">
-    <em> Hi, I’m Kamil Rybacki!  </em> (• ֊ •)੭ 
-  </p>
-  <p>
-    I'm a <strong>Python backend developer</strong> who designs <strong>FastAPI-powered RESTful APIs</strong> and microservices to collect, process, and distribute data across cloud-native, containerized systems. I build robust CI/CD pipelines, work comfortably in Linux, use GitHub/GitLab, manage Kubernetes deployments, and navigate supercomputing environments when scale calls for it.
-  </p>
-  <p>
-    This blog is where I <em>let ideas “roll”</em> — sharing practical lessons and thought experiments so useful concepts gain momentum, travel farther, and help others build. If you’re exploring Python-driven projects or want to riff on an idea, let’s connect.
-  </p>
+<section class="hero-section">
+  <div class="hero-bg">
+    <img src="/public/images/hero-dungeon.jpg" alt="" loading="lazy">
+    <div class="hero-gradient"></div>
+  </div>
+  <div class="hero-content">
+    <p>
+      I'm a <strong>Python backend developer</strong> who designs
+      <strong>FastAPI-powered RESTful APIs</strong> and microservices
+      to collect, process, and distribute data across cloud-native, containerized systems.
+      I build robust CI/CD pipelines, work comfortably in Linux, use GitHub/GitLab,
+      manage Kubernetes deployments, and navigate supercomputing environments when scale calls for it.
+    </p>
+    <p>
+      This blog is where I <em>let ideas "roll"</em> — sharing practical lessons
+      and thought experiments so useful concepts gain momentum, travel farther,
+      and help others build.
+    </p>
+  </div>
 </section>
 
-<section id="articles" class="articles-section">
-  <!-- Article Filter Buttons -->
+<section class="articles-section">
+  <div class="section-heading">
+    <h2>Writings</h2>
+    <div class="heading-line"></div>
+  </div>
+
   <div class="article-filters">
     <button class="filter-btn active" data-filter="all">All</button>
     {% for cat in collections.articleCategories %}
     <button class="filter-btn" data-filter="{{ cat }}">{{ cat }}</button>
     {% endfor %}
   </div>
-  
-  <!-- Fixed height container to prevent layout jumps -->
+
   <div class="articles-container">
     <ul class="article-list">
       {% for article in collections.articles | head(10) %}
@@ -51,24 +62,26 @@ title: Home
         <h3 class="article-title">
           <a href="{{ article.url }}">{{ article.data.title }}</a>
         </h3>
-        <p class="article-date">{{ article.data.date | dateFormat }}</p>
+        <div class="article-meta">
+          <time class="article-date">{{ article.data.date | dateFormat }}</time>
+          {% if article.data.category %}
+          <span class="article-meta-dot">&middot;</span>
+          <span class="article-category">{{ article.data.category }}</span>
+          {% endif %}
+        </div>
         {% if article.data.description %}
         <p class="article-description">{{ article.data.description }}</p>
-        {% endif %}
-        {% if article.data.category %}
-        <span class="article-category">{{ article.data.category }}</span>
         {% endif %}
       </li>
       {% endfor %}
     </ul>
-    
-    <!-- No results message -->
+
     <div class="no-articles-message">
       <p>No articles found in this category.</p>
     </div>
   </div>
-  
+
   {% if collections.articles.length > 10 %}
-  <p><a href="/articles/">View all articles →</a></p>
+  <p><a href="/articles/">View all articles &rarr;</a></p>
   {% endif %}
 </section>
