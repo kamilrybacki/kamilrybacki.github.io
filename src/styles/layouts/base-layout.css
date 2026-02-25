@@ -77,14 +77,16 @@ a.site-title:hover {
   transition: color var(--transition-base);
   text-decoration: none;
 }
-.social-link img {
+.social-link svg {
   width: 20px;
   height: 20px;
-  filter: brightness(0.7) sepia(0.3) saturate(0.5);
-  transition: filter var(--transition-base);
 }
-.social-link:hover img {
-  filter: brightness(1) sepia(0.6) saturate(2) hue-rotate(10deg);
+.social-link {
+  color: var(--muted-foreground, hsl(40, 10%, 50%));
+  transition: color var(--transition-base);
+}
+.social-link:hover {
+  color: var(--primary);
 }
 
 /* Tagline below name */

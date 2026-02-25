@@ -81,6 +81,9 @@ body.article-page article {
   margin: var(--space-xl) auto;
   display: block;
 }
+.article-content img[src$=".svg"] {
+  filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(5deg) brightness(0.85);
+}
 
 /* Figures */
 .article-content figure.figure {
