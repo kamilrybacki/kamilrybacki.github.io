@@ -2,7 +2,7 @@ backend:
   name: github
   repo: kamilrybacki/kamilrybacki.github.io
   branch: main
-  base_url: http://cms-auth.kamilandrzejrybacki.dpdns.org
+  base_url: https://cms-auth.kamilandrzejrybacki.dpdns.org
 
 publish_mode: simple
 
