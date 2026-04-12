@@ -154,37 +154,9 @@ body.home-page .footer {
 }
 
 .home-hero-divider {
-  position: relative;
   width: min(100%, 28rem);
-  height: 0.7rem;
   margin: 1.15rem 0 1.5rem;
-  border-top: 2px solid var(--text-primary);
-  border-bottom: 1px solid var(--text-primary);
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 0.5rem,
-    color-mix(in srgb, var(--text-primary) 30%, transparent) 0.5rem,
-    color-mix(in srgb, var(--text-primary) 30%, transparent) 0.62rem
-  );
-}
-
-.home-hero-divider::before,
-.home-hero-divider::after {
-  content: "";
-  position: absolute;
-  top: -0.24rem;
-  width: 0.46rem;
-  height: 0.46rem;
-  background: var(--text-primary);
-}
-
-.home-hero-divider::before {
-  left: 0;
-}
-
-.home-hero-divider::after {
-  right: 0;
+  border-top: 2px dotted var(--border-color);
 }
 
 .home-hero-text {
