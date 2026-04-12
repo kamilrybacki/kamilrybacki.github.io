@@ -2,7 +2,8 @@
   const target = document.getElementById('hero-ascii-cloud');
   if (!target) return;
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const motionScale = reduceMotion ? 0.45 : 1;
   const charset = ' .,:-~=+*ox%#@';
 
   let cols = 64;
@@ -19,47 +20,49 @@
     const styles = window.getComputedStyle(target);
 
     const fontSize = parseFloat(styles.fontSize) || 8;
-    const lineHeight = parseFloat(styles.lineHeight) || fontSize;
+    const lineHeightRaw = parseFloat(styles.lineHeight);
+    const lineHeight = Number.isFinite(lineHeightRaw) ? lineHeightRaw : fontSize;
     const charW = fontSize * 0.62;
 
-    cols = Math.max(36, Math.min(110, Math.floor(rect.width / charW)));
-    rows = Math.max(20, Math.min(52, Math.floor(rect.height / lineHeight)));
+    cols = Math.max(38, Math.min(120, Math.floor(rect.width / charW)));
+    rows = Math.max(20, Math.min(56, Math.floor(rect.height / lineHeight)));
   }
 
   function densityField(nx, ny, t) {
     const r = Math.sqrt(nx * nx + ny * ny);
     const a = Math.atan2(ny, nx);
 
-    // Core cloud
-    let d = Math.exp(-(r * r) * 3.7) * 0.3;
+    // Strong, visible moving center
+    const cx0 = 0.18 * Math.cos(t * 0.9);
+    const cy0 = 0.14 * Math.sin(t * 1.1);
 
-    // Orbiting lobes (electron-cloud feel)
-    for (let k = 0; k < 3; k += 1) {
-      const ph = t * (0.75 + k * 0.05) + (k * Math.PI * 2) / 3;
-      const cx = 0.42 * Math.cos(ph * 1.06 + Math.sin(t * 0.23 + k));
-      const cy = 0.30 * Math.sin(ph * 1.22 + Math.cos(t * 0.19 + k));
+    let d = Math.exp(-((nx - cx0) ** 2 + (ny - cy0) ** 2) * 5.2) * 0.34;
+
+    // Orbiting lobes (clear motion)
+    for (let k = 0; k < 4; k += 1) {
+      const ph = t * (0.95 + k * 0.08) + (k * Math.PI * 2) / 4;
+      const cx = 0.45 * Math.cos(ph);
+      const cy = 0.30 * Math.sin(ph * 1.18 + Math.sin(t * 0.3 + k));
       const dx = nx - cx;
       const dy = ny - cy;
-      d += Math.exp(-(dx * dx + dy * dy) * 12.5) * 0.48;
+      d += Math.exp(-(dx * dx + dy * dy) * 10.5) * 0.42;
     }
 
-    // Breathing ring interference
-    const ring = 0.55 + 0.06 * Math.sin(t * 0.9);
-    const ringBand = Math.exp(-Math.pow(r - ring, 2) * 95);
-    d += ringBand * (0.18 + 0.2 * (0.5 + 0.5 * Math.cos(5.5 * a - 1.7 * t)));
+    // Interference rings with obvious pulsing
+    const ring = 0.52 + 0.09 * Math.sin(t * 1.35);
+    const ringBand = Math.exp(-Math.pow(r - ring, 2) * 80);
+    d += ringBand * (0.20 + 0.23 * (0.5 + 0.5 * Math.cos(6.2 * a - 2.2 * t)));
 
     // Turbulence
-    d += 0.12 * (0.5 + 0.5 * Math.sin(7.0 * nx + 5.1 * ny + t * 1.2));
-    d += 0.08 * (0.5 + 0.5 * Math.cos(9.2 * nx - 6.6 * ny - t * 0.9));
+    d += 0.12 * (0.5 + 0.5 * Math.sin(7.0 * nx + 5.1 * ny + t * 1.5));
+    d += 0.08 * (0.5 + 0.5 * Math.cos(9.2 * nx - 6.6 * ny - t * 1.1));
 
-    // Soft vignette
-    d *= Math.exp(-Math.max(0, r - 0.85) * 4.5);
-
+    d *= Math.exp(-Math.max(0, r - 0.9) * 4.2);
     return clamp(d, 0, 1);
   }
 
   function render(t) {
-    const aspectFix = 0.56; // text cells are taller than wide
+    const aspectFix = 0.56;
     const lines = new Array(rows);
 
     for (let y = 0; y < rows; y += 1) {
@@ -80,10 +83,10 @@
   }
 
   function frame(ts) {
-    // ~15 FPS cap for stable retro feel
-    if (ts - lastTs >= 66) {
+    // ~20 FPS for more obvious movement
+    if (ts - lastTs >= 50) {
       lastTs = ts;
-      render(ts * 0.001);
+      render(ts * 0.001 * motionScale);
     }
     rafId = requestAnimationFrame(frame);
   }
@@ -92,17 +95,21 @@
     calcGrid();
     render(0);
 
-    if (prefersReducedMotion) return;
-
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(frame);
   }
 
-  const ro = new ResizeObserver(() => {
+  function onResize() {
     calcGrid();
-    render(lastTs * 0.001);
-  });
-  ro.observe(target);
+    render(lastTs * 0.001 * motionScale);
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(onResize);
+    ro.observe(target);
+  } else {
+    window.addEventListener('resize', onResize, { passive: true });
+  }
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
@@ -110,10 +117,7 @@
       rafId = null;
       return;
     }
-
-    if (!prefersReducedMotion && !rafId) {
-      rafId = requestAnimationFrame(frame);
-    }
+    if (!rafId) rafId = requestAnimationFrame(frame);
   });
 
   start();
