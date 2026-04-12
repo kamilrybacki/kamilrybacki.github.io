@@ -10,6 +10,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
   // Ensure article images and other assets are copied
   eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
+  // Decap CMS admin panel
+  eleventyConfig.addPassthroughCopy({ "src/admin/config.yml": "admin/config.yml" });
   
   // Ignore template files and README
   eleventyConfig.ignores.add("src/content/**/_template.md");
