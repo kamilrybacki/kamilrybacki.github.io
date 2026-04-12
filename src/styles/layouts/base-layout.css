@@ -188,6 +188,8 @@ body.home-page .footer {
   align-self: stretch;
   overflow: hidden;
   min-height: 20rem;
+  border: 4px solid #000;
+  box-shadow: inset 0 0 0 1px #000;
 }
 
 .home-hero-svg {
@@ -201,31 +203,6 @@ body.home-page .footer {
 .home-hero-deco {
   position: absolute;
   pointer-events: none;
-}
-
-.home-hero-deco-top {
-  top: 0;
-  right: 0;
-  display: none;
-}
-
-.home-hero-deco-top span:first-child {
-  width: 4rem;
-  height: 4rem;
-  border: 2px solid var(--border-color);
-  transform: rotate(12deg);
-  opacity: 0.18;
-  display: block;
-}
-
-.home-hero-deco-top span:last-child {
-  width: 2rem;
-  height: 2rem;
-  background: var(--text-primary);
-  margin-top: 0.65rem;
-  margin-left: 1.4rem;
-  opacity: 0.12;
-  display: block;
 }
 
 .home-hero-deco-bottom {
@@ -434,12 +411,6 @@ body.home-page .footer {
 
 .home-view-all a:hover {
   border-bottom-style: solid;
-}
-
-@media (min-width: 768px) {
-  .home-hero-deco-top {
-    display: block;
-  }
 }
 
 @media (max-width: 768px) {
