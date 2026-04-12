@@ -21,22 +21,32 @@ bodyClass: home-page
 
   <h1>KAMIL RYBACKI</h1>
 
-  <div class="home-hero-copy">
-    <p>
-      I’m a <strong>software developer</strong> with roots in
-      <strong>Python backend engineering</strong> — designing systems at the architectural
-      level, thinking about reusable patterns and sustainable codebases.
-    </p>
-    <p>
-      Lately drawn to <strong>AI-augmented workflows</strong> and the right guardrails to keep
-      them on track. This blog is where practical lessons and thought experiments come together.
-    </p>
+  <div class="home-hero-grid">
+    <div class="home-hero-copy">
+      <p>
+        I’m a <strong>software developer</strong> with roots in
+        <strong>Python backend engineering</strong> — designing systems at the architectural
+        level, thinking about reusable patterns and sustainable codebases.
+      </p>
+      <p>
+        Lately drawn to <strong>AI-augmented workflows</strong> and the right guardrails to keep
+        them on track. This blog is where practical lessons and thought experiments come together.
+      </p>
+    </div>
+
+    <aside class="home-hero-visual" aria-hidden="true">
+      <canvas class="home-hero-canvas" id="hero-particles-canvas" width="640" height="640"></canvas>
+      <div class="home-hero-visual-overlay"></div>
+      <div class="home-hero-visual-label">signal · particles+dither</div>
+    </aside>
   </div>
 
   <div class="home-hero-deco home-hero-deco-bottom" aria-hidden="true">
     <span></span><span></span><span></span>
   </div>
 </section>
+
+<script src="/public/hero-particles.js" defer></script>
 
 <section class="home-writings home-shell articles-section">
   <div class="home-section-title">
