@@ -8,7 +8,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/styles");
   eleventyConfig.addPassthroughCopy("public/images");
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
-  eleventyConfig.addPassthroughCopy("public/hero-particles.js");
+  eleventyConfig.addPassthroughCopy("public/hero-ascii.js");
   // Ensure article images and other assets are copied
   eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
   
