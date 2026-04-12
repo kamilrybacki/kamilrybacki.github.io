@@ -92,10 +92,26 @@ body.article-page .footer {
   color: var(--text-secondary);
   line-height: 1.7;
   font-size: 0.96rem;
+  --article-asset-max-width: 68rem;
 }
 
 .article-content p {
   margin: 0 0 1rem;
+}
+
+/* Keep visual assets centered in the content column */
+.article-content :is(img, figure.figure, pre, table, iframe, .video-wrapper) {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-content :is(figure.figure, pre, table, iframe, .video-wrapper) {
+  width: min(100%, var(--article-asset-max-width));
+}
+
+.article-content figure.figure > * {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .article-content h1,
