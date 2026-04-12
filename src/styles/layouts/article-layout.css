@@ -119,28 +119,39 @@ body.article-page .footer {
 .article-content h3,
 .article-content h4 {
   margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.8rem;
   text-transform: uppercase;
   letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
 .article-content h1 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .article-content h2 {
-  font-size: 1.25rem;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.35rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-bottom: 2px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  padding-bottom: 0.42rem;
+  margin-top: 2.4rem;
 }
 
 .article-content h3 {
-  font-size: 1.05rem;
+  font-size: 1.18rem;
+  font-weight: 700;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 45%, transparent);
+  padding-bottom: 0.32rem;
+  margin-top: 2rem;
 }
 
 .article-content h4 {
-  font-size: 0.95rem;
-  opacity: 0.9;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--text-primary) 90%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
+  padding-bottom: 0.2rem;
+  margin-top: 1.6rem;
 }
 
 .article-content ul,
