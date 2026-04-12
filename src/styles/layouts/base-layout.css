@@ -144,13 +144,30 @@ body.home-page .footer {
 }
 
 .home-hero h1 {
-  margin: 0 0 0.9rem;
+  margin: 0;
   font-family: var(--font-heading);
   font-size: clamp(2.5rem, 8vw, 5.3rem);
   line-height: .92;
   font-weight: 700;
   letter-spacing: -0.05em;
   text-transform: uppercase;
+}
+
+.home-hero-divider {
+  position: relative;
+  width: min(100%, 28rem);
+  margin: 1.05rem 0 1.35rem;
+  border-top: 2px solid var(--border-color);
+  opacity: 0.9;
+}
+
+.home-hero-divider::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 3.4rem;
+  border-top: 4px solid var(--text-primary);
 }
 
 .home-hero-text {
@@ -434,7 +451,7 @@ body.home-page .footer {
 
   .home-hero-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.1rem;
   }
 
   .home-hero-visual {
