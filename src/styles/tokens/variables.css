@@ -1,23 +1,23 @@
 /* Design Tokens - Dungeon Synth Theme */
 :root {
-  /* Colors - Dark dungeon palette */
-  --background-primary: hsl(0, 0%, 3%);
-  --text-primary: hsl(40, 20%, 85%);
-  --text-secondary: hsl(40, 20%, 75%);
-  --text-muted: hsl(40, 10%, 50%);
-  --text-light: hsl(43, 50%, 55%);
-  --border-light: hsl(0, 0%, 20%);
-  --border-color: hsl(0, 0%, 15%);
-  --bg-primary: hsl(0, 0%, 3%);
-  --bg-secondary: hsl(0, 0%, 6%);
-  --bg-card: hsl(0, 0%, 6%);
-  --primary: hsl(43, 50%, 55%);
-  --primary-foreground: hsl(0, 0%, 3%);
+  /* Colors - grayscale brutalist */
+  --background-primary: hsl(0, 0%, 95%);
+  --text-primary: hsl(0, 0%, 5%);
+  --text-secondary: hsl(0, 0%, 14%);
+  --text-muted: hsl(0, 0%, 40%);
+  --text-light: hsl(0, 0%, 10%);
+  --border-light: hsl(0, 0%, 70%);
+  --border-color: hsl(0, 0%, 5%);
+  --bg-primary: hsl(0, 0%, 95%);
+  --bg-secondary: hsl(0, 0%, 92%);
+  --bg-card: hsl(0, 0%, 100%);
+  --primary: hsl(0, 0%, 0%);
+  --primary-foreground: hsl(0, 0%, 100%);
 
   /* Typography */
-  --font-body: 'Crimson Text', Georgia, serif;
-  --font-heading: 'Cinzel', 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  --font-body: 'Space Mono', 'JetBrains Mono', 'SF Mono', monospace;
+  --font-heading: 'Space Grotesk', Inter, system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
 
   /* Font Sizes */
   --font-size-xs: 0.8rem;
