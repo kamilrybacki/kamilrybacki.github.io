@@ -188,7 +188,7 @@ body.home-page .footer {
   position: relative;
   align-self: stretch;
   border: 2px solid var(--border-color);
-  background: linear-gradient(180deg, hsl(0 0% 100% / 0.24), hsl(0 0% 100% / 0.06));
+  background: linear-gradient(180deg, hsl(0 0% 100% / 0.48), hsl(0 0% 100% / 0.24));
   overflow: hidden;
   min-height: 20rem;
 }
