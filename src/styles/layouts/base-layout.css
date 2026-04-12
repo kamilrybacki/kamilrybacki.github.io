@@ -128,7 +128,11 @@ body.home-page .footer {
   color: var(--background-primary);
 }
 
-.home-btn-solid:hover {
+.home-btn-solid:hover,
+.home-btn-solid:focus-visible,
+.home-btn-solid:active {
+  color: var(--background-primary);
+  background: var(--text-primary);
   box-shadow: 5px 5px 0 color-mix(in srgb, var(--text-primary) 45%, transparent);
 }
 
