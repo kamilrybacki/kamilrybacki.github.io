@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: kamilrybacki/kamilrybacki.github.io
+  branch: main
+  base_url: http://cms-auth.kamilandrzejrybacki.dpdns.org
+
+publish_mode: simple
+
+media_folder: src/assets/uploads
+
+collections:
+  - name: articles
+    label: Articles
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: title,       label: Title,       widget: string }
+      - { name: date,        label: Date,         widget: datetime }
+      - { name: description, label: Description,  widget: text }
+      - { name: category,    label: Category,     widget: string }
+      - { name: tags,        label: Tags,         widget: list }
+      - { name: draft,       label: Draft,        widget: boolean, default: true }
+      - { name: body,        label: Body,         widget: markdown }
