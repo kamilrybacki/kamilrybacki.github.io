@@ -153,8 +153,12 @@ body.home-page .footer {
   text-transform: uppercase;
 }
 
-.home-hero-copy {
+.home-hero-text {
   width: min(100%, 44rem);
+}
+
+.home-hero-copy {
+  width: 100%;
 }
 
 .home-hero-copy p {
