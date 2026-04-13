@@ -34,6 +34,10 @@ CMS.registerPreviewStyle(`
 // Wraps the article body in the same class hierarchy as a real article page,
 // so all scoped CSS rules (.article-content h2, .article-content pre, …) work
 // without any duplication or manual overrides.
+//
+// Also strips {% raw %} / {% endraw %} markers that Eleventy injects around
+// code fences containing template syntax — they appear as literal text nodes
+// in the Decap preview because its renderer doesn't know about Nunjucks.
 (function () {
   var React = window.React;
   if (!React) {
@@ -41,6 +45,34 @@ CMS.registerPreviewStyle(`
     return;
   }
   var h = React.createElement;
+
+  // Walk text nodes under `root` and remove any paragraph that contains only
+  // a Nunjucks raw/endraw tag. Re-runs via MutationObserver on content changes.
+  function stripNunjucksTags(root) {
+    if (!root) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var toRemove = [];
+    var node;
+    while ((node = walker.nextNode())) {
+      var text = node.textContent.trim();
+      if (text === '{% raw %}' || text === '{% endraw %}') {
+        // Remove the immediate parent element (typically a <p>)
+        if (node.parentNode && node.parentNode !== root) {
+          toRemove.push(node.parentNode);
+        }
+      }
+    }
+    toRemove.forEach(function (el) {
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    });
+  }
+
+  function makeContentRef(root) {
+    if (!root) return;
+    stripNunjucksTags(root);
+    var observer = new MutationObserver(function () { stripNunjucksTags(root); });
+    observer.observe(root, { childList: true, subtree: true });
+  }
 
   var ArticlePreview = function (props) {
     var entry   = props.entry;
@@ -62,8 +94,9 @@ CMS.registerPreviewStyle(`
         )
       ),
 
-      // Article body — all .article-content scoped CSS applies here
-      h('div', { className: 'article-content' },
+      // Article body — all .article-content scoped CSS applies here.
+      // ref callback sets up the Nunjucks tag stripper + MutationObserver.
+      h('div', { className: 'article-content', ref: makeContentRef },
         widgetFor('body')
       )
     );
