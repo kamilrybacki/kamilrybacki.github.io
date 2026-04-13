@@ -21,4 +21,11 @@ collections:
       - { name: category,    label: Category,     widget: string }
       - { name: tags,        label: Tags,         widget: list }
       - { name: draft,       label: Draft,        widget: boolean, default: true }
-      - { name: body,        label: Body,         widget: markdown }
+      - name: body
+        label: Body
+        widget: markdown
+        # show_raw adds a "Rich text / Markdown" toggle in the editor toolbar.
+        # Always use "Markdown" (raw) mode to prevent the Slate rich-text parser
+        # from normalising  /  tags and introducing phantom
+        # diffs on files you haven't actually changed.
+        show_raw: true
