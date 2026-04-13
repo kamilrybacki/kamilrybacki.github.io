@@ -159,10 +159,6 @@ body.home-page .footer {
   border-top: 2px dotted var(--border-color);
 }
 
-.home-hero-text {
-  width: min(100%, 44rem);
-}
-
 .home-hero-copy {
   width: 100%;
 }
@@ -189,9 +185,9 @@ body.home-page .footer {
 
 .home-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 32rem);
-  gap: 2rem;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 28rem);
+  gap: 2.5rem;
+  align-items: center;
 }
 
 .home-hero-visual {
