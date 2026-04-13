@@ -26,15 +26,7 @@
     var track = document.getElementById('tickerTrack');
     if (!track) return;
 
-    var phrases = [
-      'Ghosts in the shell commentary via human-generated slop',
-      'One-shot prompting to feel alive',
-      'I survived WotLK private servers raid scripts',
-      'Shout out to all schemas lost to LLMs [*]',
-      "It\u2019s not reasoning \u2014 just statistics",
-      'Eastern Plaguelands hits different at 3AM',
-      'LGTMing through 2026'
-    ];
+    var phrases = (window.__tickerPhrases__ || []).slice();
 
     // Fisher-Yates shuffle — different order every page load
     for (var i = phrases.length - 1; i > 0; i--) {
