@@ -197,7 +197,7 @@ def norm_module(name: str) -> str:
    # Map `21.merge-two-sorted-lists.rs` -> `_21_merge_two_sorted_lists`
    stem = name.rsplit('.', 1)[0]
    parts = re.split(r'[^A-Za-z0-9]+', stem)
-   return '_' + '_'.join(filter(None, parts))
+   return '*' + '*'.join(filter(None, parts))
 
 def collect():
    modules = []

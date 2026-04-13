@@ -598,12 +598,12 @@ root_schema:
 
 The logic from now on is rather simple:
 
-* Parse the schema from the YAML file
-* Check if the schema contains the "properties" keyword
-* If it does, iterate over the properties and call the transpilation function
+- Parse the schema from the YAML file
+- Check if the schema contains the "properties" keyword
+- If it does, iterate over the properties and call the transpilation function
 recursively
-* If it does not, call the function that creates the field info and validator.
-* Collect the results of the transpilation and return them as a dictionary
+- If it does not, call the function that creates the field info and validator.
+- Collect the results of the transpilation and return them as a dictionary
 that can be decomposed into arguments of Pydantic `create_model` function
 
 This workflow can be represented by the following Mermaid diagram:

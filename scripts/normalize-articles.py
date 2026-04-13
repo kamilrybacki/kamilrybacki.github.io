@@ -17,6 +17,12 @@ Transformations applied (all idempotent):
      are left alone to avoid data loss.
 
 Exit code 0 always.  Prints a summary of which files changed.
+  6. Convert unordered list items using * or + markers to - markers.
+     Remark serialises all list items with -, so other markers cause diffs.
+  7. Convert _italic_ (single underscore) to *italic* (asterisk) in prose.
+     Remark serialises emphasis with *, so underscore italic causes diffs.
+
+Exit code 0 always.  Prints a summary of which files changed.
 """
 
 import re
@@ -74,6 +80,14 @@ def normalize(text: str) -> str:
     #    Only when the tag has exactly those two attributes (no width, class, etc.)
     text = IMG_SRC_FIRST.sub(lambda m: _img_to_md(m, 1, 2), text)
     text = IMG_ALT_FIRST.sub(lambda m: _img_to_md(m, 2, 1), text)
+
+    # 6. Convert unordered list markers * and + to -
+    #    Only at the start of a line (with optional indent), not inside prose.
+    text = re.sub(r"^( *)([*+])( +)", r"\1-\3", text, flags=re.MULTILINE)
+
+    # 7. Convert _italic_ (single underscore) to *italic* (asterisk).
+    #    Matches word-boundary underscores to avoid touching __bold__ or snake_case.
+    text = re.sub(r"(?<!\w)_([^_\n]+?)_(?!\w)", r"*\1*", text)
 
     return text
 

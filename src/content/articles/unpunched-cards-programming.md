@@ -16,13 +16,13 @@ Board and trading card games provide a good scaffolding for constructing social 
 
 This beneficial crossroads for people from different socioeconomic backgrounds to spend time together and exist together in an abstract world for some time matches the concept of "the Third Place", proposed first by Ray Oldenburg in his book ["The Great Good Place"](https://www.amazon.com/Great-Good-Place-Bookstores-Community/dp/1614720975) - a place which is inherently **neutral** and has an intrinsic community-building property. Within them, we **know what to do**, and there is a set of established **codes of conduct and interactions** already created for us. This "social lubricant" functionality has been prevalent even in [ancient times](https://www.researchgate.net/publication/301645780_Facilitating_Interaction_Board_Games_as_Social_Lubricants_in_the_Ancient_Near_East), starting from the first round of the Royal Game of Ur up until today.
 
-Some of this information can come directly from the system we choose to apply, i.e. the actual board game we want to play and its rules, but also there are some best practices and general courtesies baked into the gaming culture, e.g., no cheating, helping the "newbies" or keeping track of various game events and triggers together. Want another example? MMOs (and especially **raiding** in titles like World of Warcraft) have also been found to match these characteristics, as seen in a very interesting paper by Steinkuehler and Williams _Where Everybody Knows Your (Screen) Name: Online Games as “Third Places”_, but I guess a lot of You also have some experience in playing team-based online games in general. Common goals and community - that is what got us hooked.
+Some of this information can come directly from the system we choose to apply, i.e. the actual board game we want to play and its rules, but also there are some best practices and general courtesies baked into the gaming culture, e.g., no cheating, helping the "newbies" or keeping track of various game events and triggers together. Want another example? MMOs (and especially **raiding** in titles like World of Warcraft) have also been found to match these characteristics, as seen in a very interesting paper by Steinkuehler and Williams *Where Everybody Knows Your (Screen) Name: Online Games as “Third Places”*, but I guess a lot of You also have some experience in playing team-based online games in general. Common goals and community - that is what got us hooked.
 
-**BUT**, I have also noticed something interesting when it comes to the type of people I encountered during my tabletop journeys in my area, which is a relatively big city (Gdańsk) with several tech companies establishing themselves here: **I frequently encounter other IT workers, especially programmers and data analysts**. We often laugh about it in such situations, joking that playing cards or board games is a pretty efficient way to network in this field right now. I remember also a discussion from the `r/boardgames` subreddit, where somebody straight-up asked [_What does the average board gamer do for a living?_](https://www.reddit.com/r/boardgames/comments/1e6htke/what_does_the_average_board_gamer_do_for_a_living/). A dude from New York popped into this thread, sharing an interesting statistic from his decade-long "career" in board game meetups:
+**BUT**, I have also noticed something interesting when it comes to the type of people I encountered during my tabletop journeys in my area, which is a relatively big city (Gdańsk) with several tech companies establishing themselves here: **I frequently encounter other IT workers, especially programmers and data analysts**. We often laugh about it in such situations, joking that playing cards or board games is a pretty efficient way to network in this field right now. I remember also a discussion from the `r/boardgames` subreddit, where somebody straight-up asked [*What does the average board gamer do for a living?*](https://www.reddit.com/r/boardgames/comments/1e6htke/what_does_the_average_board_gamer_do_for_a_living/). A dude from New York popped into this thread, sharing an interesting statistic from his decade-long "career" in board game meetups:
 
 > I've gone to a weekly board game meetup in NYC for over 10 years. It is held at a bar so trends to be more like people in their 20s & 30s, so not a complete sample. But over a long long time, including periods where you'd see 100 people a night, to 15 people a night, the occupation ratio stayed remarkably consistent. It was about 30-35% lawyers, 50-55% tech (broadly defined), and 10-15% a very broad other. Where the "other" category was all over the place.
 >
-> -- User [_puertomateo_](https://www.reddit.com/user/puertomateo/) responding to the question in the Reddit thread
+> -- User [*puertomateo*](https://www.reddit.com/user/puertomateo/) responding to the question in the Reddit thread
 
 So, is there some other attractor that makes these kinds of people gravitate towards rule-ridden sessions of beating futuristic, eldritch, or fantastic creatures together? Why do we want to accumulate and scrupulously count the cute little blueberries under the shade of the Ever Tree together? And how can I make it all segway into Magic: The Gathering, since for the past year I've been obsessing over my collection of shiny, rectangular pieces of kitchen-sink fantasy?
 
@@ -36,21 +36,21 @@ One of the hints can be sourced directly from Mark Rosewater's article, [publish
 
 #### Johnny/Jenny
 
-> When I started playing the game, I loved building decks, but I didn't build normal decks. My specialty included decks that won in untraditional ways. I wanted to beat you in a way you didn't see coming. Doing this said something about who I was. I was creative, clever, and untraditional. My friends would ask to borrow my decks because they were fun to play, and that brought me great joy. _Magic_ was a means to communicate my identity for all to see.
+> When I started playing the game, I loved building decks, but I didn't build normal decks. My specialty included decks that won in untraditional ways. I wanted to beat you in a way you didn't see coming. Doing this said something about who I was. I was creative, clever, and untraditional. My friends would ask to borrow my decks because they were fun to play, and that brought me great joy. *Magic* was a means to communicate my identity for all to see.
 >
-> -- Mark Rosewater _The Three Magic Psychographics_
+> -- Mark Rosewater *The Three Magic Psychographics*
 
 A player who is focused on the art of self-expression and savviness in the field of mechanics, which can both be realized through **deck building**. By having the knowledge of best practices of building a good deck of cards (such as providing a nice [mana curve](https://magic.wizards.com/en/news/feature/how-build-mana-curve-2017-05-18)) and experience in using various mechanics specific for a given game expansion e.g. [warping from Edge of Eternities set](https://magic.wizards.com/en/news/feature/edge-of-eternities-mechanics), Johnny/Jenny can build novel solutions that combine selected subsets of cards from the game's rich library and come up with consistent strategies for winning games.
 
 #### Spike
 
-> Spikes look at _Magic_ and see all these as opportunities to learn and improve. That's the joy for them: gaining knowledge, applying that knowledge against worthy opponents, adapting, gaining new insights, and evaluating how to change their behavior to do better next time. _Magic_ requires so many different skills, and different Spikes will focus on different ones. The one through line is that Spikes will set goals for themselves and then strive to meet those goals.
+> Spikes look at *Magic* and see all these as opportunities to learn and improve. That's the joy for them: gaining knowledge, applying that knowledge against worthy opponents, adapting, gaining new insights, and evaluating how to change their behavior to do better next time. *Magic* requires so many different skills, and different Spikes will focus on different ones. The one through line is that Spikes will set goals for themselves and then strive to meet those goals.
 >
-> -- Mark Rosewater _The Three Magic Psychographics_
+> -- Mark Rosewater *The Three Magic Psychographics*
 
 This one hits to our IT home even closer than the previous psychological profile due to the fact that it is what software engineers **literally do every day** as little (compared to the scale of gigantic data centers we hack through), human optimization engines: we absorb hundreds of code snippet lines and documentation pages to adapt this wisdom to **vanquishing bugs** and/or creating **new high-power systems** (a counterpart for Spike's competitive-level MTG deck) that we **tinker with over time** to make it better, faster and stronger (not harder tho, it may be an anti-pattern).
 
-I highly recommend the aforementioned article or episodes 1230 and 1232 of Mark's _Drive to Work_ podcast, which talk in-depth about these mental models, but as You can see, the usual IT engineer (or in a broader sense the majority of STEM field specialists) can be seen as different mixtures of J's and S's with some personality customizations baked in for a good measure.
+I highly recommend the aforementioned article or episodes 1230 and 1232 of Mark's *Drive to Work* podcast, which talk in-depth about these mental models, but as You can see, the usual IT engineer (or in a broader sense the majority of STEM field specialists) can be seen as different mixtures of J's and S's with some personality customizations baked in for a good measure.
 
 **We express ourselves** in the way in which we conduct our professional work, e.g. in the style of how we design systems, write code/documentation, or make presentations for different pitches or conferences - this is our craftsmanship part of being one of the "techies."
 
@@ -60,23 +60,23 @@ But what if we also take a look at the subject of these model people's passion, 
 
 ## Code-cardstock isomorphism
 
-Okay, I will start with a banger: **Magic: The Gathering has been proven to be Turing complete**. It is literally the title of a 2019 article published by Churchill et al. ([_Magic: The Gathering is Turing Complete_](https://arxiv.org/abs/1904.09828)), inspired by previous work done by Chatterjee et al. in 2016, where it was suggested that [there is a significant computational complexity hiding within the MTG cardboard](https://research-explorer.ista.ac.at/download/478/4658/IST-2018-950-v1%2B1_2016_Chatterjee_The_complexity.pdf).
+Okay, I will start with a banger: **Magic: The Gathering has been proven to be Turing complete**. It is literally the title of a 2019 article published by Churchill et al. ([*Magic: The Gathering is Turing Complete*](https://arxiv.org/abs/1904.09828)), inspired by previous work done by Chatterjee et al. in 2016, where it was suggested that [there is a significant computational complexity hiding within the MTG cardboard](https://research-explorer.ista.ac.at/download/478/4658/IST-2018-950-v1%2B1_2016_Chatterjee_The_complexity.pdf).
 
 This article shows them creating a Turing machine using creature tokens (cards that represent creatures or other objects that are generated dynamically by game state effects like spooky zombies being raised from their graves) and other creatures (e.g., Rotlung Reanimator) or sorceries that effectively make the whole game board state a [read-and-write head](https://en.wikipedia.org/wiki/Disk_read-and-write_head).
 
 Then the authors also tackled the hypothesis of their "cardstock-based" machine inheriting the fundamental limitations of computer systems, with the main one being the famous [Halting Problem](https://www.geeksforgeeks.org/theory-of-computation/halting-problem-in-theory-of-computation/) by Alan Turing himself, which can be summarized as follows:
 
-> _**Question:**_ Can an algorithm determine whether any given program will halt for a specific input?
+> ***Question:*** Can an algorithm determine whether any given program will halt for a specific input?
 >
-> _**Answer:**_ No. There is no general algorithm that can determine whether every program will halt, which makes the Halting Problem undecidable. It can also be stated as: Given any program (in C, C++, Java, etc.), it is impossible to generally decide whether it will terminate or run indefinitely.
+> ***Answer:*** No. There is no general algorithm that can determine whether every program will halt, which makes the Halting Problem undecidable. It can also be stated as: Given any program (in C, C++, Java, etc.), it is impossible to generally decide whether it will terminate or run indefinitely.
 >
-> -- GeeksForGeeks _Halting Problem in Theory of Computation_
+> -- GeeksForGeeks *Halting Problem in Theory of Computation*
 
 So, the trick was to recreate this undetermined state using the newly created MTG machine, in which the authors were successful and concluded in their report that:
 
-> This construction establishes that _Magic: The Gathering_ is the most computationally complex real-world game known in the literature. In addition to showing that optimal strategic play in Magic is non-computable, it also shows that merely evaluating the deterministic consequences of past moves in Magic is non-computable.
+> This construction establishes that *Magic: The Gathering* is the most computationally complex real-world game known in the literature. In addition to showing that optimal strategic play in Magic is non-computable, it also shows that merely evaluating the deterministic consequences of past moves in Magic is non-computable.
 >
-> -- Churchill et al. _Magic: The Gathering is Turing Complete_
+> -- Churchill et al. *Magic: The Gathering is Turing Complete*
 
 For those interested, the decklist used during the Alice/Bob simulations presented in the article is shown below. As you can see, each card had its **mechanical purpose** and was chosen to correctly **synergize** with the others, with a goal of starting a correct chain of events that lead to a desired game board state - a sort of **win condition** in the context of the research conducted.
 
@@ -115,7 +115,7 @@ The strategy here is to utilize the **cost reduction** during casting of **power
 
 So, each card in this deck has one of three possible **single principles**: control the opponent's tempo, control the state of your hand, or "big monster printer go brrrrrr". Terror (not the monster, but the vibes) is actually the **whole deck's responsibility** - to instill a feeling of uncertainty.
 
-Did he draw the scary drake after casting _Brainstorm_, which also would be now one mana cheaper due to this spell going through? Or maybe he has another cheap counter to my next spell? There are no cards that give the deck "adaptability" or "elasticity" in the sense of its win condition. No modal spells. Just **control** and **fuel your engine**.
+Did he draw the scary drake after casting *Brainstorm*, which also would be now one mana cheaper due to this spell going through? Or maybe he has another cheap counter to my next spell? There are no cards that give the deck "adaptability" or "elasticity" in the sense of its win condition. No modal spells. Just **control** and **fuel your engine**.
 
 This singular focus can also be seen in the number of cards that are included: these most crucial "terror generators" are found in multiples of 4. There are **nine** such positions, which nicely follow the so-called ["The Rule of Nine"](https://www.coolstuffinc.com/a/magic-the-classroom-the-rule-of-nine), which can be retroactively used to identify this main strategy of a deck.
 
@@ -137,7 +137,7 @@ Okay, round 2 - a similar thing happens. You are at death's door, but you've ant
 
 GG. Your enemy has a **hotfix**/**extension** of his deck that could be used to quickly adapt to the control deck playstyle and managed to sneak in a win. His **core win condition** of burning down the opponent's health by casting cheap damaging spells was still intact, i.e., **closed**, but the surrounding arsenal of cards that help reach this goal was **open to modification**.
 
-In MTG, this can be done by using a thing called a _sideboard_, which can "patch" a deck to make it adaptable to different conditions. For example, you can take out some creature removal spells when you know it will be hard to deal with them in that way and just add those cheeky counters available in the color of the deck.
+In MTG, this can be done by using a thing called a *sideboard*, which can "patch" a deck to make it adaptable to different conditions. For example, you can take out some creature removal spells when you know it will be hard to deal with them in that way and just add those cheeky counters available in the color of the deck.
 
 This is also how often software architecture is approached. You can have, for example, an ETL pipeline that is fed data that gets processed according to a business logic set in stone, but the system can be extended to support different data sources: cloud storage, local files, event-driven specific services, etc. A nice mix of elasticity and rigidity on different levels of functionality. Openness and closeness.
 
@@ -311,7 +311,7 @@ Now, this makes for a pretty nice generalization in the strategy presented by an
 
 Or we could just put a couple of tutors in the same library, which would allow us to pick **one of the possible responses** to the current game state, each of which creates a nice crossroad of valid strategies. What if we want to switch one win condition with another? Just cut out the cards specific to the original, unneeded game plan and put the new one for which you will also be able to tutor!
 
-By doing so, you have successfully **moved your dependency on specific game-winning cards** to a group of cards that can _provide_ (keyword here!) You **with more general functionality of grabbing such crucial pieces from your deck**. Tutor is a **provider** of a way to access our strategies in a more consistent and **interchangeable** way. Nothing stops you from switching the tutors to a less efficient **card-drawing spell - sometimes the price of tutors themselves may force a player to do so:
+By doing so, you have successfully **moved your dependency on specific game-winning cards** to a group of cards that can *provide* (keyword here!) You **with more general functionality of grabbing such crucial pieces from your deck**. Tutor is a **provider** of a way to access our strategies in a more consistent and **interchangeable** way. Nothing stops you from switching the tutors to a less efficient **card-drawing spell - sometimes the price of tutors themselves may force a player to do so:
 
 ![Demonic Tutor card listing found on Amazon](/assets/images/ucp_demonic_tutor_amazon.png)
 
@@ -334,7 +334,7 @@ class CardSource(ABC):
         pass
 ```
 
-This allows us to swap between a real shuffled deck and a stacked one (here, _stacked_ means that it has been arranged dishonestly to gain an unfair advantage). We can treat a tutor as an edge case of a stacked deck that returns to us a chosen game piece we need. Such a change can be done without changing the engine code itself:
+This allows us to swap between a real shuffled deck and a stacked one (here, *stacked* means that it has been arranged dishonestly to gain an unfair advantage). We can treat a tutor as an edge case of a stacked deck that returns to us a chosen game piece we need. Such a change can be done without changing the engine code itself:
 
 ```python
 class ShuffledLibrary(CardSource):
@@ -421,11 +421,11 @@ In MTG deckbuilding, both of these aspects can be utilized **to great success** 
 
 To goldfish a MTG deck is to deal out a starting hand, set up your life total to the appropriate amount for the format that will be played, and simulate turns against an invisible opponent. In this way, you can check how the design of [the mana curve](https://mtg.fandom.com/wiki/Mana_curve) (how likely it is to optimally utilize each turn's mana by being able to draw and cast spells of increasing mana cost, **AND** having this resource available) or which combos in the deck are easiest to consistently pull off.
 
-Most of the major sites used for organizing a player's Magic collection and creating new decks have a goldfishing tool at their disposal, such as [Archidekt's _Playtest_ tool](https://archidekt.com/news/3417345), seen in the screenshot below.
+Most of the major sites used for organizing a player's Magic collection and creating new decks have a goldfishing tool at their disposal, such as [Archidekt's *Playtest* tool](https://archidekt.com/news/3417345), seen in the screenshot below.
 
 ![Archidekt's Playtest tool screenshot](/assets/images/ucp_archidekt_playtest.png)
 
-After being satisfied with the initial "unit and integration tests" of the new deck, you can move to playing against different types of MTG archetypes, e.g., a _mill_ deck, a _reanimator_ deck, an _aggro_ deck, etc., to test how it can stand against the threats they pose or if they can keep up or react to their tempos. Accepting the fact that this initial, beta version of the deck will 100% have holes to patch up and win conditions to polish up, could lead to coming up with some nice upgrades for it, by cutting out the less useful cards from the library.
+After being satisfied with the initial "unit and integration tests" of the new deck, you can move to playing against different types of MTG archetypes, e.g., a *mill* deck, a *reanimator* deck, an *aggro* deck, etc., to test how it can stand against the threats they pose or if they can keep up or react to their tempos. Accepting the fact that this initial, beta version of the deck will 100% have holes to patch up and win conditions to polish up, could lead to coming up with some nice upgrades for it, by cutting out the less useful cards from the library.
 
 This "manual testing" of each new deck is an experience on its own - gathering the statistical data on how well it behaves, first in a vacuum and then during real games of Magic, is a game of its own, which makes the deckbuilding a very investing activity in trading card games as a whole and for some players it can be even the only thing they choose to do. These homebrewers take pride in the concoctions they bring to the game's ecosystem - just like a programmer can be proud if an architecture where all cogs are turning nicely, with users happily throwing money at their service.
 
