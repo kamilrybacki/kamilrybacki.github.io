@@ -4,6 +4,8 @@ title: "Snake building its tail - a go at reflections in Python"
 date: 2024-07-05
 category: Python
 description: "A story of a project that tries to leverage the dynamic nature of runtime data in Python to create dynamic, self-modifying code."
+tags: []
+draft: false
 ---
 
 ## More than one way to skin a snake

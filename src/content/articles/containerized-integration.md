@@ -4,6 +4,8 @@ title: "Containerized Integration"
 date: 2023-12-06
 category: CI
 description: "How to easily spin up a mock environment for integration testing"
+tags: []
+draft: false
 ---
 
 ## I'm afraid I can't let you do that, Dev
@@ -172,9 +174,6 @@ We will name it `my-docker-service` and we will use the `docker:dind` image for 
 4. We will run the command in the nested container and hope for the best.
 
 One caveat is that if we want to use the 2375 port, we need to disable TLS verification, which can be done
-
-<!-- Truncated: remainder of original MDX content would continue verbatim here if provided -->
-
 by setting the `DOCKER_TLS_CERTDIR` variable to an empty string. We can also opt into per‑build network isolation (`FF_NETWORK_PER_BUILD=true`) so that the DinD service and our job container share a dedicated network namespace.
 
 Putting those tweaks together, a more feature‑rich job might look like this:

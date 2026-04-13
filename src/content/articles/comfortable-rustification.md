@@ -4,6 +4,8 @@ title: "LeetCode Red - comfortable cracking of algorithmic puzzles in Rust"
 date: 2024-01-25
 category: Rust
 description: "A quickie about Leetcode, Rust and VSCode"
+tags: []
+draft: false
 ---
 
 ## Lazy by nature

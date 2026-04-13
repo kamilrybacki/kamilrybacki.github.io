@@ -4,6 +4,8 @@ title: "Generative Flesh Interfaces"
 date: 2025-12-16
 category: AI
 description: "Exploring the cognitive impacts of generative AI on developers and the emergence of 'flesh interfaces'."
+tags: []
+draft: false
 ---
 
 ## Mis-plantation

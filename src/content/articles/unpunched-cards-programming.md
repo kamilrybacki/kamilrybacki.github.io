@@ -4,6 +4,8 @@ title: "Unpunched cards programming"
 date: 2026-01-06
 category: Hobby
 description: "Article about signs of software design patterns that can be found in the beautiful art of trading card games deckbuilding process."
+tags: []
+draft: false
 ---
 
 ## Systematic observation
