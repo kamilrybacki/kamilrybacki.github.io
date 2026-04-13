@@ -46,17 +46,19 @@ CMS.registerPreviewStyle(`
   }
   var h = React.createElement;
 
-  // Walk text nodes under `root` and remove any paragraph that contains only
+  // Walk text nodes under `root` and remove any element that contains only
   // a Nunjucks raw/endraw tag. Re-runs via MutationObserver on content changes.
+  // IMPORTANT: root lives inside the preview iframe — must use root.ownerDocument
+  // (not the parent-page `document`) to avoid a cross-document WrongDocumentError.
   function stripNunjucksTags(root) {
     if (!root) return;
-    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var doc = root.ownerDocument;
+    var walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
     var toRemove = [];
     var node;
     while ((node = walker.nextNode())) {
       var text = node.textContent.trim();
       if (text === '{% raw %}' || text === '{% endraw %}') {
-        // Remove the immediate parent element (typically a <p>)
         if (node.parentNode && node.parentNode !== root) {
           toRemove.push(node.parentNode);
         }
