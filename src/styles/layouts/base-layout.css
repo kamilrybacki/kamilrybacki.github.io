@@ -68,7 +68,7 @@ body.home-page .footer {
 
 .home-nav {
   border-bottom: 2px solid var(--border-color);
-  margin-bottom: 4rem;
+  margin-bottom: 0;
 }
 
 .home-nav-inner {
