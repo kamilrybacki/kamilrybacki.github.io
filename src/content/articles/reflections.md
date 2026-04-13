@@ -68,12 +68,10 @@ serialized and inspected during runtime. For a quick example, let's take a look 
 ```python
 from pydantic import BaseModel
 
-
 class Particle(BaseModel):
     id: int
     mass: float
     charge: float | None = None
-
 
 if __name__ == "__main__":
     p = Particle(id=1, mass=12.5, charge=-1.0)
@@ -151,11 +149,9 @@ the [`create_model`] function that is present in the `pydantic` module.
 ```python
 from pydantic import BaseModel, create_model, validator
 
-
 def must_be_positive(v: int) -> int:
     assert v > 0, "value must be > 0"
     return v
-
 
 DynamicModel = create_model(
     "DynamicModel",
@@ -191,7 +187,6 @@ the schema that we provide to it could look something like this:
 from pydantic import BaseModel, create_model
 from typing import Any, Dict, Tuple, Callable
 
-
 def build_model(model_name: str, schema: Dict[str, Tuple[Any, Any]], *, validators: Dict[str, Callable] | None = None, base: type[BaseModel] = BaseModel) -> type[BaseModel]:
     """Factory that converts a schema mapping into a dynamic pydantic model.
 
@@ -202,7 +197,6 @@ def build_model(model_name: str, schema: Dict[str, Tuple[Any, Any]], *, validato
     if validators:
         kwargs["__validators__"] = validators
     return create_model(model_name, **schema, **kwargs)
-
 
 User = build_model(
     "User",
@@ -252,7 +246,6 @@ In practice - You can achieve this by using the `@validator` or `@field_validato
 ```python
 from pydantic import BaseModel, field_validator  # Pydantic V2
 
-
 class MyModel(BaseModel):
     field: str
 
@@ -289,7 +282,6 @@ of the parameter representing the value is flexible, **but** it must be
 
 Generalizing this pattern, we can show it as the following template:
 
-
 ```python
 @field_validator({{ field_name }}, mode="{{ mode }}")
 {{ '@classmethod' if mode == 'before' else '' }}
@@ -301,7 +293,6 @@ def validate_{{ field_name }}(
         {{ Validation code }}
         return value
 ```
-
 
 As crazy as it sounds, we can use this template to generate the **source code**
 for Pydantic validators based on the incoming input data. Since we want to
@@ -395,11 +386,9 @@ overwrite the `__getattr__` dunder method of the `ModuleType` class to raise an 
 ```python
 from types import ModuleType
 
-
 class NullModule(ModuleType):
     def __getattr__(self, *args, **kwargs):
         raise ForbiddenModuleUseInValidator()
-
 
 NULLIFIED_MODULES = {
     module: NullModule(module)
@@ -421,7 +410,6 @@ not have access to the forbidden modules.
 
 ```python
 from types import ModuleType
-
 
 def compile_validator_function(validator_source: str, validator_name: str) -> Callable:
     module = ModuleType("validator_module")
@@ -477,7 +465,6 @@ have defined in the YAML file. We can pass those dynamically generated functions
 to the `create_model` function as the `__validators__` argument and they will
 be attached to the model during the runtime.
 
-
 ```python
 pydantic.create_model(
     ...
@@ -493,7 +480,6 @@ pydantic.create_model(
     ...
 )
 ```
-
 
 Having this beast of reflection and introspection in our hands, we can now
 proceed to a less dangerous part of the schema - the field definitions.
@@ -543,7 +529,6 @@ So, the function to create such tuples can look like this:
 
 ```python
 from pydantic import FieldInfo
-
 
 def create_field_info(field_info: dict) -> Tuple[str, FieldInfo]:
     return (
@@ -860,7 +845,6 @@ MOCKUMENTS = {
         "rating": -1.0,
     },
 }
-
 
 def build_mockument_data(mockument_id: int) -> phaistos.schema.TranspiledSchema:
     if not (mockument_data := MOCKUMENTS.get(mockument_id)):
