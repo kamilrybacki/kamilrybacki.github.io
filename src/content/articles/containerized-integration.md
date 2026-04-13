@@ -169,7 +169,7 @@ So the game plan now is like so:
 
 1. We will tell GitLab CI to use the runner with the predefined tags set up on it by the administrator.
 2. We create a Docker service that will be used by the nested container to communicate with the host's Docker daemon.
-We will name it `my-docker-service` and we will use the `docker:dind` image for that purpose.
+   We will name it `my-docker-service` and we will use the `docker:dind` image for that purpose.
 3. We will set the `DOCKER_HOST` environment variable to `tcp://my-docker-service:2375` in the CI container.
 4. We will run the command in the nested container and hope for the best.
 

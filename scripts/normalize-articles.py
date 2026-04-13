@@ -26,6 +26,11 @@ Transformations applied (all idempotent):
      (not inside code fences).  Decap's Slate normalises them on load.
        U+201C " → "   U+201D " → "
        U+2018 ' → '   U+2019 ' → '
+ 10. Escape bare [text] bracket spans that have no matching link-reference
+     definition (remark-stringify escapes them as \\[text] on round-trip).
+     Applied after transformation 8 removes all known definitions, so any
+     remaining [text] patterns are genuinely unresolved.  Code spans and
+     already-escaped bracket-text spans are left untouched.
 
 Exit code 0 always.  Prints a summary of which files changed.
 """
@@ -99,6 +104,48 @@ def _convert_reference_links(text: str) -> str:
     return text
 
 
+def _escape_bare_brackets(text: str) -> str:
+    """Escape bare [text] spans that have no link definition.
+
+    remark-stringify adds a backslash before unresolved shortcut references
+    (e.g. [foo] with no [foo]: url line) to prevent ambiguity on re-parse.
+    Pre-escaping them keeps the source identical to what remark would produce.
+
+    Rules:
+    - Skip code fences entirely.
+    - Skip text inside backtick code spans on the same line.
+    - Skip already-escaped bracket (backslash before the open bracket).
+    - Skip image syntax (exclamation before the open bracket).
+    - Skip inline links [text]( and full refs [text][.
+    """
+    # Pattern: unescaped [text] NOT followed by ( or [ or :
+    # Negative lookbehind for \ and ! to skip already-escaped and image refs.
+    _BARE = re.compile(r"(?<!\\)(?<!!)\[([^\]\n]+)\](?![\[(:=])")
+
+    lines = text.splitlines(keepends=True)
+    in_fence = False
+    result = []
+    for line in lines:
+        stripped = line.rstrip("\n")
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+        if in_fence:
+            result.append(line)
+            continue
+
+        # Split the line into alternating non-code / code-span segments.
+        # Only apply escaping in non-code segments.
+        parts = re.split(r"(`[^`]+`)", line)
+        new_parts = []
+        for j, part in enumerate(parts):
+            if j % 2 == 1:  # code span — leave as-is
+                new_parts.append(part)
+            else:
+                new_parts.append(_BARE.sub(r"\\[\1]", part))
+        result.append("".join(new_parts))
+    return "".join(result)
+
+
 def _normalize_curly_quotes(text: str) -> str:
     """Replace typographic curly quotes with straight ASCII quotes in prose.
 
@@ -153,6 +200,9 @@ def normalize(text: str) -> str:
 
     # 9. Normalise typographic curly quotes to plain ASCII
     text = _normalize_curly_quotes(text)
+
+    # 10. Escape bare [text] spans that have no definition
+    text = _escape_bare_brackets(text)
 
     return text
 

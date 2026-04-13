@@ -22,7 +22,7 @@ Accepting this fact, we should cherish this trait of ours and use it to our adva
 it does not hurt our ambitions too much (or at all). **And** that is my justification for finding ways of not leaving
 the VSCode window if there is a way to migrate some of the tasks I do to the editor itself.
 
-Lately, after my first adventures with my [Rust particle simulator],
+Lately, after my first adventures with my \[Rust particle simulator],
 I've been polishing up my Rust skill by doing LeetCode problems, starting from the easy ones and slowly climbing
 up its algorithmic ladder. Normally, I would use the LeetCode website to do that, but there are a couple of things that
 bother me about it:
@@ -42,7 +42,7 @@ between the browser and the editor is a waste of time and energy, both of which 
 
 ## Chinese doodads to the rescue
 
-There is a very popular [extension in VSCode marketplace called simply LeetCode] which tries to streamline the process
+There is a very popular \[extension in VSCode marketplace called simply LeetCode] which tries to streamline the process
 of solving LeetCode problems in the editor, made by (from what I understood after a quick Google investigation)
 Chinese branch of LeetCode. Even though it is in the alpha stage, it is quite usable and it has some nice features, such as:
 
@@ -121,7 +121,7 @@ named after the difficulty of the problem. This is just a personal preference, b
 and organized, so I can easily find what I am looking for. But why they are named according to this pattern:
 `<problem-number>.<problem-name>.rs`? Well, this is how the LeetCode extension names the files when it downloads
 them from the website. In other words, when You choose a problem from the extension menu called
-"[21] Merge Two Sorted Lists", the extension will download the problem description and the code stub for it, and save it
+"\[21] Merge Two Sorted Lists", the extension will download the problem description and the code stub for it, and save it
 in the pre-defined directory as `21.merge-two-sorted-lists.rs`. This generates from the get-go two additional questions
 to answer:
 
