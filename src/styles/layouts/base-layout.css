@@ -242,12 +242,13 @@ body.home-page .footer {
 /* ─── Ticker ─────────────────────────────────────────────────────────────── */
 
 .ticker-wrap {
+  width: min(100%, 80rem);
+  margin: 0 auto 3.5rem;
   overflow: hidden;
   background: var(--text-primary);
   border-top: 2px solid var(--border-color);
   border-bottom: 2px solid var(--border-color);
   padding: 0.6rem 0;
-  margin-bottom: 3.5rem;
   cursor: default;
   user-select: none;
 }
