@@ -14,6 +14,11 @@ bodyClass: home-page
   </div>
 </header>
 
+<script>window.__tickerPhrases__={{ tickerPhrases | dump | safe }};</script>
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
 <section class="home-hero home-shell">
   <h1>KAMIL RYBACKI</h1>
   <div class="home-hero-divider" aria-hidden="true"></div>
@@ -34,13 +39,6 @@ bodyClass: home-page
   </div>
 
 </section>
-
-<script>window.__tickerPhrases__={{ tickerPhrases | dump | safe }};</script>
-<div class="home-shell">
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker-track" id="tickerTrack"></div>
-  </div>
-</div>
 
 <section class="home-writings home-shell articles-section">
   <div class="home-section-title">
