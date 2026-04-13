@@ -15,8 +15,43 @@
   }
 
   function initialize() {
+    initializeTicker();
     initializeFilters();
     initializeFadeIn();
+  }
+
+  // ─── Ticker ──────────────────────────────────────────────────────────────
+
+  function initializeTicker() {
+    var track = document.getElementById('tickerTrack');
+    if (!track) return;
+
+    var phrases = [
+      'Ghosts in the shell commentary via human-generated slop',
+      'One-shot prompting to feel alive',
+      'I survived WotLK private servers raid scripts',
+      'Shout out to all schemas lost to LLMs [*]',
+      "It\u2019s not reasoning \u2014 just statistics",
+      'Eastern Plaguelands hits different at 3AM',
+      'LGTMing through 2026'
+    ];
+
+    // Fisher-Yates shuffle — different order every page load
+    for (var i = phrases.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = phrases[i]; phrases[i] = phrases[j]; phrases[j] = tmp;
+    }
+
+    // Duplicate for seamless translateX(-50%) loop
+    var all = phrases.concat(phrases);
+    var frag = document.createDocumentFragment();
+    all.forEach(function(text) {
+      var span = document.createElement('span');
+      span.className = 'ticker-item';
+      span.textContent = text;
+      frag.appendChild(span);
+    });
+    track.appendChild(frag);
   }
 
   // ─── Filter ──────────────────────────────────────────────────────────────
