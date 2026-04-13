@@ -1,0 +1,41 @@
+name: Normalize article markdown
+
+# Run after every push so Decap CMS commits are normalized automatically.
+# The normalization script is idempotent: if nothing changes, no commit is
+# made and the workflow exits cleanly — no infinite-loop risk.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/content/articles/**"
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    # Skip commits that were themselves produced by this workflow to be safe.
+    if: "!contains(github.event.head_commit.message, '[normalize]')"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Fetch with a token that can push back to main.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run normalization script
+        run: python3 scripts/normalize-articles.py
+
+      - name: Commit normalized files (if any changed)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add src/content/articles/
+            git commit -m "chore: normalize article markdown [normalize]"
+            git push
+          else
+            echo "Nothing to normalize."
+          fi
