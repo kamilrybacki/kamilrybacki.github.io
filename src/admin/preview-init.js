@@ -67,10 +67,45 @@ CMS.registerPreviewStyle(`
     });
   }
 
+  // Inject Prism.js into the preview iframe and re-highlight after every
+  // content mutation, so fenced code blocks are tokenized just like the live site.
+  function ensurePrism(doc, cb) {
+    var iframeWin = doc.defaultView;
+    if (iframeWin && iframeWin.Prism) { cb(iframeWin.Prism); return; }
+    if (doc.getElementById('prism-preview-script')) return; // already loading
+    var s = doc.createElement('script');
+    s.id  = 'prism-preview-script';
+    // Same Prism version used by the eleventy-plugin-syntaxhighlight output
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+    // Load common language grammars so most code blocks highlight correctly
+    s.setAttribute('data-manual', '');          // prevent auto-run on load
+    s.onload = function () {
+      // Also load the autoloader so any language grammar is fetched on demand
+      var al = doc.createElement('script');
+      al.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
+      al.onload = function () {
+        if (iframeWin.Prism) {
+          iframeWin.Prism.plugins.autoloader.languages_path =
+            'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+          cb(iframeWin.Prism);
+        }
+      };
+      doc.head.appendChild(al);
+    };
+    doc.head.appendChild(s);
+  }
+
   function makeContentRef(root) {
     if (!root) return;
+    var doc = root.ownerDocument;
     stripNunjucksTags(root);
-    var observer = new MutationObserver(function () { stripNunjucksTags(root); });
+    ensurePrism(doc, function (Prism) { Prism.highlightAllUnder(root); });
+
+    var observer = new MutationObserver(function () {
+      stripNunjucksTags(root);
+      var iframeWin = doc.defaultView;
+      if (iframeWin && iframeWin.Prism) iframeWin.Prism.highlightAllUnder(root);
+    });
     observer.observe(root, { childList: true, subtree: true });
   }
 
