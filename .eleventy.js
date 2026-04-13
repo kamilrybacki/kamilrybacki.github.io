@@ -84,15 +84,18 @@ module.exports = function(eleventyConfig) {
       }
       if (!isImage) continue;
 
+      const imgTok = imgInline.children[0];
+      const altRaw = (imgTok.attrGet('alt') || '').trim();
+      // Opt-out: alt starting with '!' means decorative/no figure
+      const skipFigure = altRaw.startsWith('!');
+      const altText = skipFigure ? altRaw.slice(1).trim() : altRaw;
+
       // Optional caption paragraphs immediately following (italic *...*)
       let captionParts = [];
       let scan = i + 3;
       while (scan < tokens.length - 2 && tokens[scan].type === 'paragraph_open') {
         const maybeInline = tokens[scan + 1];
-        const altRaw = (imgTok.attrGet('alt') || '').trim();
-        // Opt-out: alt starting with '!' means decorative/no figure
-        const skipFigure = altRaw.startsWith('!');
-        const altText = skipFigure ? altRaw.slice(1).trim() : altRaw; // retain text after '!'
+        const maybeClose = tokens[scan + 2];
         if (!(maybeInline && maybeInline.type === 'inline' && maybeClose && maybeClose.type === 'paragraph_close')) break;
         const txt = maybeInline.content.trim();
         if (!(txt.startsWith('*') && txt.endsWith('*'))) break;
@@ -100,8 +103,6 @@ module.exports = function(eleventyConfig) {
         scan += 3; // move past this caption paragraph
       }
 
-      const imgTok = imgInline.children[0];
-      const altText = (imgTok.attrGet('alt') || '').trim();
       // Determine final caption body: italic paragraphs override alt if present; else alt used; if neither, omit figure.
       let body = '';
       if (captionParts.length) {

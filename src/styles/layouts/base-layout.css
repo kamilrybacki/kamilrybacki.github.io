@@ -280,6 +280,8 @@ body.home-page .footer {
 }
 
 .home-filters {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 1.6rem;
 }
@@ -368,6 +370,7 @@ body.home-page .footer {
   font-weight: 700;
   letter-spacing: -0.01em;
   text-transform: uppercase;
+  min-width: 0;
 }
 
 .home-article-tag {
@@ -432,6 +435,11 @@ body.home-page .footer {
   .home-nav-inner {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .home-links {
+    flex-wrap: wrap;
   }
 
   .home-hero {
@@ -449,5 +457,9 @@ body.home-page .footer {
 
   .home-hero-svg {
     min-height: 12.5rem;
+  }
+
+  .home-article-link .article-title {
+    font-size: 0.95rem;
   }
 }
