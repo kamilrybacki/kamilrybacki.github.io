@@ -80,7 +80,7 @@ So, the trick was to recreate this undetermined state using the newly created MT
 
 For those interested, the decklist used during the Alice/Bob simulations presented in the article is shown below. As you can see, each card had its **mechanical purpose** and was chosen to correctly **synergize** with the others, with a goal of starting a correct chain of events that lead to a desired game board state - a sort of **win condition** in the context of the research conducted.
 
-<img src="/assets/images/ucp_mtg_turing.png" alt="Card list used in the Turing machine simulation from Churchill et al. article" />
+![Card list used in the Turing machine simulation from Churchill et al. article](/assets/images/ucp_mtg_turing.png)
 
 We can safely conclude that Magic (and I guess also other, more robust trading card games in general) can be seen as an abstract system that can be programmed using a dedicated **language in the form of the card rulings**, i.e., prevalent mechanics such as spawning of additional creatures, removal of board state elements, and other effects that players can cause.
 Or, more straight to the point ...
@@ -95,7 +95,7 @@ This art of crafting your own 60 or 100-card weapon of mass destruction is also 
 
 You cannot build a deck that wins in a series of ways, talking from the [general archetype perspective](https://techraptor.net/tabletop/opinions/competitive-magic-gathering-archetype-introduction). This is pretty much logical, because you cannot efficiently control the state of other players' boards by countering their spells or removing problematic [permanents](https://mtg.fandom.com/wiki/Permanent), **AND** spew out several creatures per turn and reinforce your side of the board.
 
-<img src="/assets/images/ucp_archetypes.png" alt="Common Magic: The Gathering deck archetypes" />
+![Common Magic: The Gathering deck archetypes](/assets/images/ucp_archetypes.png)
 
 This also makes the usual "better safe than sorry" or "just in case" approaches kind of invalid when it comes to designing a well-functioning deck, because each card that does not actively contribute towards predefined win conditions **muddies the pool** and effectively makes the chance of drawing a good hand take a nose dive.
 
@@ -105,7 +105,7 @@ The unforgiving aspect of going with one strategy consistently is very prevalent
 
 This low-level format incentivizes optimized play and finding cards that cause a chosen type of effect (destroying or buffing creatures, countering spells, drawing cards, etc.) for the lowest amount of mana available. One wrong move may cost you a whole game! Let's take a look at one of the Pauper all-stars - **Dimir Terror**:
 
-<img src="/assets/images/ucp_dimir_terror.png" alt="Dimir Terror Pauper decklist screenshot"/>
+![Dimir Terror Pauper decklist screenshot](/assets/images/ucp_dimir_terror.png)
 
 The strategy here is to utilize the **cost reduction** during casting of **powerful creatures** that is fueled by **playing cheap spells and filling up the player's graveyard**. The most famous card in this deck is its namesake: [Tolarian Terror](https://scryfall.com/card/dmu/72/tolarian-terror):
 
@@ -133,7 +133,7 @@ So, the opponent plays Fireblast, it gets countered, another try is being made a
 
 Okay, round 2 - a similar thing happens. You are at death's door, but you've anticipated that. First blast is fired at your face. Counterspell. Then, another sorcery is being thrown at those 2 health points of yours. Spell Pierce (another counter basically). But then the opponent fires off this bad boy out:
 
-<img src="/assets/images/ucp_red_elemental_blast.png" alt="Red Elemental Blast card image"/>
+![Red Elemental Blast card image](/assets/images/ucp_red_elemental_blast.png)
 
 GG. Your enemy has a **hotfix**/**extension** of his deck that could be used to quickly adapt to the control deck playstyle and managed to sneak in a win. His **core win condition** of burning down the opponent's health by casting cheap damaging spells was still intact, i.e., **closed**, but the surrounding arsenal of cards that help reach this goal was **open to modification**.
 
@@ -153,7 +153,7 @@ From the point of view of the deck as an overarching system, the swap doesn't re
 
 To drive this point even further, look at the two following cards:
 
-<img src="/assets/images/ucp_llanowar_mystic.png" alt="Elvish Mystic and Llanowar Elves card images" />
+![Elvish Mystic and Llanowar Elves card images](/assets/images/ucp_llanowar_mystic.png)
 
 Both are **1 power and 1 toughness** creatures of **common rarity** that can be used to give You **one additional green mana** and cost **1 green mana** to be cast. Even their types are identical: **Elf Druid**. In a deck that cares about elves and generating a constant stream of mana (called "ramping" in MTG lingo), you can use either of them.
 
@@ -179,7 +179,7 @@ Instead of using **a general, robust** ["Oops, all counters"](https://magic.wiza
 
 These segregated interfaces make us **less coupled** to what could possibly happen on the board and let us pick our fights more wisely. Taking a step outside the Pauper realm, in [Commander](https://magic.wizards.com/en/formats/commander) format, players are allowed only ONE COPY of a given card per deck, which makes the deck building a little more tricky if we want consistent functionality. However, we also have a pretty generous library of so-called [**modal cards**](https://mtg.fandom.com/wiki/Modal) or [tiered cards](https://draftsim.com/mtg-tiered/) whose effects depend on **how much mana we are willing to pay as their casting cost**. Let's take a look at one of the cards from Final Fantasy crossover set - [Cloud's Limit Break](https://gatherer.wizards.com/FIC/en-us/14/clouds-limit-break):
 
-<img src="/assets/images/ucp_cloud_limit_break.png" alt="Cloud's Limit Break card image" />
+![Cloud's Limit Break card image](/assets/images/ucp_cloud_limit_break.png)
 
 The more mana we are willing to pay, the more devastating the effects of this card, so even if we draw this card at the final stages of our Commander game, we can bounce back from a difficult situation by destroying a majority of the opponents' boards. But also, we can use it for cheaper when some **big, scary creature** is attacking us, and we want to deal with it **right here and right now**.
 
@@ -313,7 +313,7 @@ Or we could just put a couple of tutors in the same library, which would allow u
 
 By doing so, you have successfully **moved your dependency on specific game-winning cards** to a group of cards that can _provide_ (keyword here!) You **with more general functionality of grabbing such crucial pieces from your deck**. Tutor is a **provider** of a way to access our strategies in a more consistent and **interchangeable** way. Nothing stops you from switching the tutors to a less efficient **card-drawing spell - sometimes the price of tutors themselves may force a player to do so:
 
-<img src="/assets/images/ucp_demonic_tutor_amazon.png" alt="Demonic Tutor card listing found on Amazon" />
+![Demonic Tutor card listing found on Amazon](/assets/images/ucp_demonic_tutor_amazon.png)
 
 If you want to dig **EVEN DEEPER** into this line of thought, there are also **card-type-specific tutors** like [Enlightened Tutor](https://scryfall.com/card/dmr/6/enlightened-tutor) that follow the general tutoring mechanic, but grab only enchantments from it. The tutor-like card design **defines a type of functionality**, and the concrete cards **implement it**, by looking for their chosen flavor of the cardstock.
 
@@ -423,7 +423,7 @@ To goldfish a MTG deck is to deal out a starting hand, set up your life total to
 
 Most of the major sites used for organizing a player's Magic collection and creating new decks have a goldfishing tool at their disposal, such as [Archidekt's _Playtest_ tool](https://archidekt.com/news/3417345), seen in the screenshot below.
 
-<img src="/assets/images/ucp_archidekt_playtest.png" alt="Archidekt's Playtest tool screenshot" />
+![Archidekt's Playtest tool screenshot](/assets/images/ucp_archidekt_playtest.png)
 
 After being satisfied with the initial "unit and integration tests" of the new deck, you can move to playing against different types of MTG archetypes, e.g., a _mill_ deck, a _reanimator_ deck, an _aggro_ deck, etc., to test how it can stand against the threats they pose or if they can keep up or react to their tempos. Accepting the fact that this initial, beta version of the deck will 100% have holes to patch up and win conditions to polish up, could lead to coming up with some nice upgrades for it, by cutting out the less useful cards from the library.
 

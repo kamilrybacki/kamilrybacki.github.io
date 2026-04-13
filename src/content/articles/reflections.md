@@ -24,7 +24,7 @@ This being said, for projects like this, You first need to come up with a proble
 
 ## Wild problem appears!
 
-<img src="/assets/images/pydantic.svg" alt="! Pydantic appears">
+![! Pydantic appears](/assets/images/pydantic.svg)
 
 Kubernetes. I know, seems random, but one of the main things that I like about how objects are
 defined and maintained within it is the declarative nature of the configuration files. You start with a **manifest**
@@ -232,7 +232,7 @@ P.S. We will skip the `model_name`, because well ... it is a string.
 
 ### To protect and validate
 
-<img src="/assets/images/validation.svg" alt="! Validators illustration">
+![! Validators illustration](/assets/images/validation.svg)
 
 Why start with validators? Well, it is the most hardcore topic out of all
 the target properties, so it is better to get it out of the way first.
@@ -423,7 +423,7 @@ in the context of this article, but these are completely two different things.
 So, compilation here must have a different meaning than the one that is
 commonly used in the context of programming languages. Which is true.
 
-<img src="/assets/images/snake_confused.webp" alt="GPT rendition of Python figuring out if its compiled or interpreted">
+![GPT rendition of Python figuring out if its compiled or interpreted](/assets/images/snake_confused.webp)
 
 When I say that the validator functions are "compiled", what I really mean is that the functions are being **dynamically defined**, due to the fact that any statement that is being executed by the `exec`
 function is being **interpreted** by Python.
@@ -559,7 +559,7 @@ field_name:
 
 ### Another "-ion"
 
-<img src="/assets/images/ions.svg" alt="! Recursion illustration">
+![! Recursion illustration](/assets/images/ions.svg)
 
 One possible case that 100% will happen during the use of such schemas is
 the need to define nested schemas. This can be done by defining a field
@@ -608,7 +608,7 @@ that can be decomposed into arguments of Pydantic `create_model` function
 
 This workflow can be represented by the following Mermaid diagram:
 
-<img src="/assets/images/mermaid_phaistos.png" alt="Phaistos workflow">
+![Phaistos workflow](/assets/images/mermaid_phaistos.png)
 
 ## Snake building its tail
 
@@ -787,7 +787,7 @@ This approach is very hacky, but it effectively allows us to collectively gather
 both individual fields and whole models, represented both by the root schema **AND** nested ones, as seen in the
 screenshot below:
 
-<img src="/assets/images/phaistos_errors.png" alt="Mock schema with invalid defaults and Phaistos errors taken from one of the CI tests' run">
+![Mock schema with invalid defaults and Phaistos errors taken from one of the CI tests' run](/assets/images/phaistos_errors.png)
 
 In the above screenshot, I've deliberately set the defaults of some fields to invalid values, so the Pydantic
 validators will raise an error. The errors are then collected by the Phaistos library and bubbled up to the root
@@ -865,7 +865,7 @@ def build_mockument_data(mockument_id: int) -> phaistos.schema.TranspiledSchema:
 Running the FastAPI example from the cloned repository will allow You to access the mockuments by their IDs
 using the `/mockuments/{mockument_id}` endpoint:
 
-<img src="/assets/images/fastapi_phaistos.png" alt="FastAPI application running the Mockuments example">
+![FastAPI application running the Mockuments example](/assets/images/fastapi_phaistos.png)
 
 As of right now, I am happy with basic functionalities of Phaistos, but I am
 planning to add more thingymajigs to it, such as serialization of

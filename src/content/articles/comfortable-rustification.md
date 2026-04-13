@@ -48,7 +48,7 @@ Chinese branch of LeetCode. Even though it is in the alpha stage, it is quite us
 - **Problem description** - a window with a problem description, which can be opened in a separate tab.
 - **UI enhancements** - a couple of buttons that allow you to submit your solution, run tests, etc.
 
-<img src="/assets/images/leetcode_initial_env.png" alt="LeetCode extension initial environment">
+![LeetCode extension initial environment](/assets/images/leetcode_initial_env.png)
 
 However, it has one problem right now, which makes it slightly harder to login to the LeetCode website because it
 rejects third-party authentication methods (such as Google or GitHub). Also, the login via LeetCode credentials
@@ -63,7 +63,7 @@ which can be usually opened by pressing `F12` or `Ctrl+Shift+I` (on Windows). Th
 tab that shows requests being made by Your browser whenever You reload any of the LeetCode pages. In my case,
 I am using Google Chrome which has a `Network` tab in its DevTools, where I can access this information.
 
-<img src="/assets/images/leetcode_network.png" alt="LeetCode network tab">
+![LeetCode network tab](/assets/images/leetcode_network.png)
 
 The list presented above shows a snippet of requests made by the browser, but we are interested in the ones that are
 named `graphql`, since they are the ones that contain information about our credentials being passed around the
@@ -71,7 +71,7 @@ LeetCode site after logging in. More importantly, we are interested in **the fir
 the other ones are not important to us. After clicking on it, we can see the details of the request, including
 its headers. We are looking for a header named `Cookie`, which should be present under the `Request Headers` section.
 
-<img src="/assets/images/leetcode_login.png" alt="LeetCode login screen">
+![LeetCode login screen](/assets/images/leetcode_login.png)
 
 The value of this header is our session cookie, which we can copy and paste into the VSCode extension dialog box.
 After that, we should be able to view our progress and solve problems in the editor, without having to leave it.
@@ -79,7 +79,7 @@ However, there is a catch. We will be able to click on problems, view their desc
 windows using the `Code Now` button, but the Rust syntax analyzer **won't** recognize the code as a valid Rust code,
 because it is not a part of a Cargo project.
 
-<img src="/assets/images/leetcode_ext.png" alt="LeetCode extension UI after setup">
+![LeetCode extension UI after setup](/assets/images/leetcode_ext.png)
 
 So we've got our environment set up, but we are still missing some of the features that we would normally have
 in a Cargo project. To fix that, we need to dress up our LeetCode problems codebase as a sudo-Cargo project,
@@ -89,7 +89,7 @@ and the autocomplete features.
 
 ## One binary to rule them all
 
-<img src="/assets/images/ring.svg" alt="! Ring of Power">
+![! Ring of Power](/assets/images/ring.svg)
 
 My LeetCode problems are stored in a directory called `.leetcode` in my home directory, which is a Cargo project
 named also `leetcode` (yeah, don't expect any creativity from me when it comes to naming things in this case,
@@ -160,7 +160,7 @@ So the whole procedure is as follows:
 4. I add a new module to the `main.rs` file, which imports the code stub using the `#[path = "..."]` attribute.
 5. I enjoy the Rust syntax analyzer and autocomplete features while solving the problem in the editor.
 
-<img src="/assets/images/leetcode_final.png" alt="Final LeetCode environment view">
+![Final LeetCode environment view](/assets/images/leetcode_final.png)
 
 This is how I've managed to make my LeetCode experience more comfortable and enjoyable, without having to leave
 the editor. I am also managing a log of my progress as a simple Markdown table in the `README.md` file, where I

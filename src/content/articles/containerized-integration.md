@@ -8,7 +8,7 @@ description: "How to easily spin up a mock environment for integration testing"
 
 ## I'm afraid I can't let you do that, Dev
 
-<img src="/assets/images/vpn9000.svg" alt="! Denied">
+![! Denied](/assets/images/vpn9000.svg)
 
 There is a certain kind of dread that comes with the acknowledgment that You can't always cross the gap
 between Your local pythonic incantations and the desired environment, where those enchantments are to be
@@ -29,7 +29,7 @@ run by a group of "real chill dudes", where You've recently managed to down
 that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff],
 to the dismay of Your fellow restoration druids.
 
-<img src="/assets/images/staff.svg" alt="! Crystalheart Pulse-Staff">
+![! Crystalheart Pulse-Staff](/assets/images/staff.svg)
 
 Those are the real casualties that would have been made without that one reasonable sysadmin
 at Your software house, who's set up e.g. that VPN so all GitLab CI workers can't reach the K8s cluster,
@@ -107,7 +107,7 @@ So, coming back to CI, we expect to be greeted by two messages, one from the hos
 However, when we run this job, we will only see the first message executed at the main container level,
 but the second one will not be executed at all:
 
-<img src="/assets/images/nested_container_behavior.png" alt="Nested container behavior">
+![Nested container behavior](/assets/images/nested_container_behavior.png)
 
 The main reason is the way in which the parent container attempts to communicate with the Docker daemon
 that is located on the host. The original Docker daemon is listening on a Unix socket, which is located at
@@ -140,7 +140,7 @@ Here we basically expect the overall effect to be the same as previously, but th
 that there is basically nothing mounted under `/var/run` path and the `TCP` lookup will be performed for
 the `docker-service` host, which will fail, as expected.
 
-<img src="/assets/images/nested_container_no_socket.png" alt="Nested container no docker socket">
+![Nested container no docker socket](/assets/images/nested_container_no_socket.png)
 
 And this is what we get, the `/var/run` directory is empty (red box in Pic. 2)
 and the `TCP` lookup fails (yellow underline in Pic. 2). So now we have to decide what is really open to us
@@ -161,7 +161,7 @@ on how to do that, so I will **assume that this kind of resource is already pres
 
 ### Whale nesting
 
-<img src="/assets/images/nesting.svg" alt="! Whale inside a nest">
+![! Whale inside a nest](/assets/images/nesting.svg)
 
 So the game plan now is like so:
 
@@ -333,7 +333,7 @@ compose-integration:
 
 ### Decomposing the composition
 
-<img src="/assets/images/boxinginf.svg" alt="! Boxing info">
+![! Boxing info](/assets/images/boxinginf.svg)
 
 Looking at the compose file, some key points can be highlighted:
 

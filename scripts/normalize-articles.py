@@ -10,18 +10,41 @@ Transformations applied (all idempotent):
   4. Remove standalone {% raw %} / {% endraw %} lines — the Eleventy
      preprocessor (addPreprocessor in .eleventy.js) re-adds them at build
      time around any code fence containing Nunjucks syntax.
+  5. Convert bare <img src="..." alt="..."> HTML tags to markdown image
+     syntax ![alt](src).  Slate normalises the self-closing slash and
+     attribute quoting, so HTML img tags always produce phantom diffs.
+     Only tags with exactly src + alt are converted; any other attributes
+     are left alone to avoid data loss.
 
 Exit code 0 always.  Prints a summary of which files changed.
 """
 
 import re
-import sys
 from pathlib import Path
 
 ARTICLES_DIR = Path(__file__).parent.parent / "src" / "content" / "articles"
 
-RAW_LINE   = re.compile(r"^\{%-?\s*raw\s*-?%\}\s*$")
+RAW_LINE    = re.compile(r"^\{%-?\s*raw\s*-?%\}\s*$")
 ENDRAW_LINE = re.compile(r"^\{%-?\s*endraw\s*-?%\}\s*$")
+
+# Matches a standalone <img> that has only src and alt (order-independent).
+# Captures src and alt values; rejects tags that have extra attributes.
+_SRC = r'src\s*=\s*"([^"]*)"'
+_ALT = r'alt\s*=\s*"([^"]*)"'
+IMG_SRC_FIRST = re.compile(
+    r'<img\s+' + _SRC + r'\s+' + _ALT + r'\s*/?>',
+    re.I,
+)
+IMG_ALT_FIRST = re.compile(
+    r'<img\s+' + _ALT + r'\s+' + _SRC + r'\s*/?>',
+    re.I,
+)
+
+
+def _img_to_md(match: re.Match, src_group: int, alt_group: int) -> str:
+    src = match.group(src_group)
+    alt = match.group(alt_group)
+    return f"![{alt}]({src})"
 
 
 def normalize(text: str) -> str:
@@ -46,6 +69,11 @@ def normalize(text: str) -> str:
 
     # Re-collapse blanks that may have appeared after raw-line removal
     text = re.sub(r"\n{3,}", "\n\n", text)
+
+    # 5. Convert <img src="..." alt="..."> / <img alt="..." src="..."> to ![alt](src)
+    #    Only when the tag has exactly those two attributes (no width, class, etc.)
+    text = IMG_SRC_FIRST.sub(lambda m: _img_to_md(m, 1, 2), text)
+    text = IMG_ALT_FIRST.sub(lambda m: _img_to_md(m, 2, 1), text)
 
     return text
 
