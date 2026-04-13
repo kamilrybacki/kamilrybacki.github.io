@@ -206,38 +206,6 @@ body.home-page .footer {
   object-fit: contain;
 }
 
-.home-hero-deco {
-  position: absolute;
-  pointer-events: none;
-}
-
-.home-hero-deco-bottom {
-  left: 0;
-  bottom: -2px;
-  display: flex;
-  gap: 0.25rem;
-}
-
-.home-hero-deco-bottom span:nth-child(1) {
-  width: 1.5rem;
-  height: 0.25rem;
-  background: var(--text-primary);
-  opacity: .28;
-}
-
-.home-hero-deco-bottom span:nth-child(2) {
-  width: .85rem;
-  height: .25rem;
-  background: var(--text-primary);
-  opacity: .16;
-}
-
-.home-hero-deco-bottom span:nth-child(3) {
-  width: .25rem;
-  height: .25rem;
-  background: var(--text-primary);
-  opacity: .1;
-}
 
 /* ─── Ticker ─────────────────────────────────────────────────────────────── */
 
