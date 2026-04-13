@@ -209,9 +209,11 @@ body.home-page .footer {
 
 /* ─── Ticker ─────────────────────────────────────────────────────────────── */
 
+.home-shell:has(.ticker-wrap) {
+  margin-bottom: 3.5rem;
+}
+
 .ticker-wrap {
-  width: min(100%, 80rem);
-  margin: 0 auto 3.5rem;
   overflow: hidden;
   background: var(--text-primary);
   border-top: 2px solid var(--border-color);
