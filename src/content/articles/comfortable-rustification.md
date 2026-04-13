@@ -182,7 +182,6 @@ Below is a minimalist Python script (drop it next to `main.rs` or anywhere conve
 2. Produces a stable, sorted list of problem files
 3. Writes (or updates) a region delimited by marker comments inside `main.rs`
 
-{% raw %}
 
 ```python
 #!/usr/bin/env python3
@@ -235,7 +234,6 @@ if __name__ == '__main__':
    main()
 ```
 
-{% endraw %}
 
 If you prefer pure Rust, a build script (`build.rs`) could emit an include file, but a one‑off script keeps the project non‑invasive.
 

@@ -289,7 +289,6 @@ of the parameter representing the value is flexible, **but** it must be
 
 Generalizing this pattern, we can show it as the following template:
 
-{% raw %}
 
 ```python
 @field_validator({{ field_name }}, mode="{{ mode }}")
@@ -303,7 +302,6 @@ def validate_{{ field_name }}(
         return value
 ```
 
-{% endraw %}
 
 As crazy as it sounds, we can use this template to generate the **source code**
 for Pydantic validators based on the incoming input data. Since we want to
@@ -479,7 +477,6 @@ have defined in the YAML file. We can pass those dynamically generated functions
 to the `create_model` function as the `__validators__` argument and they will
 be attached to the model during the runtime.
 
-{% raw %}
 
 ```python
 pydantic.create_model(
@@ -497,7 +494,6 @@ pydantic.create_model(
 )
 ```
 
-{% endraw %}
 
 Having this beast of reflection and introspection in our hands, we can now
 proceed to a less dangerous part of the schema - the field definitions.

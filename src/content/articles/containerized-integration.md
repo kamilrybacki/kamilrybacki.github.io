@@ -77,7 +77,6 @@ some files between the jobs as either artifacts or cache.
 
 Take a look at the following example:
 
-{% raw %}
 
 ```yaml
 # .gitlab-ci.yml (excerpt) – simple job showing host vs nested container
@@ -99,7 +98,6 @@ integration-sandbox:
       docker run --rm alpine:3.19 sh -c 'echo "[nested] hello from inside nested container"'
 ```
 
-{% endraw %}
 
 A quick side note - if You see me using the `\` operator in the code snippets, it is just a way to
 break the line in the `.gitlab-ci.yml` file (or other manifests/shell scripts), so that it is more readable.

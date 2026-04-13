@@ -121,31 +121,3 @@ CMS.registerPreviewStyle(`
   th { color: var(--text-primary, #0d0d0d); }
 `, { raw: true });
 
-// ── 4. Auto-switch markdown editor to raw mode ────────────────────────────────
-// Decap CMS hardcodes rawMode:false as the initial state for the markdown widget.
-// Slate normalises content during deserialisation (before the UI appears), which
-// causes "UNSAVED CHANGES" on articles you never touched.
-// Fix: watch the DOM for the "Markdown" toggle button that show_raw:true adds,
-// and click it immediately so the editor switches to raw/source mode before the
-// user sees the dirty indicator.
-(function () {
-  var activated = false;
-
-  function clickMarkdownToggle() {
-    if (activated) return;
-    // Decap renders the raw-mode toggle as a button whose visible label is
-    // "Markdown" (the mode you switch TO when currently in rich-text mode).
-    var buttons = document.querySelectorAll('button');
-    for (var i = 0; i < buttons.length; i++) {
-      if (buttons[i].textContent.trim().toLowerCase() === 'markdown') {
-        activated = true;
-        buttons[i].click();
-        observer.disconnect();
-        return;
-      }
-    }
-  }
-
-  var observer = new MutationObserver(clickMarkdownToggle);
-  observer.observe(document.body, { childList: true, subtree: true });
-}());
