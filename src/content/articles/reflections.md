@@ -60,7 +60,7 @@ Also, when You dump a Pydantic model to JSON, the schema is often not very human
 maintain it in a repository. I want to structure my schema definitions in such a way, that a maintainer can easily
 see which fields are required, which are optional, which have default values, which are of a specific type and which
 are basically nested schemas themselves. Additionally, YAML has a couple of nice tricks up its sleeve such as **anchors** and
-**references** that can be used to define a schema in a more [DRY way].
+**references** that can be used to define a schema in a more [DRY way](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 
 ### How it do?
 
@@ -146,7 +146,7 @@ But what do we know acts as a factory and is related to the topic of this articl
 That's right - Pydantic model classes. They are factories that create instances
 of data structures that are defined by the schema that we have provided to them.
 Moreover, Pydantic allows us to dynamically generate those classes by using
-the [`create_model`] function that is present in the `pydantic` module.
+the [`create_model`](https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation) function that is present in the `pydantic` module.
 
 ```python
 from pydantic import BaseModel, create_model, validator
@@ -314,8 +314,8 @@ replacing the appropriate markers with information about the validated field etc
 
 This strategy of dynamically generating executable code based on the input data
 is a powerful tool that can be used to create flexible frameworks that can adapt
-to the data that they are fed. The "name of the game" is [**reflection**],
-a term that can also be found being used to a great extent [in the Java world].
+to the data that they are fed. The "name of the game" is [**reflection**](https://en.wikipedia.org/wiki/Reflective_programming),
+a term that can also be found being used to a great extent [in the Java world](https://www.oracle.com/technical-resources/articles/java/javareflection.html).
 
 However, it is a very dangerous tool that can be used to create security holes,
 mainly because it allows us to execute arbitrary code during the
@@ -348,7 +348,7 @@ These forbidden modules will be:
 8. `inspect` - because it allows us to inspect the code that is being executed
 9. `shlex` - because it allows us to parse shell-like syntax
 
-The choice of these modules was inspired by [a great blog post by Simon de Vlieger] (supakeen) on possible exploits about dangers in Python's STL.
+The choice of these modules was inspired by [a great blog post by Simon de Vlieger](https://supakeen.com/weblog/dangers-in-pythons-standard-library.html) (supakeen) on possible exploits about dangers in Python's STL.
 
 But how we can effectively block access to these modules? First of all, whatever we do could be easily circumvented by importing them back in the code that is being executed. So, we need to check the validator source code for any
 `import` statements accompanied by the name of the forbidden module and
@@ -521,7 +521,7 @@ that are present in the model, such as:
 3. `gt` - the value must be greater than the given one
 4. `lt` - the value must be less than the given one
 
-... and so on. For [more information], You can refer to the Pydantic documentation.
+... and so on. For [more information](https://docs.pydantic.dev/latest/concepts/fields/#numeric-constraints), You can refer to the Pydantic documentation.
 
 I have decided to keep this mechanism in my library because it is a very
 convenient way to use "simple validators", instead of writing a custom one
@@ -615,7 +615,7 @@ This workflow can be represented by the following Mermaid diagram:
 ## Snake building its tail
 
 Utilizing the presented ideas, I have created a Python library that allows
-to define Pydantic models using YAML files. The library is called [Phaistos]
+to define Pydantic models using YAML files. The library is called [Phaistos](https://phaistos.readthedocs.io/en/latest/)
 and is available on PyPI. It is still in the early stages of development,
 but it can be used to define Pydantic models in a more human-readable way.
 
@@ -652,7 +652,7 @@ class Manager:
         # A way to manually shove the schema into the manager via YAML input file
 ```
 
-The [concrete implementation] of the functions presented above can be found in the project's repository.
+The [concrete implementation](https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/manager.py) of the functions presented above can be found in the project's repository.
 What is important is the `get_available_schemas` method, which is used to discover and create
 available schemas from the directory that is passed as an argument. This method
 in practice will keep a map that will contain the names of the schemas as keys
@@ -660,7 +660,7 @@ and the transpiled models' factories as values.
 
 ### Encapsulation of transpilation
 
-The [`Transpiler` class] is responsible for the transpilation of the schema and mainly uses the
+The [`Transpiler` class](https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/transpiler.py) is responsible for the transpilation of the schema and mainly uses the
 procedures and tricks presented in the previous sections. It is **a stateless interface**
 that takes in schema definition and spits out the Pydantic model factory.
 
@@ -688,7 +688,7 @@ class Transpiler:
 ```
 
 What is important here is the `make_schema` method, which is used to transpile the YAML file and then
-return an object of [`TranspiledSchema` type] that can be used to create the Pydantic model.
+return an object of [`TranspiledSchema` type](https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/schema.py#L15) that can be used to create the Pydantic model.
 
 ### Preserving the scripture
 
@@ -804,7 +804,7 @@ specific logs.
 So, we have out compilation-transpilation mechanism ready, but how can we use it in practice?
 
 One of the examples of the usage of the Phaistos library can be found in the repo under the `examples/` folder
-and is related to the use of the [Phaistos-generated model as response classes in the FastAPI application],
+and is related to the use of the [Phaistos-generated model as response classes in the FastAPI application](https://github.com/kamilrybacki/Phaistos/blob/main/examples/fastapi_models.py),
 leveraging the dependency injection mechanism of the framework.
 
 Basically, we can tell FastAPI to take the query parameters (and of course other data) and pass it through
@@ -874,7 +874,7 @@ planning to add more thingymajigs to it, such as serialization of
 Pydantic model classes to YAML files (so a reversal of the process that is
 presented in this article).
 
-I highly encourage You to [check out the repository] of the project and see
+I highly encourage You to [check out the repository](https://github.com/kamilrybacki/Phaistos) of the project and see
 how it can be used in practice.
 
 I also hope I have shown You that reflections and introspection can be used
@@ -888,15 +888,3 @@ on GitHub or LinkedIn.
 
 Thank You for reading and have a great day!
 
-[DRY way]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
-[`create_model`]: https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation
-[**reflection**]: https://en.wikipedia.org/wiki/Reflective_programming
-[in the Java world]: https://www.oracle.com/technical-resources/articles/java/javareflection.html
-[a great blog post by Simon de Vlieger]: https://supakeen.com/weblog/dangers-in-pythons-standard-library.html
-[more information]: https://docs.pydantic.dev/latest/concepts/fields/#numeric-constraints
-[Phaistos]: https://phaistos.readthedocs.io/en/latest/
-[concrete implementation]: https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/manager.py
-[`Transpiler` class]: https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/transpiler.py
-[`TranspiledSchema` type]: https://github.com/kamilrybacki/Phaistos/blob/main/phaistos/schema.py#L15
-[Phaistos-generated model as response classes in the FastAPI application]: https://github.com/kamilrybacki/Phaistos/blob/main/examples/fastapi_models.py
-[check out the repository]: https://github.com/kamilrybacki/Phaistos

@@ -28,7 +28,7 @@ This is, of course, done with good intent, so that the developers don't accident
 set the production database to be the target of their unit tests, pushing around
 valuable data about somebody's World of Warcraft character on the private server
 run by a group of "real chill dudes", where You've recently managed to down
-that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff],
+that one annoying boss with Your guild, **and** got the highest roll on [Crystalheart Pulse-Staff](https://www.wowhead.com/item=45886/crystalheart-pulse-staff),
 to the dismay of Your fellow restoration druids.
 
 ![! Crystalheart Pulse-Staff](/assets/images/staff.svg)
@@ -149,7 +149,7 @@ and the `TCP` lookup fails (yellow underline in Pic. 2). So now we have to decid
 as a solution to open up the communication between the nested container and the host's Docker daemon.
 The first thing that comes to mind is to simply delegate the creation of any new Docker containers
 to an autonomous **Docker service**, that will be set up by the runner and reachable from the nested container.
-This can be achieved by using the [`services` keyword in the `.gitlab-ci.yml` file].
+This can be achieved by using the [`services` keyword in the `.gitlab-ci.yml` file](https://docs.gitlab.com/ee/ci/services/).
 Those services are basically Docker containers spawned beside the CI container itself, which
 are accessible from the tests container due to the network being shared
 between all of the sub-hosts present on the runner.
@@ -158,7 +158,7 @@ between all of the sub-hosts present on the runner.
 that can be then used by the CI jobs as a shared runner by specifying the `tags` keyword in the `.gitlab-ci.yml` file.
 In most cases, kind of runners are already present as a CI/CD tool for software development teams,
 because, for example, building Docker images is a very common task among them, so we can already capitalize on that.
-However, if there is no such runner available, we can always create one ourselves. There is a [plethora] [of] [tutorials]
+However, if there is no such runner available, we can always create one ourselves. There is a [plethora](https://docs.gitlab.com/runner/) [of](https://docs.gitlab.com/runner/install/) [tutorials](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
 on how to do that, so I will **assume that this kind of resource is already present in our organization**.
 
 ### Whale nesting
@@ -216,7 +216,7 @@ Expected output includes `PONG`, proving DNS name resolution for the service.
 
 ## Snake-in-a-box (integration test scenario)
 
-Let’s extend the idea: run pytest against a temporary Redis. File layout for a minimal example:
+Let's extend the idea: run pytest against a temporary Redis. File layout for a minimal example:
 
 ```text
 repo/
@@ -360,8 +360,3 @@ That wraps the full journey: ad‑hoc single container, service resolution, nest
 
 Happy container spelunking!
 
-[Crystalheart Pulse-Staff]: https://www.wowhead.com/item=45886/crystalheart-pulse-staff
-[`services` keyword in the `.gitlab-ci.yml` file]: https://docs.gitlab.com/ee/ci/services/
-[plethora]: https://docs.gitlab.com/runner/
-[of]: https://docs.gitlab.com/runner/install/
-[tutorials]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html

@@ -247,7 +247,7 @@ git add src/main.rs
 
 - Turn on inlay hints (parameter & chaining) – they shine when exploring unfamiliar algorithm patterns.
 - Use a workspace snippet to scaffold a tests module at the bottom of each problem file (e.g. table‑driven cases for edge conditions).
-- Keep a `bench/` scratch file with micro‑bench code (even if you don’t run `cargo bench`) to jot down complexity notes right next to solutions.
+- Keep a `bench/` scratch file with micro‑bench code (even if you don't run `cargo bench`) to jot down complexity notes right next to solutions.
 
 ## When to graduate this setup
 
@@ -256,19 +256,15 @@ Once you start revisiting problems for performance tuning (e.g. alternative DP s
 1. A Cargo workspace with one crate per difficulty tier, or
 2. A single crate where each problem becomes an integration test (`tests/leetcode_XXXX.rs`).
 
-That lets you run `cargo test` as a quick regression suite ensuring future refactors don’t break solved tasks.
+That lets you run `cargo test` as a quick regression suite ensuring future refactors don't break solved tasks.
 
-- rust-analyzer Settings Guide: [rust-analyzer manual][ref-ra]
-- Rust Style Guide (fmt defaults): [rustfmt repo][ref-fmt]
-- LeetCode Discuss (patterns): [Discuss boards][ref-discuss]
+- rust-analyzer Settings Guide: [rust-analyzer manual](https://rust-analyzer.github.io/manual.html#settings)
+- Rust Style Guide (fmt defaults): [rustfmt repo](https://github.com/rust-lang/rustfmt)
+- LeetCode Discuss (patterns): [Discuss boards](https://leetcode.com/discuss/)
 
 ## Wrap‑up
 
-That’s the whole comfort stack: cookie auth → local file organization → synthetic binary for analysis → (optional) automation for module wiring → future evolution path. Tiny bits of laziness compounding into sustained focus.
+That's the whole comfort stack: cookie auth → local file organization → synthetic binary for analysis → (optional) automation for module wiring → future evolution path. Tiny bits of laziness compounding into sustained focus.
 
 Happy rustifying your puzzle grind!
 
-[ref-ext]: https://marketplace.visualstudio.com/items?itemName=LeetCode.vscode-leetcode
-[ref-ra]: https://rust-analyzer.github.io/manual.html#settings
-[ref-fmt]: https://github.com/rust-lang/rustfmt
-[ref-discuss]: https://leetcode.com/discuss/
