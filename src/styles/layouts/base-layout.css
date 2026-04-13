@@ -235,7 +235,7 @@ body.home-page .footer {
 
 .ticker-item {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
