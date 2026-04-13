@@ -29,6 +29,8 @@ CMS.registerPreviewStyle(`
     font-size: 0.96rem;
     line-height: 1.7;
     max-width: 52rem;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
   }
 
