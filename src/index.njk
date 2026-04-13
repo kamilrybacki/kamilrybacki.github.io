@@ -50,11 +50,23 @@ bodyClass: home-page
     <div class="diamond" aria-hidden="true"></div>
   </div>
 
-  <div class="article-filters home-filters" role="tablist" aria-label="Article category filters">
-    <button class="filter-btn active" data-filter="all">All</button>
-    {% for cat in collections.articleCategories %}
-    <button class="filter-btn" data-filter="{{ cat }}">{{ cat }}</button>
-    {% endfor %}
+  <div class="filter-search-wrap" role="search">
+    <input
+      type="text"
+      class="filter-input"
+      placeholder="Filter by category…"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Filter articles by category"
+      aria-autocomplete="list"
+      aria-expanded="false"
+      aria-haspopup="listbox"
+    >
+    <ul class="filter-suggestions" role="listbox" aria-label="Category suggestions" hidden>
+      {% for cat in collections.articleCategories %}
+      <li class="filter-suggestion-item" data-category="{{ cat }}" role="option" tabindex="-1">{{ cat }}</li>
+      {% endfor %}
+    </ul>
   </div>
 
   <div class="articles-container">

@@ -279,35 +279,66 @@ body.home-page .footer {
   opacity: 0.35;
 }
 
-.home-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+.filter-search-wrap {
+  position: relative;
   margin: 0 0 1.6rem;
 }
 
-.filter-btn {
+.filter-input {
+  width: min(100%, 22rem);
   border: 2px solid var(--border-color);
   background: var(--bg-card);
   color: var(--text-primary);
-  padding: 0.36rem 0.72rem;
+  padding: 0.42rem 0.78rem;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: transform .1s ease, box-shadow .1s ease, background-color .1s ease, color .1s ease;
+  outline: none;
+  transition: box-shadow .1s ease;
 }
 
-.filter-btn:hover {
-  transform: translateY(-2px);
+.filter-input::placeholder {
+  opacity: 0.4;
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+
+.filter-input:focus {
   box-shadow: 3px 3px 0 var(--text-primary);
 }
 
-.filter-btn.active {
+.filter-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: min(100%, 22rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--border-color);
+  border-top: 0;
+  background: var(--bg-card);
+  z-index: 100;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.filter-suggestion-item {
+  padding: 0.42rem 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.filter-suggestion-item:hover,
+.filter-suggestion-item:focus {
   background: var(--text-primary);
   color: var(--background-primary);
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--text-primary) 45%, transparent);
+  outline: none;
 }
 
 .articles-container {
@@ -430,12 +461,6 @@ body.home-page .footer {
 @media (max-width: 768px) {
   .home-nav {
     margin-bottom: 3rem;
-  }
-
-  .home-nav-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
   }
 
   .home-links {
