@@ -24,8 +24,9 @@ collections:
       - name: body
         label: Body
         widget: markdown
-        # show_raw adds a "Rich text / Markdown" toggle in the editor toolbar.
-        # Always use "Markdown" (raw) mode to prevent the Slate rich-text parser
-        # from normalising  /  tags and introducing phantom
-        # diffs on files you haven't actually changed.
-        show_raw: true
+        # modes: ['raw'] disables the Slate rich-text editor entirely.
+        # Raw mode treats the body as a plain markdown string — no parsing,
+        # no serialisation, no normalisation.  This permanently prevents
+        # "Unsaved changes" phantom diffs caused by Slate's round-trip
+        # normalisation (list markers, curly quotes, link refs, etc.).
+        modes: ['raw']
