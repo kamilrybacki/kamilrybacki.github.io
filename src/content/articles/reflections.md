@@ -300,7 +300,7 @@ get this information from YAML files, we can define the structure of the
 validators in the following way:
 
 ```yaml
-validator: 
+validator:
   mode: before
   source: |
     if value != "valid":
@@ -780,7 +780,7 @@ class TranspiledSchema(pydantic.BaseModel):
                 )
                 for error in validation_error.errors()
             ])
-        self.parent._validation_errors += self._validation_errors + collected_errors 
+        self.parent._validation_errors += self._validation_errors + collected_errors
 ```
 
 This approach is very hacky, but it effectively allows us to collectively gather errors from validation of

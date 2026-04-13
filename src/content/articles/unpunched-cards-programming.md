@@ -36,7 +36,7 @@ One of the hints can be sourced directly from Mark Rosewater's article, [publish
 
 #### Johnny/Jenny
 
-> When I started playing the game, I loved building decks, but I didn't build normal decks. My specialty included decks that won in untraditional ways. I wanted to beat you in a way you didn't see coming. Doing this said something about who I was. I was creative, clever, and untraditional. My friends would ask to borrow my decks because they were fun to play, and that brought me great joy. _Magic_ was a means to communicate my identity for all to see.
+> When I started playing the game, I loved building decks, but I didn't build normal decks. My specialty included decks that won in untraditional ways. I wanted to beat you in a way you didn't see coming. Doing this said something about who I was. I was creative, clever, and untraditional. My friends would ask to borrow my decks because they were fun to play, and that brought me great joy. _Magic_ was a means to communicate my identity for all to see.
 >
 > -- Mark Rosewater _The Three Magic Psychographics_
 
@@ -44,7 +44,7 @@ A player who is focused on the art of self-expression and savviness in the field
 
 #### Spike
 
-> Spikes look at _Magic_ and see all these as opportunities to learn and improve. That's the joy for them: gaining knowledge, applying that knowledge against worthy opponents, adapting, gaining new insights, and evaluating how to change their behavior to do better next time. _Magic_ requires so many different skills, and different Spikes will focus on different ones. The one through line is that Spikes will set goals for themselves and then strive to meet those goals.
+> Spikes look at _Magic_ and see all these as opportunities to learn and improve. That's the joy for them: gaining knowledge, applying that knowledge against worthy opponents, adapting, gaining new insights, and evaluating how to change their behavior to do better next time. _Magic_ requires so many different skills, and different Spikes will focus on different ones. The one through line is that Spikes will set goals for themselves and then strive to meet those goals.
 >
 > -- Mark Rosewater _The Three Magic Psychographics_
 
@@ -109,7 +109,7 @@ This low-level format incentivizes optimized play and finding cards that cause a
 
 The strategy here is to utilize the **cost reduction** during casting of **powerful creatures** that is fueled by **playing cheap spells and filling up the player's graveyard**. The most famous card in this deck is its namesake: [Tolarian Terror](https://scryfall.com/card/dmu/72/tolarian-terror):
 
-> This spell costs {1} less to cast for each instant and sorcery card in your graveyard.
+> This spell costs {1} less to cast for each instant and sorcery card in your graveyard.
 >
 > -- Tolarian Terror's ruling text
 
@@ -192,7 +192,7 @@ For a little bit of a plot twist, let's imagine that we have a Python applicatio
 ```python
 class Card:
     """
-    A monolithic base class that forces every card 
+    A monolithic base class that forces every card
     to implement methods it might not need.
     """
     def play_as_land(self):
@@ -204,7 +204,7 @@ class Card:
 class Island(Card):
     def play_as_land(self):
         print(" -> Playing Island: (+1 Blue Mana)")
-    
+
     # PROBLEM: Island inherits 'cast_as_spell' but it's useless/dangerous here.
 
 class LightningBolt(Card):
@@ -256,15 +256,15 @@ class LightningBolt(Spell):
 class GameEngine:
     def evaluate_hand(self, hand_of_cards, available_mana):
         print(f"\n--- Player's Turn (Mana available: {available_mana}) ---")
-        
+
         for card in hand_of_cards:
             card_name = card.__class__.__name__
             print(f"\nChecking card: {card_name}...")
-            
+
             # Can it be played as a land?
             if isinstance(card, Land):
                 print(f"  You can play this as a Land.")
-                
+
             # Can it be cast as a spell?
             if isinstance(card, Spell):
                 if available_mana >= card.mana_cost:
@@ -290,7 +290,7 @@ class MalakirRebirth(Spell, Land):
 
     def cast_spell(self):
         print("💀 Action: Casting Malakir Rebirth (Save creature from death)")
-    
+
     def play_land(self):
         print("⚫ Action: Playing Malakir Mire (Land enters tapped)")
 ```
@@ -341,7 +341,7 @@ class ShuffledLibrary(CardSource):
     def __init__(self, deck_list):
         self._deck = deck_list
         random.shuffle(self._deck)
-    
+
     def draw_card(self):
         if self._deck:
             return self._deck.pop(0)
@@ -375,9 +375,9 @@ class GameEngine:
     def start_turn(self):
         print("--- STARTING TURN ---")
         print("Draw Step...")
-        
+
         new_card = self.source.draw_card()
-        
+
         if new_card:
             self.hand.append(new_card)
             print(f"drawn: {new_card.__class__.__name__}")
@@ -417,7 +417,7 @@ What is a sign of a good programmer who has lived through his fair share of depl
 
 The other side of testing, different from the static tests lying in your source code, can be much more empirical, e.g., stress tests, that try to recreate harsh, real-world conditions that the final application will be subjected to. A nice example is APIs, which can be subjected to huge batches of requests being fired at them in an unrelenting manner to check if they can be plugged nicely into the target architecture without becoming a bottleneck for everything else there.
 
-In MTG deckbuilding, both of these aspects can be utilized **to great success** after you cobble up the first "MVP" of the deck with which you will dominate the next Commander session at the local game store. For testing in a controlled environment from the point of view of the raw functionality the deck has to provide, "playing against a pet goldfish" or, in short, **goldfishing** is the go-to tool.
+In MTG deckbuilding, both of these aspects can be utilized **to great success** after you cobble up the first "MVP" of the deck with which you will dominate the next Commander session at the local game store. For testing in a controlled environment from the point of view of the raw functionality the deck has to provide, "playing against a pet goldfish" or, in short, **goldfishing** is the go-to tool.
 
 To goldfish a MTG deck is to deal out a starting hand, set up your life total to the appropriate amount for the format that will be played, and simulate turns against an invisible opponent. In this way, you can check how the design of [the mana curve](https://mtg.fandom.com/wiki/Mana_curve) (how likely it is to optimally utilize each turn's mana by being able to draw and cast spells of increasing mana cost, **AND** having this resource available) or which combos in the deck are easiest to consistently pull off.
 
