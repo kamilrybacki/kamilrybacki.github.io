@@ -138,7 +138,8 @@ body.home-page .footer {
 
 .home-hero {
   position: relative;
-  padding: 1.5rem 0 2rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
   margin-bottom: 0;
 }
 
