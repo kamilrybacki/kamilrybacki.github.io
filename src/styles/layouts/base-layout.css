@@ -219,6 +219,7 @@ body.home-page .footer {
   border-top: 2px solid var(--border-color);
   border-bottom: 2px solid var(--border-color);
   padding: 0.6rem 0;
+  margin-bottom: 2rem;
   cursor: default;
   user-select: none;
 }
