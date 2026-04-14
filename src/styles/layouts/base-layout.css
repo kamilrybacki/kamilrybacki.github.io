@@ -242,12 +242,11 @@ body.home-page .footer {
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--background-primary);
-  padding: 0 1.8rem;
 }
 
 .ticker-item::before {
   content: '◆';
-  margin-right: 1.8rem;
+  margin: 0 1.8rem;
   opacity: 0.4;
 }
 
