@@ -186,7 +186,7 @@ body.home-page .footer {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 28rem);
   gap: 2.5rem;
-  align-items: center;
+  align-items: start;
 }
 
 .home-hero-visual {
