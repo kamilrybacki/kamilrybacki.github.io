@@ -473,7 +473,7 @@ body.home-page .footer {
 
 @media (max-width: 768px) {
   .home-nav {
-    margin-bottom: 3rem;
+    margin-bottom: 0;
   }
 
   .home-links {
