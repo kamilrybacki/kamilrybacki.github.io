@@ -225,7 +225,7 @@ body.home-page .footer {
 .ticker-track {
   display: flex;
   width: max-content;
-  animation: ticker-scroll 46s linear infinite;
+  animation: ticker-scroll 69s linear infinite;
 }
 
 .ticker-wrap:hover .ticker-track {
