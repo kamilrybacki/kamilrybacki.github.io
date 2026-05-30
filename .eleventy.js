@@ -13,6 +13,7 @@ module.exports = function(eleventyConfig) {
   // Decap CMS admin panel
   eleventyConfig.addPassthroughCopy({ "src/admin/config.yml": "admin/config.yml" });
   eleventyConfig.addPassthroughCopy({ "src/admin/preview-init.js": "admin/preview-init.js" });
+  eleventyConfig.addPassthroughCopy({ "src/admin/audio-widget.js": "admin/audio-widget.js" });
   
   // Ignore template files and README
   eleventyConfig.ignores.add("src/content/**/_template.md");
