@@ -10,6 +10,26 @@
   }
 
   var ENDPOINT = "https://stt.kamilandrzejrybacki.dpdns.org/transcribe";
+  var TIMEOUT_MS = 180000;
+
+  // Normalise the service response into a stable shape. Guards against the
+  // service ever returning tags as a non-array (string/object/null), which
+  // would otherwise break the preview .join or persist the wrong type into
+  // the `widget: list` tags field.
+  function normalizeResult(d) {
+    d = d || {};
+    var tags = d.tags;
+    if (Array.isArray(tags)) tags = tags.map(function (t) { return String(t); });
+    else if (tags === undefined || tags === null || tags === "") tags = [];
+    else tags = [String(tags)];
+    return {
+      title: String(d.title || ""),
+      description: String(d.description || ""),
+      category: String(d.category || ""),
+      tags: tags,
+      body: String(d.body || ""),
+    };
+  }
 
   // Read the GitHub token Decap stored at login (GitHub backend).
   function githubToken() {
@@ -32,7 +52,10 @@
     },
     handleFile: function (e) {
       var self = this;
-      var file = e.target.files && e.target.files[0];
+      var input = e.target;
+      var file = input.files && input.files[0];
+      // Allow re-selecting the same file after a failure (change won't fire otherwise).
+      input.value = "";
       if (!file) return;
       var token = githubToken();
       if (!token) { self.setState({ status: "Not signed in to GitHub — reload the CMS." }); return; }
@@ -41,7 +64,15 @@
       var fd = new FormData();
       fd.append("audio", file, file.name);
 
-      fetch(ENDPOINT, { method: "POST", headers: { Authorization: "Bearer " + token }, body: fd })
+      var controller = new AbortController();
+      var timer = setTimeout(function () { controller.abort(); }, TIMEOUT_MS);
+
+      fetch(ENDPOINT, {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token },
+        body: fd,
+        signal: controller.signal,
+      })
         .then(function (r) {
           if (!r.ok) {
             return r.text().then(function (t) { throw new Error("HTTP " + r.status + ": " + t.slice(0, 300)); });
@@ -49,11 +80,17 @@
           return r.json();
         })
         .then(function (data) {
-          self.props.onChange(data); // store result as this field's value
-          self.setState({ busy: false, result: data, status: "Done — review below, then Save to apply." });
+          clearTimeout(timer);
+          var result = normalizeResult(data);
+          self.props.onChange(result); // store normalised result as this field's value
+          self.setState({ busy: false, result: result, status: "Done — review below, then Save to apply." });
         })
         .catch(function (err) {
-          self.setState({ busy: false, status: "Failed: " + err.message });
+          clearTimeout(timer);
+          var msg = err && err.name === "AbortError"
+            ? "Timed out after " + (TIMEOUT_MS / 1000) + "s."
+            : "Failed: " + (err && err.message ? err.message : String(err));
+          self.setState({ busy: false, status: msg });
         });
     },
     render: function () {
@@ -101,7 +138,9 @@
     handler: function (props) {
       var data = props.entry.get("data");
       var a = data.get("audio");
-      if (!a) return data;
+      // Always strip the helper field so it never lands in front-matter,
+      // even when it is present-but-falsy.
+      if (!a) return data.delete("audio");
       var get = function (k) { return (a && typeof a.get === "function") ? a.get(k) : (a ? a[k] : undefined); };
       var isEmpty = function (cur) { return cur === undefined || cur === null || String(cur).trim() === ""; };
       var d = data;
