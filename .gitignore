@@ -88,3 +88,6 @@ Desktop.ini
 # Draft content (optional - uncomment if you want to exclude drafts)
 # src/content/**/*draft*
 # src/content/**/draft-*
+# Python bytecode cache
+__pycache__/
+*.pyc
