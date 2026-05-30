@@ -19,9 +19,15 @@ no-UI / bulk path.
 ## Decisions (locked during brainstorming)
 
 1. **UX:** in-editor, synchronous — fields fill from within the CMS.
-2. **Endpoint host:** a small service on homelab k3s that **reuses the existing
+2. **Endpoint host:** a small service on homelab k3s that **reuses the
    `scripts/transcribe_audio.py` logic** (same prompt, pluggable STT/polish
-   backends, ffmpeg compress + chunk). Keys from Vault.
+   backends, ffmpeg compress + chunk). Because the service is a separate repo
+   from the github.io site, it **vendors its own copy** of the transcription
+   logic; the github.io script remains the source for the GitHub Action path.
+   The small, stable duplication is accepted over premature cross-repo packaging.
+   Secrets come from a **Sops/age `SopsSecret`** (isindir operator) committed to
+   `argocd-apps/secrets/bootstrap/` — the homelab's standard pattern; **not Vault**
+   (the earlier "Vault" assumption was wrong — confirmed no Vault for app secrets).
 3. **Widget scope:** upload audio → fill **all** article fields (then review/edit).
 4. **Endpoint auth:** verify the GitHub OAuth token Decap already holds; the
    service confirms the caller is the repo owner before spending API credits.
