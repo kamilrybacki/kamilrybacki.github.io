@@ -44,14 +44,13 @@ FAKE_META = {
 def sandbox(tmp_path, monkeypatch):
     """Redirect the module's paths into a throwaway repo layout."""
     inbox = tmp_path / "audio-inbox"
-    processed = inbox / "processed"
+    processed = inbox / "processed"  # legacy path; should never be created now
     articles = tmp_path / "src" / "content" / "articles"
     inbox.mkdir(parents=True)
     articles.mkdir(parents=True)
 
     monkeypatch.setattr(ta, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(ta, "INBOX_DIR", inbox)
-    monkeypatch.setattr(ta, "PROCESSED_DIR", processed)
     monkeypatch.setattr(ta, "ARTICLES_DIR", articles)
 
     # Clear any real provider config from the environment.
@@ -149,8 +148,8 @@ def test_build_markdown_shape():
     assert md.startswith("---\nlayout: article.njk\n")
     assert 'title: "Testing \\"Pipelines\\" Locally"' in md
     assert "date: 2026-05-30" in md
-    assert "category: CI" in md
-    assert "tags:\n  - testing\n  - audio\n" in md
+    assert 'category: "CI"' in md
+    assert 'tags:\n  - "testing"\n  - "audio"\n' in md
     assert "draft: true" in md
     assert md.rstrip().endswith("Because it works.")
 
@@ -158,6 +157,38 @@ def test_build_markdown_shape():
 def test_build_markdown_empty_tags():
     md = ta.build_markdown({**FAKE_META, "tags": []}, "2026-05-30")
     assert "tags: []" in md
+
+
+def test_build_markdown_rejects_frontmatter_injection():
+    """A newline-bearing category/tag must not inject extra YAML keys."""
+    meta = {
+        **FAKE_META,
+        "category": "CI\npermalink: /pwn/\ndraft: false",
+        "tags": ["safe", "x\nlayout: injected.njk"],
+    }
+    md = ta.build_markdown(meta, "2026-05-30")
+    front = md.split("---", 2)[1]
+    # No injected key may appear as its own front-matter line; newlines in the
+    # untrusted scalars are collapsed and the whole value is quoted on one line.
+    front_keys = {
+        line.split(":", 1)[0].strip()
+        for line in front.splitlines()
+        if line and not line.startswith(" ") and ":" in line
+    }
+    assert "permalink" not in front_keys
+    assert "category: \"CI permalink: /pwn/ draft: false\"" in md
+    assert '  - "x layout: injected.njk"' in md
+    # Exactly one draft line, and it is the real gate.
+    assert md.count("\ndraft: true\n") == 1
+    assert "\ndraft: false\n" not in md
+    assert "\nlayout: injected.njk\n" not in md
+
+
+def test_coerce_tags_handles_non_list():
+    # A bare string must become ONE tag, not one tag per character.
+    assert ta._coerce_tags("python") == ["python"]
+    assert ta._coerce_tags(None) == []
+    assert ta._coerce_tags(["a", " b ", "", "  "]) == ["a", "b"]
 
 
 def test_extract_json_tolerates_fences_and_prose():
@@ -188,8 +219,8 @@ def test_process_file_offline(sandbox, fake_backends, monkeypatch):
     assert out == articles / "testing-pipelines-locally.md"
     body = out.read_text()
     assert "draft: true" in body and "## Why test" in body
-    assert not audio.exists()                      # original moved
-    assert (processed / "episode.m4a").exists()    # archived
+    assert not audio.exists()              # source audio deleted after transcription
+    assert not processed.exists()          # never archived back into the repo
 
 
 def test_main_full_run(sandbox, fake_backends, monkeypatch):
@@ -201,7 +232,7 @@ def test_main_full_run(sandbox, fake_backends, monkeypatch):
     (inbox / "talk.mp3").write_bytes(b"\x00" * 16)
     assert ta.main() == 0
     assert (articles / "testing-pipelines-locally.md").exists()
-    assert (processed / "talk.mp3").exists()
+    assert not (inbox / "talk.mp3").exists()   # source deleted, not archived
 
 
 def test_main_no_audio_is_noop(sandbox):
@@ -226,4 +257,4 @@ def test_pipeline_with_real_ffmpeg(sandbox, fake_backends):
     out = ta.process_file(audio, stt, stt, "2026-05-30")
 
     assert out.exists()
-    assert (processed / "real.wav").exists()
+    assert not audio.exists()   # source deleted after transcription

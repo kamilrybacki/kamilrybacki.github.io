@@ -94,3 +94,9 @@ __pycache__/
 
 # Pytest
 .pytest_cache/
+
+# Raw audio recordings — never commit raw audio to this public repo.
+# Files are dropped into audio-inbox/ only to trigger transcription; the
+# workflow deletes them after producing a draft. Keep the folder's README.
+audio-inbox/*
+!audio-inbox/README.md

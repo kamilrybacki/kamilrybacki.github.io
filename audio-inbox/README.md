@@ -13,11 +13,16 @@ blog post automatically.
    - compresses the audio and transcribes it with the OpenAI API,
    - cleans the raw transcript into a structured Markdown article with an LLM,
    - writes `src/content/articles/<slug>.md` with `draft: true`,
-   - moves your audio file into [`processed/`](./processed) so it is not
-     transcribed again,
+   - **deletes your audio file** once it has been transcribed, and
    - commits everything back to `main` (tagged `[transcribe]`).
 3. Pull `main`, open the new draft article, **add images and edit the prose**,
    then set `draft: false` and push to publish.
+
+> **Raw audio is never kept in the repo.** `audio-inbox/` is git-ignored and the
+> workflow deletes each recording after transcribing it, so your audio does not
+> end up on the public site. A file only lives here long enough to trigger the
+> run. (Drop files via the GitHub web UI or `git add -f`; a plain `git add` will
+> skip them by design.)
 
 Drafts are invisible on the live site until `draft: false` (enforced in
 `src/content/articles/articles.11tydata.js`). During `npm run dev` they render

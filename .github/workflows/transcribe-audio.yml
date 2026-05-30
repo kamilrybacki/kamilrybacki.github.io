@@ -15,11 +15,16 @@ on:
     branches: [main]
     paths:
       - "audio-inbox/**"
-      - "!audio-inbox/processed/**"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# Serialise runs: each one commits and pushes to main, so overlapping runs would
+# race on `git push`. Queue them instead of cancelling work already in flight.
+concurrency:
+  group: transcribe-audio
+  cancel-in-progress: false
 
 jobs:
   transcribe:
@@ -70,7 +75,10 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/content/articles/ audio-inbox/
+          # Stage new drafts and the deletion of the now-transcribed source
+          # audio (audio-inbox/ is git-ignored, but removals of already-tracked
+          # files committed by the triggering push must still be recorded).
+          git add -A src/content/articles/ audio-inbox/
           if ! git diff --cached --quiet; then
             git commit -m "content: add transcribed article draft(s) [transcribe]"
             git push

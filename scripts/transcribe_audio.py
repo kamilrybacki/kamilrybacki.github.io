@@ -13,8 +13,9 @@ For every audio file dropped into `audio-inbox/` this script:
   4. Writes `src/content/articles/<slug>.md` using the exact front-matter shape
      the site already uses, with `draft: true` so nothing publishes until you
      review it and add images.
-  5. Moves the processed audio into `audio-inbox/processed/` so it is not
-     transcribed again.
+  5. Deletes the source audio once it has been transcribed. The raw recording is
+     never kept in the repo (`audio-inbox/` is git-ignored), so it cannot leak
+     onto the public site or linger in the tree.
 
 This is purely additive: writing articles by hand (or via Decap CMS) is
 completely unaffected. Audio is just another way to produce the same Markdown.
@@ -74,13 +75,17 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 INBOX_DIR = REPO_ROOT / "audio-inbox"
-PROCESSED_DIR = INBOX_DIR / "processed"
 ARTICLES_DIR = REPO_ROOT / "src" / "content" / "articles"
+
+# Transient-failure retry policy for the external STT/polish API calls.
+API_RETRY_ATTEMPTS = 3
+API_RETRY_BACKOFF_SECONDS = 2  # 2s, then 4s, then 8s
 
 # Extensions the transcription endpoints accept as input.
 AUDIO_EXTENSIONS = {
@@ -135,6 +140,26 @@ Respond with a single JSON object, no prose around it, with these keys:
 
 def log(msg: str) -> None:
     print(msg, flush=True)
+
+
+def _with_retry(what: str, fn):
+    """Call `fn()`, retrying transient failures with exponential backoff.
+
+    External STT/polish endpoints occasionally return 429/5xx or drop the
+    connection; a single transient blip should not fail the whole run.
+    """
+    last_exc: Exception | None = None
+    for attempt in range(1, API_RETRY_ATTEMPTS + 1):
+        try:
+            return fn()
+        except Exception as exc:  # noqa: BLE001 - provider SDKs raise varied types
+            last_exc = exc
+            if attempt == API_RETRY_ATTEMPTS:
+                break
+            delay = API_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
+            log(f"  {what} failed (attempt {attempt}/{API_RETRY_ATTEMPTS}): {exc}; retrying in {delay}s")
+            time.sleep(delay)
+    raise RuntimeError(f"{what} failed after {API_RETRY_ATTEMPTS} attempts: {last_exc}") from last_exc
 
 
 # --------------------------------------------------------------------------- #
@@ -241,10 +266,14 @@ def _stt_openai(cfg: BackendConfig, audio_files: list[Path]) -> str:
     parts: list[str] = []
     for i, chunk in enumerate(audio_files, 1):
         log(f"  [openai:{cfg.model}] transcribing chunk {i}/{len(audio_files)} ({chunk.name})")
-        with chunk.open("rb") as fh:
-            result = client.audio.transcriptions.create(
-                model=cfg.model, file=fh, response_format="text",
-            )
+
+        def _call(chunk=chunk):
+            with chunk.open("rb") as fh:
+                return client.audio.transcriptions.create(
+                    model=cfg.model, file=fh, response_format="text",
+                )
+
+        result = _with_retry(f"openai STT chunk {i}", _call)
         parts.append(result if isinstance(result, str) else getattr(result, "text", ""))
     return _join_parts(parts)
 
@@ -262,17 +291,21 @@ def _stt_elevenlabs(cfg: BackendConfig, audio_files: list[Path]) -> str:
     parts: list[str] = []
     for i, chunk in enumerate(audio_files, 1):
         log(f"  [elevenlabs:{cfg.model}] transcribing chunk {i}/{len(audio_files)} ({chunk.name})")
-        with chunk.open("rb") as fh:
-            resp = requests.post(
-                url,
-                headers=headers,
-                data={"model_id": cfg.model},
-                files={"file": (chunk.name, fh, "audio/mpeg")},
-                timeout=600,
-            )
-        if resp.status_code >= 400:
-            raise RuntimeError(f"ElevenLabs STT failed ({resp.status_code}): {resp.text[:500]}")
-        parts.append(resp.json().get("text", ""))
+
+        def _call(chunk=chunk):
+            with chunk.open("rb") as fh:
+                resp = requests.post(
+                    url,
+                    headers=headers,
+                    data={"model_id": cfg.model},
+                    files={"file": (chunk.name, fh, "audio/mpeg")},
+                    timeout=600,
+                )
+            if resp.status_code >= 400:
+                raise RuntimeError(f"ElevenLabs STT failed ({resp.status_code}): {resp.text[:500]}")
+            return resp.json().get("text", "")
+
+        parts.append(_with_retry(f"elevenlabs STT chunk {i}", _call))
     return _join_parts(parts)
 
 
@@ -313,14 +346,17 @@ def _polish_openai(cfg: BackendConfig, transcript: str) -> dict:
         {"role": "system", "content": POLISH_SYSTEM_PROMPT},
         {"role": "user", "content": transcript},
     ]
-    try:
-        response = client.chat.completions.create(
-            model=cfg.model, messages=messages,
-            response_format={"type": "json_object"},
-        )
-    except Exception:
-        # Some OpenAI-compatible endpoints don't support response_format.
-        response = client.chat.completions.create(model=cfg.model, messages=messages)
+    def _call():
+        try:
+            return client.chat.completions.create(
+                model=cfg.model, messages=messages,
+                response_format={"type": "json_object"},
+            )
+        except Exception:
+            # Some OpenAI-compatible endpoints don't support response_format.
+            return client.chat.completions.create(model=cfg.model, messages=messages)
+
+    response = _with_retry("openai polish", _call)
     return _extract_json(response.choices[0].message.content)
 
 
@@ -333,12 +369,12 @@ def _polish_anthropic(cfg: BackendConfig, transcript: str) -> dict:
             "(pip install -r scripts/requirements-transcribe.txt)"
         )
     client = anthropic.Anthropic(api_key=cfg.api_key, base_url=cfg.base_url)
-    message = client.messages.create(
+    message = _with_retry("anthropic polish", lambda: client.messages.create(
         model=cfg.model,
         max_tokens=8192,
         system=POLISH_SYSTEM_PROMPT + "\n\nReturn ONLY the JSON object.",
         messages=[{"role": "user", "content": transcript}],
-    )
+    ))
     text = "".join(block.text for block in message.content if block.type == "text")
     return _extract_json(text)
 
@@ -371,20 +407,44 @@ def unique_article_path(slug: str) -> Path:
     return candidate
 
 
+def _oneline(value: str) -> str:
+    """Collapse all whitespace (incl. newlines) to single spaces and strip.
+
+    Front-matter scalars come from untrusted model output; a raw newline would
+    let the model inject arbitrary YAML keys, so every scalar is flattened to a
+    single line before being quoted.
+    """
+    return re.sub(r"\s+", " ", str(value)).strip()
+
+
 def yaml_quote(value: str) -> str:
-    """Double-quote a scalar, escaping embedded double quotes."""
-    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    """Double-quote a single-line scalar, escaping backslashes and quotes."""
+    return '"' + _oneline(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _coerce_tags(raw) -> list[str]:
+    """Normalise the model's `tags` field into a clean list of strings.
+
+    The model is asked for a JSON array, but may return a bare string or other
+    shapes — iterating a string char-by-char would otherwise yield one tag per
+    letter. Anything not list-like becomes a single tag.
+    """
+    if isinstance(raw, str):
+        raw = [raw]
+    elif not isinstance(raw, (list, tuple)):
+        raw = [] if raw is None else [raw]
+    return [_oneline(t) for t in raw if _oneline(t)]
 
 
 def build_markdown(meta: dict, date: str) -> str:
-    title = str(meta["title"]).strip().strip('"')
-    description = str(meta.get("description", "")).strip()
-    category = str(meta.get("category", "")).strip() or "Uncategorized"
-    tags = [str(t).strip() for t in (meta.get("tags") or []) if str(t).strip()]
+    title = _oneline(meta["title"]).strip('"')
+    description = _oneline(meta.get("description", ""))
+    category = _oneline(meta.get("category", "")) or "Uncategorized"
+    tags = _coerce_tags(meta.get("tags"))
     body = str(meta["body"]).strip()
 
     if tags:
-        tags_block = "tags:\n" + "".join(f"  - {t}\n" for t in tags)
+        tags_block = "tags:\n" + "".join(f"  - {yaml_quote(t)}\n" for t in tags)
     else:
         tags_block = "tags: []\n"
 
@@ -393,7 +453,7 @@ def build_markdown(meta: dict, date: str) -> str:
         "layout: article.njk\n"
         f"title: {yaml_quote(title)}\n"
         f"date: {date}\n"
-        f"category: {category}\n"
+        f"category: {yaml_quote(category)}\n"
         f"description: {yaml_quote(description)}\n"
         f"{tags_block}"
         "draft: true\n"
@@ -430,12 +490,11 @@ def process_file(audio: Path, stt_cfg: BackendConfig, polish_cfg: BackendConfig,
     out_path.write_text(markdown, encoding="utf-8")
     log(f"  wrote {out_path.relative_to(REPO_ROOT)}")
 
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    dest = PROCESSED_DIR / audio.name
-    if dest.exists():
-        dest = PROCESSED_DIR / f"{audio.stem}-{out_path.stem}{audio.suffix}"
-    shutil.move(str(audio), str(dest))
-    log(f"  archived audio to {dest.relative_to(REPO_ROOT)}")
+    # Delete the source audio once transcribed: the raw recording is never kept
+    # in the repo (audio-inbox/ is git-ignored), so it cannot leak or be
+    # re-transcribed on the next run.
+    audio.unlink()
+    log(f"  deleted source audio {audio.relative_to(REPO_ROOT)}")
     return out_path
 
 
