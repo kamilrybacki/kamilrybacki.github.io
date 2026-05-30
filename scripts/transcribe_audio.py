@@ -22,35 +22,42 @@ completely unaffected. Audio is just another way to produce the same Markdown.
 ------------------------------------------------------------------------------
 Backend configuration
 ------------------------------------------------------------------------------
-The STT backend and the polish-LLM backend are configured INDEPENDENTLY, so you
-can mix providers (e.g. ElevenLabs for transcription + Anthropic for polish).
+The STT backend and the polish-LLM backend are configured INDEPENDENTLY. Each is
+defined by three things plus a model, so you can point at ANY vendor without
+code changes by declaring which API schema (wire format) it speaks:
+
+  *_API_SCHEMA   which adapter/wire-format to use (decides how requests are made)
+  *_BASE_URL     the API endpoint (optional; the schema's default is used if unset)
+  *_API_KEY      the credential for that endpoint
+  *_MODEL        the model name to request
 
 Speech-to-Text (transcription):
-  STT_PROVIDER     openai | elevenlabs           (default: openai)
-  STT_MODEL        provider default if unset
-                     openai     -> gpt-4o-transcribe
-                     elevenlabs -> scribe_v1
-  STT_API_KEY      provider API key. Falls back to:
-                     openai     -> OPENAI_API_KEY
-                     elevenlabs -> ELEVENLABS_API_KEY
-  STT_BASE_URL     optional OpenAI-compatible base URL (Groq/Together/local).
-                   e.g. https://api.groq.com/openai/v1  (provider stays openai)
+  STT_PROVIDER_API_SCHEMA   openai | elevenlabs        (default: openai)
+  STT_PROVIDER_BASE_URL     endpoint override (e.g. https://api.groq.com/openai/v1)
+  STT_PROVIDER_API_KEY      credential for the STT endpoint
+  STT_MODEL                 schema default if unset
+                              openai     -> gpt-4o-transcribe
+                              elevenlabs -> scribe_v1
 
 LLM polish (transcript -> article):
-  POLISH_PROVIDER  openai | anthropic            (default: openai)
-  POLISH_MODEL     provider default if unset
-                     openai    -> gpt-4o
-                     anthropic -> claude-sonnet-4-5
-  POLISH_API_KEY   provider API key. Falls back to:
-                     openai    -> OPENAI_API_KEY
-                     anthropic -> ANTHROPIC_API_KEY
-  POLISH_BASE_URL  optional OpenAI-compatible base URL (provider stays openai).
+  POLISH_PROVIDER_API_SCHEMA  openai | anthropic       (default: openai)
+  POLISH_PROVIDER_BASE_URL    endpoint override
+  POLISH_PROVIDER_API_KEY     credential for the polish endpoint
+  POLISH_MODEL                schema default if unset
+                                openai    -> gpt-4o
+                                anthropic -> claude-sonnet-4-5
+
+"openai" schema = the OpenAI wire format, which is spoken by OpenAI itself and by
+every OpenAI-compatible provider (Groq, Together, OpenRouter, vLLM, …) — just set
+the matching *_BASE_URL. "elevenlabs" / "anthropic" use those vendors' native
+APIs.
+
+Key fallback (convenience): if *_PROVIDER_API_KEY is unset, the schema's
+conventional env var is used — OPENAI_API_KEY / ELEVENLABS_API_KEY /
+ANTHROPIC_API_KEY — so the simplest setup is just `export OPENAI_API_KEY=...`.
 
 Misc:
   ARTICLE_DATE     ISO date for the article (default: today, UTC).
-
-Back-compat: OPENAI_TRANSCRIBE_MODEL / OPENAI_POLISH_MODEL are still honoured as
-fallbacks for STT_MODEL / POLISH_MODEL when the provider is openai.
 
 Exit codes:
   0  one or more articles were generated, OR there was nothing to do.
@@ -85,9 +92,10 @@ MAX_UPLOAD_BYTES = 24 * 1024 * 1024
 # When a compressed file is still too large, split into chunks this long.
 CHUNK_SECONDS = 20 * 60
 
-# Provider defaults.
+# Per-schema defaults.
 DEFAULT_STT_MODEL = {"openai": "gpt-4o-transcribe", "elevenlabs": "scribe_v1"}
 DEFAULT_POLISH_MODEL = {"openai": "gpt-4o", "anthropic": "claude-sonnet-4-5"}
+# Conventional credential env var per schema (fallback when *_PROVIDER_API_KEY unset).
 DEFAULT_KEY_ENV = {
     "openai": "OPENAI_API_KEY",
     "elevenlabs": "ELEVENLABS_API_KEY",
@@ -134,7 +142,7 @@ def log(msg: str) -> None:
 # --------------------------------------------------------------------------- #
 @dataclass
 class BackendConfig:
-    provider: str
+    schema: str          # which adapter/wire-format to use
     model: str
     api_key: str | None
     base_url: str | None
@@ -151,46 +159,29 @@ def _env(name: str, default: str | None = None) -> str | None:
     return value or default
 
 
-def _resolve_key(explicit_env: str, provider: str) -> str | None:
-    return _env(explicit_env) or _env(DEFAULT_KEY_ENV.get(provider, ""))
+def _load_config(prefix: str, model_defaults: dict[str, str]) -> BackendConfig:
+    """Load a backend from {PREFIX}_PROVIDER_API_SCHEMA/_BASE_URL/_API_KEY + {PREFIX}_MODEL."""
+    schema = _env(f"{prefix}_PROVIDER_API_SCHEMA", "openai").lower()
+    if schema not in model_defaults:
+        raise ValueError(
+            f"unknown {prefix}_PROVIDER_API_SCHEMA '{schema}' "
+            f"(supported: {', '.join(model_defaults)})"
+        )
+    api_key = _env(f"{prefix}_PROVIDER_API_KEY") or _env(DEFAULT_KEY_ENV.get(schema, ""))
+    return BackendConfig(
+        schema=schema,
+        model=_env(f"{prefix}_MODEL") or model_defaults[schema],
+        api_key=api_key,
+        base_url=_env(f"{prefix}_PROVIDER_BASE_URL"),
+    )
 
 
 def load_stt_config() -> BackendConfig:
-    provider = _env("STT_PROVIDER", "openai").lower()
-    if provider not in DEFAULT_STT_MODEL:
-        raise ValueError(
-            f"unknown STT_PROVIDER '{provider}' (supported: {', '.join(DEFAULT_STT_MODEL)})"
-        )
-    model = (
-        _env("STT_MODEL")
-        or (_env("OPENAI_TRANSCRIBE_MODEL") if provider == "openai" else None)
-        or DEFAULT_STT_MODEL[provider]
-    )
-    return BackendConfig(
-        provider=provider,
-        model=model,
-        api_key=_resolve_key("STT_API_KEY", provider),
-        base_url=_env("STT_BASE_URL"),
-    )
+    return _load_config("STT", DEFAULT_STT_MODEL)
 
 
 def load_polish_config() -> BackendConfig:
-    provider = _env("POLISH_PROVIDER", "openai").lower()
-    if provider not in DEFAULT_POLISH_MODEL:
-        raise ValueError(
-            f"unknown POLISH_PROVIDER '{provider}' (supported: {', '.join(DEFAULT_POLISH_MODEL)})"
-        )
-    model = (
-        _env("POLISH_MODEL")
-        or (_env("OPENAI_POLISH_MODEL") if provider == "openai" else None)
-        or DEFAULT_POLISH_MODEL[provider]
-    )
-    return BackendConfig(
-        provider=provider,
-        model=model,
-        api_key=_resolve_key("POLISH_API_KEY", provider),
-        base_url=_env("POLISH_BASE_URL"),
-    )
+    return _load_config("POLISH", DEFAULT_POLISH_MODEL)
 
 
 # --------------------------------------------------------------------------- #
@@ -232,14 +223,18 @@ def prepare_chunks(src: Path, workdir: Path) -> list[Path]:
 
 
 # --------------------------------------------------------------------------- #
-# STT backends
+# STT backends (keyed by API schema)
 # --------------------------------------------------------------------------- #
+def _join_parts(parts: list[str]) -> str:
+    return "\n".join(p.strip() for p in parts if p and p.strip())
+
+
 def _stt_openai(cfg: BackendConfig, audio_files: list[Path]) -> str:
     try:
         from openai import OpenAI
     except ImportError:
         raise RuntimeError(
-            "the 'openai' package is required for STT_PROVIDER=openai "
+            "the 'openai' package is required for the openai STT schema "
             "(pip install -r scripts/requirements-transcribe.txt)"
         )
     client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url)
@@ -259,7 +254,7 @@ def _stt_elevenlabs(cfg: BackendConfig, audio_files: list[Path]) -> str:
         import requests
     except ImportError:
         raise RuntimeError(
-            "the 'requests' package is required for STT_PROVIDER=elevenlabs "
+            "the 'requests' package is required for the elevenlabs STT schema "
             "(pip install -r scripts/requirements-transcribe.txt)"
         )
     url = (cfg.base_url or "https://api.elevenlabs.io/v1").rstrip("/") + "/speech-to-text"
@@ -284,16 +279,12 @@ def _stt_elevenlabs(cfg: BackendConfig, audio_files: list[Path]) -> str:
 STT_BACKENDS = {"openai": _stt_openai, "elevenlabs": _stt_elevenlabs}
 
 
-def _join_parts(parts: list[str]) -> str:
-    return "\n".join(p.strip() for p in parts if p and p.strip())
-
-
 def transcribe(cfg: BackendConfig, audio_files: list[Path]) -> str:
-    return STT_BACKENDS[cfg.provider](cfg, audio_files)
+    return STT_BACKENDS[cfg.schema](cfg, audio_files)
 
 
 # --------------------------------------------------------------------------- #
-# Polish backends
+# Polish backends (keyed by API schema)
 # --------------------------------------------------------------------------- #
 def _extract_json(text: str) -> dict:
     """Parse a JSON object, tolerating code fences / surrounding prose."""
@@ -314,7 +305,7 @@ def _polish_openai(cfg: BackendConfig, transcript: str) -> dict:
         from openai import OpenAI
     except ImportError:
         raise RuntimeError(
-            "the 'openai' package is required for POLISH_PROVIDER=openai "
+            "the 'openai' package is required for the openai polish schema "
             "(pip install -r scripts/requirements-transcribe.txt)"
         )
     client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url)
@@ -338,7 +329,7 @@ def _polish_anthropic(cfg: BackendConfig, transcript: str) -> dict:
         import anthropic
     except ImportError:
         raise RuntimeError(
-            "the 'anthropic' package is required for POLISH_PROVIDER=anthropic "
+            "the 'anthropic' package is required for the anthropic polish schema "
             "(pip install -r scripts/requirements-transcribe.txt)"
         )
     client = anthropic.Anthropic(api_key=cfg.api_key, base_url=cfg.base_url)
@@ -356,8 +347,8 @@ POLISH_BACKENDS = {"openai": _polish_openai, "anthropic": _polish_anthropic}
 
 
 def polish(cfg: BackendConfig, transcript: str) -> dict:
-    log(f"  polishing transcript ({len(transcript)} chars) with {cfg.provider}:{cfg.model}")
-    data = POLISH_BACKENDS[cfg.provider](cfg, transcript)
+    log(f"  polishing transcript ({len(transcript)} chars) with {cfg.schema}:{cfg.model}")
+    data = POLISH_BACKENDS[cfg.schema](cfg, transcript)
     if not data.get("body") or not data.get("title"):
         raise ValueError("model response missing required 'title'/'body' fields")
     return data
@@ -448,6 +439,10 @@ def process_file(audio: Path, stt_cfg: BackendConfig, polish_cfg: BackendConfig,
     return out_path
 
 
+def _describe(cfg: BackendConfig) -> str:
+    return f"{cfg.schema}:{cfg.model}" + (f" @ {cfg.base_url}" if cfg.base_url else "")
+
+
 def main() -> int:
     audio_files = discover_audio()
     if not audio_files:
@@ -466,18 +461,16 @@ def main() -> int:
         return 1
 
     if not stt_cfg.api_key:
-        log(f"ERROR: no API key for STT provider '{stt_cfg.provider}' "
-            f"(set STT_API_KEY or {DEFAULT_KEY_ENV[stt_cfg.provider]}).")
+        log(f"ERROR: no API key for STT schema '{stt_cfg.schema}' "
+            f"(set STT_PROVIDER_API_KEY or {DEFAULT_KEY_ENV[stt_cfg.schema]}).")
         return 1
     if not polish_cfg.api_key:
-        log(f"ERROR: no API key for polish provider '{polish_cfg.provider}' "
-            f"(set POLISH_API_KEY or {DEFAULT_KEY_ENV[polish_cfg.provider]}).")
+        log(f"ERROR: no API key for polish schema '{polish_cfg.schema}' "
+            f"(set POLISH_PROVIDER_API_KEY or {DEFAULT_KEY_ENV[polish_cfg.schema]}).")
         return 1
 
-    log(f"STT:    {stt_cfg.provider}:{stt_cfg.model}"
-        f"{' @ ' + stt_cfg.base_url if stt_cfg.base_url else ''}")
-    log(f"Polish: {polish_cfg.provider}:{polish_cfg.model}"
-        f"{' @ ' + polish_cfg.base_url if polish_cfg.base_url else ''}")
+    log(f"STT:    {_describe(stt_cfg)}")
+    log(f"Polish: {_describe(polish_cfg)}")
 
     date = os.environ.get("ARTICLE_DATE") or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
 

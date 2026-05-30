@@ -46,22 +46,24 @@ jobs:
 
       - name: Transcribe audio into draft articles
         env:
-          # --- Backend selection (set as repository *variables*; optional) ---
-          # STT (transcription): provider openai | elevenlabs
-          STT_PROVIDER: ${{ vars.STT_PROVIDER }}
+          # --- Backend selection (non-secret -> repository *variables*) ------
+          # A backend = API schema (wire format) + base URL + model.
+          # STT (transcription): schema openai | elevenlabs
+          STT_PROVIDER_API_SCHEMA: ${{ vars.STT_PROVIDER_API_SCHEMA }}
+          STT_PROVIDER_BASE_URL: ${{ vars.STT_PROVIDER_BASE_URL }}  # e.g. Groq's /openai/v1
           STT_MODEL: ${{ vars.STT_MODEL }}
-          STT_BASE_URL: ${{ vars.STT_BASE_URL }}   # OpenAI-compatible URL (e.g. Groq)
-          # Polish (transcript -> article): provider openai | anthropic
-          POLISH_PROVIDER: ${{ vars.POLISH_PROVIDER }}
+          # Polish (transcript -> article): schema openai | anthropic
+          POLISH_PROVIDER_API_SCHEMA: ${{ vars.POLISH_PROVIDER_API_SCHEMA }}
+          POLISH_PROVIDER_BASE_URL: ${{ vars.POLISH_PROVIDER_BASE_URL }}
           POLISH_MODEL: ${{ vars.POLISH_MODEL }}
-          POLISH_BASE_URL: ${{ vars.POLISH_BASE_URL }}
-          # --- API keys (set as repository *secrets*; only the used ones) ----
+          # --- Credentials (secret -> repository *secrets*) -----------------
+          STT_PROVIDER_API_KEY: ${{ secrets.STT_PROVIDER_API_KEY }}
+          POLISH_PROVIDER_API_KEY: ${{ secrets.POLISH_PROVIDER_API_KEY }}
+          # Convenience fallbacks used when the *_PROVIDER_API_KEY above is unset
+          # (picked by schema): only set the one(s) you use.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Optional explicit per-backend key overrides:
-          STT_API_KEY: ${{ secrets.STT_API_KEY }}
-          POLISH_API_KEY: ${{ secrets.POLISH_API_KEY }}
         run: python3 scripts/transcribe_audio.py
 
       - name: Commit generated drafts (if any)

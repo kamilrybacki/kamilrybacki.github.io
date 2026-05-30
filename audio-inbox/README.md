@@ -25,40 +25,51 @@ so you can preview them.
 
 ## Choosing backends
 
-Transcription (STT) and the LLM "polish" step are configured **independently**,
-so you can mix providers (e.g. ElevenLabs for STT + Anthropic for polish, or
-Groq for cheap STT + OpenAI for polish). Set these as repository **variables**
-(Settings → Secrets and variables → Actions → *Variables*); all are optional and
-fall back to sensible defaults.
+Transcription (STT) and the LLM "polish" step are configured **independently**.
+Each backend is defined by an **API schema** (the wire format / adapter to use),
+a **base URL**, an **API key** and a **model** — so you can point at *any* vendor
+by declaring which schema it speaks. Set the non-secret parts as repository
+**variables** (Settings → Secrets and variables → Actions → *Variables*); all are
+optional and fall back to sensible defaults.
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `STT_PROVIDER` | `openai` or `elevenlabs` | `openai` |
+| `STT_PROVIDER_API_SCHEMA` | wire format: `openai` or `elevenlabs` | `openai` |
+| `STT_PROVIDER_BASE_URL` | endpoint override (e.g. Groq's `/openai/v1`) | schema default |
 | `STT_MODEL` | transcription model | `gpt-4o-transcribe` / `scribe_v1` |
-| `STT_BASE_URL` | OpenAI-compatible URL (Groq, Together, local…) | — |
-| `POLISH_PROVIDER` | `openai` or `anthropic` | `openai` |
+| `POLISH_PROVIDER_API_SCHEMA` | wire format: `openai` or `anthropic` | `openai` |
+| `POLISH_PROVIDER_BASE_URL` | endpoint override | schema default |
 | `POLISH_MODEL` | polish model | `gpt-4o` / `claude-sonnet-4-5` |
-| `POLISH_BASE_URL` | OpenAI-compatible URL for polish | — |
+
+> The `openai` schema is the OpenAI wire format — spoken by OpenAI **and** every
+> OpenAI-compatible provider (Groq, Together, OpenRouter, vLLM, …). To use one,
+> keep `*_API_SCHEMA=openai` and set `*_BASE_URL` to its endpoint.
 
 **Example — ElevenLabs Scribe + Anthropic Claude:** set variables
-`STT_PROVIDER=elevenlabs` and `POLISH_PROVIDER=anthropic`.
+`STT_PROVIDER_API_SCHEMA=elevenlabs` and `POLISH_PROVIDER_API_SCHEMA=anthropic`.
 
 **Example — Groq (cheap STT) + OpenAI polish:** set variables
-`STT_BASE_URL=https://api.groq.com/openai/v1` and
-`STT_MODEL=whisper-large-v3-turbo` (keep `STT_PROVIDER=openai`, since Groq is
-OpenAI-compatible), and provide a Groq key via the `STT_API_KEY` secret.
+`STT_PROVIDER_BASE_URL=https://api.groq.com/openai/v1` and
+`STT_MODEL=whisper-large-v3-turbo` (schema stays `openai`), and provide a Groq
+key via the `STT_PROVIDER_API_KEY` secret.
 
 ## API keys (secrets)
 
-Set only the keys for the providers you actually use, as repository **secrets**:
+Each backend takes its own key. Set these as repository **secrets**:
 
-| Secret | Used by |
+| Secret | Purpose |
 |--------|---------|
-| `OPENAI_API_KEY` | OpenAI STT and/or polish |
-| `ELEVENLABS_API_KEY` | ElevenLabs STT |
-| `ANTHROPIC_API_KEY` | Anthropic polish |
-| `STT_API_KEY` | optional explicit key for the STT backend (e.g. Groq) |
-| `POLISH_API_KEY` | optional explicit key for the polish backend |
+| `STT_PROVIDER_API_KEY` | credential for the STT backend |
+| `POLISH_PROVIDER_API_KEY` | credential for the polish backend |
+
+If a `*_PROVIDER_API_KEY` is unset, a **schema-conventional fallback** is used —
+so the simplest setup is just one of these:
+
+| Fallback secret | Used when schema is |
+|-----------------|---------------------|
+| `OPENAI_API_KEY` | `openai` |
+| `ELEVENLABS_API_KEY` | `elevenlabs` |
+| `ANTHROPIC_API_KEY` | `anthropic` |
 
 For OpenAI, use a **Platform API key** from
 <https://platform.openai.com/api-keys> — your ChatGPT login / OAuth does **not**
@@ -73,9 +84,16 @@ pip install -r scripts/requirements-transcribe.txt   # needs ffmpeg installed
 export OPENAI_API_KEY=sk-...
 python3 scripts/transcribe_audio.py
 
-# Or mix providers, e.g. ElevenLabs STT + Anthropic polish:
-export STT_PROVIDER=elevenlabs   ELEVENLABS_API_KEY=...
-export POLISH_PROVIDER=anthropic ANTHROPIC_API_KEY=...
+# Or mix backends, e.g. ElevenLabs STT + Anthropic polish:
+export STT_PROVIDER_API_SCHEMA=elevenlabs   STT_PROVIDER_API_KEY=...
+export POLISH_PROVIDER_API_SCHEMA=anthropic POLISH_PROVIDER_API_KEY=...
+python3 scripts/transcribe_audio.py
+
+# Or an OpenAI-compatible endpoint (Groq) for STT:
+export STT_PROVIDER_API_SCHEMA=openai \
+       STT_PROVIDER_BASE_URL=https://api.groq.com/openai/v1 \
+       STT_MODEL=whisper-large-v3-turbo \
+       STT_PROVIDER_API_KEY=gsk-...
 python3 scripts/transcribe_audio.py
 ```
 
