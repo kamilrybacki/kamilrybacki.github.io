@@ -139,4 +139,28 @@ Plans: docs/superpowers/plans/2026-05-30-stt-polish-{service,deploy}.md, 2026-05
 **Fix (cheap):** add a couple of tests.
 
 ## Fix plan
-Fix Important 1–6, Minor 8–12, plus Suggestions 14 & 16 (trivial/safe). Skip 15 (out of scope). 7 mitigated at ingress + by 1/14. 13 accepted by design. Re-run `pytest` (service) and `npm run build` + `node --check` (widget) green.
+Fix Important 1–6, Minor 8–12, plus Suggestion 16 (trivial). Skip 15 (out of scope). 7 mitigated at ingress. 13 accepted by design. Re-run `pytest` (service) and `npm run build` + `node --check` (widget) green.
+
+## Resolution (2026-05-30)
+
+Fixed (service — commit `04dce30`, **23 pytest passing**):
+- **1** — `/transcribe` now takes `Request`, does Content-Length guard + `_bearer` + `verify_token` BEFORE `request.form(max_part_size=…)`; >1 MB audio works, multipart no longer parsed pre-auth.
+- **2** — provider/config errors logged server-side; clients get generic `service misconfigured` / `transcription failed` (regression test `test_error_detail_is_generic`).
+- **3** — `MAX_CHUNKS = 3` cap → 413 (`test_transcribe_rejects_too_long`).
+- **4** — `verify_token` wraps `.json()` → fail closed (`test_malformed_200_body_denies`).
+- **8** — blocking transcription/polish offloaded via `run_in_threadpool`.
+- **10** — `/readyz` returns a single generic status.
+- **16** — added lowercase-`bearer` test.
+
+Fixed (widget — commit `139d43a`, build + `node --check` green):
+- **5** — `preSave` deletes `audio` even when present-but-falsy.
+- **6** — `normalizeResult()` coerces `tags` to a string array.
+- **9** — SRI `sha384` + `crossorigin` on the pinned Decap CDN script.
+- **11** — file input reset after read.
+- **12** — `AbortController` 180 s timeout.
+
+Deferred / not changed:
+- **7** rate-limiting — covered by the Caddy route's `import rate_limit` (ingress); no app dependency added.
+- **14** `verify_token` TTL cache — deferred: a token-keyed cache risked test-order coupling for marginal benefit on a single-user service; revisit if GitHub rate limits bite.
+- **15** structured logging in `backends` — out of scope (logs lengths/model names, no secrets).
+- **13** token blast radius — accepted by design (no narrower GitHub scope; HTTPS-only via cloudflared; service never logs the bearer).
