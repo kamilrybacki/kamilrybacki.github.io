@@ -5,11 +5,11 @@ Turn spoken audio into a draft blog article.
 For every audio file dropped into `audio-inbox/` this script:
 
   1. Compresses the audio to a small mono speech-friendly MP3 with ffmpeg and,
-     if it is still over the API size limit, splits it into time-based chunks.
-  2. Transcribes it with the OpenAI audio transcription API.
-  3. Sends the raw transcript through an OpenAI chat model that cleans it up and
-     shapes it into a structured blog article (headings, paragraphs, fixed
-     grammar, filler removed) and proposes front-matter metadata.
+     if it is still over the upload size limit, splits it into time-based chunks.
+  2. Transcribes it with a configurable Speech-to-Text (STT) backend.
+  3. Sends the raw transcript through a configurable LLM "polish" backend that
+     cleans it up and shapes it into a structured blog article (headings,
+     paragraphs, fixed grammar, filler removed) and proposes front-matter.
   4. Writes `src/content/articles/<slug>.md` using the exact front-matter shape
      the site already uses, with `draft: true` so nothing publishes until you
      review it and add images.
@@ -19,15 +19,42 @@ For every audio file dropped into `audio-inbox/` this script:
 This is purely additive: writing articles by hand (or via Decap CMS) is
 completely unaffected. Audio is just another way to produce the same Markdown.
 
-Environment:
-  OPENAI_API_KEY            (required) OpenAI Platform API key.
-  OPENAI_TRANSCRIBE_MODEL   transcription model (default: gpt-4o-transcribe).
-  OPENAI_POLISH_MODEL       chat model for cleanup    (default: gpt-4o).
-  ARTICLE_DATE              ISO date for the article  (default: today, UTC).
+------------------------------------------------------------------------------
+Backend configuration
+------------------------------------------------------------------------------
+The STT backend and the polish-LLM backend are configured INDEPENDENTLY, so you
+can mix providers (e.g. ElevenLabs for transcription + Anthropic for polish).
+
+Speech-to-Text (transcription):
+  STT_PROVIDER     openai | elevenlabs           (default: openai)
+  STT_MODEL        provider default if unset
+                     openai     -> gpt-4o-transcribe
+                     elevenlabs -> scribe_v1
+  STT_API_KEY      provider API key. Falls back to:
+                     openai     -> OPENAI_API_KEY
+                     elevenlabs -> ELEVENLABS_API_KEY
+  STT_BASE_URL     optional OpenAI-compatible base URL (Groq/Together/local).
+                   e.g. https://api.groq.com/openai/v1  (provider stays openai)
+
+LLM polish (transcript -> article):
+  POLISH_PROVIDER  openai | anthropic            (default: openai)
+  POLISH_MODEL     provider default if unset
+                     openai    -> gpt-4o
+                     anthropic -> claude-sonnet-4-5
+  POLISH_API_KEY   provider API key. Falls back to:
+                     openai    -> OPENAI_API_KEY
+                     anthropic -> ANTHROPIC_API_KEY
+  POLISH_BASE_URL  optional OpenAI-compatible base URL (provider stays openai).
+
+Misc:
+  ARTICLE_DATE     ISO date for the article (default: today, UTC).
+
+Back-compat: OPENAI_TRANSCRIBE_MODEL / OPENAI_POLISH_MODEL are still honoured as
+fallbacks for STT_MODEL / POLISH_MODEL when the provider is openai.
 
 Exit codes:
   0  one or more articles were generated, OR there was nothing to do.
-  1  an audio file was found but processing failed.
+  1  an audio file was found but processing failed / misconfiguration.
 """
 
 from __future__ import annotations
@@ -40,6 +67,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -47,18 +75,24 @@ INBOX_DIR = REPO_ROOT / "audio-inbox"
 PROCESSED_DIR = INBOX_DIR / "processed"
 ARTICLES_DIR = REPO_ROOT / "src" / "content" / "articles"
 
-# Extensions OpenAI's transcription endpoint accepts as input.
+# Extensions the transcription endpoints accept as input.
 AUDIO_EXTENSIONS = {
     ".mp3", ".m4a", ".wav", ".mp4", ".mpeg", ".mpga", ".webm", ".flac", ".ogg",
 }
 
-# Keep each upload comfortably under the 25 MB API limit.
+# Keep each upload comfortably under the smallest provider limit (OpenAI: 25 MB).
 MAX_UPLOAD_BYTES = 24 * 1024 * 1024
 # When a compressed file is still too large, split into chunks this long.
 CHUNK_SECONDS = 20 * 60
 
-TRANSCRIBE_MODEL = os.environ.get("OPENAI_TRANSCRIBE_MODEL", "gpt-4o-transcribe")
-POLISH_MODEL = os.environ.get("OPENAI_POLISH_MODEL", "gpt-4o")
+# Provider defaults.
+DEFAULT_STT_MODEL = {"openai": "gpt-4o-transcribe", "elevenlabs": "scribe_v1"}
+DEFAULT_POLISH_MODEL = {"openai": "gpt-4o", "anthropic": "claude-sonnet-4-5"}
+DEFAULT_KEY_ENV = {
+    "openai": "OPENAI_API_KEY",
+    "elevenlabs": "ELEVENLABS_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+}
 
 POLISH_SYSTEM_PROMPT = """\
 You are an editor for a personal software-engineering blog. You receive a raw,
@@ -93,6 +127,70 @@ Respond with a single JSON object, no prose around it, with these keys:
 
 def log(msg: str) -> None:
     print(msg, flush=True)
+
+
+# --------------------------------------------------------------------------- #
+# Configuration
+# --------------------------------------------------------------------------- #
+@dataclass
+class BackendConfig:
+    provider: str
+    model: str
+    api_key: str | None
+    base_url: str | None
+
+
+def _env(name: str, default: str | None = None) -> str | None:
+    """Return a stripped env var, treating blank/whitespace as unset.
+
+    GitHub Actions interpolates undefined vars/secrets as empty strings, so we
+    cannot rely on os.environ.get's default — blank must mean "not provided".
+    """
+    value = os.environ.get(name)
+    value = value.strip() if value else ""
+    return value or default
+
+
+def _resolve_key(explicit_env: str, provider: str) -> str | None:
+    return _env(explicit_env) or _env(DEFAULT_KEY_ENV.get(provider, ""))
+
+
+def load_stt_config() -> BackendConfig:
+    provider = _env("STT_PROVIDER", "openai").lower()
+    if provider not in DEFAULT_STT_MODEL:
+        raise ValueError(
+            f"unknown STT_PROVIDER '{provider}' (supported: {', '.join(DEFAULT_STT_MODEL)})"
+        )
+    model = (
+        _env("STT_MODEL")
+        or (_env("OPENAI_TRANSCRIBE_MODEL") if provider == "openai" else None)
+        or DEFAULT_STT_MODEL[provider]
+    )
+    return BackendConfig(
+        provider=provider,
+        model=model,
+        api_key=_resolve_key("STT_API_KEY", provider),
+        base_url=_env("STT_BASE_URL"),
+    )
+
+
+def load_polish_config() -> BackendConfig:
+    provider = _env("POLISH_PROVIDER", "openai").lower()
+    if provider not in DEFAULT_POLISH_MODEL:
+        raise ValueError(
+            f"unknown POLISH_PROVIDER '{provider}' (supported: {', '.join(DEFAULT_POLISH_MODEL)})"
+        )
+    model = (
+        _env("POLISH_MODEL")
+        or (_env("OPENAI_POLISH_MODEL") if provider == "openai" else None)
+        or DEFAULT_POLISH_MODEL[provider]
+    )
+    return BackendConfig(
+        provider=provider,
+        model=model,
+        api_key=_resolve_key("POLISH_API_KEY", provider),
+        base_url=_env("POLISH_BASE_URL"),
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -134,36 +232,132 @@ def prepare_chunks(src: Path, workdir: Path) -> list[Path]:
 
 
 # --------------------------------------------------------------------------- #
-# OpenAI calls
+# STT backends
 # --------------------------------------------------------------------------- #
-def transcribe(client, audio_files: list[Path]) -> str:
-    """Transcribe each chunk and join the text in order."""
+def _stt_openai(cfg: BackendConfig, audio_files: list[Path]) -> str:
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise RuntimeError(
+            "the 'openai' package is required for STT_PROVIDER=openai "
+            "(pip install -r scripts/requirements-transcribe.txt)"
+        )
+    client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url)
     parts: list[str] = []
     for i, chunk in enumerate(audio_files, 1):
-        log(f"  transcribing chunk {i}/{len(audio_files)} ({chunk.name})")
+        log(f"  [openai:{cfg.model}] transcribing chunk {i}/{len(audio_files)} ({chunk.name})")
         with chunk.open("rb") as fh:
             result = client.audio.transcriptions.create(
-                model=TRANSCRIBE_MODEL,
-                file=fh,
-                response_format="text",
+                model=cfg.model, file=fh, response_format="text",
             )
-        # SDK returns a str for response_format="text".
         parts.append(result if isinstance(result, str) else getattr(result, "text", ""))
+    return _join_parts(parts)
+
+
+def _stt_elevenlabs(cfg: BackendConfig, audio_files: list[Path]) -> str:
+    try:
+        import requests
+    except ImportError:
+        raise RuntimeError(
+            "the 'requests' package is required for STT_PROVIDER=elevenlabs "
+            "(pip install -r scripts/requirements-transcribe.txt)"
+        )
+    url = (cfg.base_url or "https://api.elevenlabs.io/v1").rstrip("/") + "/speech-to-text"
+    headers = {"xi-api-key": cfg.api_key or ""}
+    parts: list[str] = []
+    for i, chunk in enumerate(audio_files, 1):
+        log(f"  [elevenlabs:{cfg.model}] transcribing chunk {i}/{len(audio_files)} ({chunk.name})")
+        with chunk.open("rb") as fh:
+            resp = requests.post(
+                url,
+                headers=headers,
+                data={"model_id": cfg.model},
+                files={"file": (chunk.name, fh, "audio/mpeg")},
+                timeout=600,
+            )
+        if resp.status_code >= 400:
+            raise RuntimeError(f"ElevenLabs STT failed ({resp.status_code}): {resp.text[:500]}")
+        parts.append(resp.json().get("text", ""))
+    return _join_parts(parts)
+
+
+STT_BACKENDS = {"openai": _stt_openai, "elevenlabs": _stt_elevenlabs}
+
+
+def _join_parts(parts: list[str]) -> str:
     return "\n".join(p.strip() for p in parts if p and p.strip())
 
 
-def polish(client, transcript: str) -> dict:
-    """Turn a raw transcript into structured article JSON."""
-    log(f"  polishing transcript ({len(transcript)} chars) with {POLISH_MODEL}")
-    response = client.chat.completions.create(
-        model=POLISH_MODEL,
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": POLISH_SYSTEM_PROMPT},
-            {"role": "user", "content": transcript},
-        ],
+def transcribe(cfg: BackendConfig, audio_files: list[Path]) -> str:
+    return STT_BACKENDS[cfg.provider](cfg, audio_files)
+
+
+# --------------------------------------------------------------------------- #
+# Polish backends
+# --------------------------------------------------------------------------- #
+def _extract_json(text: str) -> dict:
+    """Parse a JSON object, tolerating code fences / surrounding prose."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\n?|\n?```$", "", text).strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        start, end = text.find("{"), text.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            return json.loads(text[start:end + 1])
+        raise
+
+
+def _polish_openai(cfg: BackendConfig, transcript: str) -> dict:
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise RuntimeError(
+            "the 'openai' package is required for POLISH_PROVIDER=openai "
+            "(pip install -r scripts/requirements-transcribe.txt)"
+        )
+    client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url)
+    messages = [
+        {"role": "system", "content": POLISH_SYSTEM_PROMPT},
+        {"role": "user", "content": transcript},
+    ]
+    try:
+        response = client.chat.completions.create(
+            model=cfg.model, messages=messages,
+            response_format={"type": "json_object"},
+        )
+    except Exception:
+        # Some OpenAI-compatible endpoints don't support response_format.
+        response = client.chat.completions.create(model=cfg.model, messages=messages)
+    return _extract_json(response.choices[0].message.content)
+
+
+def _polish_anthropic(cfg: BackendConfig, transcript: str) -> dict:
+    try:
+        import anthropic
+    except ImportError:
+        raise RuntimeError(
+            "the 'anthropic' package is required for POLISH_PROVIDER=anthropic "
+            "(pip install -r scripts/requirements-transcribe.txt)"
+        )
+    client = anthropic.Anthropic(api_key=cfg.api_key, base_url=cfg.base_url)
+    message = client.messages.create(
+        model=cfg.model,
+        max_tokens=8192,
+        system=POLISH_SYSTEM_PROMPT + "\n\nReturn ONLY the JSON object.",
+        messages=[{"role": "user", "content": transcript}],
     )
-    data = json.loads(response.choices[0].message.content)
+    text = "".join(block.text for block in message.content if block.type == "text")
+    return _extract_json(text)
+
+
+POLISH_BACKENDS = {"openai": _polish_openai, "anthropic": _polish_anthropic}
+
+
+def polish(cfg: BackendConfig, transcript: str) -> dict:
+    log(f"  polishing transcript ({len(transcript)} chars) with {cfg.provider}:{cfg.model}")
+    data = POLISH_BACKENDS[cfg.provider](cfg, transcript)
     if not data.get("body") or not data.get("title"):
         raise ValueError("model response missing required 'title'/'body' fields")
     return data
@@ -223,27 +417,25 @@ def build_markdown(meta: dict, date: str) -> str:
 def discover_audio() -> list[Path]:
     if not INBOX_DIR.exists():
         return []
-    files = [
+    return [
         p for p in sorted(INBOX_DIR.iterdir())
         if p.is_file() and p.suffix.lower() in AUDIO_EXTENSIONS
     ]
-    return files
 
 
-def process_file(client, audio: Path, date: str) -> Path:
+def process_file(audio: Path, stt_cfg: BackendConfig, polish_cfg: BackendConfig, date: str) -> Path:
     log(f"Processing {audio.name}")
     with tempfile.TemporaryDirectory() as tmp:
         workdir = Path(tmp)
         chunks = prepare_chunks(audio, workdir)
-        transcript = transcribe(client, chunks)
+        transcript = transcribe(stt_cfg, chunks)
     if not transcript.strip():
         raise ValueError("transcription produced no text")
 
-    meta = polish(client, transcript)
+    meta = polish(polish_cfg, transcript)
     markdown = build_markdown(meta, date)
 
-    slug = slugify(meta["title"])
-    out_path = unique_article_path(slug)
+    out_path = unique_article_path(slugify(meta["title"]))
     out_path.write_text(markdown, encoding="utf-8")
     log(f"  wrote {out_path.relative_to(REPO_ROOT)}")
 
@@ -265,24 +457,34 @@ def main() -> int:
     if shutil.which("ffmpeg") is None:
         log("ERROR: ffmpeg is required but was not found on PATH.")
         return 1
-    if not os.environ.get("OPENAI_API_KEY"):
-        log("ERROR: OPENAI_API_KEY is not set.")
-        return 1
 
     try:
-        from openai import OpenAI
-    except ImportError:
-        log("ERROR: the 'openai' package is not installed "
-            "(pip install -r scripts/requirements-transcribe.txt).")
+        stt_cfg = load_stt_config()
+        polish_cfg = load_polish_config()
+    except ValueError as exc:
+        log(f"ERROR: {exc}")
         return 1
 
-    client = OpenAI()
+    if not stt_cfg.api_key:
+        log(f"ERROR: no API key for STT provider '{stt_cfg.provider}' "
+            f"(set STT_API_KEY or {DEFAULT_KEY_ENV[stt_cfg.provider]}).")
+        return 1
+    if not polish_cfg.api_key:
+        log(f"ERROR: no API key for polish provider '{polish_cfg.provider}' "
+            f"(set POLISH_API_KEY or {DEFAULT_KEY_ENV[polish_cfg.provider]}).")
+        return 1
+
+    log(f"STT:    {stt_cfg.provider}:{stt_cfg.model}"
+        f"{' @ ' + stt_cfg.base_url if stt_cfg.base_url else ''}")
+    log(f"Polish: {polish_cfg.provider}:{polish_cfg.model}"
+        f"{' @ ' + polish_cfg.base_url if polish_cfg.base_url else ''}")
+
     date = os.environ.get("ARTICLE_DATE") or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
 
     generated: list[Path] = []
     for audio in audio_files:
         try:
-            generated.append(process_file(client, audio, date))
+            generated.append(process_file(audio, stt_cfg, polish_cfg, date))
         except Exception as exc:  # noqa: BLE001 - surface a clear CI failure
             log(f"ERROR processing {audio.name}: {exc}")
             return 1

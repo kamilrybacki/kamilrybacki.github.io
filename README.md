@@ -95,9 +95,13 @@ the OpenAI API, polishes the transcript into a structured Markdown article
 (`draft: true`), and commits it to `src/content/articles/`. Then pull, add
 images, set `draft: false`, and publish.
 
-Requires an `OPENAI_API_KEY` repository secret (an OpenAI **Platform** API key,
-not a ChatGPT login). See [`audio-inbox/README.md`](./audio-inbox/README.md) for
-details. This is optional — the classic flow above is unchanged.
+The transcription (STT) and LLM polish steps use **pluggable backends** — mix
+OpenAI, ElevenLabs (Scribe), Anthropic (Claude), or any OpenAI-compatible
+provider (Groq, Together, local) via repository variables. Add the matching API
+key(s) as repository secrets (`OPENAI_API_KEY`, `ELEVENLABS_API_KEY`,
+`ANTHROPIC_API_KEY`, …). See [`audio-inbox/README.md`](./audio-inbox/README.md)
+for the full backend matrix. This is optional — the classic flow above is
+unchanged.
 
 ### Adding Projects
 

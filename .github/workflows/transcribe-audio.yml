@@ -46,10 +46,22 @@ jobs:
 
       - name: Transcribe audio into draft articles
         env:
+          # --- Backend selection (set as repository *variables*; optional) ---
+          # STT (transcription): provider openai | elevenlabs
+          STT_PROVIDER: ${{ vars.STT_PROVIDER }}
+          STT_MODEL: ${{ vars.STT_MODEL }}
+          STT_BASE_URL: ${{ vars.STT_BASE_URL }}   # OpenAI-compatible URL (e.g. Groq)
+          # Polish (transcript -> article): provider openai | anthropic
+          POLISH_PROVIDER: ${{ vars.POLISH_PROVIDER }}
+          POLISH_MODEL: ${{ vars.POLISH_MODEL }}
+          POLISH_BASE_URL: ${{ vars.POLISH_BASE_URL }}
+          # --- API keys (set as repository *secrets*; only the used ones) ----
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # Optional overrides — uncomment in repo variables if you want them:
-          # OPENAI_TRANSCRIBE_MODEL: gpt-4o-transcribe
-          # OPENAI_POLISH_MODEL: gpt-4o
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Optional explicit per-backend key overrides:
+          STT_API_KEY: ${{ secrets.STT_API_KEY }}
+          POLISH_API_KEY: ${{ secrets.POLISH_API_KEY }}
         run: python3 scripts/transcribe_audio.py
 
       - name: Commit generated drafts (if any)
