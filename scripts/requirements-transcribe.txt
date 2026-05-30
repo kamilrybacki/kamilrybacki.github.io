@@ -1,16 +1,16 @@
 # Dependencies for scripts/transcribe_audio.py (audio -> draft article).
 # Used by .github/workflows/transcribe-audio.yml and for local runs.
 #
-# The STT and polish backends are pluggable; only the packages for the
-# providers you actually use are needed at runtime. All are listed here so the
-# GitHub Action works with any provider combination out of the box.
+# The STT and polish backends are pluggable, selected by API schema; only the
+# packages for the schemas you actually use are needed at runtime. All are
+# listed here so the GitHub Action works with any combination out of the box.
 
-# OpenAI + OpenAI-compatible providers (Groq, Together, OpenRouter, local, ...)
-# Used for STT_PROVIDER=openai and POLISH_PROVIDER=openai.
+# OpenAI + OpenAI-compatible endpoints (Groq, Together, OpenRouter, local, ...)
+# Used by the 'openai' STT and polish schemas.
 openai>=1.30.0
 
-# Anthropic Claude — used for POLISH_PROVIDER=anthropic.
+# Anthropic Claude — used by the 'anthropic' polish schema.
 anthropic>=0.40.0
 
-# ElevenLabs Scribe STT is called over REST — used for STT_PROVIDER=elevenlabs.
+# ElevenLabs Scribe STT is called over REST — used by the 'elevenlabs' STT schema.
 requests>=2.31.0
