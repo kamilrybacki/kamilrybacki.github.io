@@ -91,3 +91,6 @@ Desktop.ini
 # Python bytecode cache
 __pycache__/
 *.pyc
+
+# Pytest
+.pytest_cache/

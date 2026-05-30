@@ -97,6 +97,26 @@ export STT_PROVIDER_API_SCHEMA=openai \
 python3 scripts/transcribe_audio.py
 ```
 
+## Testing the flow locally
+
+A test harness exercises the whole pipeline offline (the STT and polish APIs are
+mocked, so no network or keys are needed):
+
+```bash
+./scripts/test-transcribe.sh           # pytest suite: discover -> transcribe -> polish -> draft .md
+./scripts/test-transcribe.sh --build   # also verify the production build hides drafts
+```
+
+To do a real end-to-end run against your actual configured providers (makes real
+API calls and uses your `STT_*` / `POLISH_*` / `*_API_KEY` env vars):
+
+```bash
+./scripts/test-transcribe.sh --live path/to/sample.m4a
+```
+
+The tests live in [`tests/`](../tests). The ffmpeg-dependent test self-skips if
+ffmpeg isn't installed.
+
 ## Notes
 
 - This is an *optional* path. You can still write articles by hand or via Decap
