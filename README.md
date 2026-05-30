@@ -77,11 +77,27 @@ The project uses a modular CSS architecture for better maintainability:
 
 ## 📝 Content Management
 
-### Adding Articles
+### Adding Articles (classic)
 
 1. Create a new `.md` file in `src/content/articles/`
 2. Add frontmatter with title, date, and description
 3. Write your content in Markdown
+
+> Set `draft: true` to keep an article hidden from the live site while you work
+> on it. Drafts are excluded from production builds but still render under
+> `npm run dev` so you can preview them. Flip to `draft: false` to publish.
+
+### Adding Articles from audio 🎙️
+
+Prefer to *speak* an article? Drop an audio recording into
+[`audio-inbox/`](./audio-inbox) and push. A GitHub Action transcribes it with
+the OpenAI API, polishes the transcript into a structured Markdown article
+(`draft: true`), and commits it to `src/content/articles/`. Then pull, add
+images, set `draft: false`, and publish.
+
+Requires an `OPENAI_API_KEY` repository secret (an OpenAI **Platform** API key,
+not a ChatGPT login). See [`audio-inbox/README.md`](./audio-inbox/README.md) for
+details. This is optional — the classic flow above is unchanged.
 
 ### Adding Projects
 

@@ -1,0 +1,3 @@
+# Dependencies for scripts/transcribe_audio.py (audio -> draft article).
+# Used by .github/workflows/transcribe-audio.yml and for local runs.
+openai>=1.30.0

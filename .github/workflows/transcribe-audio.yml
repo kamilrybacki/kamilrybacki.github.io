@@ -1,0 +1,71 @@
+name: Transcribe audio to article draft
+
+# Drop an audio file into audio-inbox/ (commit it, or upload via the GitHub web
+# UI) and this workflow transcribes it with the OpenAI API, polishes it into a
+# structured article, and commits a `draft: true` Markdown file to
+# src/content/articles/. Drafts stay hidden on the live site (see
+# src/content/articles/articles.11tydata.js) until you review them, add images
+# and set `draft: false`.
+#
+# Requires a repository secret named OPENAI_API_KEY (an OpenAI Platform API
+# key from https://platform.openai.com/api-keys — NOT a ChatGPT login/OAuth).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "audio-inbox/**"
+      - "!audio-inbox/processed/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    # Don't react to this workflow's own commits.
+    if: "!contains(github.event.head_commit.message, '[transcribe]')"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ensure ffmpeg is available
+        run: ffmpeg -version >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y ffmpeg; }
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements-transcribe.txt
+
+      - name: Transcribe audio into draft articles
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Optional overrides — uncomment in repo variables if you want them:
+          # OPENAI_TRANSCRIBE_MODEL: gpt-4o-transcribe
+          # OPENAI_POLISH_MODEL: gpt-4o
+        run: python3 scripts/transcribe_audio.py
+
+      - name: Commit generated drafts (if any)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/content/articles/ audio-inbox/
+          if ! git diff --cached --quiet; then
+            git commit -m "content: add transcribed article draft(s) [transcribe]"
+            git push
+            {
+              echo "### 🎙️ Audio transcribed into draft article(s)"
+              echo ""
+              echo "New \`draft: true\` article(s) were committed to \`${GITHUB_REF_NAME}\`."
+              echo "Pull the branch, add images, set \`draft: false\` and push to publish."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No new drafts were generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
