@@ -18,13 +18,32 @@
     input, textarea { width: 100%; box-sizing: border-box; }
     #f-body { min-height: 320px; font-family: ui-monospace, monospace; }
     #status { color: #444; min-height: 1.4em; }
+    #cards { list-style: none; padding: 0; }
+    #cards li { border: 1px solid #ddd; border-radius: 8px; padding: .6rem .8rem; margin: .5rem 0; display: flex; gap: .6rem; align-items: center; }
+    #cards .badge { font-size: .75em; background: #eef; padding: .1rem .4rem; border-radius: 4px; }
+    #cards .meta { color: #777; font-size: .8em; }
+    #cards li button { margin-left: auto; }
+    #cards .empty { border: none; color: #777; }
+    #savestate { color: #777; font-size: .85em; }
   </style>
 </head>
 <body>
   <h1>Audio Studio</h1>
   <p id="status"></p>
-  <button id="signin">Sign in with GitHub</button>
-  <div id="app" style="display:none">
+
+  <div id="view-signin" style="display:none">
+    <button id="signin">Sign in with GitHub</button>
+  </div>
+
+  <div id="view-dashboard" style="display:none">
+    <button id="new-ws">+ New article</button>
+    <ul id="cards"></ul>
+  </div>
+
+  <div id="view-workspace" style="display:none">
+    <p><a href="#/">← All articles</a> &nbsp; <span id="savestate"></span></p>
+    <label>Title <input id="w-title" /></label>
+    <button id="save-progress">Save progress</button>
     <div id="drop">Drop audio notes here, or
       <label><input id="file" type="file" accept="audio/*" multiple hidden /><a href="#">browse</a></label>
       &nbsp;or&nbsp; <button id="rec" type="button">Record</button>
@@ -46,6 +65,7 @@
       <p id="cms-link"></p>
     </div>
   </div>
+
   <script src="studio-lib.js"></script>
   <script src="studio.js"></script>
 </body>
