@@ -43,7 +43,7 @@
 
   // --- Pending audio queue (raw clips: dropped files + recordings, not yet transcribed) ---
   let pending = [];                 // [{id, name, blob, mime, url, _err}]
-  let mediaRecorder = null, recChunks = [], recStart = 0, recTimer = null, transcribing = false;
+  let mediaRecorder = null, recStart = 0, recTimer = null, transcribing = false;
 
   function newId() { return String(Date.now()) + Math.round(performance.now()); }
 
@@ -68,24 +68,28 @@
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
     catch (err) { status('Mic access denied: ' + err.message); return; }
     const stopTracks = () => stream.getTracks().forEach(t => t.stop());
-    recChunks = [];
+    const chunks = [];                 // local to THIS recording — no cross-recording bleed
     let rec;
     try { rec = new MediaRecorder(stream); }
     catch (err) { stopTracks(); status('Recording not supported: ' + err.message); return; }
     mediaRecorder = rec;
-    rec.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = () => {
       clearInterval(recTimer); recTimer = null;
       stopTracks();
       const mime = rec.mimeType || 'audio/webm';
-      const blob = new Blob(recChunks, { type: mime });
+      const blob = new Blob(chunks, { type: mime });
+      mediaRecorder = null;
+      if (!blob.size) { status('Recording was empty — try again.'); render(); return; }
       const secs = Math.round((Date.now() - recStart) / 1000);
       const name = `Recording ${L.formatDuration(secs)}.${L.extForMime(mime)}`;
       pending.push({ id: newId(), name, blob, mime, url: URL.createObjectURL(blob) });
-      mediaRecorder = null; render();
+      render();
     };
     recStart = Date.now();
-    try { rec.start(); }
+    // Timeslice → periodic dataavailable; reliable across repeated recordings
+    // (a bare start() can yield an empty blob on the 2nd+ take in some browsers).
+    try { rec.start(1000); }
     catch (err) { stopTracks(); mediaRecorder = null; status('Recording failed: ' + err.message); return; }
     recTimer = setInterval(() =>
       status(`Recording… ${L.formatDuration(Math.round((Date.now() - recStart) / 1000))}`), 1000);
