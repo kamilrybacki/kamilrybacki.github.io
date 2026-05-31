@@ -24,8 +24,11 @@
       `${OAUTH}/auth?provider=github&scope=repo&site_id=${location.hostname}`,
       'cms-auth', `width=${w},height=${h}`);
     function onMsg(e) {
+      // Only trust messages from the cms-auth popup itself — else any page with
+      // a handle to this tab could forge an `authorization:github:success` token.
+      if (e.origin !== OAUTH || e.source !== popup) return;
       if (!e.data || typeof e.data !== 'string') return;
-      if (e.data === 'authorizing:github') { popup.postMessage(e.data, '*'); return; }
+      if (e.data === 'authorizing:github') { popup.postMessage(e.data, OAUTH); return; }
       const m = /^authorization:github:(success|error):(.+)$/.exec(e.data);
       if (!m) return;
       window.removeEventListener('message', onMsg);
@@ -104,8 +107,13 @@
           `<a href="https://kamilrybacki.github.io/admin/#/collections/articles/entries/${slug}" target="_blank">Refine in CMS →</a>`;
         return;
       }
-      if (r.status === 422) { slug = `${L.slugify(meta.title)}-${n + 2}`; continue; } // exists → rename
-      status('Save failed: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200)); return;
+      const errText = await r.text();
+      // GitHub returns 422 "sha wasn't supplied" only when the path already
+      // exists. Other 422s are real errors — surface them, don't fake-rename.
+      if (r.status === 422 && /sha/i.test(errText)) {
+        slug = `${L.slugify(meta.title)}-${n + 2}`; continue;
+      }
+      status('Save failed: HTTP ' + r.status + ' ' + errText.slice(0, 200)); return;
     }
     status('Save failed: could not find a free slug.');
   }
