@@ -86,6 +86,7 @@
     $('view-signin').style.display = v === 'signin' ? '' : 'none';
     $('view-dashboard').style.display = v === 'dashboard' ? '' : 'none';
     $('view-workspace').style.display = v === 'workspace' ? '' : 'none';
+    document.body.classList.toggle('sticky-on', v === 'workspace');  // show the mobile action bar
   }
 
   // --- Dashboard ---
@@ -264,7 +265,8 @@
 
   function renderWorkspace() {
     if (!current) return;
-    $('rec').textContent = mediaRecorder ? 'Stop' : 'Record';
+    $('rec').textContent = mediaRecorder ? '■ Stop' : '● Record';
+    $('rec').dataset.on = mediaRecorder ? '1' : '';
     $('pending').innerHTML = pending.map(p => `
       <li data-id="${escapeHtml(p.id)}"><strong>${escapeHtml(p.name)}</strong>
         <audio controls src="${p.url}"></audio><button data-act="rm">✕</button>
@@ -283,6 +285,16 @@
       $('f-cat').value = a.category || ''; $('f-tags').value = (a.tags || []).join(', ');
       $('f-body').value = a.body || '';
     }
+    // Sticky primary action reflects the current stage.
+    const prim = $('primary');
+    let label, act, enabled = true;
+    if (pending.length) { label = `Transcribe all (${pending.length})`; act = 'transcribe'; }
+    else if (current.article) { label = 'Save draft'; act = 'save'; }
+    else if (current.notes.length) { label = 'Synthesize'; act = 'synthesize'; }
+    else { label = 'Record or drop a note'; act = ''; enabled = false; }
+    prim.textContent = transcribing ? 'Transcribing…' : label;
+    prim.dataset.action = act;
+    prim.disabled = !enabled || transcribing;
     renderSaveState();
   }
 
@@ -313,6 +325,12 @@
     ['f-title', 'f-desc', 'f-cat', 'f-tags', 'f-body'].forEach(id =>
       $(id).addEventListener('input', syncArticleFromForm));   // persist preview edits via auto-save
     $('save').addEventListener('click', saveDraft);
+    $('primary').addEventListener('click', () => {
+      const a = $('primary').dataset.action;
+      if (a === 'transcribe') transcribeAll();
+      else if (a === 'synthesize') synthesize();
+      else if (a === 'save') saveDraft();
+    });
     window.addEventListener('hashchange', route);
     window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
     route();
