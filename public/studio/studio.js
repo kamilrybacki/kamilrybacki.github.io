@@ -67,12 +67,17 @@
     let stream;
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
     catch (err) { status('Mic access denied: ' + err.message); return; }
+    const stopTracks = () => stream.getTracks().forEach(t => t.stop());
     recChunks = [];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      const mime = mediaRecorder ? (mediaRecorder.mimeType || 'audio/webm') : 'audio/webm';
+    let rec;
+    try { rec = new MediaRecorder(stream); }
+    catch (err) { stopTracks(); status('Recording not supported: ' + err.message); return; }
+    mediaRecorder = rec;
+    rec.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+    rec.onstop = () => {
+      clearInterval(recTimer); recTimer = null;
+      stopTracks();
+      const mime = rec.mimeType || 'audio/webm';
       const blob = new Blob(recChunks, { type: mime });
       const secs = Math.round((Date.now() - recStart) / 1000);
       const name = `Recording ${L.formatDuration(secs)}.${L.extForMime(mime)}`;
@@ -80,7 +85,8 @@
       mediaRecorder = null; render();
     };
     recStart = Date.now();
-    mediaRecorder.start();
+    try { rec.start(); }
+    catch (err) { stopTracks(); mediaRecorder = null; status('Recording failed: ' + err.message); return; }
     recTimer = setInterval(() =>
       status(`Recording… ${L.formatDuration(Math.round((Date.now() - recStart) / 1000))}`), 1000);
     render();
@@ -96,10 +102,12 @@
     if (!token) { status('Sign in first.'); return; }
     if (!pending.length || transcribing) return;
     transcribing = true; render();
-    for (const clip of pending.slice()) {       // snapshot; pending mutates as we go
+    const KNOWN_EXT = /\.(mp3|m4a|wav|mp4|mpeg|mpga|webm|flac|ogg)$/i;
+    let failed = 0;
+    for (const clip of pending.slice()) {       // snapshot; clips added mid-run wait for next click
       status(`Transcribing ${clip.name}…`);
-      const ext = L.extForMime(clip.mime);
-      const fname = clip.name.toLowerCase().endsWith('.' + ext) ? clip.name : `${clip.name}.${ext}`;
+      // Keep the clip's existing audio extension; only synthesize one when missing.
+      const fname = KNOWN_EXT.test(clip.name) ? clip.name : `${clip.name}.${L.extForMime(clip.mime)}`;
       const fd = new FormData(); fd.append('audio', clip.blob, fname);
       try {
         const r = await fetch(`${STT}/transcribe`, { method: 'POST',
@@ -108,10 +116,10 @@
         const { transcript } = await r.json();
         notes.push({ id: newId(), name: clip.name, transcript });
         save(); removePending(clip.id);
-      } catch (err) { clip._err = err.message; }
+      } catch (err) { clip._err = err.message; failed++; }
     }
     transcribing = false;
-    status(pending.length ? 'Some clips failed — see queue.' : 'All transcribed.');
+    status(failed ? `${failed} clip(s) failed — see queue.` : 'All transcribed.');
     render();
   }
 
