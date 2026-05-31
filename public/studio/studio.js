@@ -1,31 +1,39 @@
-// Audio studio glue. Depends on window.StudioLib (studio-lib.js).
+// Audio studio: dashboard of persisted workspaces + per-workspace note→synthesis flow.
+// Depends on window.StudioLib (studio-lib.js).
 (function () {
   'use strict';
   const STT = 'https://stt.kamilandrzejrybacki.dpdns.org';
   const OAUTH = 'https://cms-auth.kamilandrzejrybacki.dpdns.org';
   const REPO = 'kamilrybacki/kamilrybacki.github.io';
   const ARTICLES = 'src/content/articles';
-  const LS_KEY = 'studio.notes.v1';
   const L = window.StudioLib;
 
   let token = null;
-  let notes = load();           // [{id, name, transcript}]
-  let article = null;           // synthesized result
+  let current = null;        // {id, title, status, notes:[], article}
+  let pending = [];          // raw clips (client-only): {id,name,blob,mime,url,_err}
+  let mediaRecorder = null, recStart = 0, recTimer = null, transcribing = false;
+  let dirty = false, saveTimer = null, saveState = 'saved';   // saved|saving|unsaved
 
-  function load() { try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch { return []; } }
-  function save() { localStorage.setItem(LS_KEY, JSON.stringify(notes)); }
-  function $(id) { return document.getElementById(id); }
-  function status(msg) { $('status').textContent = msg; }
+  const $ = id => document.getElementById(id);
+  const status = m => { $('status').textContent = m; };
+  const newId = () => String(Date.now()) + Math.round(performance.now());
+  const escapeHtml = s => String(s).replace(/[&<>"]/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // --- Auth: Netlify/Decap postMessage handshake against cms-auth ---
+  // --- Server API (Bearer token) ---
+  async function api(method, path, body) {
+    const opt = { method, headers: { Authorization: 'Bearer ' + token } };
+    if (body !== undefined) { opt.headers['Content-Type'] = 'application/json'; opt.body = JSON.stringify(body); }
+    const r = await fetch(`${STT}${path}`, opt);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
+    return r.status === 204 ? null : r.json();
+  }
+
+  // --- Auth (cms-auth popup handshake) ---
   function signIn() {
-    const w = 600, h = 700;
-    const popup = window.open(
-      `${OAUTH}/auth?provider=github&scope=repo&site_id=${location.hostname}`,
-      'cms-auth', `width=${w},height=${h}`);
+    const popup = window.open(`${OAUTH}/auth?provider=github&scope=repo&site_id=${location.hostname}`,
+      'cms-auth', 'width=600,height=700');
     function onMsg(e) {
-      // Only trust messages from the cms-auth popup itself — else any page with
-      // a handle to this tab could forge an `authorization:github:success` token.
       if (e.origin !== OAUTH || e.source !== popup) return;
       if (!e.data || typeof e.data !== 'string') return;
       if (e.data === 'authorizing:github') { popup.postMessage(e.data, OAUTH); return; }
@@ -33,19 +41,80 @@
       if (!m) return;
       window.removeEventListener('message', onMsg);
       try { popup.close(); } catch {}
-      if (m[1] === 'success') {
-        token = JSON.parse(m[2]).token;
-        status('Signed in.'); render();
-      } else { status('Sign-in failed: ' + m[2]); }
+      if (m[1] === 'success') { token = JSON.parse(m[2]).token; status('Signed in.'); route(); }
+      else status('Sign-in failed: ' + m[2].slice(0, 120));
     }
     window.addEventListener('message', onMsg);
   }
 
-  // --- Pending audio queue (raw clips: dropped files + recordings, not yet transcribed) ---
-  let pending = [];                 // [{id, name, blob, mime, url, _err}]
-  let mediaRecorder = null, recStart = 0, recTimer = null, transcribing = false;
+  // --- Dirty tracking / save ---
+  function markDirty() { dirty = true; saveState = 'unsaved'; renderSaveState(); scheduleSave(); }
+  function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 1500); }
+  async function saveNow() {
+    if (!current || !dirty) return;
+    clearTimeout(saveTimer);
+    saveState = 'saving'; renderSaveState();
+    try {
+      await api('PUT', `/workspaces/${current.id}`,
+        { title: current.title, status: current.status, notes: current.notes, article: current.article });
+      dirty = false; saveState = 'saved';
+    } catch (err) { saveState = 'unsaved'; status('Save failed (will retry): ' + err.message); }
+    renderSaveState();
+  }
+  function renderSaveState() {
+    const el = $('savestate'); if (!el) return;
+    el.textContent = { saved: 'Saved ✓', saving: 'Saving…', unsaved: 'Unsaved' }[saveState];
+  }
 
-  function newId() { return String(Date.now()) + Math.round(performance.now()); }
+  // --- Routing ---
+  function route() {
+    if (!token) { showView('signin'); return; }
+    const m = /^#\/w\/([A-Za-z0-9_-]+)/.exec(location.hash);
+    if (m) openWorkspace(m[1]); else showDashboard();
+  }
+  function showView(v) {
+    $('view-signin').style.display = v === 'signin' ? '' : 'none';
+    $('view-dashboard').style.display = v === 'dashboard' ? '' : 'none';
+    $('view-workspace').style.display = v === 'workspace' ? '' : 'none';
+  }
+
+  // --- Dashboard ---
+  async function showDashboard() {
+    showView('dashboard'); status('Loading…');
+    let list = [];
+    try { list = (await api('GET', '/workspaces')).workspaces || []; }
+    catch (err) { status('Failed to load: ' + err.message); }
+    const now = Date.now();
+    $('cards').innerHTML = list.length ? list.map(w => `
+      <li data-id="${w.id}">
+        <a href="#/w/${w.id}"><strong>${escapeHtml(w.title)}</strong></a>
+        <span class="badge">${escapeHtml(L.statusLabel(w.status))}</span>
+        <span class="meta">${w.noteCount} note(s) · ${escapeHtml(L.relTime(w.updatedAt, now))}</span>
+        <button data-act="del">Delete</button>
+      </li>`).join('') : '<li class="empty">No started articles yet.</li>';
+    status('');
+  }
+  async function newWorkspace() {
+    try { const w = await api('POST', '/workspaces', { title: 'Untitled' }); location.hash = `#/w/${w.id}`; }
+    catch (err) { status('Create failed: ' + err.message); }
+  }
+  async function deleteWorkspace(id) {
+    if (!confirm('Delete this article workspace?')) return;
+    try { await api('DELETE', `/workspaces/${id}`); showDashboard(); }
+    catch (err) { status('Delete failed: ' + err.message); }
+  }
+
+  // --- Workspace ---
+  async function openWorkspace(id) {
+    showView('workspace'); status('Loading…');
+    pending = [];
+    try { current = await api('GET', `/workspaces/${id}`); }
+    catch (err) { status('Load failed: ' + err.message); return; }
+    if (!current) { location.hash = '#/'; return; }
+    current.notes = current.notes || []; dirty = false; saveState = 'saved';
+    $('w-title').value = current.title || '';
+    status(''); renderWorkspace();
+  }
 
   function enqueue(fileList) {
     for (const file of Array.from(fileList || [])) {
@@ -53,195 +122,166 @@
       pending.push({ id: newId(), name: file.name || ('clip.' + L.extForMime(mime)),
                      blob: file, mime, url: URL.createObjectURL(file) });
     }
-    render();
+    renderWorkspace();
   }
   function removePending(id) {
     const p = pending.find(x => x.id === id);
     if (p) { try { URL.revokeObjectURL(p.url); } catch {} }
-    pending = pending.filter(x => x.id !== id); render();
+    pending = pending.filter(x => x.id !== id); renderWorkspace();
   }
 
-  // --- Mic recording ---
   async function startRec() {
     if (!navigator.mediaDevices || !window.MediaRecorder) { status('Recording not supported here.'); return; }
     let stream;
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
     catch (err) { status('Mic access denied: ' + err.message); return; }
     const stopTracks = () => stream.getTracks().forEach(t => t.stop());
-    const chunks = [];                 // local to THIS recording — no cross-recording bleed
+    const chunks = [];
     let rec;
     try { rec = new MediaRecorder(stream); }
     catch (err) { stopTracks(); status('Recording not supported: ' + err.message); return; }
     mediaRecorder = rec;
     rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = () => {
-      clearInterval(recTimer); recTimer = null;
-      stopTracks();
+      clearInterval(recTimer); recTimer = null; stopTracks();
       const mime = rec.mimeType || 'audio/webm';
       const blob = new Blob(chunks, { type: mime });
       mediaRecorder = null;
-      if (!blob.size) { status('Recording was empty — try again.'); render(); return; }
+      if (!blob.size) { status('Recording was empty — try again.'); renderWorkspace(); return; }
       const secs = Math.round((Date.now() - recStart) / 1000);
-      const name = `Recording ${L.formatDuration(secs)}.${L.extForMime(mime)}`;
-      pending.push({ id: newId(), name, blob, mime, url: URL.createObjectURL(blob) });
-      render();
+      pending.push({ id: newId(), name: `Recording ${L.formatDuration(secs)}.${L.extForMime(mime)}`,
+                     blob, mime, url: URL.createObjectURL(blob) });
+      renderWorkspace();
     };
     recStart = Date.now();
-    // Timeslice → periodic dataavailable; reliable across repeated recordings
-    // (a bare start() can yield an empty blob on the 2nd+ take in some browsers).
     try { rec.start(1000); }
     catch (err) { stopTracks(); mediaRecorder = null; status('Recording failed: ' + err.message); return; }
     recTimer = setInterval(() =>
       status(`Recording… ${L.formatDuration(Math.round((Date.now() - recStart) / 1000))}`), 1000);
-    render();
+    renderWorkspace();
   }
-  function stopRec() {
-    if (!mediaRecorder) return;
-    clearInterval(recTimer); recTimer = null;
-    mediaRecorder.stop(); status('Recording added to queue.');
-  }
+  function stopRec() { if (mediaRecorder) { clearInterval(recTimer); recTimer = null; mediaRecorder.stop(); status('Recording queued.'); } }
 
-  // --- Transcribe all pending clips → notes ---
   async function transcribeAll() {
-    if (!token) { status('Sign in first.'); return; }
     if (!pending.length || transcribing) return;
-    transcribing = true; render();
-    const KNOWN_EXT = /\.(mp3|m4a|wav|mp4|mpeg|mpga|webm|flac|ogg)$/i;
+    transcribing = true; renderWorkspace();
+    const KNOWN = /\.(mp3|m4a|wav|mp4|mpeg|mpga|webm|flac|ogg)$/i;
     let failed = 0;
-    for (const clip of pending.slice()) {       // snapshot; clips added mid-run wait for next click
+    for (const clip of pending.slice()) {
       status(`Transcribing ${clip.name}…`);
-      // Keep the clip's existing audio extension; only synthesize one when missing.
-      const fname = KNOWN_EXT.test(clip.name) ? clip.name : `${clip.name}.${L.extForMime(clip.mime)}`;
+      const fname = KNOWN.test(clip.name) ? clip.name : `${clip.name}.${L.extForMime(clip.mime)}`;
       const fd = new FormData(); fd.append('audio', clip.blob, fname);
       try {
-        const r = await fetch(`${STT}/transcribe`, { method: 'POST',
-          headers: { Authorization: 'Bearer ' + token }, body: fd });
+        const r = await fetch(`${STT}/transcribe`, { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: fd });
         if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
         const { transcript } = await r.json();
-        notes.push({ id: newId(), name: clip.name, transcript });
-        save(); removePending(clip.id);
+        current.notes.push({ id: newId(), name: clip.name, transcript });
+        removePending(clip.id); markDirty();
       } catch (err) { clip._err = err.message; failed++; }
     }
     transcribing = false;
     status(failed ? `${failed} clip(s) failed — see queue.` : 'All transcribed.');
-    render();
+    renderWorkspace();
+  }
+  function removeNote(id) { current.notes = current.notes.filter(n => n.id !== id); markDirty(); renderWorkspace(); }
+  function moveNote(id, d) {
+    const i = current.notes.findIndex(n => n.id === id), j = i + d;
+    if (i < 0 || j < 0 || j >= current.notes.length) return;
+    [current.notes[i], current.notes[j]] = [current.notes[j], current.notes[i]]; markDirty(); renderWorkspace();
   }
 
-  function removeNote(id) { notes = notes.filter(n => n.id !== id); save(); render(); }
-  function move(id, dir) {
-    const i = notes.findIndex(n => n.id === id); const j = i + dir;
-    if (i < 0 || j < 0 || j >= notes.length) return;
-    [notes[i], notes[j]] = [notes[j], notes[i]]; save(); render();
-  }
-
-  // --- Synthesize ---
   async function synthesize() {
-    if (!token) { status('Sign in first.'); return; }
-    if (!notes.length) { status('No notes yet.'); return; }
-    status(`Synthesizing ${notes.length} note(s)…`);
+    if (!current.notes.length) { status('No notes yet.'); return; }
+    status(`Synthesizing ${current.notes.length} note(s)…`);
     try {
       const r = await fetch(`${STT}/synthesize`, { method: 'POST',
         headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: notes.map(n => n.transcript) }) });
+        body: JSON.stringify({ notes: current.notes.map(n => n.transcript) }) });
       if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
-      article = await r.json(); render(); status('Synthesized — review and save.');
+      current.article = await r.json(); current.status = 'synthesized';
+      markDirty(); renderWorkspace(); status('Synthesized — review and save.');
     } catch (err) { status('Synthesis failed: ' + err.message); }
   }
 
-  // --- Commit draft via GitHub Contents API ---
   async function saveDraft() {
-    if (!token || !article) return;
-    const date = new Date().toISOString().slice(0, 10);
-    const meta = {
-      title: $('f-title').value, description: $('f-desc').value,
-      category: $('f-cat').value, tags: $('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
-      body: $('f-body').value,
-    };
-    const md = L.buildMarkdown(meta, date);
-    let slug = L.slugify(meta.title);
+    if (!current.article) return;
+    const a = current.article;
+    a.title = $('f-title').value; a.description = $('f-desc').value; a.category = $('f-cat').value;
+    a.tags = $('f-tags').value.split(',').map(s => s.trim()).filter(Boolean); a.body = $('f-body').value;
+    markDirty();
+    const md = L.buildMarkdown(a, new Date().toISOString().slice(0, 10));
+    let slug = L.slugify(a.title);
     status('Saving draft…');
     for (let n = 0; n < 5; n++) {
-      const path = `${ARTICLES}/${slug}.md`;
-      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${ARTICLES}/${slug}.md`, {
         method: 'PUT',
-        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
-                   Accept: 'application/vnd.github+json' },
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
         body: JSON.stringify({ message: `content: studio draft ${slug}`,
-                               content: btoa(unescape(encodeURIComponent(md))), branch: 'main' }),
-      });
+                               content: btoa(unescape(encodeURIComponent(md))), branch: 'main' }) });
       if (r.ok) {
-        localStorage.removeItem(LS_KEY); notes = []; article = null; render();
-        status('Saved.');
-        $('cms-link').innerHTML =
-          `<a href="https://kamilrybacki.github.io/admin/#/collections/articles/entries/${slug}" target="_blank">Refine in CMS →</a>`;
-        return;
+        current.status = 'committed'; dirty = true; await saveNow();
+        status('Saved to repo.');
+        $('cms-link').innerHTML = `<a href="https://kamilrybacki.github.io/admin/#/collections/articles/entries/${slug}" target="_blank">Refine in CMS →</a>`;
+        renderWorkspace(); return;
       }
       const errText = await r.text();
-      // GitHub returns 422 "sha wasn't supplied" only when the path already
-      // exists. Other 422s are real errors — surface them, don't fake-rename.
-      if (r.status === 422 && /sha/i.test(errText)) {
-        slug = `${L.slugify(meta.title)}-${n + 2}`; continue;
-      }
+      if (r.status === 422 && /sha/i.test(errText)) { slug = `${L.slugify(a.title)}-${n + 2}`; continue; }
       status('Save failed: HTTP ' + r.status + ' ' + errText.slice(0, 200)); return;
     }
     status('Save failed: could not find a free slug.');
   }
 
-  // --- Render ---
-  function render() {
-    $('signin').style.display = token ? 'none' : '';
-    $('app').style.display = token ? '' : 'none';
-    $('notes').innerHTML = notes.map(n => `
-      <li data-id="${n.id}">
-        <strong>${escapeHtml(n.name)}</strong>
-        <button data-act="up">↑</button><button data-act="down">↓</button>
-        <button data-act="rm">✕</button>
-        <div class="t">${escapeHtml(n.transcript.slice(0, 240))}</div>
-      </li>`).join('');
+  function renderWorkspace() {
+    if (!current) return;
     $('rec').textContent = mediaRecorder ? 'Stop' : 'Record';
     $('pending').innerHTML = pending.map(p => `
-      <li data-id="${p.id}">
-        <strong>${escapeHtml(p.name)}</strong>
-        <audio controls src="${p.url}"></audio>
-        <button data-act="rm">✕</button>
-        ${p._err ? `<span class="err">${escapeHtml(p._err)}</span>` : ''}
-      </li>`).join('');
+      <li data-id="${p.id}"><strong>${escapeHtml(p.name)}</strong>
+        <audio controls src="${p.url}"></audio><button data-act="rm">✕</button>
+        ${p._err ? `<span class="err">${escapeHtml(p._err)}</span>` : ''}</li>`).join('');
     $('transcribe-all').disabled = !pending.length || transcribing;
     $('transcribe-all').textContent = transcribing ? 'Transcribing…' : `Transcribe all (${pending.length})`;
-    $('synth').disabled = !notes.length;
-    $('preview').style.display = article ? '' : 'none';
-    if (article) {
-      $('f-title').value = article.title || '';
-      $('f-desc').value = article.description || '';
-      $('f-cat').value = article.category || '';
-      $('f-tags').value = (article.tags || []).join(', ');
-      $('f-body').value = article.body || '';
+    $('notes').innerHTML = current.notes.map(n => `
+      <li data-id="${n.id}"><strong>${escapeHtml(n.name)}</strong>
+        <button data-act="up">↑</button><button data-act="down">↓</button><button data-act="rm">✕</button>
+        <div class="t">${escapeHtml((n.transcript || '').slice(0, 240))}</div></li>`).join('');
+    $('synth').disabled = !current.notes.length;
+    const a = current.article;
+    $('preview').style.display = a ? '' : 'none';
+    if (a) {
+      $('f-title').value = a.title || ''; $('f-desc').value = a.description || '';
+      $('f-cat').value = a.category || ''; $('f-tags').value = (a.tags || []).join(', ');
+      $('f-body').value = a.body || '';
     }
+    renderSaveState();
   }
-  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
   // --- Wire up ---
   window.addEventListener('DOMContentLoaded', () => {
     $('signin').addEventListener('click', signIn);
-    $('drop').addEventListener('dragover', e => { e.preventDefault(); });
+    $('new-ws').addEventListener('click', newWorkspace);
+    $('cards').addEventListener('click', e => {
+      const li = e.target.closest('li'); if (!li || !li.dataset.id) return;
+      if (e.target.dataset.act === 'del') deleteWorkspace(li.dataset.id);
+    });
+    $('w-title').addEventListener('input', e => { if (current) { current.title = e.target.value; markDirty(); } });
+    $('save-progress').addEventListener('click', () => { dirty = true; saveNow(); });
+    $('drop').addEventListener('dragover', e => e.preventDefault());
     $('drop').addEventListener('drop', e => { e.preventDefault(); enqueue(e.dataTransfer.files); });
     $('file').addEventListener('change', e => { enqueue(e.target.files); e.target.value = ''; });
     $('rec').addEventListener('click', () => (mediaRecorder ? stopRec() : startRec()));
     $('transcribe-all').addEventListener('click', transcribeAll);
     $('pending').addEventListener('click', e => {
-      const li = e.target.closest('li'); if (!li) return;
-      if (e.target.dataset.act === 'rm') removePending(li.dataset.id);
+      const li = e.target.closest('li'); if (li && e.target.dataset.act === 'rm') removePending(li.dataset.id);
     });
-    $('synth').addEventListener('click', synthesize);
-    $('save').addEventListener('click', saveDraft);
     $('notes').addEventListener('click', e => {
       const li = e.target.closest('li'); if (!li) return;
       const id = li.dataset.id, act = e.target.dataset.act;
-      if (act === 'rm') removeNote(id);
-      else if (act === 'up') move(id, -1);
-      else if (act === 'down') move(id, 1);
+      if (act === 'rm') removeNote(id); else if (act === 'up') moveNote(id, -1); else if (act === 'down') moveNote(id, 1);
     });
-    render();
+    $('synth').addEventListener('click', synthesize);
+    $('save').addEventListener('click', saveDraft);
+    window.addEventListener('hashchange', route);
+    window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+    route();
   });
 })();
