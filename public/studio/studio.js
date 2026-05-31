@@ -53,12 +53,21 @@
   async function saveNow() {
     if (!current || !dirty) return;
     clearTimeout(saveTimer);
+    const ws = current;
+    dirty = false;                       // optimistic; a mid-flight edit re-sets it
     saveState = 'saving'; renderSaveState();
     try {
-      await api('PUT', `/workspaces/${current.id}`,
-        { title: current.title, status: current.status, notes: current.notes, article: current.article });
-      dirty = false; saveState = 'saved';
-    } catch (err) { saveState = 'unsaved'; status('Save failed (will retry): ' + err.message); }
+      await api('PUT', `/workspaces/${ws.id}`,
+        { title: ws.title, status: ws.status, notes: ws.notes, article: ws.article });
+      try { localStorage.removeItem('studio.ws.' + ws.id); } catch {}
+      saveState = dirty ? 'unsaved' : 'saved';     // dirty again? a newer edit is pending
+    } catch (err) {
+      dirty = true;                      // keep dirty so the edit isn't lost
+      saveState = 'unsaved';
+      try { localStorage.setItem('studio.ws.' + ws.id, JSON.stringify(ws)); } catch {}
+      status('Save failed (retrying): ' + err.message);
+      scheduleSave();                    // reschedule a retry
+    }
     renderSaveState();
   }
   function renderSaveState() {
@@ -67,8 +76,9 @@
   }
 
   // --- Routing ---
-  function route() {
+  async function route() {
     if (!token) { showView('signin'); return; }
+    if (dirty) { await saveNow(); }      // flush the outgoing workspace before switching
     const m = /^#\/w\/([A-Za-z0-9_-]+)/.exec(location.hash);
     if (m) openWorkspace(m[1]); else showDashboard();
   }
@@ -86,10 +96,10 @@
     catch (err) { status('Failed to load: ' + err.message); }
     const now = Date.now();
     $('cards').innerHTML = list.length ? list.map(w => `
-      <li data-id="${w.id}">
-        <a href="#/w/${w.id}"><strong>${escapeHtml(w.title)}</strong></a>
+      <li data-id="${escapeHtml(w.id)}">
+        <a href="#/w/${encodeURIComponent(w.id)}"><strong>${escapeHtml(w.title)}</strong></a>
         <span class="badge">${escapeHtml(L.statusLabel(w.status))}</span>
-        <span class="meta">${w.noteCount} note(s) · ${escapeHtml(L.relTime(w.updatedAt, now))}</span>
+        <span class="meta">${escapeHtml(String(w.noteCount))} note(s) · ${escapeHtml(L.relTime(w.updatedAt, now))}</span>
         <button data-act="del">Delete</button>
       </li>`).join('') : '<li class="empty">No started articles yet.</li>';
     status('');
@@ -112,6 +122,13 @@
     catch (err) { status('Load failed: ' + err.message); return; }
     if (!current) { location.hash = '#/'; return; }
     current.notes = current.notes || []; dirty = false; saveState = 'saved';
+    // Offer to restore an unsaved local mirror left by a previous failed save.
+    try {
+      const raw = localStorage.getItem('studio.ws.' + current.id);
+      if (raw && confirm('Unsaved local changes were found for this article. Restore them?')) {
+        current = JSON.parse(raw); current.notes = current.notes || []; markDirty();
+      } else if (raw) { localStorage.removeItem('studio.ws.' + current.id); }
+    } catch {}
     $('w-title').value = current.title || '';
     status(''); renderWorkspace();
   }
@@ -164,6 +181,7 @@
 
   async function transcribeAll() {
     if (!pending.length || transcribing) return;
+    const ws = current;
     transcribing = true; renderWorkspace();
     const KNOWN = /\.(mp3|m4a|wav|mp4|mpeg|mpga|webm|flac|ogg)$/i;
     let failed = 0;
@@ -175,11 +193,13 @@
         const r = await fetch(`${STT}/transcribe`, { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: fd });
         if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
         const { transcript } = await r.json();
-        current.notes.push({ id: newId(), name: clip.name, transcript });
+        if (current !== ws) { transcribing = false; return; }   // navigated away → don't touch another workspace
+        ws.notes.push({ id: newId(), name: clip.name, transcript });
         removePending(clip.id); markDirty();
       } catch (err) { clip._err = err.message; failed++; }
     }
     transcribing = false;
+    if (current !== ws) return;
     status(failed ? `${failed} clip(s) failed — see queue.` : 'All transcribed.');
     renderWorkspace();
   }
@@ -192,23 +212,25 @@
 
   async function synthesize() {
     if (!current.notes.length) { status('No notes yet.'); return; }
-    status(`Synthesizing ${current.notes.length} note(s)…`);
+    const ws = current;
+    status(`Synthesizing ${ws.notes.length} note(s)…`);
     try {
       const r = await fetch(`${STT}/synthesize`, { method: 'POST',
         headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: current.notes.map(n => n.transcript) }) });
+        body: JSON.stringify({ notes: ws.notes.map(n => n.transcript) }) });
       if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
-      current.article = await r.json(); current.status = 'synthesized';
+      const article = await r.json();
+      if (current !== ws) return;                 // navigated away → drop result, don't corrupt
+      ws.article = article; ws.status = 'synthesized';
       markDirty(); renderWorkspace(); status('Synthesized — review and save.');
     } catch (err) { status('Synthesis failed: ' + err.message); }
   }
 
   async function saveDraft() {
-    if (!current.article) return;
-    const a = current.article;
-    a.title = $('f-title').value; a.description = $('f-desc').value; a.category = $('f-cat').value;
-    a.tags = $('f-tags').value.split(',').map(s => s.trim()).filter(Boolean); a.body = $('f-body').value;
-    markDirty();
+    if (!current || !current.article) return;
+    const ws = current;
+    syncArticleFromForm();               // ensure ws.article reflects the live preview fields
+    const a = ws.article;
     const md = L.buildMarkdown(a, new Date().toISOString().slice(0, 10));
     let slug = L.slugify(a.title);
     status('Saving draft…');
@@ -219,7 +241,8 @@
         body: JSON.stringify({ message: `content: studio draft ${slug}`,
                                content: btoa(unescape(encodeURIComponent(md))), branch: 'main' }) });
       if (r.ok) {
-        current.status = 'committed'; dirty = true; await saveNow();
+        if (current === ws) { ws.status = 'committed'; dirty = true; await saveNow(); }
+        else { dirty = true; current = ws; await saveNow(); }   // persist the committed status regardless
         status('Saved to repo.');
         $('cms-link').innerHTML = `<a href="https://kamilrybacki.github.io/admin/#/collections/articles/entries/${slug}" target="_blank">Refine in CMS →</a>`;
         renderWorkspace(); return;
@@ -231,17 +254,25 @@
     status('Save failed: could not find a free slug.');
   }
 
+  function syncArticleFromForm() {
+    if (!current || !current.article) return;
+    const a = current.article;
+    a.title = $('f-title').value; a.description = $('f-desc').value; a.category = $('f-cat').value;
+    a.tags = $('f-tags').value.split(',').map(s => s.trim()).filter(Boolean); a.body = $('f-body').value;
+    markDirty();
+  }
+
   function renderWorkspace() {
     if (!current) return;
     $('rec').textContent = mediaRecorder ? 'Stop' : 'Record';
     $('pending').innerHTML = pending.map(p => `
-      <li data-id="${p.id}"><strong>${escapeHtml(p.name)}</strong>
+      <li data-id="${escapeHtml(p.id)}"><strong>${escapeHtml(p.name)}</strong>
         <audio controls src="${p.url}"></audio><button data-act="rm">✕</button>
         ${p._err ? `<span class="err">${escapeHtml(p._err)}</span>` : ''}</li>`).join('');
     $('transcribe-all').disabled = !pending.length || transcribing;
     $('transcribe-all').textContent = transcribing ? 'Transcribing…' : `Transcribe all (${pending.length})`;
     $('notes').innerHTML = current.notes.map(n => `
-      <li data-id="${n.id}"><strong>${escapeHtml(n.name)}</strong>
+      <li data-id="${escapeHtml(n.id)}"><strong>${escapeHtml(n.name)}</strong>
         <button data-act="up">↑</button><button data-act="down">↓</button><button data-act="rm">✕</button>
         <div class="t">${escapeHtml((n.transcript || '').slice(0, 240))}</div></li>`).join('');
     $('synth').disabled = !current.notes.length;
@@ -279,6 +310,8 @@
       if (act === 'rm') removeNote(id); else if (act === 'up') moveNote(id, -1); else if (act === 'down') moveNote(id, 1);
     });
     $('synth').addEventListener('click', synthesize);
+    ['f-title', 'f-desc', 'f-cat', 'f-tags', 'f-body'].forEach(id =>
+      $(id).addEventListener('input', syncArticleFromForm));   // persist preview edits via auto-save
     $('save').addEventListener('click', saveDraft);
     window.addEventListener('hashchange', route);
     window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
