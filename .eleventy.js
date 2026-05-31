@@ -8,6 +8,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/styles");
   eleventyConfig.addPassthroughCopy("public/images");
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
+  eleventyConfig.addPassthroughCopy({ "public/studio": "studio" });
   // Ensure article images and other assets are copied
   eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
   // Decap CMS admin panel
