@@ -38,5 +38,19 @@
       '---\n\n';
     return fm + body + '\n';
   }
-  return { oneline, yamlQuote, slugify, coerceTags, buildMarkdown };
+  function extForMime(mime) {
+    const m = String(mime || '').split(';')[0].trim().toLowerCase();
+    const map = {
+      'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'mp4',
+      'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'audio/x-wav': 'wav',
+      'audio/flac': 'flac', 'audio/m4a': 'm4a',
+    };
+    return map[m] || 'webm';
+  }
+  function formatDuration(seconds) {
+    const s = Math.max(0, Math.floor(Number(seconds) || 0));
+    const m = Math.floor(s / 60);
+    return `${m}:${String(s % 60).padStart(2, '0')}`;
+  }
+  return { oneline, yamlQuote, slugify, coerceTags, buildMarkdown, extForMime, formatDuration };
 });

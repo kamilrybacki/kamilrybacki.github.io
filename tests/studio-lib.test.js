@@ -37,3 +37,18 @@ test('coerceTags', () => {
   assert.deepEqual(lib.coerceTags(['a', ' b ', '']), ['a', 'b']);
   assert.deepEqual(lib.coerceTags(null), []);
 });
+
+test('extForMime', () => {
+  assert.equal(lib.extForMime('audio/webm;codecs=opus'), 'webm');
+  assert.equal(lib.extForMime('audio/mp4'), 'mp4');
+  assert.equal(lib.extForMime('audio/mpeg'), 'mp3');
+  assert.equal(lib.extForMime('audio/wav'), 'wav');
+  assert.equal(lib.extForMime(''), 'webm');           // fallback
+  assert.equal(lib.extForMime('weird/thing'), 'webm'); // fallback
+});
+
+test('formatDuration', () => {
+  assert.equal(lib.formatDuration(0), '0:00');
+  assert.equal(lib.formatDuration(53), '0:53');
+  assert.equal(lib.formatDuration(75), '1:15');
+});

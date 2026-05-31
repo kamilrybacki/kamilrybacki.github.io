@@ -9,7 +9,10 @@
     body { font-family: system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
     #drop { border: 2px dashed #aaa; border-radius: 10px; padding: 2rem; text-align: center; color: #666; }
     #notes { list-style: none; padding: 0; }
-    #notes li { border-left: 3px solid #ccc; padding: .5rem .75rem; margin: .5rem 0; }
+    #notes li, #pending li { border-left: 3px solid #ccc; padding: .5rem .75rem; margin: .5rem 0; }
+    #pending audio { display: block; margin: .3rem 0; max-width: 100%; }
+    .err { color: #b00; font-size: .85em; }
+    #rec { margin-left: .5rem; }
     #notes .t { font-size: .85em; color: #555; white-space: pre-wrap; }
     button { cursor: pointer; }
     input, textarea { width: 100%; box-sizing: border-box; }
@@ -24,7 +27,11 @@
   <div id="app" style="display:none">
     <div id="drop">Drop audio notes here, or
       <label><input id="file" type="file" accept="audio/*" multiple hidden /><a href="#">browse</a></label>
+      &nbsp;or&nbsp; <button id="rec" type="button">Record</button>
     </div>
+    <h2>To transcribe</h2>
+    <ul id="pending"></ul>
+    <button id="transcribe-all" disabled>Transcribe all (0)</button>
     <h2>Notes</h2>
     <ul id="notes"></ul>
     <button id="synth" disabled>Synthesize</button>

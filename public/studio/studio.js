@@ -41,21 +41,78 @@
     window.addEventListener('message', onMsg);
   }
 
-  // --- Transcribe one file ---
-  async function addFiles(fileList) {
+  // --- Pending audio queue (raw clips: dropped files + recordings, not yet transcribed) ---
+  let pending = [];                 // [{id, name, blob, mime, url, _err}]
+  let mediaRecorder = null, recChunks = [], recStart = 0, recTimer = null, transcribing = false;
+
+  function newId() { return String(Date.now()) + Math.round(performance.now()); }
+
+  function enqueue(fileList) {
+    for (const file of Array.from(fileList || [])) {
+      const mime = file.type || 'audio/webm';
+      pending.push({ id: newId(), name: file.name || ('clip.' + L.extForMime(mime)),
+                     blob: file, mime, url: URL.createObjectURL(file) });
+    }
+    render();
+  }
+  function removePending(id) {
+    const p = pending.find(x => x.id === id);
+    if (p) { try { URL.revokeObjectURL(p.url); } catch {} }
+    pending = pending.filter(x => x.id !== id); render();
+  }
+
+  // --- Mic recording ---
+  async function startRec() {
+    if (!navigator.mediaDevices || !window.MediaRecorder) { status('Recording not supported here.'); return; }
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (err) { status('Mic access denied: ' + err.message); return; }
+    recChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const mime = mediaRecorder ? (mediaRecorder.mimeType || 'audio/webm') : 'audio/webm';
+      const blob = new Blob(recChunks, { type: mime });
+      const secs = Math.round((Date.now() - recStart) / 1000);
+      const name = `Recording ${L.formatDuration(secs)}.${L.extForMime(mime)}`;
+      pending.push({ id: newId(), name, blob, mime, url: URL.createObjectURL(blob) });
+      mediaRecorder = null; render();
+    };
+    recStart = Date.now();
+    mediaRecorder.start();
+    recTimer = setInterval(() =>
+      status(`Recording… ${L.formatDuration(Math.round((Date.now() - recStart) / 1000))}`), 1000);
+    render();
+  }
+  function stopRec() {
+    if (!mediaRecorder) return;
+    clearInterval(recTimer); recTimer = null;
+    mediaRecorder.stop(); status('Recording added to queue.');
+  }
+
+  // --- Transcribe all pending clips → notes ---
+  async function transcribeAll() {
     if (!token) { status('Sign in first.'); return; }
-    for (const file of Array.from(fileList)) {
-      status(`Transcribing ${file.name}…`);
-      const fd = new FormData(); fd.append('audio', file, file.name);
+    if (!pending.length || transcribing) return;
+    transcribing = true; render();
+    for (const clip of pending.slice()) {       // snapshot; pending mutates as we go
+      status(`Transcribing ${clip.name}…`);
+      const ext = L.extForMime(clip.mime);
+      const fname = clip.name.toLowerCase().endsWith('.' + ext) ? clip.name : `${clip.name}.${ext}`;
+      const fd = new FormData(); fd.append('audio', clip.blob, fname);
       try {
         const r = await fetch(`${STT}/transcribe`, { method: 'POST',
           headers: { Authorization: 'Bearer ' + token }, body: fd });
         if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200));
         const { transcript } = await r.json();
-        notes.push({ id: String(Date.now()) + Math.round(performance.now()), name: file.name, transcript });
-        save(); render(); status(`Added ${file.name}.`);
-      } catch (err) { status(`Failed ${file.name}: ${err.message}`); }
+        notes.push({ id: newId(), name: clip.name, transcript });
+        save(); removePending(clip.id);
+      } catch (err) { clip._err = err.message; }
     }
+    transcribing = false;
+    status(pending.length ? 'Some clips failed — see queue.' : 'All transcribed.');
+    render();
   }
 
   function removeNote(id) { notes = notes.filter(n => n.id !== id); save(); render(); }
@@ -129,6 +186,16 @@
         <button data-act="rm">✕</button>
         <div class="t">${escapeHtml(n.transcript.slice(0, 240))}</div>
       </li>`).join('');
+    $('rec').textContent = mediaRecorder ? 'Stop' : 'Record';
+    $('pending').innerHTML = pending.map(p => `
+      <li data-id="${p.id}">
+        <strong>${escapeHtml(p.name)}</strong>
+        <audio controls src="${p.url}"></audio>
+        <button data-act="rm">✕</button>
+        ${p._err ? `<span class="err">${escapeHtml(p._err)}</span>` : ''}
+      </li>`).join('');
+    $('transcribe-all').disabled = !pending.length || transcribing;
+    $('transcribe-all').textContent = transcribing ? 'Transcribing…' : `Transcribe all (${pending.length})`;
     $('synth').disabled = !notes.length;
     $('preview').style.display = article ? '' : 'none';
     if (article) {
@@ -146,8 +213,14 @@
   window.addEventListener('DOMContentLoaded', () => {
     $('signin').addEventListener('click', signIn);
     $('drop').addEventListener('dragover', e => { e.preventDefault(); });
-    $('drop').addEventListener('drop', e => { e.preventDefault(); addFiles(e.dataTransfer.files); });
-    $('file').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+    $('drop').addEventListener('drop', e => { e.preventDefault(); enqueue(e.dataTransfer.files); });
+    $('file').addEventListener('change', e => { enqueue(e.target.files); e.target.value = ''; });
+    $('rec').addEventListener('click', () => (mediaRecorder ? stopRec() : startRec()));
+    $('transcribe-all').addEventListener('click', transcribeAll);
+    $('pending').addEventListener('click', e => {
+      const li = e.target.closest('li'); if (!li) return;
+      if (e.target.dataset.act === 'rm') removePending(li.dataset.id);
+    });
     $('synth').addEventListener('click', synthesize);
     $('save').addEventListener('click', saveDraft);
     $('notes').addEventListener('click', e => {
