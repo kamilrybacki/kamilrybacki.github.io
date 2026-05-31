@@ -52,3 +52,18 @@ test('formatDuration', () => {
   assert.equal(lib.formatDuration(53), '0:53');
   assert.equal(lib.formatDuration(75), '1:15');
 });
+
+test('relTime', () => {
+  const now = Date.parse('2026-05-31T12:00:00Z');
+  assert.equal(lib.relTime('2026-05-31T12:00:00Z', now), 'just now');
+  assert.equal(lib.relTime('2026-05-31T11:59:00Z', now), '1m ago');
+  assert.equal(lib.relTime('2026-05-31T10:00:00Z', now), '2h ago');
+  assert.equal(lib.relTime('2026-05-29T12:00:00Z', now), '2d ago');
+  assert.equal(lib.relTime('', now), '');
+});
+test('statusLabel', () => {
+  assert.equal(lib.statusLabel('collecting'), 'Collecting');
+  assert.equal(lib.statusLabel('synthesized'), 'Synthesized');
+  assert.equal(lib.statusLabel('committed'), 'Saved to repo');
+  assert.equal(lib.statusLabel('weird'), 'weird');
+});
