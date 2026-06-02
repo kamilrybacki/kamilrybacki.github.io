@@ -198,7 +198,7 @@
     try { rec = new SR(); } catch { return; }
     liveFinal = ''; liveActive = true;
     rec.continuous = true; rec.interimResults = true;
-    rec.lang = navigator.language || 'en-US';
+    rec.lang = ($('live-lang') && $('live-lang').value) || navigator.language || 'en-US';
     rec.onresult = e => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -350,6 +350,16 @@
     $('drop').addEventListener('drop', e => { e.preventDefault(); enqueue(e.dataTransfer.files); });
     $('file').addEventListener('change', e => { enqueue(e.target.files); e.target.value = ''; });
     $('rec').addEventListener('click', () => (mediaRecorder ? stopRec() : startRec()));
+    // Live caption language: restore saved choice (fall back to browser locale), persist on change.
+    try {
+      const saved = localStorage.getItem('studio.lang');
+      const want = saved || navigator.language || 'en-US';
+      if ([...$('live-lang').options].some(o => o.value === want)) $('live-lang').value = want;
+    } catch {}
+    $('live-lang').addEventListener('change', e => {
+      try { localStorage.setItem('studio.lang', e.target.value); } catch {}
+      if (liveActive) { const keep = liveFinal; stopLive(); startLive(); liveFinal = keep; renderLive(''); }
+    });
     $('transcribe-all').addEventListener('click', transcribeAll);
     $('pending').addEventListener('click', e => {
       const li = e.target.closest('li'); if (li && e.target.dataset.act === 'rm') removePending(li.dataset.id);

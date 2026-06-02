@@ -71,6 +71,8 @@
       font-size: .9rem; line-height: 1.55; white-space: pre-wrap; }
     #live[hidden] { display: none; }
     #live-interim { color: var(--muted); }
+    #live-lang { width: auto; min-height: 48px; font-family: var(--mono); font-size: 1rem;
+      background: var(--card); color: var(--ink); border: 2px solid var(--line); padding: .4rem .5rem; }
     #pending li, #notes li {
       background: var(--card); border: 2px solid var(--line); box-shadow: 3px 3px 0 var(--line);
       padding: .7rem .8rem; margin: .6rem 0;
@@ -122,6 +124,14 @@
       <div id="drop">
         <span>Drop audio, <label style="display:inline;margin:0"><input id="file" type="file" accept="audio/*" multiple hidden /><a href="#">browse</a></label>, or</span>
         <button id="rec" type="button">● Record</button>
+        <select id="live-lang" title="Live caption language" aria-label="Live caption language">
+          <option value="en-US">English (US)</option>
+          <option value="en-GB">English (UK)</option>
+          <option value="pl-PL">Polski</option>
+          <option value="de-DE">Deutsch</option>
+          <option value="es-ES">Español</option>
+          <option value="fr-FR">Français</option>
+        </select>
       </div>
       <div id="live" hidden aria-live="polite"><span id="live-final"></span><span id="live-interim"></span></div>
 
