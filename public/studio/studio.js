@@ -12,6 +12,7 @@
   let current = null;        // {id, title, status, notes:[], article}
   let pending = [];          // raw clips (client-only): {id,name,blob,mime,url,_err}
   let mediaRecorder = null, recStart = 0, recTimer = null, transcribing = false;
+  let recognition = null, liveFinal = '', liveActive = false;   // Web Speech API live caption
   let dirty = false, saveTimer = null, saveState = 'saved';   // saved|saving|unsaved
 
   const $ = id => document.getElementById(id);
@@ -119,6 +120,7 @@
   async function openWorkspace(id) {
     showView('workspace'); status('Loading…');
     pending = [];
+    stopLive(); liveFinal = ''; renderLive('');
     try { current = await api('GET', `/workspaces/${id}`); }
     catch (err) { status('Load failed: ' + err.message); return; }
     if (!current) { location.hash = '#/'; return; }
@@ -174,11 +176,47 @@
     recStart = Date.now();
     try { rec.start(1000); }
     catch (err) { stopTracks(); mediaRecorder = null; status('Recording failed: ' + err.message); return; }
+    startLive();
     recTimer = setInterval(() =>
       status(`Recording… ${L.formatDuration(Math.round((Date.now() - recStart) / 1000))}`), 1000);
     renderWorkspace();
   }
-  function stopRec() { if (mediaRecorder) { clearInterval(recTimer); recTimer = null; mediaRecorder.stop(); status('Recording queued.'); } }
+  function stopRec() { if (mediaRecorder) { clearInterval(recTimer); recTimer = null; stopLive(); mediaRecorder.stop(); status('Recording queued.'); } }
+
+  // --- Live caption (browser Web Speech API; a preview only — server STT is authoritative) ---
+  function renderLive(interim) {
+    const box = $('live'); if (!box) return;
+    box.hidden = !liveActive && !liveFinal;
+    $('live-final').textContent = liveFinal;
+    $('live-interim').textContent = interim || '';
+    box.scrollTop = box.scrollHeight;
+  }
+  function startLive() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;                       // unsupported browser → silent; recording still works
+    let rec;
+    try { rec = new SR(); } catch { return; }
+    liveFinal = ''; liveActive = true;
+    rec.continuous = true; rec.interimResults = true;
+    rec.lang = navigator.language || 'en-US';
+    rec.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const txt = e.results[i][0].transcript;
+        if (e.results[i].isFinal) liveFinal += txt; else interim += txt;
+      }
+      renderLive(interim);
+    };
+    rec.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') liveActive = false; };
+    rec.onend = () => { if (liveActive) { try { rec.start(); } catch {} } };  // mobile Chrome ends on pause → resume
+    recognition = rec;
+    try { rec.start(); renderLive(''); } catch { liveActive = false; }
+  }
+  function stopLive() {
+    liveActive = false;
+    if (recognition) { try { recognition.stop(); } catch {} recognition = null; }
+    renderLive('');                        // drop trailing interim; keep finalized text visible
+  }
 
   async function transcribeAll() {
     if (!pending.length || transcribing) return;
