@@ -1,3 +1,0 @@
-# Dev/test dependencies for the audio -> article pipeline.
-# Install alongside scripts/requirements-transcribe.txt to run tests/.
-pytest>=7.0
