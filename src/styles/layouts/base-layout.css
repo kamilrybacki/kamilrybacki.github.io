@@ -415,6 +415,13 @@ body.home-page .footer {
   min-width: 0;
 }
 
+.home-article-tags {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
 .home-article-tag {
   flex-shrink: 0;
   font-family: var(--font-mono);
