@@ -238,7 +238,7 @@ $$\forall order \, (S(order) = PAID \implies S(\text{ship}(order)) = SHIPPED)$$
 This is a simple example of how we can express the allowed transitions of states of our system in a more formal way of logical sentences,
 and how we can use logical operations to validate new rules against existing tautologies.
 
-Soooooo... now hacing some kind of engine or framework that can take a bunch of logical statements and validate them by creating mathematical proofs
+Soooooo... now having some kind of engine or framework that can take a bunch of logical statements and validate them by creating mathematical proofs
 composed from these tidbits inspired by our business doimain would be pretty cool?
 
 ## LEANing into the automations
