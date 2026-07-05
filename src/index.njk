@@ -70,9 +70,9 @@ bodyClass: home-page
         <a href="{{ article.url }}" class="home-article-link">
           <div class="home-article-head">
             <h3 class="article-title">{{ article.data.title }}</h3>
-            {% if article.data.category %}
-            <span class="home-article-tag">{{ article.data.category }}</span>
-            {% endif %}
+            {% for cat in article.data.category | splitCategories %}
+            <span class="home-article-tag">{{ cat }}</span>
+            {% endfor %}
           </div>
           <div class="article-meta">
             <time class="article-date">{{ article.data.date | dateFormat }}</time>

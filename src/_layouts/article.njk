@@ -23,10 +23,10 @@ bodyClass: article-page
     <hr class="article-rule">
     <div class="article-meta">
       <time class="article-date">{{ date | dateFormat }}</time>
-      {% if category %}
+      {% for cat in category | splitCategories %}
       <span class="article-meta-dot">·</span>
-      <span class="article-category">{{ category }}</span>
-      {% endif %}
+      <span class="article-category">{{ cat }}</span>
+      {% endfor %}
     </div>
   </header>
 

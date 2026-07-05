@@ -185,19 +185,15 @@ Let's go back once again to the pricing example, and try to express it in a more
 
 The first tautology can be expressed as a statement that is always true,
 so it can be always safely assumed as a fact in any further reasoning.
-Expressing the total discount applied to the price `P` of the product as `D_x` for **any customer `x`**, we can express the discounted price as `P_x - D_x`. Then, the first tautology can be expressed as:
+Expressing the total discount applied to the price $P$ of the product as $D_x$ for **any customer $x$**, we can express the discounted price as $P_x - D_x$. Then, the first tautology can be expressed as:
 
-```math
-\forall x \, (P_x - D_x \geq A)
-```
+$$\forall x \, (P_x - D_x \geq A)$$
 
-Introduction of the next two rules to our logical system, creates a new condition that for clients from group `X` during summer, the total discount applied to the price will be `D_x + Z`. Thus, we can express the new discounted price as `P_x - (D_x + Z)` during that period:
+Introduction of the next two rules to our logical system, creates a new condition that for clients from group $X$ during summer, the total discount applied to the price will be $D_x + Z$. Thus, we can express the new discounted price as $P_x - (D_x + Z)$ during that period:
 
-```math
-\forall x \in X \, (P_x - (D_x + Z) \geq A)
-```
+$$\forall x \in X \, (P_x - (D_x + Z) \geq A)$$
 
-and this is where the problem arises, because if we do not have a proper validation of the new rule, we can easily fall into a trap of violating the first tautology, for incorrectly chosen values of `A`, `D_x` and `Z`.
+and this is where the problem arises, because if we do not have a proper validation of the new rule, we can easily fall into a trap of violating the first tautology, for incorrectly chosen values of $A$, $D_x$ and $Z$.
 
 The solution to this problem is to **validate** the new rule against the existing tautology,
 which can be done by checking if the new statement is logically consistent with the first one,
@@ -233,15 +229,11 @@ One of such functions can be `ship` that takes an `order` in `PAID` state and tr
 
 So how can we express the above tautology in a more formal way, using the logical operations?
 
-```math
-\forall order \, (S(order) = PAID \implies \text{ship}(order))
-```
+$$\forall order \, (S(order) = PAID \implies \text{ship}(order))$$
 
-Knowing that the outcome of `\text{ship}(order)` is `SHIPPED`, we can also express the above tautology as:
+Knowing that the outcome of $\text{ship}(order)$ is `SHIPPED`, we can also express the above tautology as:
 
-```math
-\forall order \, (S(order) = PAID \implies S(\text{ship}(order)) = SHIPPED)
-```
+$$\forall order \, (S(order) = PAID \implies S(\text{ship}(order)) = SHIPPED)$$
 
 This is a simple example of how we can express the allowed transitions of states of our system in a more formal way of logical sentences,
 and how we can use logical operations to validate new rules against existing tautologies.

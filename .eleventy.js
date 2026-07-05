@@ -10,6 +10,10 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
   // Ensure article images and other assets are copied
   eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
+  // KaTeX stylesheet + fonts for math rendering. CSS references fonts relatively
+  // (url(fonts/KaTeX_*.woff2)), so both land under /styles/.
+  eleventyConfig.addPassthroughCopy({ "node_modules/katex/dist/katex.min.css": "styles/katex.min.css" });
+  eleventyConfig.addPassthroughCopy({ "node_modules/katex/dist/fonts": "styles/fonts" });
   
   // Ignore template files and README
   eleventyConfig.ignores.add("src/content/**/_template.md");
@@ -18,7 +22,7 @@ module.exports = function(eleventyConfig) {
   // Watch for changes
   eleventyConfig.addWatchTarget("src/styles/");
   
-  // Markdown configuration (standard, no KaTeX)
+  // Markdown configuration
   const md = require("markdown-it")({
     html: true,
     breaks: false, // do NOT turn single newlines into <br>
@@ -27,6 +31,12 @@ module.exports = function(eleventyConfig) {
   // Render soft line breaks (single newline) as a single space so source-wrapped
   // Markdown doesn't generate <br> tags mid sentence.
   md.renderer.rules.softbreak = () => ' ';
+
+  // Math rendering via KaTeX. Inline math with $...$, display math with $$...$$.
+  // Operates on text tokens only, so `$VAR` inside code spans/fences is untouched.
+  // throwOnError:false → malformed LaTeX renders in red instead of breaking the build.
+  const markdownItKatex = require("@traptitech/markdown-it-katex");
+  md.use(markdownItKatex, { throwOnError: false, errorColor: "#cc0000" });
 
   // Path utility needed for thumbnail map lookups
   const path = require('path');
@@ -270,10 +280,21 @@ module.exports = function(eleventyConfig) {
     const categories = new Set();
     for (const a of articles) {
       if (a.data && a.data.category) {
-        categories.add(String(a.data.category));
+        // 'category' is a comma-delimited string; each token is its own category.
+        String(a.data.category)
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean)
+          .forEach(c => categories.add(c));
       }
     }
     return Array.from(categories).sort((a,b) => a.localeCompare(b));
+  });
+
+  // Split a comma-delimited `category` string into a trimmed list of categories.
+  eleventyConfig.addFilter("splitCategories", function(value) {
+    if (!value) return [];
+    return String(value).split(',').map(s => s.trim()).filter(Boolean);
   });
   
   // Filters
