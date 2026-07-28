@@ -10,17 +10,17 @@ draft: false
 
 ## Small models on the messy intake
 
-Earlier this year I spent a couple of days at the Data Innovation Summit in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake. Little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline. More like a cheap local worker sitting by the door, sorting the mail.
+Earlier this year I spent a couple of days at the Data Innovation Summit in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake, little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline, more like a cheap local worker sitting by the door, sorting the mail.
 
 That stuck with me. The clever bit was all about placement: drop a small model exactly where the data is messiest and the decision is fuzziest, and keep it cheap enough to run on your own boxes. I don't have one specific problem crying out for this yet. What I do have is a homelab that already emits a wide range of event sources, each with its own shape: Grafana alerts, GitHub webhooks, n8n run summaries, Discord messages, Kubernetes events, ntfy pushes, cron digests. So I wanted to try the idea on that pile, and to chase the question those talks left hanging: how little model do you really need for this?
 
-The obvious first thing to try was routing. All that traffic arrives faster than any rulebook could keep up, in a dozen different shapes, and something has to sort it by what it *means*, not by whichever fields it happens to carry. The reflex is to throw a language model at the pile. The real question was whether a small one pulls its weight there, or just adds latency and wrong answers.
+The obvious first thing to try was routing. All that traffic arrives faster than any rulebook could keep up, in a dozen different shapes, and something has to sort it by what it *means*, not by whichever fields it happens to carry. The reflex is to throw a language model at the pile, but the real question is whether a small one pulls its weight there or just piles on latency and wrong answers.
 
 So I built Braid around one rule: the model proposes, deterministic code decides. A cheap fast-path handles what it can, the model sees only the ambiguous tail, and a gate lets it suggest but never commit. It's an event-driven, multi-label router aimed at a job where mistakes are cheap: a misroute is a replay, not corrupted data. And because the deterministic parts do the heavy lifting, I kept shrinking the model, from a 500M Qwen down to a 26-million-parameter model built for phones. This is the build-log of what runs.
 
 ## What Braid is
 
-A semantic multi-label router. Heterogeneous events (a Discord message, a Grafana alert, an email, a Kubernetes event, a GitHub webhook) fan out to *several* destinations based on what each implies. The payload is never touched, only the routing decision is made. A wrong route costs a replay and nothing worse, which is why a small model is allowed near it.
+A semantic multi-label router. Heterogeneous events (a Discord message, a Grafana alert, an email, a Kubernetes event, a GitHub webhook) fan out to *several* destinations based on what each implies. The payload is never touched, only the routing decision is made, and a wrong route costs a replay and nothing worse, which is why a small model is allowed near it.
 
 The destinations vary by profile, and I prototyped two. A maintainer bus takes GitHub webhooks (issues, PRs, CI, releases) and sorts them into advisory lanes like `security-review`, `regression`, and `docs`. An agent mesh takes events and routes them to the specialist agents they imply: `agent:devops`, `agent:debug`, `agent:data`, `agent:research`. In the agent mesh the destinations *act*, which tightens the governance (more on that below).
 
@@ -44,7 +44,7 @@ The temptation is to run every event through the model. Don't. Most events don't
 
 ![Braid's routing pipeline. An event is normalised by ingest, then falls through three tiers cheapest first (predicate, certified replay, and the fine-tuned SLM) into a gate that proposes acting routes for review, then fans out without touching the payload.](/assets/images/braid-routing-pipeline.png)
 
-The tiers exist to save cost. Rules are free but dumb. Retrieval is cheap and handles most events, because most events look like ones we've already seen. The model is slow and can be wrong, so it only gets the leftovers. The latencies say why: the predicate-plus-retrieval fast-path answers in about 70 ms (p50), while an SLM call takes ~4.6 s p50 and ~6.6 s p95 on CPU, roughly 66× slower. Run the model on everything and you've built a queue. Run it only on the tail and the router feels instant, while the model barely costs a thing.
+The tiers exist to save cost: rules are free but dumb, retrieval is cheap and handles most events because most events look like ones we've already seen, and the model is slow and can be wrong, so it only gets the leftovers. The latencies say why: the predicate-plus-retrieval fast-path answers in about 70 ms (p50), while an SLM call takes ~4.6 s p50 and ~6.6 s p95 on CPU, roughly 66× slower. Run the model on everything and you've built a queue. Run it only on the tail and the router feels instant, while the model barely costs a thing.
 
 ## Measuring whether the model earns its place
 
@@ -56,7 +56,7 @@ Claiming "you need a model" is cheap. So I routed a held-out split of the agent-
 | embedding-kNN (baseline) | 0.81 | 0.72 |
 | fine-tuned SLM | 1.00 | 1.00 |
 
-Keyword rules fall apart on the implied cases: 0.36, missing two-thirds. No rule reaches "yesterday's values means data plus debug." That gap is the plainest case for semantics.
+Keyword rules fall apart on the implied cases: 0.36, missing two-thirds. No rule reaches "yesterday's values means data plus debug", and that gap is the plainest case for semantics.
 
 Embedding-kNN is a strong, cheap baseline, scoring 0.72 to 0.81. Matching an event against past decisions recovers most of what keywords miss, with no generation at all. That argues for a cheap replay tier below the model (a baseline here, not Braid's certified Tier 2).
 
@@ -110,7 +110,7 @@ The Braid core knows nothing about GitHub, or Grafana, or your agents. All the d
 - a one-line system prompt telling the model what those lanes mean;
 - a handful of optional predicate rules for the mechanical cases.
 
-Swap those and the same binary routes a different world. The maintainer bus and the agent mesh here are the same service with different env vars. But that makes the engine reusable, not the deployment: a model trained on agent lanes won't be safe or accurate on factory telemetry without its own catalog, prompt, predicates, and evaluation. What's genuinely free is the plumbing. Ingest walks any JSON shape, keeps the strings, and hands the model a tidy `{source, text}`, so there was never a schema to be tied to.
+Swap those and the same binary routes a different world. The maintainer bus and the agent mesh here are the same service with different env vars. But that makes the engine reusable, not the deployment: a model trained on agent lanes won't be safe or accurate on factory telemetry without its own catalog, prompt, predicates, and evaluation. What's genuinely free is the plumbing: ingest walks any JSON shape, keeps the strings, and hands the model a tidy `{source, text}`, so there was never a schema to be tied to.
 
 ## Talking to Braid
 
@@ -148,13 +148,13 @@ POST /feedback
 { "decision_id": "dec_9f2a…", "add": ["agent:devops"], "remove": [] }
 ```
 
-That's the whole surface. A producer needs one endpoint and knows nothing about the tiers. A consumer needs only the lane names it subscribes to. The routing is Braid's problem, the payload stays the producer's.
+That's the whole surface: a producer needs one endpoint and knows nothing about the tiers, and a consumer needs only the lane names it subscribes to. The routing is Braid's problem, the payload stays the producer's.
 
 ## Governance: routing is not dispatching
 
-On the maintainer bus, routes are advisory, and a wrong one costs a maintainer thirty seconds. The agent mesh is sharper, because the destinations act. `agent:devops` can deploy, `agent:coding` can open a PR. So the tolerance no longer holds by default, and the rule tightens.
+On the maintainer bus, routes are advisory, and a wrong one costs a maintainer thirty seconds. The agent mesh is sharper, because the destinations act: `agent:devops` can deploy, `agent:coding` can open a PR, so the tolerance no longer holds by default and the rule tightens.
 
-The model suggests routes. Braid only delivers to an allowlisted set of destinations. A separate policy, not the router, approves anything that can't be undone. Read-only agents (research, docs, memory) can act on a route directly. Acting agents (devops, coding, data) get a proposed dispatch that a human or a policy has to confirm first. Same rule as the top of the post: the model proposes, deterministic code decides, a human approves. If the action is just delivering a message, the gate can be loose. If it's letting an agent change something real, the gate is the whole point.
+The model suggests routes, but Braid only delivers to an allowlisted set of destinations, and a separate policy, not the router, approves anything that can't be undone. Read-only agents (research, docs, memory) can act on a route directly. Acting agents (devops, coding, data) get a proposed dispatch that a human or a policy has to confirm first. Same rule as the top of the post: the model proposes, deterministic code decides, a human approves. If the action is just delivering a message, the gate can be loose. If it's letting an agent change something real, the gate is the whole point.
 
 ## Rules set in silica, one layer down
 
@@ -166,7 +166,7 @@ The two are wired together. Braid's governance invariants (the payload is never 
 
 ## What I actually think now
 
-The tidy story would be "small models are great at routing." The duller, truer version: a small model seems to be one tier of a router, and not the tier doing the real work. Predicates and a certified-replay cache handle most of it, cheaply and auditably. The embedding search is a fast pre-filter, not a decision-maker. The model gets one small job, the uncertain tail nothing cheaper can handle, and even there it only proposes while review decides. Whether it wins on brand-new stuff it's never seen is still unproven, which is why those calls go through review. The gate around the model and the tiers under it seemed to matter more than the model itself.
+The tidy story would be "small models are great at routing." The duller, truer version: a small model seems to be one tier of a router, and not the tier doing the real work. Predicates and a certified-replay cache handle most of it, cheaply and auditably; the embedding search is a fast pre-filter, not a decision-maker. The model gets one small job, the uncertain tail nothing cheaper can handle, and even there it only proposes while review decides. Whether it wins on brand-new stuff it's never seen is still unproven, which is why those calls go through review. The gate around the model and the tiers under it seemed to matter more than the model itself.
 
 Or in one line: a language model seems to earn its place in a router mainly where meaning is required, the uncertain tail, behind plain rules and certified replay that do the rest for free.
 
