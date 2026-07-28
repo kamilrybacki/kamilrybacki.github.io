@@ -32,6 +32,13 @@ module.exports = function(eleventyConfig) {
   // Markdown doesn't generate <br> tags mid sentence.
   md.renderer.rules.softbreak = () => ' ';
 
+  // Wrap tables in a scroll container. Putting overflow on the <table> itself
+  // needs display:block, which collapses the table's column layout (columns
+  // shrink to content instead of filling the width). The wrapper keeps the
+  // table a real table and scrolls only when it is genuinely too wide.
+  md.renderer.rules.table_open = () => '<div class="table-wrap">\n<table>\n';
+  md.renderer.rules.table_close = () => '</table>\n</div>\n';
+
   // Math rendering via KaTeX. Inline math with $...$, display math with $$...$$.
   // Operates on text tokens only, so `$VAR` inside code spans/fences is untouched.
   // throwOnError:false → malformed LaTeX renders in red instead of breaking the build.
