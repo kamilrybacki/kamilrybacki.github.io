@@ -134,6 +134,11 @@ Swap those and the same binary routes a different world; the maintainer bus and 
 
 Braid now runs on a real event bus. Events publish to a `braid.ingest` subject on [NATS JetStream](https://docs.nats.io/nats-concepts/jetstream), an in-process consumer routes each one, and the decision goes to `braid.decisions` and the per-lane subjects `braid.lane.<name>`, with anything that fails landing in `braid.dlq`. The direct HTTP `POST /route` path stays for callers that want it, and the dashboard still reads its SSE feed, so both transports share one routing core. Heterogeneous means the *shape* of the event is free, not that there is no contract at all. I should be plain about what the deployment is: a single-node JetStream with at-least-once delivery. That means durable local queuing rather than a highly available cluster, and duplicates are possible, so consumers stay idempotent. For a homelab demo that is the right weight. Here are the four moves, whether a producer speaks HTTP or the bus.
 
+<figure class="figure">
+<img src="/assets/images/braid-demo-flow.gif" alt="The live demo feed: heterogeneous events (email, Grafana, Discord, Kubernetes, GitHub) stream in over the braid.ingest subject, each shown with its own field shape including origin_id, and fan out in real time to tier-coloured agent lanes." style="max-width:min(100%,760px)">
+<figcaption>The live feed on the bus: events arrive over <code>braid.ingest</code>, each with its own shape (note <code>origin_id</code>), and fan out to agent lanes as they are routed.</figcaption>
+</figure>
+
 Produce. Hand it any JSON object, no registration and no schema:
 
 ```
