@@ -50,8 +50,8 @@ The temptation is to run every event through the model. Don't: most events don't
 3. SLM, the fine-tuned small model. Only for the new or mixed cases, where no rule and no certificate fits. The semantic jump happens here, and it's the only place the expensive model runs, a few seconds of CPU inference that only ever proposes.
 
 <figure class="figure">
-<img src="/assets/images/braid-routing-pipeline.png" alt="Braid's routing pipeline: an event is normalised by ingest, then falls through three tiers cheapest first (predicate, certified replay, and the fine-tuned SLM) into a gate that proposes acting routes for review, then fans out without touching the payload." style="max-width:min(100%,540px)">
-<figcaption>An event falls through three tiers cheapest-first, then a gate that flags acting routes for review.</figcaption>
+<img src="/assets/images/braid-flow-diagram.gif" alt="Animated schematic of Braid's routing flow: an event is normalised by ingest to {source, text}, then falls through three tiers cheapest-first (predicate, certified replay, fine-tuned SLM, with rising cost marks), where most events stop early and only the tail reaches the SLM, into a gate that proposes acting routes for review, then fans out to several agent lanes at once without touching the payload." style="max-width:min(100%,560px)">
+<figcaption>An event falls through three tiers cheapest-first (most stop early, only the uncertain tail reaches the SLM), then a gate proposes and the decision fans out to several lanes at once, payload untouched.</figcaption>
 </figure>
 
 The tiers exist to save cost: rules are free but dumb, retrieval is cheap and handles most events because most events look like ones we've already seen, and the model is slow and can be wrong, so it only gets the leftovers. The latencies say why: the predicate-plus-retrieval fast-path answers in about 70 ms (p50), while an SLM call takes ~4.6 s p50 and ~6.6 s p95 on CPU, roughly 66× slower. Run the model on everything and you've built a queue; run it only on the tail and the router feels instant, while the model barely costs a thing.
