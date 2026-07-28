@@ -111,7 +111,7 @@ Serving is deliberately boring, and that's the point: the merged model runs dire
 
 ## Combing unkempt data
 
-Real event buses aren't uniform: a Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, and a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, though they share no field name.
+Real event sources aren't uniform: a Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, and a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, though they share no field name.
 
 It also keeps the model on familiar ground: whatever comes in, the model sees a tidy `{source, text}`, which is what it trained on, so the mess stays in the ingest layer and the model never has to deal with it.
 
@@ -132,7 +132,7 @@ Swap those and the same binary routes a different world; the maintainer bus and 
 
 ## Roping into the Braid
 
-Any service talks to Braid over one small contract, which today is HTTP; the planned durable path rides an event bus ([Redpanda](https://www.redpanda.com)), where you publish to an ingest topic and subscribe to the lane topics. Either way there are four moves.
+Any service talks to Braid over one small, concrete contract: you POST a JSON object to `/route` over HTTP and read the decision back. Heterogeneous means the *shape* of that JSON is free, not that there is no contract at all. The durable version I have in mind rides an event bus ([Redpanda](https://www.redpanda.com)), publishing to an ingest topic and subscribing to the lane topics, but that part is still a design on paper. Nothing is wired to a real broker yet; the demo is HTTP plus server-sent events. Here are the four moves, over HTTP.
 
 Produce. Hand it any JSON object, no registration and no schema:
 
