@@ -132,7 +132,7 @@ Swap those and the same binary routes a different world; the maintainer bus and 
 
 ## Roping into the Braid
 
-Any service talks to Braid over one small, concrete contract: you POST a JSON object to `/route` over HTTP and read the decision back. Heterogeneous means the *shape* of that JSON is free, not that there is no contract at all. The durable version I have in mind rides an event bus ([Redpanda](https://www.redpanda.com)), publishing to an ingest topic and subscribing to the lane topics, but that part is still a design on paper. Nothing is wired to a real broker yet; the demo is HTTP plus server-sent events. Here are the four moves, over HTTP.
+Braid now runs on a real event bus. Events publish to a `braid.ingest` subject on [NATS JetStream](https://docs.nats.io/nats-concepts/jetstream), an in-process consumer routes each one, and the decision goes to `braid.decisions` and the per-lane subjects `braid.lane.<name>`, with anything that fails landing in `braid.dlq`. The direct HTTP `POST /route` path stays for callers that want it, and the dashboard still reads its SSE feed, so both transports share one routing core. Heterogeneous means the *shape* of the event is free, not that there is no contract at all. I should be plain about what the deployment is: a single-node JetStream with at-least-once delivery. That means durable local queuing rather than a highly available cluster, and duplicates are possible, so consumers stay idempotent. For a homelab demo that is the right weight. Here are the four moves, whether a producer speaks HTTP or the bus.
 
 Produce. Hand it any JSON object, no registration and no schema:
 
