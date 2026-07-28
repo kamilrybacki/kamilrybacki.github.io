@@ -8,11 +8,13 @@ tags: []
 draft: false
 ---
 
-## Throwing a model at the pile
+## Small models on the messy intake
 
-I wanted to see how little model an event router actually needs.
+Earlier this year I spent a couple of days at the Data Innovation Summit in Stockholm, drifting between talks, and one theme kept surfacing on stage after stage. Company after company, all fighting the same fire: amorphous data pouring into their pipelines — half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day — and almost none of it fitting the neat tables their warehouses expected. What caught my ear wasn't the usual "we pointed a giant cloud LLM at it." It was the opposite. Team after team had quietly wired *small, on-premise* language models into the intake: little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline — more like a cheap local worker sitting by the door, sorting the mail.
 
-Events pour into a system faster than any rulebook can keep up, and the reflex is to point a language model at the pile. I had exactly that pile — a stream of events in a dozen shapes that needed routing by what they *mean*, not by whichever fields they carry. The real question was whether a small model pulls its weight there, or just adds latency and confident nonsense.
+That stuck with me. The clever bit wasn't the model's raw intelligence; it was dropping a *small* one exactly where the data is messiest and the decision is fuzziest, and keeping it cheap enough to run on your own boxes. So I wanted to try it on a problem I actually had, and to lean on the question those talks left hanging: how little model do you really need for this?
+
+The problem was routing. Events were pouring into a system faster than any rulebook could keep up, in a dozen different shapes, and they needed sorting by what they *mean* — not by whichever fields they happened to carry. The reflex is to throw a language model at the pile; the real question was whether a small one pulls its weight there, or just adds latency and confident nonsense.
 
 So I built **Braid** around one rule: the model proposes, deterministic code decides. A cheap fast-path handles what it can, the model sees only the ambiguous tail, and a gate lets it suggest but never commit. It's an event-driven, multi-label router aimed at a job where mistakes are cheap — a misroute is a replay, not corrupted data. And because the deterministic parts do the heavy lifting, I kept shrinking the model — from a 500M Qwen all the way down to a 26-million-parameter thing built for a watch. This is the build-log of what runs.
 
