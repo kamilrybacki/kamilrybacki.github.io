@@ -26,6 +26,11 @@ A semantic multi-label router. Heterogeneous events (a Discord message, a Grafan
 
 The destinations vary by profile, and I prototyped two. A maintainer bus takes GitHub webhooks (issues, PRs, CI, releases) and sorts them into advisory lanes like `security-review`, `regression`, and `docs`. An agent mesh takes events and routes them to the specialist agents they imply: `agent:devops`, `agent:debug`, `agent:data`, `agent:research`. In the agent mesh the destinations *act*, which tightens the governance (more on that below).
 
+<figure class="figure">
+<img src="/assets/images/braid-demo-dashboard.png" alt="The Braid demo dashboard: live stats (total routed, average fan-out, review rate), per-tier latency, a tier legend, the measured keyword-versus-retrieval-versus-SLM bar chart, and the pinned hero event routed to four lanes." style="max-width:min(100%,700px)">
+<figcaption>The live demo dashboard: running stats, the measured tier comparison, and the pinned hero event fanned out to four lanes.</figcaption>
+</figure>
+
 ## The semantic jump
 
 Braid routes by the capability an event implies, and for the interesting events that capability is implied, never stated.
@@ -109,6 +114,11 @@ Serving is deliberately boring, and that's the point: the merged model runs dire
 Real event buses aren't uniform: a Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, and a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, though they share no field name.
 
 It also keeps the model on familiar ground: whatever comes in, the model sees a tidy `{source, text}`, which is what it trained on, so the mess stays in the ingest layer and the model never has to deal with it.
+
+<figure class="figure">
+<img src="/assets/images/braid-demo-feed.png" alt="The demo live feed: Discord, email, monitor, Kubernetes, and GitHub events, each with a different field shape, routed multi-label to tier-colored lanes with review flags." style="max-width:min(100%,700px)">
+<figcaption>The live feed: Discord, email, monitor, k8s, and GitHub events, each a different shape, routed multi-label.</figcaption>
+</figure>
 
 ## One engine, any domain
 
