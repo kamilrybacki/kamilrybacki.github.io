@@ -40,7 +40,7 @@ The temptation is to run every event through the model. Don't. Most events don't
 
 1. Predicate, plain rules. An explicit signal routes with no model: a `/deploy` command goes to `agent:devops`, a webhook `type=ci_failure` goes to `agent:debug`. Costs about a regex, deterministic and auditable for known cases.
 2. Certified replay, a versioned route certificate. A repeat of an already-decided event replays that decision. The certificate is scoped to the source and pinned to a policy epoch, so a repeat skips straight to its known route-set. (The prototype fakes this with embedding-kNN: a close-enough neighbour replays its routes. Fine for measuring, but a cosine neighbour isn't proof of the same call. The real tier certifies, it doesn't guess.) Costs a lookup.
-3. SLM, the fine-tuned small model. Only for the new or mixed cases, where no rule and no certificate fits. This is where the semantic jump happens, and the only place the expensive model runs. A few seconds of CPU inference, and it only ever proposes.
+3. SLM, the fine-tuned small model. Only for the new or mixed cases, where no rule and no certificate fits. The semantic jump happens here, and it's the only place the expensive model runs. A few seconds of CPU inference, and it only ever proposes.
 
 ![Braid's routing pipeline. An event is normalised by ingest, then falls through three tiers cheapest first (predicate, certified replay, and the fine-tuned SLM) into a gate that proposes acting routes for review, then fans out without touching the payload.](/assets/images/braid-routing-pipeline.png)
 
