@@ -10,7 +10,7 @@ draft: false
 
 ## Small models on the messy intake
 
-Earlier this year I spent a couple of days at the Data Innovation Summit in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake, little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline, more like a cheap local worker sitting by the door, sorting the mail.
+Earlier this year I spent a couple of days at the [Data Innovation Summit](https://datainnovationsummit.com) in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake, little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline, more like a cheap local worker sitting by the door, sorting the mail.
 
 That stuck with me, because the clever bit was all about placement: drop a small model exactly where the data is messiest and the decision is fuzziest, and keep it cheap enough to run on your own boxes. I still don't have one specific problem crying out for this yet, but I do have a homelab that already emits a wide range of event sources, each with its own shape: Grafana alerts, GitHub webhooks, n8n run summaries, Discord messages, Kubernetes events, ntfy pushes, and cron digests. So I wanted to try the idea on that pile, and to chase the question those talks left hanging: how little model do you really need for this?
 
@@ -78,9 +78,9 @@ One line: the value is the ladder, not the model. Plain rules for the mechanical
 
 ## Shrinking the model, down to 26M
 
-The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a Qwen2.5-0.5B, LoRA-fine-tuned on a rented T4 (Modal) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today, but if the scaffolding does the heavy lifting, the model can afford to be much dumber.
+The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a [Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct), [LoRA](https://arxiv.org/abs/2106.09685)-fine-tuned on a rented T4 ([Modal](https://modal.com)) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today, but if the scaffolding does the heavy lifting, the model can afford to be much dumber.
 
-A bake-off showed Granite 4.0 350M learns it just as cleanly. Then I tried [Cactus Needle](https://github.com/cactus-compute/needle), a 26-million-parameter function-caller built for phones, roughly a twentieth the size of the Qwen. Cold, it was useless: right function, wrong arguments (0% exact-set). Fine-tuned on the same corpus (on Modal, not the homelab), that 26M model reached 0.875 exact-set on held-out events. A little below the 0.5B and twenty times smaller, it still splits the two-problem message into the right four-lane team, and it quantizes to a 38 MB bundle small enough for a phone.
+A bake-off showed [Granite 4.0 350M](https://huggingface.co/ibm-granite) learns it just as cleanly. Then I tried [Cactus Needle](https://github.com/cactus-compute/needle), a 26-million-parameter function-caller built for phones, roughly a twentieth the size of the Qwen. Cold, it was useless: right function, wrong arguments (0% exact-set). Fine-tuned on the same corpus (on Modal, not the homelab), that 26M model reached 0.875 exact-set on held-out events. A little below the 0.5B and twenty times smaller, it still splits the two-problem message into the right four-lane team, and it quantizes to a 38 MB bundle small enough for a phone.
 
 | model | params | artifact | held-out | runtime tested | RAM\* | CPU p50\* |
 |---|---|---|---|---|---|---|
@@ -92,7 +92,7 @@ A bake-off showed Granite 4.0 350M learns it just as cleanly. Then I tried [Cact
 
 Two things fall out of that table. The size story holds up: Needle is 19× fewer parameters and 25× smaller on disk than the Qwen, and fine-tuning still pulled it from 0% cold up to 0.875, a 12.5-point drop for a twentieth of the model. The less flattering half: smaller didn't seem to mean cheaper. Needle's JAX runtime on my x86 box was actually slower and used nearly as much RAM as the Qwen. So a tiny model doesn't automatically make a tiny system, and at least here the runtime seems to count about as much as the parameter count.
 
-To make that concrete: run Qwen0.5B and Granite350M through the *same* runtime (ollama, Q4) on the same CPU, and Qwen answers in 1.55 s on 484 MB, Granite in 0.43 s on ~230 MB. Most of the Qwen's 5 s in the table is the heavy Transformers path, not the model. Needle's real phone-grade speed lives on Cactus's ARM engine, which won't build on x86, so its honest cost number is still open.
+To make that concrete: run Qwen0.5B and Granite350M through the *same* runtime ([ollama](https://ollama.com), Q4) on the same CPU, and Qwen answers in 1.55 s on 484 MB, Granite in 0.43 s on ~230 MB. Most of the Qwen's 5 s in the table is the heavy Transformers path, not the model. Needle's real phone-grade speed lives on Cactus's ARM engine, which won't build on x86, so its honest cost number is still open.
 
 For a plain CPU server, Granite 4.0 350M is the pick I'd make. It was the fastest (0.43 s), the lightest (~230 MB), and looked to match Qwen on accuracy in the bake-off, so Qwen's extra 150M parameters buy little here. Needle probably only pays off on the hardware it's built for, an ARM phone or watch running Cactus, where its 38 MB and tiny footprint should win. On a server it looks like the wrong choice, while Qwen0.5B stays the safe top-accuracy pick if you can afford the cost. (One caveat: Granite's accuracy is bake-off-level, not an independent held-out number like Qwen's 1.0 and Needle's 0.875, so treat that column cautiously until I re-run it cleanly.)
 
@@ -107,7 +107,7 @@ Fine-tuning teaches the model by example instead of by hand-written rules. Show 
 <figcaption>Labelled events become a corpus, a LoRA adapter trains on a Modal T4, then merges and serves in a CPU sidecar.</figcaption>
 </figure>
 
-Serving is deliberately boring, and that's the point: the merged model runs directly under Transformers in a small CPU sidecar, fed the exact prompt it trained on. The router calls it over HTTP (`/infer` for a route-set, `/embed` for the retrieval tier's vectors), gets back JSON, and the decision engine unions that with the predicate and replay tiers. No GPU at inference, no special runtime, and the model sits on a small persistent volume so a pod restart never loses it.
+Serving is deliberately boring, and that's the point: the merged model runs directly under [Transformers](https://huggingface.co/docs/transformers/index) in a small CPU sidecar, fed the exact prompt it trained on. The router calls it over HTTP (`/infer` for a route-set, `/embed` for the retrieval tier's vectors), gets back JSON, and the decision engine unions that with the predicate and replay tiers. No GPU at inference, no special runtime, and the model sits on a small persistent volume so a pod restart never loses it.
 
 ## Heterogeneous in, meaning out
 
@@ -132,7 +132,7 @@ Swap those and the same binary routes a different world; the maintainer bus and 
 
 ## Talking to Braid
 
-Any service talks to Braid over one small contract, which today is HTTP; the planned durable path rides an event bus (Redpanda), where you publish to an ingest topic and subscribe to the lane topics. Either way there are four moves.
+Any service talks to Braid over one small contract, which today is HTTP; the planned durable path rides an event bus ([Redpanda](https://www.redpanda.com)), where you publish to an ingest topic and subscribe to the lane topics. Either way there are four moves.
 
 Produce. Hand it any JSON object, no registration and no schema:
 
