@@ -8,7 +8,7 @@ tags: []
 draft: false
 ---
 
-## Small models on the messy intake
+## Messy (in)take
 
 Earlier this year I spent a couple of days at the [Data Innovation Summit](https://datainnovationsummit.com) in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake, little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline, more like a cheap local worker sitting by the door, sorting the mail.
 
@@ -20,7 +20,7 @@ So I built Braid around one rule: the model proposes, deterministic code decides
 
 One honest note before any of the numbers. I vibecoded most of this, partly to see how small an SLM I could get away with and partly to teach myself fine-tuning by actually doing it. I'm a layman when it comes to training models, so read the tuning choices as a curious amateur's rather than an expert's, and weigh the results with that in mind.
 
-## What Braid is
+## Weaving in the meaning
 
 A semantic multi-label router. Heterogeneous events (a Discord message, a Grafana alert, an email, a Kubernetes event, a GitHub webhook) fan out to *several* destinations based on what each implies. The payload is never touched, only the routing decision is made, and a wrong route costs a replay and nothing worse, which is why a small model is allowed near it.
 
@@ -31,7 +31,7 @@ The destinations vary by profile, and I prototyped two. A maintainer bus takes G
 <figcaption>The live demo dashboard: running stats, the measured tier comparison, and the pinned hero event fanned out to four lanes.</figcaption>
 </figure>
 
-## The semantic jump
+## Making the semantic jump
 
 Braid routes by the capability an event implies, and for the interesting events that capability is implied, never stated.
 
@@ -41,7 +41,7 @@ Nothing there names an agent, a bug, or a pipeline. But it holds two problems at
 
 The same shape shows up on the maintainer bus, where an issue that says *"logout succeeds but the captured token still works after refresh, and the docs promise revocation"* implies `security-review`, `regression`, `docs`, and `auth-area`, and no field states any of the four.
 
-## The model is one tier of three
+## Complicated nature of intelligent strand
 
 The temptation is to run every event through the model. Don't: most events don't need the jump, so Braid resolves a route in three tiers, cheapest and most certain first.
 
@@ -56,7 +56,7 @@ The temptation is to run every event through the model. Don't: most events don't
 
 The tiers exist to save cost: rules are free but dumb, retrieval is cheap and handles most events because most events look like ones we've already seen, and the model is slow and can be wrong, so it only gets the leftovers. The latencies say why: the predicate-plus-retrieval fast-path answers in about 70 ms (p50), while an SLM call takes ~4.6 s p50 and ~6.6 s p95 on CPU, roughly 66× slower. Run the model on everything and you've built a queue; run it only on the tail and the router feels instant, while the model barely costs a thing.
 
-## Measuring whether the model earns its place
+## Confidence compounded
 
 Claiming "you need a model" is cheap. So I routed a held-out split of the agent-mesh test set three ways: a keyword-rule baseline (what you'd write without ML), embedding-kNN (semantic similarity, no generation), and the fine-tuned model. I scored exact-set match, meaning the whole route-set had to come out right. Exact-set is a blunt metric, it counts a missed critical route the same as one extra advisory one, so read it as a rough comparison rather than a safety claim.
 
@@ -76,7 +76,7 @@ The caveat I won't hide: that 1.00 is in-distribution, and so is most of kNN's 0
 
 One line: the value is the ladder, not the model. Plain rules for the mechanical stuff, certified replay for the repeats, the model only for the uncertain tail, and even there review has the last word.
 
-## Shrinking the model, down to 26M
+## Needle thin as a hair
 
 The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a [Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct), [LoRA](https://arxiv.org/abs/2106.09685)-fine-tuned on a rented T4 ([Modal](https://modal.com)) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today, but if the scaffolding does the heavy lifting, the model can afford to be much dumber.
 
@@ -98,7 +98,7 @@ For a plain CPU server, Granite 4.0 350M is the pick I'd make. It was the fastes
 
 The model tier is just a contract, `event in, route-set out`, so swapping Qwen for Needle took zero engine changes and Braid never learns which model it holds. That seems to be the takeaway: the stronger the deterministic tiers, the smaller the model that fits in the middle, as long as its runtime is small too.
 
-### What fine-tuning actually is, the short version
+### Teaching by example
 
 Fine-tuning teaches the model by example instead of by hand-written rules. Show it an event, let it guess the route-set, compare against the right answer, adjust the weights a little toward the right one, and repeat a few thousand times (each full pass is an "epoch"). The behaviour is learned from corrected examples, nothing is hand-coded, and the same recipe teaches any task you can show enough examples of. Few-shot (pasting examples into the prompt) is the cheaper, temporary cousin. Here it wasn't enough, so the lessons had to go into the weights. The discipline that keeps it honest: hold a chunk of examples back and grade only on those. It's the only way to tell learning from memorising the answer key, which is why the numbers above carry a caveat.
 
@@ -109,7 +109,7 @@ Fine-tuning teaches the model by example instead of by hand-written rules. Show 
 
 Serving is deliberately boring, and that's the point: the merged model runs directly under [Transformers](https://huggingface.co/docs/transformers/index) in a small CPU sidecar, fed the exact prompt it trained on. The router calls it over HTTP (`/infer` for a route-set, `/embed` for the retrieval tier's vectors), gets back JSON, and the decision engine unions that with the predicate and replay tiers. No GPU at inference, no special runtime, and the model sits on a small persistent volume so a pod restart never loses it.
 
-## Heterogeneous in, meaning out
+## Combing unkempt data
 
 Real event buses aren't uniform: a Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, and a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, though they share no field name.
 
@@ -120,7 +120,7 @@ It also keeps the model on familiar ground: whatever comes in, the model sees a 
 <figcaption>The live feed: Discord, email, monitor, k8s, and GitHub events, each a different shape, routed multi-label.</figcaption>
 </figure>
 
-## One engine, any domain
+## Advantages of agnostic loom
 
 The Braid core knows nothing about GitHub, or Grafana, or your agents. All the domain knowledge lives in configuration, not code. Three small things:
 
@@ -130,7 +130,7 @@ The Braid core knows nothing about GitHub, or Grafana, or your agents. All the d
 
 Swap those and the same binary routes a different world; the maintainer bus and the agent mesh here are the same service with different env vars. But that makes the engine reusable, not the deployment: a model trained on agent lanes won't be safe or accurate on factory telemetry without its own catalog, prompt, predicates, and evaluation. What's genuinely free is the plumbing: ingest walks any JSON shape, keeps the strings, and hands the model a tidy `{source, text}`, so there was never a schema to be tied to.
 
-## Talking to Braid
+## Roping into the Braid
 
 Any service talks to Braid over one small contract, which today is HTTP; the planned durable path rides an event bus ([Redpanda](https://www.redpanda.com)), where you publish to an ingest topic and subscribe to the lane topics. Either way there are four moves.
 
@@ -168,13 +168,13 @@ POST /feedback
 
 That's the whole surface: a producer needs one endpoint and knows nothing about the tiers, and a consumer needs only the lane names it subscribes to. The routing is Braid's problem, the payload stays the producer's.
 
-## Governance: routing is not dispatching
+## Governance and responsibility
 
 On the maintainer bus, routes are advisory, and a wrong one costs a maintainer thirty seconds. The agent mesh is sharper, because the destinations act: `agent:devops` can deploy, `agent:coding` can open a PR, so the tolerance no longer holds by default and the rule tightens.
 
 The model suggests routes, but Braid only delivers to an allowlisted set of destinations, and a separate policy, not the router, approves anything that can't be undone. Read-only agents (research, docs, memory) can act on a route directly, while acting agents (devops, coding, data) get a proposed dispatch that a human or a policy has to confirm first. Same rule as the top of the post: the model proposes, deterministic code decides, a human approves. If the action is just delivering a message, the gate can be loose; if it's letting an agent change something real, the gate is the whole point.
 
-## Rules set in silica, one layer down
+## Rules set in keratin
 
 The shape is the same as [Tauto](/content/articles/rules-set-in-silica/), pushed a notch further. Tauto strips a language model to one deterministic-checkable job (turn prose into a formal contract) and lets a proof engine do the trusting. Braid does the same to routing: the model only proposes, and everything that actually matters around it is deterministic and gated.
 
@@ -182,7 +182,7 @@ Braid leans on the model even less. Tauto points at a hosted OpenAI-compatible m
 
 The two are wired together. Braid's governance invariants (the payload is never mutated, an SLM proposal flags `review`, an empty route-set escalates, acting agents wait for a human) are authored as Tauto contracts in the repo, and CI fails the build if any two contradict. The router's rulebook is machine-checked, like a business-rule set. Rules set in silica, one layer down.
 
-## What I actually think now
+## Tying it off
 
 The tidy story would be "small models are great at routing." The duller, truer version: a small model seems to be one tier of a router, and not the tier doing the real work. Predicates and a certified-replay cache handle most of it, cheaply and auditably; the embedding search is a fast pre-filter, not a decision-maker. The model gets one small job, the uncertain tail nothing cheaper can handle, and even there it only proposes while review decides. Whether it wins on brand-new stuff it's never seen is still unproven, which is why those calls go through review. The gate around the model and the tiers under it seemed to matter more than the model itself.
 
