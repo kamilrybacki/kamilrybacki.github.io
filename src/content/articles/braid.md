@@ -41,7 +41,7 @@ Nothing there names an agent, a bug, or a pipeline. But it holds two problems at
 
 The same shape shows up on the maintainer bus, where an issue that says *"logout succeeds but the captured token still works after refresh, and the docs promise revocation"* implies `security-review`, `regression`, `docs`, and `auth-area`, and no field states any of the four.
 
-## Complicated nature of intelligent strand
+## The complicated nature of the intelligent strand
 
 The temptation is to run every event through the model. Don't: most events don't need the jump, so Braid resolves a route in three tiers, cheapest and most certain first.
 
@@ -120,7 +120,7 @@ It also keeps the model on familiar ground: whatever comes in, the model sees a 
 <figcaption>The live feed: Discord, email, monitor, k8s, and GitHub events, each a different shape, routed multi-label.</figcaption>
 </figure>
 
-## Advantages of agnostic loom
+## Advantages of an agnostic loom
 
 The Braid core knows nothing about GitHub, or Grafana, or your agents. All the domain knowledge lives in configuration, not code. Three small things:
 
