@@ -1,6 +1,6 @@
 ---
 layout: article.njk
-title: "Braid"
+title: "Braiding SLMs into event architecture"
 date: 2026-07-28
 category: AI, programming
 description: "How small a model an event router actually needs — routing messy events by what they mean, then shrinking the model from a 500M Qwen down to a 26M Cactus Needle."
