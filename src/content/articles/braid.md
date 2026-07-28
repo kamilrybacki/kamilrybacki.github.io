@@ -58,7 +58,7 @@ Claiming "you need a model" is cheap. So I routed a held-out split of the agent-
 
 Keyword rules fall apart on the implied cases: 0.36, missing two-thirds. No rule reaches "yesterday's values means data plus debug." That gap is the plainest case for semantics.
 
-Embedding-kNN is a strong, cheap baseline (0.72–0.81). Matching an event against past decisions recovers most of what keywords miss, with no generation at all. That argues for a cheap replay tier below the model (a baseline here, not Braid's certified Tier 2).
+Embedding-kNN is a strong, cheap baseline, scoring 0.72 to 0.81. Matching an event against past decisions recovers most of what keywords miss, with no generation at all. That argues for a cheap replay tier below the model (a baseline here, not Braid's certified Tier 2).
 
 The model pulls ahead on the intertwined-problem case: splitting two problems in one message into the right team, in-distribution. Whether it also wins on genuinely new, no-neighbour events isn't shown by this test. That regime is what a same-distribution corpus can't probe, and off-distribution the model over-fans, which review absorbs.
 
@@ -68,7 +68,7 @@ One line: the value is the ladder, not the model. Plain rules for the mechanical
 
 ## Shrinking the model, down to 26M
 
-Because the deterministic tiers carry most of the load, the model can keep getting smaller. I started with a Qwen2.5-0.5B, LoRA-fine-tuned on a rented T4 (Modal) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today. But if the scaffolding does the heavy lifting, the model can afford to be much dumber.
+The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a Qwen2.5-0.5B, LoRA-fine-tuned on a rented T4 (Modal) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today. But if the scaffolding does the heavy lifting, the model can afford to be much dumber.
 
 A bake-off showed Granite 4.0 350M learns it just as cleanly. Then I tried [Cactus Needle](https://github.com/cactus-compute/needle), a 26-million-parameter function-caller built for phones, roughly a twentieth the size of the Qwen. Cold, it was useless: right function, wrong arguments (0% exact-set). Fine-tuned on the same corpus (on Modal, not the homelab), that 26M model reached 0.875 exact-set on held-out events. A little below the 0.5B, at twenty times smaller, and it still splits the two-problem message into the right four-lane team. It quantizes to a 38 MB bundle small enough for a phone.
 
@@ -98,7 +98,7 @@ Serving is deliberately boring, and that's the point. The merged model runs dire
 
 ## Heterogeneous in, meaning out
 
-Real event buses aren't uniform. A Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, even though they don't share a single field name.
+Real event buses aren't uniform. A Grafana alert is `{alertname, severity, summary, labels}`, an email is `{from, subject, body}`, a Kubernetes event is `{reason, involvedObject, message}`. Braid's ingest layer pulls the text that actually means something out of *any* shape (it grabs the strings and skips the boring metadata), then routes on that. So a Grafana `PodOOMKilled` alert and a Discord "the pod keeps dying" message land on the same route-set, `{debug, devops}`, though they share no field name.
 
 It also keeps the model on familiar ground: whatever comes in, the model sees a tidy `{source, text}`, which is what it trained on. The mess stays in the ingest layer, and the model never has to deal with it.
 
