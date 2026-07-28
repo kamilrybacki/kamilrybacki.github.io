@@ -12,11 +12,13 @@ draft: false
 
 Earlier this year I spent a couple of days at the Data Innovation Summit in Stockholm, drifting between talks, and one theme kept surfacing. Company after company with the same problem: amorphous data pouring into their pipelines (half-structured events, logs, messages, documents, whatever an upstream system felt like emitting that day), almost none of it fitting the neat tables their warehouses expected. What caught my ear was the opposite of the usual "we pointed a giant cloud LLM at it." Team after team had quietly wired small, on-premise language models into the intake, little models that would look at an incoming stream and guess a schema for it, or read a messy payload and decide where it should go next, or do some off-hand scrap of analysis that used to need a person or a brittle regex. Not the star of the pipeline, more like a cheap local worker sitting by the door, sorting the mail.
 
-That stuck with me, because the clever bit was all about placement: drop a small model exactly where the data is messiest and the decision is fuzziest, and keep it cheap enough to run on your own boxes. I don't have one specific problem crying out for this yet, but I do have a homelab that already emits a wide range of event sources, each with its own shape: Grafana alerts, GitHub webhooks, n8n run summaries, Discord messages, Kubernetes events, ntfy pushes, and cron digests. So I wanted to try the idea on that pile, and to chase the question those talks left hanging: how little model do you really need for this?
+That stuck with me, because the clever bit was all about placement: drop a small model exactly where the data is messiest and the decision is fuzziest, and keep it cheap enough to run on your own boxes. I still don't have one specific problem crying out for this yet, but I do have a homelab that already emits a wide range of event sources, each with its own shape: Grafana alerts, GitHub webhooks, n8n run summaries, Discord messages, Kubernetes events, ntfy pushes, and cron digests. So I wanted to try the idea on that pile, and to chase the question those talks left hanging: how little model do you really need for this?
 
 The obvious first thing to try was routing. All that traffic arrives faster than any rulebook could keep up, in a dozen different shapes, and something has to sort it by what it *means*, not by whichever fields it happens to carry. The reflex is to throw a language model at the pile, but the real question is whether a small one pulls its weight there or just piles on latency and wrong answers.
 
 So I built Braid around one rule: the model proposes, deterministic code decides. A cheap fast-path handles what it can, the model sees only the ambiguous tail, and a gate lets it suggest but never commit. It's an event-driven, multi-label router aimed at a job where mistakes are cheap: a misroute is a replay, not corrupted data. And because the deterministic parts do the heavy lifting, I kept shrinking the model, from a 500M Qwen down to a 26-million-parameter model built for phones. This is the build-log of what runs.
+
+One honest note before any of the numbers. I vibecoded most of this, partly to see how small an SLM I could get away with and partly to teach myself fine-tuning by actually doing it. I'm a layman when it comes to training models, so read the tuning choices as a curious amateur's rather than an expert's, and weigh the results with that in mind.
 
 ## What Braid is
 
@@ -32,7 +34,7 @@ Braid routes by the capability an event implies, and for the interesting events 
 
 Nothing there names an agent, a bug, or a pipeline. But it holds two problems at once, a crashing pod and a stale dashboard, so the right answer is a team: `devops` and `debug` for the crash, `data` for the pipeline, `review` because those agents act. A keyword rule sees a Discord message and nothing else; going from a symptom to the capabilities it implies, and splitting two problems into one route-set, is a judgement about meaning, and that judgement is the semantic jump, part of why a small model can earn a place in a router.
 
-The same shape shows up on the maintainer bus. An issue that says *"logout succeeds but the captured token still works after refresh, and the docs promise revocation"* implies `security-review`, `regression`, `docs`, and `auth-area`. No field states any of the four.
+The same shape shows up on the maintainer bus, where an issue that says *"logout succeeds but the captured token still works after refresh, and the docs promise revocation"* implies `security-review`, `regression`, `docs`, and `auth-area`, and no field states any of the four.
 
 ## The model is one tier of three
 
@@ -42,7 +44,10 @@ The temptation is to run every event through the model. Don't: most events don't
 2. Certified replay, a versioned route certificate. A repeat of an already-decided event replays that decision. The certificate is scoped to the source and pinned to a policy epoch, so a repeat skips straight to its known route-set. (The prototype fakes this with embedding-kNN: a close-enough neighbour replays its routes. Fine for measuring, but a cosine neighbour isn't proof of the same call. The real tier certifies, it doesn't guess.) Costs a lookup.
 3. SLM, the fine-tuned small model. Only for the new or mixed cases, where no rule and no certificate fits. The semantic jump happens here, and it's the only place the expensive model runs, a few seconds of CPU inference that only ever proposes.
 
-![Braid's routing pipeline. An event is normalised by ingest, then falls through three tiers cheapest first (predicate, certified replay, and the fine-tuned SLM) into a gate that proposes acting routes for review, then fans out without touching the payload.](/assets/images/braid-routing-pipeline.png)
+<figure class="figure">
+<img src="/assets/images/braid-routing-pipeline.png" alt="Braid's routing pipeline: an event is normalised by ingest, then falls through three tiers cheapest first (predicate, certified replay, and the fine-tuned SLM) into a gate that proposes acting routes for review, then fans out without touching the payload." style="max-width:min(100%,540px)">
+<figcaption>An event falls through three tiers cheapest-first, then a gate that flags acting routes for review.</figcaption>
+</figure>
 
 The tiers exist to save cost: rules are free but dumb, retrieval is cheap and handles most events because most events look like ones we've already seen, and the model is slow and can be wrong, so it only gets the leftovers. The latencies say why: the predicate-plus-retrieval fast-path answers in about 70 ms (p50), while an SLM call takes ~4.6 s p50 and ~6.6 s p95 on CPU, roughly 66× slower. Run the model on everything and you've built a queue; run it only on the tail and the router feels instant, while the model barely costs a thing.
 
@@ -68,7 +73,7 @@ One line: the value is the ladder, not the model. Plain rules for the mechanical
 
 ## Shrinking the model, down to 26M
 
-The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a Qwen2.5-0.5B, LoRA-fine-tuned on a rented T4 (Modal) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today. But if the scaffolding does the heavy lifting, the model can afford to be much dumber.
+The deterministic tiers carry most of the load, so the model can keep getting smaller. I started with a Qwen2.5-0.5B, LoRA-fine-tuned on a rented T4 (Modal) for a few minutes, on a corpus of `event → route-set` examples written so the route is implied, never keyword-derivable. It nailed the task in-distribution (the ~1.0 above) and still serves the demo today, but if the scaffolding does the heavy lifting, the model can afford to be much dumber.
 
 A bake-off showed Granite 4.0 350M learns it just as cleanly. Then I tried [Cactus Needle](https://github.com/cactus-compute/needle), a 26-million-parameter function-caller built for phones, roughly a twentieth the size of the Qwen. Cold, it was useless: right function, wrong arguments (0% exact-set). Fine-tuned on the same corpus (on Modal, not the homelab), that 26M model reached 0.875 exact-set on held-out events. A little below the 0.5B and twenty times smaller, it still splits the two-problem message into the right four-lane team, and it quantizes to a 38 MB bundle small enough for a phone.
 
@@ -92,7 +97,10 @@ The model tier is just a contract, `event in, route-set out`, so swapping Qwen f
 
 Fine-tuning teaches the model by example instead of by hand-written rules. Show it an event, let it guess the route-set, compare against the right answer, adjust the weights a little toward the right one, and repeat a few thousand times (each full pass is an "epoch"). The behaviour is learned from corrected examples, nothing is hand-coded, and the same recipe teaches any task you can show enough examples of. Few-shot (pasting examples into the prompt) is the cheaper, temporary cousin. Here it wasn't enough, so the lessons had to go into the weights. The discipline that keeps it honest: hold a chunk of examples back and grade only on those. It's the only way to tell learning from memorising the answer key, which is why the numbers above carry a caveat.
 
-![The fine-tune loop: labelled events become a family-partitioned corpus, a LoRA adapter trains on a Modal T4, it merges into the base and serves in a CPU sidecar, gets evaluated on a held-out split, and deploys behind the gate, while human corrections feed back into the labels.](/assets/images/braid-finetune-loop.png)
+<figure class="figure">
+<img src="/assets/images/braid-finetune-loop.png" alt="The fine-tune loop: labelled events become a family-partitioned corpus, a LoRA adapter trains on a Modal T4, it merges into the base and serves in a CPU sidecar, gets evaluated on a held-out split, and deploys behind the gate, while human corrections feed back into the labels." style="max-width:min(100%,540px)">
+<figcaption>Labelled events become a corpus, a LoRA adapter trains on a Modal T4, then merges and serves in a CPU sidecar.</figcaption>
+</figure>
 
 Serving is deliberately boring, and that's the point: the merged model runs directly under Transformers in a small CPU sidecar, fed the exact prompt it trained on. The router calls it over HTTP (`/infer` for a route-set, `/embed` for the retrieval tier's vectors), gets back JSON, and the decision engine unions that with the predicate and replay tiers. No GPU at inference, no special runtime, and the model sits on a small persistent volume so a pod restart never loses it.
 
