@@ -1,0 +1,114 @@
+---
+layout: base.njk
+title: YAIkes — unlimited icks
+description: Buy the paid edition of YAIkes. One payment, no account, no subscription.
+permalink: /yaikes/
+bodyClass: article-page
+---
+
+{# Buy page for the YAIkes extension.
+
+   The purchase happens HERE and never in the extension. Paddle takes the
+   payment, a webhook mints a licence key signed with an offline ECDSA key, and
+   the buyer pastes that key into the popup. The extension makes no network
+   request at any point, which is the product's central claim — a checkout
+   inside the extension would falsify it and the privacy policy along with it.
+
+   Identifiers come from src/_data/yaikes.json. Both are public by design: the
+   client-side token is meant to appear in page source and a price ID is not a
+   secret. The Paddle API key and webhook secret are neither, and live in Vault. #}
+
+<header class="home-nav article-nav">
+  <div class="home-shell home-nav-inner">
+    <a href="/" class="home-brand">K.Rybacki</a>
+    <nav class="home-links" aria-label="Social links">
+      <a href="https://www.linkedin.com/in/kamil-andrzej-rybacki/" class="home-btn home-btn-ghost" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="https://github.com/kamilrybacki" class="home-btn home-btn-solid" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<article class="article-shell">
+  <a href="/" class="article-back-link">← Back to home</a>
+
+  <div class="article-content">
+
+<h1>YAIkes — unlimited icks</h1>
+
+<p>The free edition keeps three filters of your own. This one keeps as many as
+you like. Everything else — the four built-in icks, the review band, the
+learning, the pattern discovery — is the same in both.</p>
+
+<p><strong>{{ yaikes.price }}.</strong> Not a subscription. There is nothing to
+cancel and nothing that expires.</p>
+
+<h2>How it works</h2>
+
+<ol>
+  <li>You pay here. Paddle handles the payment and the VAT.</li>
+  <li>A licence key arrives by email, issued to your address.</li>
+  <li>You paste it into the YAIkes popup and press Apply.</li>
+</ol>
+
+<p>The key is checked <em>on your own machine</em>, against a public key built
+into the extension. There is no licence server, no activation, and no account.
+The extension makes no network request — not to check your licence, not for
+anything. That is the same promise the
+<a href="/yaikes-privacy/">privacy policy</a> makes about your feed, and buying
+the paid edition does not change it.</p>
+
+<p>Your email is embedded in the key and the popup displays it. That is
+deliberate, and it is worth being straight about why: it is the only thing
+discouraging anyone from posting a key in public. Nothing stops you installing
+it on your own machines.</p>
+
+{% if yaikes.paddleClientToken and yaikes.paddlePriceId %}
+<p>
+  <button type="button" id="yaikes-buy" class="home-btn home-btn-solid">
+    Buy — {{ yaikes.price }}
+  </button>
+  <span id="yaikes-buy-error" role="status" hidden></span>
+</p>
+
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+  (function () {
+    var button = document.getElementById('yaikes-buy');
+    var error = document.getElementById('yaikes-buy-error');
+
+    function fail(message) {
+      // A dead button is the worst outcome here: the visitor decided to pay and
+      // the page silently declined to take the money. Say so, and leave a route.
+      button.disabled = true;
+      error.hidden = false;
+      error.textContent = message + ' Email kamilandrzejrybacki@gmail.com and I will sort it out.';
+    }
+
+    if (typeof Paddle === 'undefined') {
+      fail('The payment window could not load — an extension or network filter may be blocking it.');
+      return;
+    }
+    {% if yaikes.paddleEnvironment == 'sandbox' %}
+    // Sandbox. Real cards are declined here; this must be removed before launch.
+    Paddle.Environment.set('sandbox');
+    {% endif %}
+    Paddle.Initialize({ token: {{ yaikes.paddleClientToken | dump | safe }} });
+
+    button.addEventListener('click', function () {
+      try {
+        Paddle.Checkout.open({ items: [{ priceId: {{ yaikes.paddlePriceId | dump | safe }}, quantity: 1 }] });
+      } catch (e) {
+        fail('The payment window would not open.');
+      }
+    });
+  })();
+</script>
+{% else %}
+<p><strong>Not on sale yet.</strong> The paid edition is finished but the
+payment side is not wired up. Email
+<a href="mailto:kamilandrzejrybacki@gmail.com">kamilandrzejrybacki@gmail.com</a>
+if you want one now and I will issue a key by hand.</p>
+{% endif %}
+
+  </div>
+</article>
