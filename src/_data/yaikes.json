@@ -1,7 +1,0 @@
-{
-  "_comment": "Paddle identifiers for the YAIkes buy page. Both are PUBLIC by design - the client-side token is meant to be in page source, and a price ID is not a secret. The API key and the webhook secret are a different matter entirely and live in Vault; nothing in this repository should ever hold either. Fill these in from Paddle > Developer tools > Authentication (token) and Paddle > Catalog > Products (price). While they are empty the page says so instead of offering a broken button.",
-  "paddleEnvironment": "sandbox",
-  "paddleClientToken": "",
-  "paddlePriceId": "",
-  "price": "€12 once"
-}
