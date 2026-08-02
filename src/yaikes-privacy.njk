@@ -1,0 +1,185 @@
+---
+layout: base.njk
+title: YAIkes — Privacy Policy
+description: What the YAIkes browser extension stores, and what leaves your device. Nothing leaves your device.
+permalink: /yaikes-privacy/
+bodyClass: article-page
+---
+
+{# Privacy policy for the YAIkes browser extension. The Chrome Web Store
+   requires this URL to be live and reachable at review time.
+
+   Generated from docs/privacy.md in the yaikes repository, which is written
+   from the extension's source key by key. When the extension's storage schema
+   changes, that file changes first and this page follows. Do not edit this
+   page in isolation — it would drift from what the code actually does, and
+   the store treats a privacy policy that misdescribes an extension as a
+   removable offence. #}
+
+<header class="home-nav article-nav">
+  <div class="home-shell home-nav-inner">
+    <a href="/" class="home-brand">K.Rybacki</a>
+    <nav class="home-links" aria-label="Social links">
+      <a href="https://www.linkedin.com/in/kamil-andrzej-rybacki/" class="home-btn home-btn-ghost" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="https://github.com/kamilrybacki" class="home-btn home-btn-solid" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<article class="article-shell">
+  <a href="/" class="article-back-link">← Back to home</a>
+
+  <div class="article-content">
+
+<h1>YAIkes — Privacy Policy</h1>
+
+<p><em>Last updated 2 August 2026. Applies to YAIkes version 0.2.0 and
+later.</em></p>
+
+<p><strong>Nothing about you is transmitted anywhere.</strong> There is no
+server, no account, no backend, no telemetry, and no analytics. YAIkes makes no
+network request at any point — not when you install it, not on first run, not
+ever. Everything described below is stored on your own machine and is deleted
+when you remove the extension.</p>
+
+<p>This is not a promise that happens to be kept; it is a property of how the
+extension is built. The language model that does the matching is inside the
+downloaded package, and Manifest V3's content security policy would refuse to
+load code from anywhere else.</p>
+
+<h2>There is nothing to opt out of</h2>
+
+<p>Because nothing leaves your device, there is no data sharing to disable, no
+account to delete, and no third party involved. YAIkes does not sell data, does
+not transfer it for any purpose, and is not used to assess creditworthiness or
+for lending.</p>
+
+<h2>What is kept on your device</h2>
+
+<p>All of this lives in <code>chrome.storage.local</code>. YAIkes deliberately
+does <strong>not</strong> use <code>chrome.storage.sync</code> — that area would
+put a record of what you hide onto Google's servers, which is the opposite of
+the point.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>What</th><th>Why it exists</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Your icks</strong> — which built-in filters are on, and the
+        text of any you wrote yourself.</td>
+      <td>It is the thing you configured.</td>
+    </tr>
+    <tr>
+      <td><strong>Confirmed examples</strong> — up to 50 <em>embeddings</em>
+        (384 numbers each) per filter, from posts you confirmed when asked.</td>
+      <td>A filter built from one sentence stays a sentence. This is how it
+        learns what you actually meant.</td>
+    </tr>
+    <tr>
+      <td><strong>Posts you hid by hand</strong> — up to 200 records, each an
+        embedding, a timestamp, the site, and a content hash.</td>
+      <td>Spotting something in common across several hides is the only way to
+        notice a filter you have not thought to write.</td>
+    </tr>
+    <tr>
+      <td><strong>A sample of posts you scrolled past</strong> — embeddings of
+        up to 400 recent posts you did not hide. No text, no hashes, no
+        timestamps, no addresses.</td>
+      <td>To tell that you object to something, YAIkes has to know what an
+        ordinary post on your feed looks like. Without this it mistakes "common
+        on your feed" for "something you dislike". <strong>Not collected at all
+        until you have hidden a post by hand at least once.</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Recent scores</strong> — numbers between −1 and 1, per site
+        and filter, up to 200 each.</td>
+      <td>The same wording reads as ordinary on one platform and remarkable on
+        another, so some filters judge against how a site normally reads.</td>
+    </tr>
+    <tr>
+      <td><strong>Patterns you have already answered</strong> — a rounded
+        average of a group's embeddings, plus content hashes of groups noticed
+        but not yet confirmed.</td>
+      <td>So you are never asked twice about something you already
+        dismissed.</td>
+    </tr>
+    <tr>
+      <td><strong>Your licence key</strong>, if you bought the paid version.</td>
+      <td>See below — this is the only personal information involved.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Post text is never stored</h2>
+
+<p>Several of the items above hold <em>embeddings</em>. An embedding is 384
+numbers derived from a post's text by the language model. It is not the text,
+and it is not practically reversible to the words — but it is honest to call it
+<em>derived from</em> a post rather than unrelated to one. Someone reading the
+storage area could tell that two hidden posts resembled each other. They could
+not read either post.</p>
+
+<p>The post text itself is held in memory while the page is open and dies with
+the page. It is never written to disk.</p>
+
+<p>Storage access is restricted to trusted contexts, which deliberately denies
+it to the part of the extension running inside linkedin.com, x.com and
+reddit.com.</p>
+
+<h2>The licence key, and why it has your name in it</h2>
+
+<p>Everything else is derived from posts. The licence key is different: it
+contains a name or an email address in readable form, because it is a signed
+statement of who bought the paid version, and the extension displays it.</p>
+
+<p>That display is deliberate and is the entire enforcement mechanism. The key
+is checked on your machine against a public key built into the extension —
+there is no licence server, no activation, and nothing to contact. A key can
+therefore be copied to another machine; what discourages that is that it
+carries the buyer's own address. Removing the licence deletes the key.</p>
+
+<h2>Which sites it reads, and no others</h2>
+
+<p>YAIkes reads the feeds on <code>linkedin.com</code>, <code>x.com</code>
+(including <code>twitter.com</code>, which X still serves) and
+<code>reddit.com</code>. It reads them in order to compare each post against
+your filters and hide the ones that match. It requests access to no other site,
+and it has no permission to see your browsing history or your open tabs beyond
+those three.</p>
+
+<h2>Getting rid of it</h2>
+
+<ul>
+  <li><strong>Reset</strong> on any filter discards everything it learned — the
+    examples you confirmed and the per-site baselines — and returns it to its
+    original wording.</li>
+  <li>Reset deliberately does <em>not</em> erase the posts you hid by hand or
+    the patterns you have already answered. Those are a record of what you did,
+    not of what a filter concluded.</li>
+  <li><strong>Removing the extension</strong> removes all of it, as with any
+    extension's local storage.</li>
+</ul>
+
+<h2>Children</h2>
+
+<p>YAIkes is not directed at children and collects nothing from anyone. It has
+no account system and no way to know who is using it.</p>
+
+<h2>Changes to this policy</h2>
+
+<p>If a future version stores something new, this page changes before that
+version ships, and the date at the top changes with it. A change that would
+involve transmitting anything off your device would be a different product, and
+would be announced as one.</p>
+
+<h2>Contact</h2>
+
+<p>Questions about this policy, or about what the extension does:
+<a href="mailto:kamilandrzejrybacki@gmail.com">kamilandrzejrybacki@gmail.com</a>.</p>
+
+  </div>
+</article>
