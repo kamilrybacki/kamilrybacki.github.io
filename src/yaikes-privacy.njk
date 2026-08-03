@@ -16,18 +16,35 @@ bodyClass: article-page
    the store treats a privacy policy that misdescribes an extension as a
    removable offence. #}
 
-<header class="home-nav article-nav">
-  <div class="home-shell home-nav-inner">
-    <a href="/" class="home-brand">K.Rybacki</a>
-    <nav class="home-links" aria-label="Social links">
-      <a href="https://www.linkedin.com/in/kamil-andrzej-rybacki/" class="home-btn home-btn-ghost" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href="https://github.com/kamilrybacki" class="home-btn home-btn-solid" target="_blank" rel="noopener noreferrer">GitHub</a>
-    </nav>
+{# The nav belongs to the PRODUCT, not to the author. Whoever reaches this page
+   arrives from the extension or from a store listing asking one question — what
+   does this thing do with my data — and the personal-site chrome that used to
+   sit here (K.Rybacki, LinkedIn, GitHub) answered a different one. The GitHub
+   button was worse than merely off-topic: on a page about software we have just
+   declared closed source, it reads as an invitation to go and read it. #}
+<style>
+  .ykp-nav { border-bottom: 1px solid rgba(26, 25, 23, 0.12); margin-bottom: 30px; }
+  .ykp-nav-in { width: min(1060px, 100%); margin: 0 auto; padding: 0 24px;
+                height: 62px; display: flex; align-items: center; gap: 18px; }
+  .ykp-brand { display: flex; align-items: center; gap: 9px; margin-right: auto;
+               border: 0 !important; text-decoration: none; }
+  .ykp-logo { width: 26px; height: 26px; border-radius: 7px; flex: none;
+              background: oklch(0.52 0.10 62); display: flex; align-items: center;
+              justify-content: center; gap: 4px; }
+  .ykp-logo i { width: 5px; height: 5px; border-radius: 50%; background: #fff; display: block; }
+  .ykp-word { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+              font-weight: 700; letter-spacing: 0.04em; font-size: 15px; }
+  .ykp-back { font-size: 13.5px; }
+</style>
+
+<header class="ykp-nav">
+  <div class="ykp-nav-in">
+    <a class="ykp-brand" href="/yaikes/"><span class="ykp-logo"><i></i><i></i></span><span class="ykp-word">YAIkes</span></a>
+    <a class="ykp-back" href="/yaikes/">← Back to YAIkes</a>
   </div>
 </header>
 
 <article class="article-shell">
-  <a href="/" class="article-back-link">← Back to home</a>
 
   <div class="article-content">
 
