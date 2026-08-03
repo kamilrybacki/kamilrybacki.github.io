@@ -37,10 +37,15 @@ bodyClass: article-page
 later.</em></p>
 
 <p><strong>Nothing about you is transmitted anywhere.</strong> There is no
-server, no account, no backend, no telemetry, and no analytics. YAIkes makes no
-network request at any point — not when you install it, not on first run, not
-ever. Everything described below is stored on your own machine and is deleted
-when you remove the extension.</p>
+server, no account, no backend, no telemetry, and no analytics. YAIkes never
+makes a network request of its own — not when you install it, not on first run,
+not ever. Everything described below is stored on your own machine and is
+deleted when you remove the extension.</p>
+
+<p>“Of its own” is precise rather than evasive. The popup holds one link, to a
+donation page; clicking it navigates your browser, which is a network request in
+the ordinary sense. What the extension never does is make one by itself — no
+fetch, no background call, nothing that happens without you clicking a link.</p>
 
 <p>This is not a promise that happens to be kept; it is a property of how the
 extension is built. The language model that does the matching is inside the
@@ -126,16 +131,22 @@ the page. It is never written to disk.</p>
 it to the part of the extension running inside linkedin.com, x.com and
 reddit.com.</p>
 
-<h2>There is no personal data here at all</h2>
+<h2>Nothing here asks who you are</h2>
 
 <p>An earlier plan had a paid edition, and with it one more item on that list: a
 licence key holding the buyer's email in readable form. That edition was
 cancelled. YAIkes is free in full — nothing is gated, so nothing needs to know
 who you are.</p>
 
-<p><strong>Every item above is derived from posts: numbers, never names.</strong>
-There is no field anywhere in this extension that holds an identifier for a
-person.</p>
+<p><strong>There is no account, no identifier, and no field anywhere in this
+extension that is <em>for</em> a person</strong> — no name, no email, no device
+ID, nothing assigned to you or derived from your identity.</p>
+
+<p>One honest qualification, because “we store no names” would be too neat. Your
+own icks are stored as the text you typed, and that text is arbitrary: if you
+write an ick naming somebody, that name sits in storage, because you put it
+there and the extension cannot filter on a phrase it is not allowed to keep. It
+stays on your machine like everything else here, and it goes nowhere.</p>
 
 <p>The popup carries a link to a donation page. It is an ordinary outbound link
 that opens in a new tab. The extension does not contact it, cannot tell whether
