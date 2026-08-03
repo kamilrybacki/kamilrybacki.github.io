@@ -66,6 +66,14 @@ bodyClass: yaikes-page
      is full-bleed clay with its own column, so it steps outside it. */
   body.yaikes-page { background: var(--clay); }
   body.yaikes-page .container { max-width: none; width: 100%; padding: 0; margin: 0; }
+  /* The site chrome, both ends. base.njk renders its own header for every page
+     except Home and articles, and this page has a sticky nav with its own
+     wordmark — two site titles stacked, one of them above a nav bar that is
+     supposed to be the top of the page. The footer was already hidden here; the
+     header was missed because it only appears once deployed, not in the
+     standalone preview. */
+  body.yaikes-page > .container > .header,
+  body.yaikes-page .header { display: none; }
   body.yaikes-page .footer { display: none; }
 
   .yk {
