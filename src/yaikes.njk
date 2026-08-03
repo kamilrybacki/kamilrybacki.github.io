@@ -1,0 +1,385 @@
+---
+layout: base.njk
+title: YAIkes — your feed, minus the posts you already know you hate
+description: A browser extension that folds away the posts matching your own icks. Runs entirely on your machine — no account, no server, nothing sent anywhere.
+permalink: /yaikes/
+bodyClass: yaikes-page
+---
+
+{# Landing page for the YAIkes browser extension.
+
+   Built from the Claude Design handoff (design_handoff_landing). Tokens,
+   spacing and copy follow it; the page carries its own scoped stylesheet
+   because the design deliberately has NO border-radius, a two-font semantic
+   split and a paper-on-clay palette, none of which the site's article styles
+   provide. Everything is scoped under .yk- so it cannot leak into the rest of
+   the site.
+
+   THREE DEPARTURES FROM THE HANDOFF, all because the reference described a
+   product that does not exist:
+
+   1. Every open-source claim is gone — the hero overline, the "Source on
+      GitHub" and "View source" buttons, the nav GitHub link, the §5 "open
+      source" column and the "MIT licence" footer. The repository is private
+      and its LICENSE reserves all rights. Publishing "MIT licence" on a page
+      about proprietary software is a false statement about the terms someone
+      receives it under, and it appeared in five places. Reinstating it is a
+      real option — but it is a decision about the licence, not about the page.
+
+   2. "Your icks live in local extension storage you can export or wipe" —
+      there is no export. Wiping is real (per-rule Reset, and uninstalling),
+      exporting is not.
+
+   3. The screenshots come from the extension's own E2E suite rather than from
+      the handoff's copies. The handoff's popup shot predates the removal of
+      the paid tier and still shows a licence field, so shipping it would
+      advertise a control the product no longer has.
+
+   The Chrome Web Store URL does not exist yet. Until it does, the CTAs say so
+   rather than linking nowhere — see `yaikesStoreUrl` below. #}
+
+{% set yaikesStoreUrl = "" %}
+{% set supportUrl = "https://buymeacoffee.com/kamilandrzejrybacki" %}
+
+<style>
+  /* ---- tokens ---------------------------------------------------------- */
+  .yk {
+    --paper: #fdfcfa;
+    --clay: #e8e6e1;
+    --ink: #1a1917;
+    --body: #4a4741;
+    --muted: #6f6b64;
+    --faint: #8a857c;
+    --ochre: oklch(0.62 0.13 60);
+    --ochre-deep: oklch(0.52 0.10 62);
+    --ochre-light: oklch(0.75 0.11 62);
+    --slate: oklch(0.62 0.06 240);
+    --slate-text: oklch(0.52 0.06 240);
+    --hair: rgba(26, 25, 23, 0.12);
+    --hair-strong: rgba(26, 25, 23, 0.16);
+    --chrome: #f2f0ec;
+    --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* The site's base layout centres everything in a narrow container; this page
+     is full-bleed clay with its own column, so it steps outside it. */
+  body.yaikes-page { background: var(--clay); }
+  body.yaikes-page .container { max-width: none; width: 100%; padding: 0; margin: 0; }
+  body.yaikes-page .footer { display: none; }
+
+  .yk {
+    background: var(--clay);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .yk *, .yk *::before, .yk *::after { box-sizing: border-box; }
+  .yk-col { width: min(1060px, 100%); margin: 0 auto; padding: 0 24px; }
+
+  /* No border-radius anywhere. The logo tile and the mascot eyes are the two
+     exceptions, and they are the only round things on the page by design. */
+  .yk h1, .yk h2, .yk h3, .yk p, .yk ul { margin: 0; }
+  .yk a { color: var(--ochre-deep); text-decoration: none;
+          border-bottom: 1px solid oklch(0.52 0.10 62 / 0.35); }
+  .yk a:hover { color: oklch(0.42 0.11 62); border-bottom-color: oklch(0.42 0.11 62); }
+  .yk img { display: block; width: 100%; height: auto; }
+
+  /* ---- nav ------------------------------------------------------------- */
+  .yk-nav {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--clay); border-bottom: 1px solid var(--hair);
+  }
+  .yk-nav-in { display: flex; align-items: center; gap: 18px; height: 62px; }
+  .yk-brand { display: flex; align-items: center; gap: 9px; margin-right: auto;
+              border: 0; color: var(--ink); }
+  .yk-brand:hover { color: var(--ink); }
+  .yk-logo {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--ochre-deep);
+    display: flex; align-items: center; justify-content: center; gap: 4px; flex: none;
+  }
+  .yk-logo i { width: 5px; height: 5px; border-radius: 50%; background: #fff; display: block; }
+  .yk-word { font-family: var(--mono); font-weight: 700; letter-spacing: 0.04em;
+             font-size: 15px; color: var(--ink); }
+  .yk-nav-links { display: flex; align-items: center; gap: 20px; }
+  .yk-nav-links a { font-size: 13.5px; color: var(--body); border: 0; }
+  .yk-nav-links a:hover { color: var(--ink); }
+
+  /* ---- buttons --------------------------------------------------------- */
+  .yk-btn {
+    display: inline-block; font-family: var(--mono); border: 1px solid transparent;
+    background: var(--ink); color: var(--paper); padding: 12px 22px; font-size: 14px;
+    cursor: pointer;
+  }
+  .yk-btn:hover { background: var(--ochre-deep); color: var(--paper); border-color: transparent; }
+  .yk-btn-sm { padding: 7px 14px; font-size: 12.5px; }
+  .yk-btn-out {
+    background: none; color: var(--ink); border: 1px solid rgba(26, 25, 23, 0.35);
+  }
+  .yk-btn-out:hover { background: none; color: var(--ink); border-color: var(--ink); }
+  /* A CTA with nowhere to go is not a button. It states the situation instead,
+     which is the honest thing to render before the listing is live. */
+  .yk-btn-wait {
+    display: inline-block; font-family: var(--mono); font-size: 13px;
+    color: var(--faint); border: 1px dashed var(--hair-strong); padding: 12px 22px;
+  }
+  .yk-btn-wait.yk-btn-sm { padding: 7px 14px; font-size: 12px; }
+
+  /* ---- type ------------------------------------------------------------ */
+  .yk-over { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em;
+             text-transform: uppercase; color: var(--faint); }
+  .yk h1 {
+    font-size: clamp(36px, 6vw, 58px); font-weight: 600; line-height: 1.03;
+    letter-spacing: -0.025em; max-width: 18ch; color: var(--ink);
+    text-wrap: balance; margin: 18px 0 20px;
+  }
+  .yk h2 {
+    font-size: clamp(28px, 3.4vw, 32px); font-weight: 600; letter-spacing: -0.015em;
+    color: var(--ink); line-height: 1.15; text-wrap: balance;
+  }
+  .yk-lead { font-size: 17.5px; line-height: 1.55; max-width: 58ch; text-wrap: pretty; }
+  .yk-note { font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+  .yk-cap { font-family: var(--mono); font-size: 12px; color: var(--faint); margin-top: 12px; }
+  .yk-ochre { color: var(--ochre-deep); }
+  .yk-slate { color: var(--slate-text); }
+  .yk-mono { font-family: var(--mono); }
+
+  /* ---- sections -------------------------------------------------------- */
+  .yk-hero { padding-top: 72px; }
+  .yk-sec { padding-top: 88px; }
+  .yk-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em;
+              text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
+  .yk-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
+
+  /* ---- screenshot frames ----------------------------------------------- */
+  .yk-frame { border: 1px solid var(--hair-strong); background: var(--paper);
+              box-shadow: 0 24px 60px -32px rgba(26, 25, 23, 0.35); }
+  .yk-frame-sm { box-shadow: 0 18px 48px -28px rgba(26, 25, 23, 0.35); }
+  .yk-bar { display: flex; align-items: center; gap: 8px; background: var(--chrome);
+            border-bottom: 1px solid var(--hair); padding: 9px 12px; }
+  .yk-dot { width: 9px; height: 9px; border-radius: 50%; background: #cfccc6; display: block; }
+  .yk-bar span.yk-mono { margin-left: 10px; font-size: 11.5px; color: var(--faint); }
+
+  /* ---- cards ----------------------------------------------------------- */
+  .yk-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+              gap: 18px; margin-top: 26px; }
+  .yk-card { background: var(--paper); border: 1px solid rgba(26, 25, 23, 0.14); padding: 24px; }
+  .yk-card h3 { font-size: 17px; font-weight: 600; color: var(--ink); margin: 14px 0 8px; }
+  .yk-card p { font-size: 14.5px; line-height: 1.6; }
+  .yk-dia { width: 12px; height: 12px; transform: rotate(45deg); }
+  .yk-dia-fill { background: var(--ochre); }
+  .yk-dia-out { border: 1.5px solid var(--slate); }
+  .yk-circles { display: flex; gap: 5px; }
+  .yk-circles i { width: 11px; height: 11px; border-radius: 50%;
+                  border: 1.5px solid var(--slate); display: block; }
+
+  /* ---- two-column sections --------------------------------------------- */
+  .yk-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 36px; align-items: center; margin-top: 26px; }
+  .yk-two p { font-size: 16px; margin-top: 16px; max-width: 52ch; }
+
+  /* ---- privacy panel --------------------------------------------------- */
+  .yk-dark { background: var(--ink); color: rgba(253, 252, 250, 0.75); padding: 40px; }
+  .yk-dark h2 { color: var(--paper); }
+  .yk-dark .yk-grid3 { margin-top: 28px; }
+  .yk-dark dt { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+                text-transform: uppercase; color: var(--ochre-light); margin-bottom: 8px; }
+  .yk-dark dd { margin: 0; font-size: 14.5px; line-height: 1.6; }
+
+  /* ---- final + footer -------------------------------------------------- */
+  .yk-final { text-align: center; padding: 88px 0 0; }
+  .yk-final .yk-logo { width: 34px; height: 34px; margin: 0 auto 20px; border-radius: 8px; }
+  .yk-final h2 { max-width: 20ch; margin: 0 auto; }
+  .yk-final .yk-ctas { justify-content: center; }
+  .yk-foot { margin-top: 88px; border-top: 1px solid var(--hair); padding: 22px 0 40px;
+             display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
+             font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
+  .yk-foot a { color: var(--faint); border-bottom-color: rgba(138, 133, 124, 0.35); }
+
+  @media (max-width: 640px) {
+    .yk-nav-links a { display: none; }
+    .yk-dark { padding: 28px 22px; }
+  }
+</style>
+
+<div class="yk">
+
+  <nav class="yk-nav">
+    <div class="yk-col yk-nav-in">
+      <a class="yk-brand" href="#top"><span class="yk-logo"><i></i><i></i></span><span class="yk-word">YAIkes</span></a>
+      <div class="yk-nav-links">
+        <a href="#how">How it works</a>
+        <a href="#icks">Your icks</a>
+        <a href="#privacy">Privacy</a>
+      </div>
+      {% if yaikesStoreUrl %}
+      <a class="yk-btn yk-btn-sm" href="{{ yaikesStoreUrl }}">Add to Chrome →</a>
+      {% else %}
+      <span class="yk-btn-wait yk-btn-sm">in review</span>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <header class="yk-col yk-hero" id="top">
+    <p class="yk-over">Browser extension · runs on device · free</p>
+    <h1>Your feed, minus the posts you already know you hate.</h1>
+    <p class="yk-lead">YAIkes reads your feed so it doesn't have to show you all of it.
+      Engagement bait, humblebrags, crypto shilling — you name the ick, it quietly folds
+      those posts away and leaves a one-line receipt where each one stood.</p>
+    <div class="yk-ctas">
+      {% if yaikesStoreUrl %}
+      <a class="yk-btn" href="{{ yaikesStoreUrl }}">Add to Chrome</a>
+      {% else %}
+      <span class="yk-btn-wait">Not on the Chrome Web Store yet</span>
+      {% endif %}
+      <span class="yk-note">free · no account · no server</span>
+    </div>
+  </header>
+
+  <!-- hero screenshot -->
+  <div class="yk-col" style="padding-top:44px;">
+    <div class="yk-frame">
+      <div class="yk-bar">
+        <i class="yk-dot"></i><i class="yk-dot"></i><i class="yk-dot"></i>
+        <span class="yk-mono">a feed, after</span>
+      </div>
+      <img src="/public/images/yaikes/collapsed-post.png"
+           alt="A professional feed with one post collapsed to a single line reading: Hidden, close match for Engagement bait, with an Undo control." />
+    </div>
+    <p class="yk-cap">The post is gone. The receipt stays:
+      <span class="yk-ochre">Hidden · close match for Engagement bait · Undo</span>.
+      Nothing disappears without a paper trail.</p>
+  </div>
+
+  <!-- §1 -->
+  <section class="yk-col yk-sec" id="how">
+    <p class="yk-label">§1 — how it works</p>
+    <h2>Three moves, all reversible</h2>
+    <div class="yk-grid3">
+      <div class="yk-card">
+        <span class="yk-dia yk-dia-fill"></span>
+        <h3>It hides the obvious ones</h3>
+        <p>When a post is a <span class="yk-mono yk-ochre">close match</span> for one of your
+          icks, it collapses to a single mono line naming the reason. One click undoes it —
+          and teaches the filter it was wrong.</p>
+      </div>
+      <div class="yk-card">
+        <span class="yk-dia yk-dia-out"></span>
+        <h3>It asks about the borderline ones</h3>
+        <p>A <span class="yk-mono yk-slate">possible</span> match stays visible. A quiet band
+          appears under the post: hide these, or not this. Ochre means it acted; slate means
+          it's asking. It never guesses in silence.</p>
+      </div>
+      <div class="yk-card">
+        <span class="yk-circles"><i></i><i></i></span>
+        <h3>You name the patterns</h3>
+        <p>When several hidden posts smell alike, YAIkes shows you the evidence and an empty
+          name field. You label the cluster — or dismiss it. It asks once, then drops it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- §2 -->
+  <section class="yk-col yk-sec">
+    <p class="yk-label">§2 — the review band</p>
+    <div class="yk-two">
+      <div>
+        <h2>Asking looks different from acting</h2>
+        <p>Confidence is exactly two words. <span class="yk-mono yk-ochre">close match</span>
+          means it hid the post and you can undo. <span class="yk-mono yk-slate">possible</span>
+          means the post stays put and the decision is yours. No scores, no percentages, no
+          dashboard.</p>
+        <p>“Not this” is a real answer — it whitelists the post and sharpens the pattern.</p>
+      </div>
+      <div class="yk-frame yk-frame-sm">
+        <img src="/public/images/yaikes/review-band.png"
+             alt="A post left visible with a quiet band beneath it reading possible, Engagement bait, offering Hide these or Not this." />
+      </div>
+    </div>
+  </section>
+
+  <!-- §3 -->
+  <section class="yk-col yk-sec" id="icks">
+    <p class="yk-label">§3 — the popup</p>
+    <div class="yk-two">
+      <div class="yk-frame yk-frame-sm">
+        <img src="/public/images/yaikes/your-icks.png"
+             alt="The YAIkes popup: a list of icks with checkboxes, and three fields for adding your own." />
+      </div>
+      <div>
+        <h2>Your icks, in your words</h2>
+        <p>Start with the classics — engagement bait, humblebrag, crypto shilling, hiring spam
+          — and switch off any you secretly enjoy. Then add your own: describe an ick in plain
+          language, paste an exact phrase, or block a link domain.</p>
+        <p>The whole settings surface is one 280px popup. There is no onboarding, no tour, and
+          nothing to configure that isn't a thing you'd rather not see.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- §4 -->
+  <section class="yk-col yk-sec">
+    <p class="yk-label">§4 — everywhere you scroll</p>
+    <h2>Same manners on every feed</h2>
+    <p class="yk-lead" style="margin-top:14px;">Long-form professional feeds, short-form
+      timelines — the mark, the two words, and the receipt behave identically. Learn it once,
+      trust it everywhere.</p>
+    <div class="yk-frame" style="margin-top:26px;">
+      <img src="/public/images/yaikes/short-form.png"
+           alt="A short-form timeline with the same review band beneath the first post." />
+    </div>
+  </section>
+
+  <!-- §5 -->
+  <section class="yk-col yk-sec" id="privacy">
+    <p class="yk-label">§5 — privacy</p>
+    <div class="yk-dark">
+      <h2>Your feed never leaves your machine</h2>
+      <dl class="yk-grid3">
+        <div>
+          <dt>on device</dt>
+          <dd>Detection runs locally. No post text, author, or URL is ever sent anywhere.</dd>
+        </div>
+        <div>
+          <dt>no account</dt>
+          <dd>Nothing to sign up for. Your icks live in local extension storage, and removing
+            the extension removes all of it.</dd>
+        </div>
+        <div>
+          <dt>no server</dt>
+          <dd>The model ships inside the extension. There is no backend to breach, because
+            there is no backend — the extension never makes a network request of its own.</dd>
+        </div>
+      </dl>
+      <p style="margin-top:24px;font-size:14.5px;">
+        <a href="/yaikes-privacy/" style="color:var(--ochre-light);border-bottom-color:oklch(0.75 0.11 62 / 0.4);">Read
+        the privacy policy</a> — it lists every stored key and what is in it.</p>
+    </div>
+  </section>
+
+  <!-- final -->
+  <section class="yk-col yk-final">
+    <span class="yk-logo"><i></i><i></i></span>
+    <h2>Install it, name three icks, scroll in peace.</h2>
+    <div class="yk-ctas">
+      {% if yaikesStoreUrl %}
+      <a class="yk-btn" href="{{ yaikesStoreUrl }}">Add to Chrome →</a>
+      {% else %}
+      <span class="yk-btn-wait">Chrome Web Store listing pending review</span>
+      {% endif %}
+      <a class="yk-btn yk-btn-out" href="{{ supportUrl }}" target="_blank" rel="noopener noreferrer">Buy me a coffee →</a>
+    </div>
+    <p class="yk-note" style="margin-top:18px;">Free, all of it. The coffee unlocks nothing.</p>
+  </section>
+
+  <div class="yk-col">
+    <div class="yk-foot">
+      <span>YAIkes — yet another ick spotter</span>
+      <span>screens are mock feeds · no real platform harmed</span>
+    </div>
+  </div>
+
+</div>
