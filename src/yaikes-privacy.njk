@@ -59,10 +59,17 @@ makes a network request of its own — not when you install it, not on first run
 not ever. Everything described below is stored on your own machine and is
 deleted when you remove the extension.</p>
 
-<p>“Of its own” is precise rather than evasive. The popup holds one link, to a
-donation page; clicking it navigates your browser, which is a network request in
-the ordinary sense. What the extension never does is make one by itself — no
-fetch, no background call, nothing that happens without you clicking a link.</p>
+<p>“Of its own” is precise rather than evasive. Two things you can do in the
+popup navigate your browser, and navigation is a network request in the
+ordinary sense: clicking the donation link, and pasting a post’s address into
+<strong>Teach from a link</strong>. In the second case the extension opens that
+address in a background tab — the page loads the way it would if you had opened
+it yourself — reads the post’s text there, turns it into the same kind of
+numeric representation everything else here uses, stores that with the label
+you chose, and closes the tab. It fetches nothing itself, and the address must
+belong to one of the three feeds the extension already works on. What the
+extension never does is make a request by itself — no fetch, no background
+call, nothing that happens without you acting.</p>
 
 <p>This is not a promise that happens to be kept; it is a property of how the
 extension is built. The language model that does the matching is inside the
@@ -135,6 +142,14 @@ the point.</p>
       <td>A filter otherwise only ever hears when it was right. This is how it
         hears when it was wrong, so it can move away from what you keep
         restoring.</td>
+    </tr>
+    <tr>
+      <td><strong>Posts you taught it</strong> — up to 50 <em>embeddings</em>
+        per label you can teach (three content categories plus “sincere”), each
+        with a timestamp and the site it came from. No text, no addresses.</td>
+      <td>Examples you handed over deliberately — including “sincere — never
+        hide things like this”, which actively protects posts resembling them
+        from being hidden.</td>
     </tr>
     <tr>
       <td><strong>Patterns you have already answered</strong> — a rounded
