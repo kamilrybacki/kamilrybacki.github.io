@@ -122,6 +122,21 @@ the point.</p>
         another, so some filters judge against how a site normally reads.</td>
     </tr>
     <tr>
+      <td><strong>Posts you put back</strong> — up to 200 <em>content hashes</em>
+        per filter. No text, no embeddings.</td>
+      <td>So a filter cannot hide the same post again after you have already
+        told it no. The hashes are used for nothing else — they never affect how
+        any other post is scored.</td>
+    </tr>
+    <tr>
+      <td><strong>What being wrong looked like</strong> — up to 50
+        <em>embeddings</em> per filter, from posts that filter hid and you put
+        back.</td>
+      <td>A filter otherwise only ever hears when it was right. This is how it
+        hears when it was wrong, so it can move away from what you keep
+        restoring.</td>
+    </tr>
+    <tr>
       <td><strong>Patterns you have already answered</strong> — a rounded
         average of a group's embeddings, plus content hashes of groups noticed
         but not yet confirmed.</td>
