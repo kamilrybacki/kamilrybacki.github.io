@@ -100,3 +100,6 @@ __pycache__/
 # workflow deletes them after producing a draft. Keep the folder's README.
 audio-inbox/*
 !audio-inbox/README.md
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+graft/
