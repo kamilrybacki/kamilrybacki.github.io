@@ -92,23 +92,52 @@ Repo: https://github.com/kamilrybacki/hogtus
 
 - **Engine-only / not free actions:** Pyroblast `36819` (child of Shock Barrier); Gravity Lapse `35941`, Nether Vapor `35865`, Nether Beam `35869` (Phase-5 positioning/multi-target). Marked as simplifications; not selectable by the model.
 
-## 4. Connection to the original scripts (EventAI mapping)
+### 3c. What the source database actually is (decoded)
 
-- WoW classic mob AI = **EventAI**: `event → condition → action`. A condition carries chance / timer / phase / range / target-rule; an executor performs the action. It's already shaped like a rules engine — that's why it fits.
-- Map to Hogtus fields:
-  - `EVENT_T_AGGRO` → `on_aggro` (+ aggro quotes, `aggro_quote_chance`)
-  - `EVENT_T_TIMER` init/repeat (ms) → `first_range_s` / `repeat_range_s`
-  - `EVENT_T_HP` threshold → `hp_below` (phase / enrage)
-  - one-shot event → `once_per_combat`
-  - target (self / victim / friendly) → `target`
-  - spell effect (from public spell data) → `damage` / `heal` / `dot_total` + `dot_duration_s`
-  - creature template → `max_health`, `melee_damage`, `faction`
-- The **rolled timer** is the key fidelity point: EventAI `urand(min,max)` → the deterministic provider rolls the same window (mechanical RNG, engine-owned), so an ability fires inside a range, not on a fixed clock.
-- What the model gets vs what EventAI has: model sees only the **legal candidate set** (abilities off-cooldown, phase-ok, not once-used) + plain facts. It never sees timers. The engine still runs the EventAI-shaped legality.
-- Authentic vs reconstructed vs simplified — be explicit in the article:
-  - **authentic**: spell ids, HP-phase thresholds, timer windows (classic), encounter structure (Kael)
-  - **reference**: Kael Phase-4 cooldowns (TrinityCore, not CMaNGOS)
-  - **simplified**: positioning, allies, multi-target, movement, range-mode, flee
+- **What MaNGOS / cmangos / TrinityCore are:** open-source reimplementations of the WoW *server*. Each ships a **world database** — a big SQL schema holding every static piece of content (creatures, spells, quests, loot, scripted AI). Hogtus reads *facts* out of that schema; it does not run the emulator.
+- **The tables that matter here** (this is the structure to explain in the post):
+  - **`creature_template`** — one row per creature *type*, keyed by `entry`. The stat block: `name`, `minlevel/maxlevel`, `MinLevelHealth/MaxLevelHealth` (HP *range*), `faction` (a faction-template id deciding who it fights), `mindmg/maxdmg` + `baseattacktime` (melee). Not a live creature — a definition.
+  - **`creature`** (spawns) — actual placed instances of a template in the world. `curhealth` lives *here* and is per-spawn runtime state — that's why the manifest stores the template HP *range* and the engine supplies the current HP at sim time.
+  - **EventAI / ACID** (`creature_ai_scripts`, shipped as the community "ACID" SQL) — the classic scripted brain. Each row is **one event** for a creature `entry`: an `event_type` + up to four `event_paramN` + a `chance`, wired to one–three `action`s. Literally the `event → condition → action` table.
+  - **spell data** (`spell_template` / DBC) — `spell_id` → the spell's real effect: school, damage/heal, `cast_time`, duration, mechanic. Hogtus reuses the id + pulls effect numbers from *public* spell data.
+  - **text tables** (`broadcast_text` / `creature_text`) — numeric text ids for yells/emotes; the aggro quotes are a text id + a chance.
+
+**The IDs, decoded** (what each number in the tables above actually means, and where it lands):
+
+| id in the data | example | what it is | where it goes in Hogtus |
+|---|---|---|---|
+| `entry` (creature id) | `448` = Hogger | unique id of a creature *type*; the join key across every table | `MobManifest.entry` (identity only) |
+| `spell_id` | `6730` Head Butt · `36805` Fireball | unique id of a spell; the game's spell DB defines its effect / cast / school | `MobAbility.spell_id` + effect fields; used to execute + label the trace |
+| `faction` (faction_template) | `20` | which factions the creature is hostile to | `MobManifest.faction` (context, **not** a model input) |
+| `text id` | `1868` | a row in the text table for a yell/emote | source of `aggro_quotes` (we inline the English string) |
+| `event_type` | `EVENT_T_TIMER_OOC` · `EVENT_T_HP` · `EVENT_T_AGGRO` | the "when" of an EventAI row | decides *which* manifest field the row becomes |
+| `event_paramN` | `20000`–`29000` (ms) · `20`–`0` (%) | the rolled timer window / HP band / chance for that event | `first_range_s` / `repeat_range_s` (ms→s) · `hp_below` |
+
+- Mental model to hammer: the database stores **numeric ids + rolled timer windows** — that's the *mechanism*. Hogtus keeps all of it **engine-side**. The model never sees a spell id or a millisecond timer.
+
+## 4. From a database row to model input (the pipeline)
+
+This is the section that answers "how does this data become input to the model?" — a projection, in five steps.
+
+- **Step 1 — normalize a DB row into a manifest ability.** One EventAI row (Hogger's Head Butt: `event_type=EVENT_T_TIMER_OOC`, `param1/2=20000/29000` init ms, repeat ms, `action=ACTION_T_CAST spell 6730`) becomes one `MobAbility("head_butt", "Head Butt", spell_id=6730, damage=…, repeat_range_s=(20,29))`. ms→s; a short symbolic id (`head_butt`) is assigned; effect numbers come from public spell data. The event_type picks the target field: `EVENT_T_AGGRO`→`on_aggro`, `EVENT_T_TIMER`→`repeat_range_s`, `EVENT_T_HP`→`hp_below`, one-shot→`once_per_combat`.
+- **Step 2 — the engine computes legality every tick.** Using the rolled timers (`urand(min,max)`, engine-owned RNG), the HP phase (`hp_below`), and once-per-combat flags, it builds the set of abilities that are *legal right now*.
+- **Step 3 — facts to the model (the actual model input).** The model receives ONLY a small symbolic JSON — no ids, no timers, no faction:
+
+```json
+{
+  "mob": "Hogger",
+  "attacker_health_pct": 0.62,
+  "distance_to_target": 3.0,
+  "available_actions": ["head_butt", "pierce_armor", "wait"]
+}
+```
+
+- **Step 4 — grammar-constrained choice.** The request pins the model's `action` field to a JSON-schema **enum of exactly the currently-legal ids**, so the model can only return a legal name, e.g. `{"action": "head_butt"}`. (Dynamic enum = the action space changes per tick, per mob.)
+- **Step 5 — the engine decides & executes.** It re-checks legality, casts via the real `spell_id`, rolls the next timer, applies effects, writes the trace. The model's whole job was "which of these named options"; ids, timers, targeting and RNG never left the engine.
+
+- So DB → model input is a **projection**: strip the numeric mechanism (spell ids, ms timers, faction), keep a human-readable *action vocabulary* + a few state facts. The DB timers still shape the model *indirectly* — they decide which action *names* appear in `available_actions` on a given tick — but the model reasons over symbols and semantics, not database ids.
+- Authentic vs reconstructed vs simplified (state explicitly): **authentic** = spell ids, HP-phase thresholds, classic timer windows, Kael encounter structure; **reference** = Kael Phase-4 cooldowns (TrinityCore, not CMaNGOS); **simplified** = positioning, allies, multi-target, movement, range-mode, flee.
+- One line: the database gives the *engine* the mechanism (ids + rolled timers); the model gets a projection of it — legal action **names** plus a little state — and never touches an id.
 
 ## 5. Findings (all measured, this build)
 
