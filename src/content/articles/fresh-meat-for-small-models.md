@@ -114,6 +114,11 @@ First, some low-level cannon fodder. They are not much individually and should b
 </tbody>
 </table>
 
+<figure class="figure">
+<img src="/assets/images/hogtus-bestiary.png" alt="The reconstructed low-level bestiary rendered as mob cards" style="width:90%">
+<figcaption><em>The reconstructed low-level bestiary: one generic engine driving each mob's abilities over a fight.</em></figcaption>
+</figure>
+
 For contrast, I have also decided to include an example of an adversary with a slightly larger arsenal of abilities i.e. a raid boss and for this purpose I have chosen the one, which I remember to be one of my raiding challenges from my Burning Crusade phase, where weeks of gearing up and polishing up raid tactics with my guild finally paid off. Plus, the whole fight looked cool.
 
 #### Kael'thas Sunstrider (the boss)
@@ -128,11 +133,6 @@ The one and only blood-elf prince - Kael'thas. Back then, he was the reason I le
 **Stats**: level 70 · raid boss · caster.
 
 **Kit (solo phase)**: Fireball (the 2.4s filler) · Mind Control · Arcane Disruption · Flame Strike · Summon Phoenix · Shock Barrier. Six abilities on their own overlapping cooldowns.
-
-<figure class="figure">
-<img src="/assets/images/hogtus-bestiary.png" alt="The reconstructed low-level bestiary rendered as mob cards" style="max-width:min(100%,700px)">
-<figcaption><em>The reconstructed low-level bestiary: one generic engine driving each mob's abilities over a fight.</em></figcaption>
-</figure>
 
 ## Sketching out the battle map
 
@@ -178,7 +178,7 @@ The **Cactus Needle (45M)**, the phone-sized one, is the cautionary tale. It pro
 However, the deterministic brain is basically free (a handful of arithmetic and a dice-roll) and it happily churns through the better part of **a million decisions a second** on a four-core box. The model brains crawl by comparison: a few decisions per *second*, and a single decision costs on the order of **a hundred thousand times** more compute. Nobody should ship a 350M transformer to make a gnoll headbutt you. That was never the point, but it does sharpen the question of where a model could *possibly* earn its keep.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-decision-space.png" alt="Decision space per mob: Hogger 0%, Kael'thas about one tick in twenty" style="max-width:min(100%,640px)">
+<img src="/assets/images/hogtus-decision-space.png" alt="Decision space per mob: Hogger 0%, Kael'thas about one tick in twenty" style="width:90%">
 <figcaption><em>Decision space per mob: Hogger never offers a choice (0%), Kael'thas only about one tick in twenty.</em></figcaption>
 </figure>
 
@@ -189,7 +189,7 @@ It is because **Hogger almost never presents a choice.** His three abilities are
 So what happens during encounters where an engine hands the brain **two or more legal moves at once,** similar to how it is done during more sophisticated scripts of WoW boss fights?
 
 <figure class="figure">
-<img src="/assets/images/hogtus-kaelthas-gantt.png" alt="Kael'thas ability usage: fixed priority uses four of six spells, the model spreads across all six" style="max-width:min(100%,640px)">
+<img src="/assets/images/hogtus-kaelthas-gantt.png" alt="Kael'thas ability usage: fixed priority uses four of six spells, the model spreads across all six" style="width:90%">
 <figcaption><em>Same Kael'thas fight, same legal options: the fixed priority reaches for four of six spells; the model spreads across all six.</em></figcaption>
 </figure>
 
@@ -214,7 +214,7 @@ Its Healing Wave, pointless for a 1-on-1 duel, now does the thing it was actuall
 The engine still keeps an eye on the world's shared state (clock ticks, one snapshot everyone decides on, all the legality) and the healer's brain may only *propose* to heal a target the engine has already deemed valid: a friend, hurt enough, in range.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-multimob.png" alt="Healing toggled off to on flips the player win-rate from 0.64 to about zero; the live SLM healer matches the deterministic rule with zero illegal heals" style="max-width:min(100%,700px)">
+<img src="/assets/images/hogtus-multimob.png" alt="Healing toggled off to on flips the player win-rate from 0.64 to about zero; the live SLM healer matches the deterministic rule with zero illegal heals" style="width:90%">
 <figcaption><em>Same three mobs, healing toggled off→on: a cooperative healer flips the player's win-rate from 0.64 to ~0. The live SLM healer (right) plays it like the deterministic rule, and heals illegally zero times.</em></figcaption>
 </figure>
 
@@ -243,7 +243,7 @@ A tank is not a big health bar that happens to stand in front; a tank is a creat
 The first thing the simulation told me was pretty much a given: a geared squad of three players **REMOVED** a handful of low-level trash, before anyone takes any considerable beating. It only becomes a fight when you throw a proper swarm at the - so I've pumped up the murlocs numbers so they come six at a time.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-groupfight-gantt.png" alt="The murloc pack over one fight, coloured by who each mob is hitting; the swarm slides from the tank onto the healer" style="max-width:min(100%,760px)">
+<img src="/assets/images/hogtus-groupfight-gantt.png" alt="The murloc pack over one fight, coloured by who each mob is hitting; the swarm slides from the tank onto the healer" style="width:90%">
 <figcaption><em>The murloc pack over one fight, one row per mob, coloured by who it is hitting. The swarm opens on the tank and slides onto the healer as the healing piles up threat.</em></figcaption>
 </figure>
 
@@ -252,7 +252,7 @@ And then the fight did something I did not design and should have seen coming. W
 It spends most of the fight healing itself while the DPS burns the pack down behind it. Nobody wrote that behaviour. It falls straight out of threat, with a healer making large amounts of semi-passive threat. Exactly the sort of thing you only get to see once there is a group.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-groupfight-targets.png" alt="One murloc's target through the fight: tank at the pull, healer under threat, DPS at the end" style="max-width:min(100%,760px)">
+<img src="/assets/images/hogtus-groupfight-targets.png" alt="One murloc's target through the fight: tank at the pull, healer under threat, DPS at the end" style="width:90%">
 <figcaption><em>One murloc's target through the fight: held on the tank at the pull, dragged onto the healer under threat, pulled to the DPS right at the end.</em></figcaption>
 </figure>
 
@@ -261,7 +261,7 @@ Here, at last, is the first place in the whole project where the healer's decisi
 Healing whoever is lowest keeps everyone standing; tunnel-visioning the tank does not. After a whole project of fights where the choice was cosmetic, the pack finally makes "whom do I save" a real question.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-groupfight.png" alt="Average party survivors by healer policy, and the deterministic triage rule against a live SLM on identical seeds" style="max-width:min(100%,760px)">
+<img src="/assets/images/hogtus-groupfight.png" alt="Average party survivors by healer policy, and the deterministic triage rule against a live SLM on identical seeds" style="width:90%">
 <figcaption><em>Left: average party survivors by healer policy against the same swarm. Right: the deterministic triage rule against a live SLM on identical seeds.</em></figcaption>
 </figure>
 
@@ -284,7 +284,7 @@ I kept three things from the way the real game works: a cast is a state rather t
 The AoE had to be a real choice and not a free win, or the DPS would just press it forever. So it only helps at three or more targets, has its own cooldown, and it does less damage per target than a focused hit. Single-target still wins when there is one thing that has to die, and throwing an AoE spell to DPS down one enemy is pointless.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-groupkits.png" alt="Party win-rate by what the DPS is allowed to do, and the deterministic priority against a live SLM on identical seeds" style="max-width:min(100%,760px)">
+<img src="/assets/images/hogtus-groupkits.png" alt="Party win-rate by what the DPS is allowed to do, and the deterministic priority against a live SLM on identical seeds" style="width:90%">
 <figcaption><em>Party win-rate by what the DPS is allowed to do, against the same swarm and casting Oracle, and the deterministic priority against a live SLM on identical seeds.</em></figcaption>
 </figure>
 
@@ -293,7 +293,7 @@ Grinding the murlocs down one at a time, with no AoE and no kick, wins four figh
 If we let the DPS throw some interrupts and it wins every time, denying all six of the Oracle's casts over a fight, keeping the "do not out-damage the enemy healer, interrupt it" rule from MMORPGs going strong.
 
 <figure class="figure">
-<img src="/assets/images/hogtus-groupkits-logic.png" alt="Same fight seed for seed: deterministic priority on top kicks every cast and AoEs, the live SLM below kicks some casts and never AoEs" style="max-width:min(100%,760px)">
+<img src="/assets/images/hogtus-groupkits-logic.png" alt="Same fight seed for seed: deterministic priority on top kicks every cast and AoEs, the live SLM below kicks some casts and never AoEs" style="width:90%">
 <figcaption><em>The same fight, seed for seed: the deterministic priority on top, the live SLM below. Each engine's DPS actions on the upper row, the Oracle's heal casts on the lower one.</em></figcaption>
 </figure>
 
