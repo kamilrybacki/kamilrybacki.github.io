@@ -15,6 +15,30 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "node_modules/katex/dist/katex.min.css": "styles/katex.min.css" });
   eleventyConfig.addPassthroughCopy({ "node_modules/katex/dist/fonts": "styles/fonts" });
   
+  // Draft images may be written as absolute raw.githubusercontent URLs pointing
+  // at this repo's own /public assets, so they preview inside the SilverBullet
+  // editor (which can't serve the blog's /public paths). At build time, rewrite
+  // those self-repo raw URLs back to relative /public/ paths so published pages
+  // (and the Eleventy preview) use local assets. No manual swap needed.
+  eleventyConfig.addTransform("relativizeSelfRawImages", function (content, outputPath) {
+    const out = outputPath || (this && this.page && this.page.outputPath) || "";
+    if (!out.endsWith(".html")) return content;
+    // The branch segment may itself contain slashes (e.g. assets/toolboxing2-figures),
+    // so match non-greedily up to the first /public/.
+    return content.replace(
+      /https?:\/\/raw\.githubusercontent\.com\/kamilrybacki\/kamilrybacki\.github\.io\/[^"'\s)]*?\/public\//g,
+      "/public/"
+    );
+  });
+
+  // Drafts (src/content/drafts/, the SilverBullet PVC mount) render only in
+  // dev/serve/watch for live preview; a production build ignores them entirely
+  // so they never publish. (They also live on the PVC, not in git, so the live
+  // build never sees them — this is the explicit guard.)
+  if (process.env.ELEVENTY_RUN_MODE === "build") {
+    eleventyConfig.ignores.add("src/content/drafts/**");
+  }
+
   // Ignore template files and README
   eleventyConfig.ignores.add("src/content/**/_template.md");
   eleventyConfig.ignores.add("src/content/README.md");

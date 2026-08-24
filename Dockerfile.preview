@@ -1,0 +1,32 @@
+# Live blog-accurate draft preview.
+#
+# Builds the FULL blog (layouts + CSS/tokens + the customized markdown-it with
+# katex & syntax-highlight) and runs Eleventy in --serve mode. Drafts are NOT
+# baked in: the drafts directory (src/content/drafts) is a mount point for the
+# shared SilverBullet PVC at runtime, so a draft edited in SilverBullet renders
+# here through the same article.njk layout = 1:1 with production. `--serve` run
+# mode renders drafts (the production `build` excludes them; drafts also never
+# reach production because they live on the PVC, not in git).
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install deps first for layer caching.
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Full repo (layouts, styles, config, published articles for context).
+COPY . .
+
+# Drafts arrive from the shared PVC mounted here at runtime.
+RUN mkdir -p src/content/drafts
+
+# The pod runs as uid 1000 (hardened securityContext); make /app writable so
+# Eleventy can create its _site output dir. (Image is built as root by default.)
+RUN chown -R 1000:1000 /app
+USER 1000
+
+EXPOSE 8080
+
+# Serve run-mode => drafts render; live reload on every SilverBullet save.
+CMD ["npx", "@11ty/eleventy", "--serve", "--watch", "--port=8080", "--incremental"]
