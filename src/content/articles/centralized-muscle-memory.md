@@ -10,6 +10,8 @@ draft: false
 
 ## The Genome of an Agentic Stack
 
+### The Mutation Problem
+
 In one of my latest blog posts, I wrote about a way to centralize a critical part of an agentic AI setup in my homelab: the tools used by various LLMs hiding around it.
 
 The overall vibe was organizing everything I’d used up until that point and then checking the ratio of effort needed to maintain it all (keeping tokens up to date, dealing with breaking changes in upstream MCP code, and other nuisances) against the value it brings to my day-to-day work. Sometimes I found that I’d set up some of them — most notably the tens of memory-management projects that were **popping up like crazy** during the second quarter of 2026 — used them for a couple of sessions, and then totally abandoned them, letting them rot in my Claude/Codex configs for eternity.
@@ -20,11 +22,15 @@ There is a loose genetic analogy here. Every agent setup accumulates its own lit
 
 A centralized, version controlled source gives the useful parts a genome: one place to inspect, prune, and replicate into the vendor shaped files each agent actually expects.
 
+### Knowledge Has a Job
+
 If You maintain a constantly growing collection of artifacts for agentic harnesses, like a categorized library of raw Markdown assets, You know that it is possible to point LLMs at such a central knowledge base — even a version-controlled one — by routing them through a global `CLAUDE.md` file or some other vendor-specific tricks.
 
 LLM wikis, second brains, Obsidian-based vaults — it is cool to have mesmerizing, floating graphs that show “Your knowledge linking in ways You didn’t even know were possible”©️, but in the end, it is just a nicely organized tree of files. You can always sprinkle in some enhancements like [Johnny Decimal](https://johnnydecimal.com/), which helps humans and agents traverse the whole collection. But also, and this is a matter of honesty, a lot of automated knowledge-retrieval and synthesis stuff seen on TikTok or other short-form platforms shows people generating an **UNGODLY** amount of content that I am 100% sure they do not thoroughly read. It is just another flavor of data hoarding, I guess.
 
 There is nothing wrong with ETL-ing new facts and storing them for later use — just keep in mind who will be the real recipient of this output. From my point of view, to get the most out of persistent knowledge storage for LLMs, it is nice to structure it in an actual database, notably a vector one, and just let agents figure out a way to categorize it **somehow**, in a standardized manner. Then, if I want to retrieve that information, I can just ask the agent about it. I do not need to see those mythical connections between topics such as `shopping_list` and `diet` manually, which makes the choice of backend pretty simple: **whatever is most token- and resource-efficient wins**.
+
+### Capabilities Must Travel
 
 Moreover, especially if You’ve used a sneaky technique like a continuously or dynamically learning skill — e.g. `/learn-eval` or `/learn` from the [everything-claude-code repo](https://github.com/giovanisp/everything-claude-code) — You might have come across repeatable actions carried out in Your infrastructure that can be packaged neatly into, yet again, neat Markdown files with instructions. For me, one example would be exposing any new service I host via my custom domain and making it accessible from the Wide Web.
 
