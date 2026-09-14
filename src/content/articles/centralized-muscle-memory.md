@@ -18,7 +18,7 @@ The question is whether a mutation makes the organism more capable, or merely ha
 
 ### Broadcasting capabilities
 
-Tools are only one half of an agentic setup. The other half is the growing pile of repeatable procedures that keep the infrastructure moving. When one proves useful often enough, it can become a capability: a neat Markdown file that tells an agent what to do and gives it the domain context to do it safely.
+Tools are only one half of an agentic setup. The other half is the growing pile of repeatable procedures that keep the infrastructure moving. When one proves useful often enough, I write it down as a shared operational recipe: a neat Markdown file that tells an agent what to do and gives it the domain context to do it safely.
 
 Some agent harnesses can even learn those procedures as skills. For me, one of them is exposing any new service I host through my custom domain to the Wide Web.
 
