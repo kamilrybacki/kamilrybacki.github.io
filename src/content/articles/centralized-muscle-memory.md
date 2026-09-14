@@ -10,17 +10,11 @@ draft: false
 
 ## The Genome of an Agentic Stack
 
-### Artificial Genetics of Intelligence
+My agentic infrastructure keeps evolving. New tools, MCP servers, model providers, memory layers, and homegrown doodads turn up, get wired in, and then have to prove that they deserve to stay. The trait I am trying to optimize is **Constant satisfaction** and a lack of **uncool** things like authentication errors. At least in AI fueled development 🤷
 
-In one of my latest blog posts, I wrote about a way to centralize a critical part of an agentic AI setup in my homelab: the tools used by various LLMs hiding around it.
+That means regularly looking at the whole setup as a living system rather than a pile of configs. Each new integration changes the organism a little. Some mutations make the work smoother. Others leave behind one off MCP entries, forgotten tokens, half used memory tools, and instructions pasted into files nobody remembers owning.
 
-The overall vibe was organizing everything I’d used up until that point and then checking the ratio of effort needed to maintain it all (keeping tokens up to date, dealing with breaking changes in upstream MCP code, and other nuisances) against the value it brings to my day-to-day work. Sometimes I found that I’d set up some of them — most notably the tens of memory-management projects that were **popping up like crazy** during the second quarter of 2026 — used them for a couple of sessions, and then totally abandoned them, letting them rot in my Claude/Codex configs for eternity.
-
-In short, I filtered out the toys that weren’t bringing me any joy during all the very serious conversations with my miniature squad of robots and decided to package the useful ones into a neat gateway for the agents to use consistently. Because what is better than regular joy? **Constant satisfaction** and a lack of **uncool** things like authentication errors. At least in AI-fueled development 🤷
-
-There is a loose genetic analogy here. Every agent setup accumulates its own little mutations: one off MCP entries, forgotten tokens, half used memory tools, and instructions pasted into files nobody remembers owning. The question is whether those mutations make the organism more capable, or merely harder to reproduce.
-
-A centralized, version controlled source gives the useful parts a genome: one place to inspect, prune, and replicate into the vendor shaped files each agent actually expects.
+The question is whether a mutation makes the organism more capable, or merely harder to reproduce. A centralized, version controlled source gives the useful parts a genome: one place to inspect, prune, and replicate into the vendor shaped files each agent actually expects.
 
 ### Responsibility of knowledge
 
