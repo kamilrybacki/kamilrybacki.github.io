@@ -68,7 +68,7 @@ I can still open each file and change it without learning a new DSL. The only mi
 
 ![Figure 1 — One source, native configs where each agent expects them](https://raw.githubusercontent.com/kamilrybacki/kamilrybacki.github.io/assets/toolboxing2-figures/public/images/toolboxing2/fig1.png)
 
-### The boring part that saves the most time: MCP config
+### Minimum Complexity Protocol
 
 The tool connection **also** belongs in the same pipeline, so I do not have to manually — or even semi-automatically — configure it by copying and pasting a previously prepared JSON file.
 
