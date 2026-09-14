@@ -18,7 +18,9 @@ The question is whether a mutation makes the organism more capable, or merely ha
 
 ### Broadcasting capabilities
 
-Moreover, especially if You’ve used a sneaky technique like a continuously or dynamically learning skill — e.g. `/learn-eval` or `/learn` from the [everything-claude-code repo](https://github.com/giovanisp/everything-claude-code) — You might have come across repeatable actions carried out in Your infrastructure that can be packaged neatly into, yet again, neat Markdown files with instructions. For me, one example would be exposing any new service I host via my custom domain and making it accessible from the Wide Web.
+Tools are only one half of an agentic setup. The other half is the growing pile of repeatable procedures that keep the infrastructure moving. When one proves useful often enough, it can become a capability: a neat Markdown file that tells an agent what to do and gives it the domain context to do it safely.
+
+Some agent harnesses can even learn those procedures as skills. For me, one of them is exposing any new service I host through my custom domain to the Wide Web.
 
 I have a Caddy reverse proxy, which needs new entries added to its config files every time I want to do so, and all of my sensitive, non-public applications are hidden behind an Authelia SSO. After the first couple of such “rituals”, I asked Claude to `/learn-eval` this procedure with some additional quirks of my homelab, with explicit instructions that say, for example: “if it is a database or other sensitive service, especially when explicitly noted as such by me during conversation, make sure it uses our local SSO as an authentication mechanism if possible — otherwise, [`/grill-me`](https://www.aihero.dev/skills-grill-me)” (shout out to Matt Pocock’s suite, it is **the bomb**).
 
