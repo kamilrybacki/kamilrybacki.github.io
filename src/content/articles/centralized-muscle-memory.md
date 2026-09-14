@@ -8,7 +8,7 @@ tags: []
 draft: false
 ---
 
-## KonMari Agentic Architecture
+## The Genome of an Agentic Stack
 
 In one of my latest blog posts, I wrote about a way to centralize a critical part of an agentic AI setup in my homelab: the tools used by various LLMs hiding around it.
 
@@ -16,7 +16,9 @@ The overall vibe was organizing everything I’d used up until that point and th
 
 In short, I filtered out the toys that weren’t bringing me any joy during all the very serious conversations with my miniature squad of robots and decided to package the useful ones into a neat gateway for the agents to use consistently. Because what is better than regular joy? **Constant satisfaction** and a lack of **uncool** things like authentication errors. At least in AI-fueled development 🤷
 
-In one of the more “out of left field” segues You can imagine right now, this makes me think of Marie Kondo and her methods of tidying up Your everyday living spaces. Ask Yourself a question: how is that digital workspace, diffused across the omnipresent cloud architecture, different from the wooden desk and synthetic mousepad Your palms rest upon right now (probably)? All of these notes, insights, gotchas, caveats, and other nuggets of emergent knowledge — it has been a long time since You gathered them together, reconciled them between different agents, and, in general, gave them a long-needed update.
+There is a loose genetic analogy here. Every agent setup accumulates its own little mutations: one off MCP entries, forgotten tokens, half used memory tools, and instructions pasted into files nobody remembers owning. The question is whether those mutations make the organism more capable, or merely harder to reproduce.
+
+A centralized, version controlled source gives the useful parts a genome: one place to inspect, prune, and replicate into the vendor shaped files each agent actually expects.
 
 If You maintain a constantly growing collection of artifacts for agentic harnesses, like a categorized library of raw Markdown assets, You know that it is possible to point LLMs at such a central knowledge base — even a version-controlled one — by routing them through a global `CLAUDE.md` file or some other vendor-specific tricks.
 
@@ -30,7 +32,7 @@ I have a Caddy reverse proxy, which needs new entries added to its config files 
 
 Now, this learned capability is only available to this one agent, which sits on my edge a.k.a. master node with access to the whole infrastructure, but what if I want to make it available to static or even ephemeral subagents in some workflows so they can do similar devopsy gymnastics? Well, we kind of circle back to the previous knowledge-base conundrum, without any sentiment about us humans being able to read it or visualize it using floating dots and lines. These are the same centralization and access problems that we had with tools in the case of Cellarette.
 
-So agentic workflows can use a little kondoification to make our interactions with the whole architecture more pleasant and smooth by keeping only those **capabilities** that are consistently a net positive for their well-being.
+So agentic workflows can use a little genome editing to make our interactions with the whole architecture more pleasant and smooth by keeping only those **capabilities** that are consistently a net positive for their wellbeing.
 
 By **capability**, I mean an **ability to carry out predefined procedures using a curated set of tools within the context of accessible domain knowledge**. Example:
 
@@ -135,6 +137,6 @@ The answer is config-as-code, but in the least ceremonial sense of that phrase: 
 
 When a cold restart happens, I do not have to transcribe all of the Voynich-level scribbles from old terminal histories. I run the sync, inspect the source, and get back to work.
 
-This is the wacky KonMari angle from the beginning: when such a “factory reset” occurs, You can often see how much not-really-necessary bloat You have been carrying around on a daily basis. But the core, which is crucial for Your peace of mind, is always there, packed neatly into tidy compartments of the OpenViking store and version-controlled configurations.
+This is the useful sci fi part: after a factory reset, the agent does not wake up as an amnesiac clone with a mysterious pile of terminal archaeology to decode. I run the sync, inspect the source, and recover the working genome, without dragging every accidental mutation back into the new instance.
 
 This is why every tool, piece of info, and gadget has its own place in my agentic wonderland. Everybody can find them quickly, without stressful trace stacks, and each of them is kept to bring me — and my soon-to-be-AGI crew — joy 😊
