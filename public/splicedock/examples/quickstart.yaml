@@ -1,0 +1,22 @@
+# Local, read-only demo. Strong WebAuthn consent is disabled for this demo only.
+server:
+  port: 8788
+  admin_port: 8789
+  admin_token_env: CELLARETTE_ADMIN_TOKEN
+  require_profile_token: true
+  cli_whitelist: [node]
+  consent:
+    enabled: false
+profiles:
+  default:
+    tools: ["__no_tools__"]
+  demo:
+    tools: ["demo__version"]
+    enable_code_mode: true
+tools:
+  - type: cli
+    name: version
+    namespace: demo
+    description: "Read the installed Node.js version"
+    command: node
+    args: ["--version"]
