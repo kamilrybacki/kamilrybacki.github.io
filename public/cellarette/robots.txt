@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kamilrybacki.github.io/cellarette/sitemap.xml

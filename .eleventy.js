@@ -8,6 +8,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/styles");
   eleventyConfig.addPassthroughCopy("public/images");
   eleventyConfig.addPassthroughCopy("public/article-filters.js");
+  // Standalone product documentation; copied without applying blog layouts.
+  eleventyConfig.addPassthroughCopy({ "public/cellarette": "cellarette" });
   // Ensure article images and other assets are copied
   eleventyConfig.addPassthroughCopy({ "public/assets": "assets" });
   // KaTeX stylesheet + fonts for math rendering. CSS references fonts relatively
