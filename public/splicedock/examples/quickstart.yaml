@@ -2,7 +2,7 @@
 server:
   port: 8788
   admin_port: 8789
-  admin_token_env: CELLARETTE_ADMIN_TOKEN
+  admin_token_env: SPLICEDOCK_ADMIN_TOKEN
   require_profile_token: true
   cli_whitelist: [node]
   consent:
