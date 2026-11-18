@@ -31,3 +31,55 @@ input?.addEventListener('input', async () => {
   } catch { if (turn === request) { index = undefined; results.textContent = 'Search is unavailable. Use the navigation.'; } }
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && results) { results.hidden = true; input?.blur(); } });
+
+const examples = document.querySelector('[data-driver-examples]');
+if (examples) {
+  const tablist = examples.querySelector('[role="tablist"]');
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  const panels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls')));
+
+  function select(index, focus = false) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      panels[i].hidden = !selected;
+    });
+    if (focus) tabs[index].focus();
+  }
+
+  function followHash() {
+    const index = panels.findIndex(panel => '#' + panel.id === location.hash);
+    if (index < 0) return;
+    select(index);
+    panels[index].scrollIntoView();
+  }
+
+  tabs.forEach((tab, index) => {
+    const panel = panels[index];
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', tab.id);
+    tab.addEventListener('click', () => select(index));
+    tab.addEventListener('keydown', event => {
+      const next = {
+        ArrowLeft: (index - 1 + tabs.length) % tabs.length,
+        ArrowRight: (index + 1) % tabs.length,
+        Home: 0,
+        End: tabs.length - 1,
+      }[event.key];
+      if (next === undefined) return;
+      event.preventDefault();
+      select(next, true);
+    });
+  });
+  tablist.hidden = false;
+  select(0);
+  followHash();
+  window.addEventListener('hashchange', followHash);
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const index = panels.findIndex(panel => '#' + panel.id === link.getAttribute('href'));
+    if (index >= 0) select(index);
+  });
+}
